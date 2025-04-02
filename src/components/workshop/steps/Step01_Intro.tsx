@@ -3,7 +3,7 @@ import StepHeader from '../../ui/StepHeader';
 import Card from '../../ui/Card';
 import Button from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { CheckCircle, Target, Lightbulb, Zap, ArrowRight, Brain, Sparkles, Award, BarChart, Rocket } from 'lucide-react';
+import { CheckCircle, Target, Lightbulb, Zap, Brain, Sparkles, Award, Rocket } from 'lucide-react';
 
 export const Step01_Intro: React.FC = () => {
   const { setCurrentStep } = useWorkshopStore();
