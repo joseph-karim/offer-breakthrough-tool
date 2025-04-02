@@ -2,26 +2,15 @@ import { useEffect } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
 import { Zap, CheckCircle, ChevronLeft, ChevronRight, Sparkles, Star, Layers, ArrowRight } from 'lucide-react';
 
-// Placeholder component to fix missing imports
-const PlaceholderStep = ({ title, description, step }: { title: string, description?: string, step: number }) => {
-  return (
-    <div className="p-4">
-      <h2>Step {step}: {title}</h2>
-      {description && <p>{description}</p>}
-      <p>This step is coming soon!</p>
-    </div>
-  );
-};
-
-// Redefine Step components to fix import errors
-const Step01_Intro = () => <PlaceholderStep title="Introduction" step={1} />;
-const Step02_MarketDemand = () => <PlaceholderStep title="Market Demand" step={2} />;
-const Step03_AntiGoals = () => <PlaceholderStep title="Anti Goals" step={3} />;
-const Step04_TriggerEvents = () => <PlaceholderStep title="Trigger Events" step={4} />;
-const Step05_Jobs = () => <PlaceholderStep title="Jobs To Be Done" step={5} />;
-const Step06_Markets = () => <PlaceholderStep title="Market Selection" step={6} />;
-const Step10_Pricing = () => <PlaceholderStep title="Pricing Strategy" step={10} />;
-const Step11_Summary = () => <PlaceholderStep title="Workshop Summary" step={11} />;
+// Import step components
+import { Step01_Intro } from './steps/Step01_Intro';
+import { Step02_MarketDemand } from './steps/Step02_MarketDemand';
+import { Step03_AntiGoals } from './steps/Step03_AntiGoals';
+import { Step04_TriggerEvents } from './steps/Step04_TriggerEvents';
+import { Step05_Jobs } from './steps/Step05_Jobs';
+import { Step06_Markets } from './steps/Step06_Markets';
+import { Step10_Pricing } from './steps/Step10_Pricing';
+import { Step11_Summary } from './steps/Step11_Summary';
 
 export const WorkshopWizard = () => {
   const { currentStep, initializeSession, setCurrentStep } = useWorkshopStore();

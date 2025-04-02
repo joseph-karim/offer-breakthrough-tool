@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
@@ -31,10 +31,10 @@ const Button: React.FC<ButtonProps> = ({
     secondary: 'bg-secondary text-white hover:bg-secondary-600 active:bg-secondary-700',
     outline: 'bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-white hover:border-gray-400 active:bg-white',
     ghost: 'bg-transparent text-gray-700 hover:bg-white active:bg-white',
-    gradient: 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white hover:shadow-xl hover:shadow-indigo-500/20 active:from-indigo-700 active:to-pink-700',
-    indigo: 'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 shadow-indigo-500/20',
-    pink: 'bg-pink-600 text-white hover:bg-pink-700 active:bg-pink-800 shadow-pink-500/20',
-    success: 'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 shadow-emerald-500/20',
+    gradient: 'text-white',
+    indigo: 'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800',
+    pink: 'bg-pink-600 text-white hover:bg-pink-700 active:bg-pink-800',
+    success: 'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800',
   };
 
   const sizes = {
@@ -44,14 +44,35 @@ const Button: React.FC<ButtonProps> = ({
     xl: 'py-4 px-9 text-xl rounded-2xl',
   };
 
+  const getGradientStyle = (): CSSProperties | undefined => {
+    if (variant === 'gradient') {
+      return {
+        backgroundImage: 'linear-gradient(to right, #4f46e5, #a855f7, #ec4899)',
+        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+      };
+    }
+    return undefined;
+  };
+
+  const getGlassmorphismStyle = (): CSSProperties | undefined => {
+    if (glassmorphism) {
+      return {
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderWidth: '1px',
+      };
+    }
+    return undefined;
+  };
+
   const baseStyles = cn(
     'inline-flex items-center justify-center font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed',
-    glassmorphism ? 'backdrop-blur-md bg-opacity-80 border border-white/20' : '',
     variants[variant],
     sizes[size],
     fullWidth ? 'w-full' : '',
-    variant.includes('gradient') ? 'shadow-lg' : 'shadow-md',
-    variant.includes('gradient') ? 'hover:shadow-xl' : 'hover:shadow-lg',
+    variant !== 'gradient' ? 'shadow-md hover:shadow-lg' : '',
     className
   );
 
@@ -106,10 +127,16 @@ const Button: React.FC<ButtonProps> = ({
     return children;
   };
 
+  const buttonStyle = {
+    ...getGradientStyle(),
+    ...getGlassmorphismStyle(),
+  };
+
   return (
     <button 
       className={cn(baseStyles, "group")} 
-      disabled={isLoading} 
+      disabled={isLoading}
+      style={Object.keys(buttonStyle).length > 0 ? buttonStyle : undefined}
       {...props}
     >
       {renderContent()}
