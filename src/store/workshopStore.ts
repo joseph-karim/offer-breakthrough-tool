@@ -126,7 +126,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   acceptSuggestion: (step: number) => {
-    const { currentSuggestion, workshopData } = get();
+    const { currentSuggestion } = get();
     if (!currentSuggestion) return;
 
     switch (step) {
