@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef, KeyboardEvent } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { Card } from '../../shared/Card';
 import { Input } from '../../shared/Input';
 import { Button } from '../../shared/Button';
 import { ChatMessage } from './ChatMessage';
 import { SuggestionCard } from './SuggestionCard';
-import type { AIMessage, ChatSuggestion, StepQuestion } from '../../../types/chat';
+import type { AIMessage, StepQuestion } from '../../../types/chat';
 import type { AIService } from '../../../services/aiService';
 
 interface ChatInterfaceProps {

@@ -1,6 +1,5 @@
 import { create } from 'zustand';
-import type { WorkshopData, WorkshopSession, TriggerEvent, Job, Market, Problem, Offer } from '../types/workshop';
-import type { StepChats } from '../types/chat';
+import type { WorkshopData } from '../types/workshop';
 
 interface WorkshopStore {
   // Session state

@@ -6,11 +6,14 @@ import { TextArea } from '../../shared/TextArea';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import type { Job } from '../../../types/workshop';
+import { AIService } from '../../../services/aiService';
 
 export const Step05_Jobs = () => {
   const { workshopData, updateWorkshopData } = useWorkshopStore();
   const [newJob, setNewJob] = useState('');
   const jobs = workshopData?.jobs || [];
+
+  const aiService = new AIService({ apiKey: import.meta.env.VITE_OPENAI_API_KEY });
 
   const handleAddJob = () => {
     if (!newJob.trim()) return;
@@ -118,6 +121,7 @@ export const Step05_Jobs = () => {
             step={5}
             stepContext="defining jobs to be done that customers want to accomplish"
             questions={STEP_QUESTIONS[5]}
+            aiService={aiService}
             onSuggestionAccept={handleSuggestionAccept}
           />
           

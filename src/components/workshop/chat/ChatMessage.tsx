@@ -1,35 +1,43 @@
-import { AIMessage } from '../../../types/chat';
+import { ReactNode } from 'react';
+import { AIMessage, ChatSuggestion } from '../../../types/chat';
 
 interface ChatMessageProps {
   message: AIMessage;
-  onSuggestionAccept?: (suggestion: string) => void;
+  onSuggestionAccept?: (suggestion: any) => void;
 }
 
 export const ChatMessage = ({ message, onSuggestionAccept }: ChatMessageProps) => {
   const isUser = message.role === 'user';
+  const messageClasses = isUser
+    ? 'bg-blue-500 text-white ml-auto'
+    : 'bg-gray-200 text-gray-800';
+
+  const renderSuggestions = () => {
+    if (!message.suggestions || message.suggestions.length === 0) return null;
+    
+    return (
+      <div className="mt-2 space-y-2">
+        {message.suggestions.map((suggestion, index) => (
+          <div key={index} className="p-2 bg-white border rounded-md shadow-sm">
+            <div className="text-sm">{JSON.stringify(suggestion.content)}</div>
+            {onSuggestionAccept && (
+              <button
+                onClick={() => onSuggestionAccept(suggestion)}
+                className="mt-1 px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Accept
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
-    <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
-      <div
-        className={`rounded-lg p-3 max-w-[80%] ${
-          isUser ? 'bg-primary text-primary-foreground' : 'bg-secondary'
-        }`}
-      >
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-        {message.suggestions && (
-          <div className="mt-3 space-y-2">
-            {message.suggestions.map((suggestion, index) => (
-              <button
-                key={index}
-                onClick={() => onSuggestionAccept?.(suggestion)}
-                className="block w-full text-left text-sm p-2 rounded bg-background/50 hover:bg-background/80 transition-colors"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+    <div className={`max-w-[80%] p-3 rounded-lg ${messageClasses}`}>
+      <div className="whitespace-pre-wrap">{message.content}</div>
+      {renderSuggestions()}
     </div>
   );
 }; 

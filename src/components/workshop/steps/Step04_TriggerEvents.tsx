@@ -6,11 +6,14 @@ import { TextArea } from '../../shared/TextArea';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import type { TriggerEvent } from '../../../types/workshop';
+import { AIService } from '../../../services/aiService';
 
 export const Step04_TriggerEvents = () => {
   const { workshopData, updateWorkshopData } = useWorkshopStore();
   const [newEvent, setNewEvent] = useState('');
   const triggerEvents = workshopData?.triggerEvents || [];
+
+  const aiService = new AIService({ apiKey: import.meta.env.VITE_OPENAI_API_KEY });
 
   const handleAddEvent = () => {
     if (!newEvent.trim()) return;
@@ -118,6 +121,7 @@ export const Step04_TriggerEvents = () => {
             step={4}
             stepContext="identifying trigger events that cause potential customers to seek solutions"
             questions={STEP_QUESTIONS[4]}
+            aiService={aiService}
             onSuggestionAccept={handleSuggestionAccept}
           />
           

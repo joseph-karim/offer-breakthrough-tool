@@ -6,11 +6,14 @@ import { TextArea } from '../../shared/TextArea';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import type { Market } from '../../../types/workshop';
+import { AIService } from '../../../services/aiService';
 
 export const Step06_Markets = () => {
   const { workshopData, updateWorkshopData } = useWorkshopStore();
   const [newMarket, setNewMarket] = useState('');
   const markets = workshopData?.markets || [];
+
+  const aiService = new AIService({ apiKey: import.meta.env.VITE_OPENAI_API_KEY });
 
   const handleAddMarket = () => {
     if (!newMarket.trim()) return;
@@ -117,6 +120,7 @@ export const Step06_Markets = () => {
             step={6}
             stepContext="defining target markets that could benefit from your solution"
             questions={STEP_QUESTIONS[6]}
+            aiService={aiService}
             onSuggestionAccept={handleSuggestionAccept}
           />
           
