@@ -3,8 +3,9 @@ import React from 'react';
 interface CardProps {
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'outline' | 'muted';
+  variant?: 'default' | 'outline' | 'muted' | 'gradient';
   padding?: 'none' | 'sm' | 'md' | 'lg';
+  hover?: boolean;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -12,13 +13,15 @@ const Card: React.FC<CardProps> = ({
   className = '',
   variant = 'default',
   padding = 'md',
+  hover = false,
 }) => {
-  const baseStyles = 'rounded-lg';
+  const baseStyles = 'rounded-xl transition-all duration-200';
   
   const variantStyles = {
-    default: 'bg-white shadow-sm border border-gray-200',
+    default: 'bg-white border border-gray-200 shadow-sm',
     outline: 'bg-white border border-gray-200',
-    muted: 'bg-gray-50',
+    muted: 'bg-gray-50 border border-gray-100',
+    gradient: 'bg-gradient-to-br from-white to-gray-50 border border-gray-100 shadow-sm',
   };
   
   const paddingStyles = {
@@ -28,7 +31,11 @@ const Card: React.FC<CardProps> = ({
     lg: 'p-8',
   };
   
-  const styles = `${baseStyles} ${variantStyles[variant]} ${paddingStyles[padding]} ${className}`;
+  const hoverStyles = hover 
+    ? 'hover:shadow-md hover:border-gray-300 hover:scale-[1.01]' 
+    : '';
+  
+  const styles = `${baseStyles} ${variantStyles[variant]} ${paddingStyles[padding]} ${hoverStyles} ${className}`;
   
   return (
     <div className={styles}>
