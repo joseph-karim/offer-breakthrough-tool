@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { Sparkles, Star, Zap } from 'lucide-react';
 
 interface StepHeaderProps {
@@ -16,13 +16,34 @@ const StepHeader: React.FC<StepHeaderProps> = ({
   const getStepColors = () => {
     // Create a rotating color scheme based on step number
     const colorSchemes = [
-      {from: 'from-indigo-500', to: 'to-blue-500', textFrom: 'from-indigo-600', textTo: 'to-blue-600'},
-      {from: 'from-purple-500', to: 'to-pink-500', textFrom: 'from-purple-600', textTo: 'to-pink-600'},
-      {from: 'from-pink-500', to: 'to-rose-500', textFrom: 'from-pink-600', textTo: 'to-rose-600'},
-      {from: 'from-rose-500', to: 'to-red-500', textFrom: 'from-rose-600', textTo: 'to-red-600'},
-      {from: 'from-amber-500', to: 'to-yellow-500', textFrom: 'from-amber-600', textTo: 'to-yellow-600'},
-      {from: 'from-emerald-500', to: 'to-green-500', textFrom: 'from-emerald-600', textTo: 'to-green-600'},
-      {from: 'from-teal-500', to: 'to-cyan-500', textFrom: 'from-teal-600', textTo: 'to-cyan-600'},
+      {
+        gradient: 'linear-gradient(to bottom right, #4f46e5, #3b82f6)',
+        textGradient: 'linear-gradient(to right, #4338ca, #2563eb)',
+      },
+      {
+        gradient: 'linear-gradient(to bottom right, #8b5cf6, #ec4899)',
+        textGradient: 'linear-gradient(to right, #7c3aed, #db2777)',
+      },
+      {
+        gradient: 'linear-gradient(to bottom right, #ec4899, #f43f5e)',
+        textGradient: 'linear-gradient(to right, #db2777, #e11d48)',
+      },
+      {
+        gradient: 'linear-gradient(to bottom right, #f43f5e, #ef4444)',
+        textGradient: 'linear-gradient(to right, #e11d48, #dc2626)',
+      },
+      {
+        gradient: 'linear-gradient(to bottom right, #f59e0b, #eab308)',
+        textGradient: 'linear-gradient(to right, #d97706, #ca8a04)',
+      },
+      {
+        gradient: 'linear-gradient(to bottom right, #10b981, #16a34a)',
+        textGradient: 'linear-gradient(to right, #059669, #15803d)',
+      },
+      {
+        gradient: 'linear-gradient(to bottom right, #06b6d4, #0ea5e9)',
+        textGradient: 'linear-gradient(to right, #0891b2, #0284c7)',
+      },
     ];
     
     const index = (step - 1) % colorSchemes.length;
@@ -31,13 +52,64 @@ const StepHeader: React.FC<StepHeaderProps> = ({
   
   const colors = getStepColors();
 
-  // Define glass style for description to avoid utility class issues
-  const glassDescriptionStyle = {
+  // Define styles to avoid utility class issues
+  const glassDescriptionStyle: CSSProperties = {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     backdropFilter: 'blur(4px)',
     WebkitBackdropFilter: 'blur(4px)',
     border: '1px solid rgba(255, 255, 255, 0.5)',
     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+  };
+
+  const titleStyle: CSSProperties = {
+    fontFamily: "'Mada', sans-serif",
+    fontWeight: 700,
+    color: 'transparent',
+    backgroundImage: colors.textGradient,
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+  };
+
+  const badgeGlowStyle: CSSProperties = {
+    position: 'absolute',
+    inset: '-1.25rem',
+    backgroundImage: colors.gradient,
+    borderRadius: '9999px',
+    opacity: 0.75,
+    filter: 'blur(1rem)',
+  };
+
+  const badgeStyle: CSSProperties = {
+    position: 'relative',
+    backgroundImage: colors.gradient,
+    color: 'white',
+    width: '5rem',
+    height: '5rem',
+    borderRadius: '9999px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 700,
+    fontSize: '1.5rem',
+    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    border: '2px solid white',
+  };
+
+  const dividerStyle: CSSProperties = {
+    height: '0.25rem',
+    width: '6rem',
+    backgroundImage: colors.gradient,
+    borderRadius: '9999px',
+    margin: '0 0.5rem',
+  };
+
+  const gradientBorderStyle: CSSProperties = {
+    position: 'absolute',
+    inset: '-0.25rem',
+    backgroundImage: colors.gradient,
+    borderRadius: '1rem',
+    filter: 'blur(0.25rem)',
+    opacity: 0.3,
   };
 
   return (
@@ -51,8 +123,8 @@ const StepHeader: React.FC<StepHeaderProps> = ({
       {/* Step number badge with vibrant gradient background */}
       <div className="flex justify-center mb-6">
         <div className="relative">
-          <div className={`absolute -inset-5 bg-gradient-to-br ${colors.from} ${colors.to} rounded-full blur-xl opacity-75`}></div>
-          <div className={`relative bg-gradient-to-br ${colors.from} ${colors.to} text-white w-20 h-20 rounded-full flex items-center justify-center font-bold text-2xl shadow-lg border-2 border-white`}>
+          <div style={badgeGlowStyle}></div>
+          <div style={badgeStyle}>
             {step}
             <span className="absolute -bottom-1 -right-1">
               <Star className="w-5 h-5 text-white fill-white" />
@@ -63,7 +135,10 @@ const StepHeader: React.FC<StepHeaderProps> = ({
       
       {/* Title with decorative elements and gradient text */}
       <div className="text-center relative">
-        <h2 className={`font-display text-3xl md:text-4xl font-bold mb-3 inline-flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-r ${colors.textFrom} ${colors.textTo}`}>
+        <h2 
+          className="text-3xl md:text-4xl mb-3 inline-flex items-center justify-center"
+          style={titleStyle}
+        >
           {title}
           <Sparkles className="ml-2 h-6 w-6 text-yellow-500" />
         </h2>
@@ -71,7 +146,7 @@ const StepHeader: React.FC<StepHeaderProps> = ({
         {/* Decorative divider with gradient */}
         <div className="flex justify-center items-center my-5">
           <div className="h-0.5 w-6 bg-gradient-to-r from-transparent to-gray-200 rounded"></div>
-          <div className={`h-1 w-24 bg-gradient-to-r ${colors.from} ${colors.to} rounded-full mx-2`}></div>
+          <div style={dividerStyle}></div>
           <div className="h-0.5 w-6 bg-gradient-to-r from-gray-200 to-transparent rounded"></div>
         </div>
         
@@ -88,7 +163,7 @@ const StepHeader: React.FC<StepHeaderProps> = ({
       {description && (
         <div className="max-w-2xl mx-auto">
           <div className="relative">
-            <div className={`absolute -inset-1 bg-gradient-to-r ${colors.from} ${colors.to} rounded-2xl blur-sm opacity-30`}></div>
+            <div style={gradientBorderStyle}></div>
             <p 
               className="relative text-base md:text-lg text-gray-700 leading-relaxed py-6 px-8 rounded-xl text-center"
               style={glassDescriptionStyle}

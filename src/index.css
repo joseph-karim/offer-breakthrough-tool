@@ -84,24 +84,26 @@
   
   /* Gradient text */
   .gradient-text {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600;
+    color: transparent;
+    background-clip: text;
+    background-image: linear-gradient(to right, #4f46e5, #a855f7, #ec4899);
   }
   
   /* Gradient backgrounds */
   .bg-gradient-indigo-pink {
-    @apply bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600;
+    background-image: linear-gradient(to right, #4f46e5, #a855f7, #ec4899);
   }
   
   .bg-gradient-pink-indigo {
-    @apply bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600;
+    background-image: linear-gradient(to right, #ec4899, #a855f7, #4f46e5);
   }
   
   .bg-gradient-blue-indigo {
-    @apply bg-gradient-to-r from-blue-600 to-indigo-600;
+    background-image: linear-gradient(to right, #3b82f6, #4f46e5);
   }
   
   .bg-gradient-purple-pink {
-    @apply bg-gradient-to-r from-purple-600 to-pink-600;
+    background-image: linear-gradient(to right, #a855f7, #ec4899);
   }
 }
 
@@ -130,15 +132,26 @@
   
   /* Animated hover effects */
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1;
+    transition-property: all;
+    transition-duration: 300ms;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-0.25rem);
   }
   
   .hover-scale {
-    @apply transition-all duration-300 hover:scale-105;
+    transition-property: all;
+    transition-duration: 300ms;
+  }
+  
+  .hover-scale:hover {
+    transform: scale(1.05);
   }
   
   .hover-glow {
-    @apply transition-all duration-300;
+    transition-property: all;
+    transition-duration: 300ms;
   }
   
   .hover-glow:hover {
