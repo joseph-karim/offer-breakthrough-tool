@@ -5,7 +5,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      borderColor: {
+        border: 'hsl(var(--border))',
+      },
+      backgroundColor: {
+        background: 'hsl(var(--background))',
+      },
+      textColor: {
+        foreground: 'hsl(var(--foreground))',
+      },
+    },
   },
   plugins: [
     require('@tailwindcss/typography'),
