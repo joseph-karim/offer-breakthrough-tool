@@ -15,19 +15,22 @@ const StepHeader: React.FC<StepHeaderProps> = ({
 }) => {
   return (
     <div className="mb-8 text-center">
-      <div className="mb-2">
-        <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-primary-50 text-primary font-semibold">
+      <div className="mb-4 flex justify-center items-center">
+        <div className="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl shadow-md">
           {step}
-        </span>
-        <span className="text-gray-500 text-sm ml-2">
-          Step {step} of {totalSteps}
-        </span>
+        </div>
       </div>
-      <h2 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-2 text-center">
+      
+      <h2 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-3">
         {title}
       </h2>
+      
+      <div className="flex justify-center items-center mb-4">
+        <div className="h-1 w-20 bg-secondary rounded"></div>
+      </div>
+      
       {description && (
-        <p className="text-base text-gray-700 leading-relaxed max-w-2xl mx-auto">
+        <p className="text-base text-gray-700 leading-relaxed max-w-2xl mx-auto bg-white p-5 rounded-lg border border-gray-100 shadow-sm">
           {description}
         </p>
       )}
