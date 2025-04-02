@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { WorkshopLayout } from '../layout/WorkshopLayout';
 
 // Import step components
 import { Step01_Intro } from './steps/Step01_Intro';
@@ -42,6 +41,14 @@ export const WorkshopWizard = () => {
     }
   };
 
+  const goToPreviousStep = () => {
+    setCurrentStep(Math.max(1, currentStep - 1));
+  };
+
+  const goToNextStep = () => {
+    setCurrentStep(Math.min(11, currentStep + 1));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
       <div className="max-w-5xl mx-auto">
@@ -73,7 +80,7 @@ export const WorkshopWizard = () => {
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-4 z-10">
           <div className="max-w-5xl mx-auto flex justify-between">
             <button
-              onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+              onClick={goToPreviousStep}
               disabled={currentStep === 1}
               className={`px-5 py-2 border rounded-full flex items-center ${
                 currentStep === 1 
@@ -88,7 +95,7 @@ export const WorkshopWizard = () => {
             </button>
             
             <button
-              onClick={() => setCurrentStep(prev => Math.min(11, prev + 1))}
+              onClick={goToNextStep}
               disabled={currentStep === 11}
               className={`px-5 py-2 rounded-full flex items-center ${
                 currentStep === 11

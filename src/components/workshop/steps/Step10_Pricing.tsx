@@ -1,7 +1,7 @@
 import React from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { StepHeader } from '../../shared/StepHeader';
-import { Card } from '../../shared/Card';
+import StepHeader from '../../ui/StepHeader';
+import Card from '../../ui/Card';
 import { ChatInterface } from '../chat/ChatInterface';
 import { AIService, STEP_QUESTIONS } from '../../../services/aiService';
 
@@ -29,34 +29,18 @@ export const Step10_Pricing: React.FC = () => {
   };
 
   return (
-    <Card>
-      <StepHeader title="Step 10: Pricing & Positioning" />
-      <div className="space-y-4 mb-6">
-        <p>
-          Now let's determine the right pricing model and positioning for your selected offer.
-          We'll consider the value delivered, target market, and competitive landscape.
+    <div className="max-w-4xl mx-auto">
+      <StepHeader
+        step={10}
+        title="Pricing Strategy"
+        description="Develop a pricing approach that maximizes value for both you and your customers."
+      />
+      
+      <Card className="bg-white border border-gray-200 shadow-sm p-6">
+        <p className="text-gray-700">
+          This step is coming soon. We'll help you develop a pricing strategy that reflects the value of your offer.
         </p>
-        {selectedOffer ? (
-          <div>
-            <h3 className="font-semibold text-lg mb-2">Selected Offer Recap:</h3>
-            <p><strong>Name:</strong> {selectedOffer.name}</p>
-            <p><strong>Description:</strong> {selectedOffer.description}</p>
-            <p><strong>Format:</strong> {selectedOffer.format}</p>
-          </div>
-        ) : (
-          <p className="text-red-500">Please select an offer in Step 9 before proceeding.</p>
-        )}
-      </div>
-
-      {selectedOffer && (
-        <ChatInterface
-          step={stepNumber}
-          stepContext={stepContext}
-          questions={STEP_QUESTIONS[stepNumber]}
-          aiService={aiService} 
-          onSuggestionAccept={handleSuggestionAccept}
-        />
-      )}
-    </Card>
+      </Card>
+    </div>
   );
 }; 

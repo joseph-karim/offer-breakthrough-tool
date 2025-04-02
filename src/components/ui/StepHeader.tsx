@@ -4,14 +4,12 @@ interface StepHeaderProps {
   title: string;
   description?: string;
   step: number;
-  totalSteps?: number;
 }
 
 const StepHeader: React.FC<StepHeaderProps> = ({ 
   title, 
   description, 
-  step, 
-  totalSteps = 11 
+  step
 }) => {
   return (
     <div className="mb-8 text-center">
