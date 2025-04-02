@@ -31,6 +31,15 @@ const StepHeader: React.FC<StepHeaderProps> = ({
   
   const colors = getStepColors();
 
+  // Define glass style for description to avoid utility class issues
+  const glassDescriptionStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backdropFilter: 'blur(4px)',
+    WebkitBackdropFilter: 'blur(4px)',
+    border: '1px solid rgba(255, 255, 255, 0.5)',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+  };
+
   return (
     <div className="mb-12">
       {/* Decorative elements */}
@@ -80,7 +89,10 @@ const StepHeader: React.FC<StepHeaderProps> = ({
         <div className="max-w-2xl mx-auto">
           <div className="relative">
             <div className={`absolute -inset-1 bg-gradient-to-r ${colors.from} ${colors.to} rounded-2xl blur-sm opacity-30`}></div>
-            <p className="relative text-base md:text-lg text-gray-700 leading-relaxed py-6 px-8 bg-white bg-opacity-80 backdrop-blur-sm rounded-xl border border-white border-opacity-50 shadow-md text-center">
+            <p 
+              className="relative text-base md:text-lg text-gray-700 leading-relaxed py-6 px-8 rounded-xl text-center"
+              style={glassDescriptionStyle}
+            >
               {description}
             </p>
           </div>

@@ -5,9 +5,22 @@ export default {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   safelist: [
+    // Basic colors that might be used with @apply
+    'bg-white',
+    'bg-black',
+    'bg-gray-100',
+    'bg-gray-200',
+    'text-white',
+    'text-black',
+    'border-white',
+    'border-black',
+    'from-white',
+    'to-white',
+    // Backdrop filters
     'backdrop-blur-md',
     'backdrop-blur-lg',
     'backdrop-blur-sm',
+    // Opacity utilities
     'bg-opacity-10',
     'bg-opacity-20',
     'bg-opacity-30',
@@ -89,6 +102,8 @@ export default {
         info: "hsl(var(--info))",
         warning: "hsl(var(--warning))",
         danger: "hsl(var(--danger))",
+        white: "#ffffff",
+        black: "#000000",
       },
       borderRadius: {
         lg: "var(--radius)",

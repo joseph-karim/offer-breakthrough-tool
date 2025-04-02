@@ -36,6 +36,14 @@ const Card: React.FC<CardProps> = ({
   shadow = 'sm',
   borderGradient = false,
 }) => {
+  // Define the glass style separately to avoid utility class issues
+  const glassStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    border: '1px solid rgba(255, 255, 255, 0.3)'
+  };
+
   const variantStyles = {
     default: 'bg-white border border-gray-200',
     outline: 'bg-white border border-gray-200',
@@ -43,7 +51,7 @@ const Card: React.FC<CardProps> = ({
     secondary: 'bg-secondary-50 border border-secondary-100',
     muted: 'border border-gray-100',
     gradient: 'bg-gradient-to-br from-white via-primary-50 to-white border border-primary-100',
-    glass: 'bg-white bg-opacity-70 backdrop-blur-md border border-white border-opacity-30',
+    glass: '', // We'll apply this as inline style
     colorful: 'bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 border border-indigo-100',
     indigo: 'bg-indigo-50 border border-indigo-200',
     purple: 'bg-purple-50 border border-purple-200',
@@ -87,7 +95,7 @@ const Card: React.FC<CardProps> = ({
     }
     
     if (variant === 'glass') {
-      return 'transition-all duration-300 hover:shadow-lg hover:bg-white hover:bg-opacity-80 hover:-translate-y-1';
+      return 'transition-all duration-300 hover:shadow-lg hover:-translate-y-1';
     }
     
     return 'transition-all duration-300 hover:shadow-lg hover:-translate-y-1';
@@ -107,7 +115,7 @@ const Card: React.FC<CardProps> = ({
   const cardClasses = cn(
     borderRadiusStyles[borderRadius],
     shadowStyles[shadow],
-    borderGradientStyle ? '' : variantStyles[variant],
+    borderGradientStyle ? '' : (variant !== 'glass' ? variantStyles[variant] : ''),
     hoverStyles,
     borderGradientStyle,
     className
@@ -130,7 +138,10 @@ const Card: React.FC<CardProps> = ({
   
   // Standard rendering without gradient border
   return (
-    <div className={cn(cardClasses, paddingStyles[padding])}>
+    <div 
+      className={cn(cardClasses, paddingStyles[padding])}
+      style={variant === 'glass' ? glassStyle : undefined}
+    >
       {children}
     </div>
   );
