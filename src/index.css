@@ -67,6 +67,40 @@
   }
 }
 
+@layer components {
+  /* Gradient background for border effect */
+  .bg-gradient-padding {
+    background: linear-gradient(to right, #4f46e5, #c026d3, #e11d48);
+  }
+  
+  /* Glass card effect */
+  .glassmorphism {
+    @apply bg-white/70 backdrop-blur-md border border-white/30 shadow-xl;
+  }
+  
+  /* Gradient text */
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600;
+  }
+  
+  /* Gradient backgrounds */
+  .bg-gradient-indigo-pink {
+    @apply bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600;
+  }
+  
+  .bg-gradient-pink-indigo {
+    @apply bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600;
+  }
+  
+  .bg-gradient-blue-indigo {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600;
+  }
+  
+  .bg-gradient-purple-pink {
+    @apply bg-gradient-to-r from-purple-600 to-pink-600;
+  }
+}
+
 @layer utilities {
   .animated-gradient {
     background-size: 400% 400%;
@@ -88,5 +122,43 @@
   .bg-blur {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+  }
+  
+  /* Animated hover effects */
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1;
+  }
+  
+  .hover-scale {
+    @apply transition-all duration-300 hover:scale-105;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300;
+  }
+  
+  .hover-glow:hover {
+    box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
+  }
+  
+  /* Decorative animations */
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+  
+  @keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-glow {
+    0% { box-shadow: 0 0 0px rgba(79, 70, 229, 0); }
+    50% { box-shadow: 0 0 15px rgba(79, 70, 229, 0.4); }
+    100% { box-shadow: 0 0 0px rgba(79, 70, 229, 0); }
   }
 }
