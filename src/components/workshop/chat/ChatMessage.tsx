@@ -10,14 +10,14 @@ interface ChatMessageProps {
 export const ChatMessage = ({ message, onSuggestionAccept }: ChatMessageProps) => {
   const isUser = message.role === 'user';
   
-  // Use our design system classes
+  // Use direct Tailwind classes
   const messageContainerClasses = isUser 
     ? 'flex flex-row-reverse'
     : 'flex';
     
   const messageClasses = isUser
-    ? 'chat-message-user max-w-[80%] rounded-lg p-3 rounded-tr-none'
-    : 'chat-message-ai max-w-[80%] rounded-lg p-3 rounded-tl-none';
+    ? 'bg-gray-200 text-gray-800 max-w-[80%] rounded-lg p-3 rounded-tr-none'
+    : 'bg-secondary-50 text-gray-800 max-w-[80%] rounded-lg p-3 rounded-tl-none';
     
   const avatarClasses = 'flex items-center justify-center h-8 w-8 rounded-full text-white flex-shrink-0';
 
@@ -26,7 +26,7 @@ export const ChatMessage = ({ message, onSuggestionAccept }: ChatMessageProps) =
     
     return (
       <div className="mt-2 space-y-2">
-        {message.suggestions.map((suggestion, index) => (
+        {message.suggestions.map((suggestion: any, index: number) => (
           <div key={index} className="p-3 bg-white border border-gray-200 rounded-md shadow-sm">
             <div className="text-sm whitespace-pre-wrap text-gray-700">
               {typeof suggestion.content === 'string' 

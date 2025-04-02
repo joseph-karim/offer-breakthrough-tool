@@ -23,11 +23,11 @@ const StepHeader: React.FC<StepHeaderProps> = ({
           Step {step} of {totalSteps}
         </span>
       </div>
-      <h2 className="heading-display text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+      <h2 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-2 text-center">
         {title}
       </h2>
       {description && (
-        <p className="body-text text-gray-600 max-w-2xl mx-auto">
+        <p className="text-base text-gray-700 leading-relaxed max-w-2xl mx-auto">
           {description}
         </p>
       )}

@@ -154,7 +154,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
 
   return (
     <Card className="flex flex-col h-[500px] shadow-md overflow-hidden" padding="none">
-      <div className="chat-container flex-1 overflow-y-auto p-4 space-y-1">
+      <div className="bg-gray-50 flex-1 overflow-y-auto p-4 space-y-1 h-[400px]">
         {messages.map((message) => (
           <ChatMessage key={message.id} message={message} />
         ))}

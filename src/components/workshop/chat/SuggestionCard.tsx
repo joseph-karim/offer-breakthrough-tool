@@ -11,10 +11,10 @@ interface SuggestionCardProps {
 
 export const SuggestionCard = ({ suggestion, onAccept, isLoading }: SuggestionCardProps) => {
   return (
-    <Card className="suggestion-card bg-primary-50 border-primary-200">
+    <Card className="bg-primary-50 border border-primary-100 my-4">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="heading-section flex items-center text-primary-700">
+          <h4 className="text-lg font-semibold text-primary-700 mb-3 flex items-center">
             <Lightbulb className="h-5 w-5 mr-2" />
             AI Suggestion
           </h4>
