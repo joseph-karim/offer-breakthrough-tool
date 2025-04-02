@@ -75,7 +75,7 @@
   
   /* Glass card effect */
   .glassmorphism {
-    @apply bg-white/70 backdrop-blur-md border border-white/30 shadow-xl;
+    @apply bg-white bg-opacity-70 backdrop-blur-md border border-white border-opacity-30 shadow-xl;
   }
   
   /* Gradient text */

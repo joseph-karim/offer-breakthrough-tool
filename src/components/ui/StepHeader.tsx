@@ -80,7 +80,7 @@ const StepHeader: React.FC<StepHeaderProps> = ({
         <div className="max-w-2xl mx-auto">
           <div className="relative">
             <div className={`absolute -inset-1 bg-gradient-to-r ${colors.from} ${colors.to} rounded-2xl blur-sm opacity-30`}></div>
-            <p className="relative text-base md:text-lg text-gray-700 leading-relaxed py-6 px-8 bg-white/80 backdrop-blur-sm rounded-xl border border-white/50 shadow-md text-center">
+            <p className="relative text-base md:text-lg text-gray-700 leading-relaxed py-6 px-8 bg-white bg-opacity-80 backdrop-blur-sm rounded-xl border border-white border-opacity-50 shadow-md text-center">
               {description}
             </p>
           </div>

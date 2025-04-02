@@ -43,7 +43,7 @@ const Card: React.FC<CardProps> = ({
     secondary: 'bg-secondary-50 border border-secondary-100',
     muted: 'border border-gray-100',
     gradient: 'bg-gradient-to-br from-white via-primary-50 to-white border border-primary-100',
-    glass: 'bg-white/70 backdrop-blur-md border border-white/30',
+    glass: 'bg-white bg-opacity-70 backdrop-blur-md border border-white border-opacity-30',
     colorful: 'bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 border border-indigo-100',
     indigo: 'bg-indigo-50 border border-indigo-200',
     purple: 'bg-purple-50 border border-purple-200',
@@ -87,7 +87,7 @@ const Card: React.FC<CardProps> = ({
     }
     
     if (variant === 'glass') {
-      return 'transition-all duration-300 hover:shadow-lg hover:bg-white/80 hover:-translate-y-1';
+      return 'transition-all duration-300 hover:shadow-lg hover:bg-white hover:bg-opacity-80 hover:-translate-y-1';
     }
     
     return 'transition-all duration-300 hover:shadow-lg hover:-translate-y-1';

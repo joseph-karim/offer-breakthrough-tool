@@ -4,6 +4,27 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 export default {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  safelist: [
+    'backdrop-blur-md',
+    'backdrop-blur-lg',
+    'backdrop-blur-sm',
+    'bg-opacity-10',
+    'bg-opacity-20',
+    'bg-opacity-30',
+    'bg-opacity-40',
+    'bg-opacity-50',
+    'bg-opacity-60',
+    'bg-opacity-70',
+    'bg-opacity-80',
+    'bg-opacity-90',
+    'border-opacity-10',
+    'border-opacity-20',
+    'border-opacity-30',
+    'border-opacity-40',
+    'border-opacity-50',
+    'shadow-opacity-40',
+    'shadow-opacity-50'
+  ],
   theme: {
     container: {
       center: true,
@@ -106,6 +127,12 @@ export default {
         'gradient-dots': 'radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px)',
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      },
+      backdropBlur: {
+        xs: '2px',
+        sm: '4px',
+        md: '12px',
+        lg: '20px',
       },
     },
   },

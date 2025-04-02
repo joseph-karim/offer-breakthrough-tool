@@ -59,20 +59,20 @@ export const WorkshopWizard = () => {
       <div className="absolute inset-0 opacity-10 bg-gradient-dots bg-[length:20px_20px] pointer-events-none"></div>
       
       {/* Colorful decorative elements */}
-      <div className="absolute top-20 right-10 w-32 h-32 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-2xl animate-pulse-slow"></div>
-      <div className="absolute top-80 left-0 w-64 h-64 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse-slow"></div>
-      <div className="absolute bottom-40 right-20 w-48 h-48 bg-gradient-to-r from-teal-400/20 to-emerald-400/20 rounded-full blur-2xl animate-pulse-slow"></div>
+      <div className="absolute top-20 right-10 w-32 h-32 bg-gradient-to-r from-purple-400 to-pink-400 opacity-20 rounded-full blur-2xl animate-pulse-slow"></div>
+      <div className="absolute top-80 left-0 w-64 h-64 bg-gradient-to-r from-blue-400 to-indigo-400 opacity-20 rounded-full blur-3xl animate-pulse-slow"></div>
+      <div className="absolute bottom-40 right-20 w-48 h-48 bg-gradient-to-r from-teal-400 to-emerald-400 opacity-20 rounded-full blur-2xl animate-pulse-slow"></div>
       
       {/* Decorative blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-20 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute top-1/3 -left-20 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute -bottom-40 right-1/4 w-96 h-96 bg-yellow-400/20 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div className="absolute -top-40 -right-20 w-96 h-96 bg-pink-500 opacity-20 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div className="absolute top-1/3 -left-20 w-80 h-80 bg-indigo-500 opacity-20 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div className="absolute -bottom-40 right-1/4 w-96 h-96 bg-yellow-400 opacity-20 rounded-full blur-3xl animate-pulse-slow"></div>
       </div>
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Workshop Header with Progress */}
-        <div className="bg-white/90 backdrop-blur-md border-0 sticky top-0 z-20 shadow-lg rounded-b-2xl">
+        <div className="bg-white opacity-90 backdrop-blur-md border-0 sticky top-0 z-20 shadow-lg rounded-b-2xl">
           <div className="max-w-5xl mx-auto p-5">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <h1 className="text-2xl md:text-3xl font-display font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 flex items-center">
@@ -117,7 +117,7 @@ export const WorkshopWizard = () => {
 
         {/* Workshop Content */}
         <div className="px-4 sm:px-6 mt-8">
-          <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-indigo-100 p-6 md:p-8">
+          <div className="bg-white opacity-80 backdrop-blur-md rounded-2xl shadow-xl border border-indigo-100 p-6 md:p-8">
             {renderStep()}
           </div>
         </div>
@@ -126,7 +126,7 @@ export const WorkshopWizard = () => {
         <div className="fixed bottom-0 left-0 right-0 z-20">
           <div className="max-w-5xl mx-auto">
             {/* Floating action buttons on smaller screens */}
-            <div className="md:hidden flex justify-between px-4 py-4 bg-white/90 backdrop-blur-md border-t-0 rounded-t-2xl shadow-[0_-4px_20px_rgba(79,70,229,0.2)]">
+            <div className="md:hidden flex justify-between px-4 py-4 bg-white opacity-90 backdrop-blur-md border-t-0 rounded-t-2xl shadow-[0_-4px_20px_rgba(79,70,229,0.2)]">
               <button
                 onClick={goToPreviousStep}
                 disabled={currentStep === 1}
@@ -146,7 +146,7 @@ export const WorkshopWizard = () => {
                 className={`w-24 py-2.5 rounded-full flex justify-center items-center transition-all duration-300 ${
                   currentStep === 11
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-indigo-600 to-pink-600 hover:shadow-xl shadow-lg shadow-indigo-200/50 text-white'
+                    : 'bg-gradient-to-r from-indigo-600 to-pink-600 hover:shadow-xl shadow-lg shadow-indigo-200 shadow-opacity-50 text-white'
                 }`}
               >
                 Next
@@ -156,7 +156,7 @@ export const WorkshopWizard = () => {
             
             {/* Larger bottom navigation for larger screens */}
             <div className="hidden md:block">
-              <div className="flex justify-between p-7 mb-6 mx-6 bg-white/95 rounded-2xl shadow-xl border-0 backdrop-blur-lg">
+              <div className="flex justify-between p-7 mb-6 mx-6 bg-white opacity-95 rounded-2xl shadow-xl border-0 backdrop-blur-lg">
                 <button
                   onClick={goToPreviousStep}
                   disabled={currentStep === 1}
@@ -189,7 +189,7 @@ export const WorkshopWizard = () => {
                   className={`px-7 py-3.5 rounded-xl flex items-center font-medium transition-all duration-300 ${
                     currentStep === 11
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:shadow-2xl shadow-xl shadow-indigo-300/40 text-white'
+                      : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:shadow-2xl shadow-xl shadow-indigo-300 shadow-opacity-40 text-white'
                   }`}
                 >
                   {currentStep === 11 ? (
