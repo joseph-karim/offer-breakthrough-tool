@@ -3,7 +3,7 @@ import StepHeader from '../../ui/StepHeader';
 import Card from '../../ui/Card';
 import Button from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { CheckCircle, Target, Lightbulb, Zap, ArrowRight, Brain } from 'lucide-react';
+import { CheckCircle, Target, Lightbulb, Zap, ArrowRight, Brain, Sparkles, Award, BarChart, Rocket } from 'lucide-react';
 
 export const Step01_Intro: React.FC = () => {
   const { setCurrentStep } = useWorkshopStore();
@@ -17,33 +17,45 @@ export const Step01_Intro: React.FC = () => {
       />
 
       <div className="space-y-8">
-        <Card className="bg-white border border-gray-200 shadow-md" padding="lg">
+        <Card 
+          className="bg-gradient-to-r from-white to-primary-50 border border-primary-100 shadow-lg" 
+          padding="lg"
+        >
           <div className="space-y-6">
-            <p className="text-lg text-gray-700 leading-relaxed">
-              This interactive workshop will guide you through the process of uncovering profitable problems
-              and designing scalable offers using CustomerCamp's "Why We Buy" methodology.
-            </p>
+            <div className="flex items-start">
+              <div className="mr-4 mt-1 bg-primary/10 p-2 rounded-full">
+                <Sparkles className="h-6 w-6 text-primary" />
+              </div>
+              <p className="text-lg text-gray-700 leading-relaxed">
+                This interactive workshop will guide you through the process of uncovering profitable problems
+                and designing scalable offers using CustomerCamp's "Why We Buy" methodology.
+              </p>
+            </div>
             
-            <div className="py-2 px-4 bg-yellow-50 border-l-4 border-yellow-400 rounded text-yellow-800">
+            <div className="pl-14 pr-4 py-3 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg text-yellow-800">
               <p className="text-sm font-medium flex items-center">
-                <Lightbulb className="h-4 w-4 mr-2 flex-shrink-0" />
+                <Lightbulb className="h-5 w-5 mr-2 flex-shrink-0 text-yellow-600" />
                 Complete all steps to create an offer that resonates with your target market
               </p>
             </div>
           </div>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <Card 
             className="bg-gradient-to-br from-primary-50 to-white border border-primary-100" 
             padding="lg" 
             hover={true}
           >
-            <h3 className="text-xl font-semibold mb-4 flex items-center text-primary-700">
-              <Target className="mr-3 h-6 w-6 text-primary flex-shrink-0" />
-              What You'll Achieve
-            </h3>
-            <ul className="space-y-4">
+            <div className="flex items-center mb-5">
+              <div className="bg-primary/20 p-2 rounded-lg mr-3">
+                <Target className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">
+                What You'll Achieve
+              </h3>
+            </div>
+            <ul className="space-y-4 pl-3">
               {[
                 "Identify and avoid common pitfalls in offer creation",
                 "Discover trigger events that drive buying decisions",
@@ -52,8 +64,8 @@ export const Step01_Intro: React.FC = () => {
                 "Uncover high-value problems worth solving",
                 "Design a scalable offer that resonates with your market"
               ].map((item, index) => (
-                <li key={index} className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5 mr-3" />
+                <li key={index} className="flex items-start group transition-all duration-200 hover:translate-x-1">
+                  <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5 mr-3 group-hover:scale-110 transition-all duration-200" />
                   <span className="text-gray-700">{item}</span>
                 </li>
               ))}
@@ -65,11 +77,15 @@ export const Step01_Intro: React.FC = () => {
             padding="lg"
             hover={true}
           >
-            <h3 className="text-xl font-semibold mb-4 flex items-center text-secondary-700">
-              <Zap className="mr-3 h-6 w-6 text-secondary flex-shrink-0" />
-              How It Works
-            </h3>
-            <ul className="space-y-4">
+            <div className="flex items-center mb-5">
+              <div className="bg-secondary/20 p-2 rounded-lg mr-3">
+                <Zap className="h-6 w-6 text-secondary" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">
+                How It Works
+              </h3>
+            </div>
+            <ul className="space-y-4 pl-3">
               {[
                 "Progress through 10 carefully designed steps",
                 "Each step builds on the previous insights",
@@ -78,8 +94,8 @@ export const Step01_Intro: React.FC = () => {
                 "Get clear action items at each stage",
                 "End with a well-defined offer concept"
               ].map((item, index) => (
-                <li key={index} className="flex items-start">
-                  <div className="flex-shrink-0 bg-secondary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-0.5">
+                <li key={index} className="flex items-start group transition-all duration-200 hover:translate-x-1">
+                  <div className="flex-shrink-0 bg-gradient-to-r from-secondary to-primary text-white w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-0.5 group-hover:scale-110 transition-transform duration-200 shadow-sm">
                     {index + 1}
                   </div>
                   <span className="text-gray-700">{item}</span>
@@ -90,31 +106,38 @@ export const Step01_Intro: React.FC = () => {
         </div>
 
         <Card 
-          className="bg-gradient-to-br from-yellow-50 to-white border border-yellow-200" 
+          className="bg-gradient-to-r from-yellow-50 to-white border border-yellow-200 shadow-md" 
           padding="lg"
         >
-          <h3 className="text-xl font-semibold mb-4 flex items-center text-yellow-700">
-            <Brain className="mr-3 h-6 w-6 text-yellow-500 flex-shrink-0" />
-            Before You Begin
-          </h3>
-          <div className="space-y-4">
-            <p className="text-gray-700">
+          <div className="flex items-center mb-5">
+            <div className="bg-yellow-100 p-2 rounded-lg mr-3">
+              <Brain className="h-6 w-6 text-yellow-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900">
+              Before You Begin
+            </h3>
+          </div>
+          <div className="space-y-5">
+            <p className="text-gray-700 pl-12">
               Take a moment to reflect on your current business and what you hope to achieve with your new offer. 
               The more thoughtful you are in each step, the better your results will be.
             </p>
-            <div className="bg-white p-4 rounded-lg border border-gray-100 shadow-sm">
-              <p className="font-medium text-gray-800 mb-3">Consider having these things handy:</p>
-              <ul className="space-y-3">
-                <li className="flex items-center">
-                  <span className="bg-yellow-200 w-2 h-2 rounded-full mr-3"></span>
+            <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-md ml-6">
+              <p className="font-semibold text-gray-800 mb-4 flex items-center">
+                <Award className="h-5 w-5 mr-2 text-primary" />
+                Consider having these things handy:
+              </p>
+              <ul className="space-y-3 pl-3">
+                <li className="flex items-center group transition-all duration-200 hover:translate-x-1">
+                  <div className="bg-gradient-to-r from-yellow-200 to-yellow-400 w-2 h-2 rounded-full mr-3 group-hover:scale-150 transition-transform duration-200"></div>
                   <span className="text-gray-700">Notes about your current business challenges</span>
                 </li>
-                <li className="flex items-center">
-                  <span className="bg-yellow-200 w-2 h-2 rounded-full mr-3"></span>
+                <li className="flex items-center group transition-all duration-200 hover:translate-x-1">
+                  <div className="bg-gradient-to-r from-yellow-200 to-yellow-400 w-2 h-2 rounded-full mr-3 group-hover:scale-150 transition-transform duration-200"></div>
                   <span className="text-gray-700">Ideas or assumptions about your target market</span>
                 </li>
-                <li className="flex items-center">
-                  <span className="bg-yellow-200 w-2 h-2 rounded-full mr-3"></span>
+                <li className="flex items-center group transition-all duration-200 hover:translate-x-1">
+                  <div className="bg-gradient-to-r from-yellow-200 to-yellow-400 w-2 h-2 rounded-full mr-3 group-hover:scale-150 transition-transform duration-200"></div>
                   <span className="text-gray-700">A notebook to capture additional insights</span>
                 </li>
               </ul>
@@ -122,13 +145,13 @@ export const Step01_Intro: React.FC = () => {
           </div>
         </Card>
 
-        <div className="flex justify-center pt-6">
+        <div className="flex justify-center pt-8">
           <Button
-            variant="primary"
+            variant="gradient"
             size="lg"
-            icon={<ArrowRight className="ml-2 h-5 w-5" />}
+            icon={<Rocket className="ml-2 h-5 w-5" />}
             onClick={() => setCurrentStep(2)}
-            className="px-10 py-4 text-lg font-medium shadow-lg hover:shadow-xl"
+            className="px-10 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
           >
             Start the Workshop
           </Button>
