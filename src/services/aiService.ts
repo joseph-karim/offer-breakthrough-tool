@@ -1,5 +1,4 @@
 import type { AIMessage, ChatSuggestion, StepQuestion } from '../types/chat';
-import type { WorkshopData } from '../types/workshop';
 import { OpenAIService } from './openaiService';
 
 // Define questions for each step

@@ -73,13 +73,13 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   saveSession: async () => {
-    const { sessionId, workshopData, currentStep } = get();
+    const { sessionId, currentStep } = get();
     if (!sessionId) return;
 
     set({ isSaving: true });
     try {
       // TODO: Implement actual session saving
-      console.log('Saving session:', { sessionId, currentStep, workshopData });
+      console.log('Saving session:', { sessionId, currentStep });
     } catch (error) {
       console.error('Failed to save session:', error);
     } finally {

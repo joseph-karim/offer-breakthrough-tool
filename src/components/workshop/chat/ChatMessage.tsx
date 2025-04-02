@@ -1,5 +1,4 @@
-import { ReactNode } from 'react';
-import { AIMessage, ChatSuggestion } from '../../../types/chat';
+import { AIMessage } from '../../../types/chat';
 
 interface ChatMessageProps {
   message: AIMessage;
