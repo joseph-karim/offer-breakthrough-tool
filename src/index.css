@@ -49,11 +49,13 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-solid border-0;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* Base styles using standard CSS instead of Tailwind utilities */
+* {
+  border-style: solid;
+  border-width: 0;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
