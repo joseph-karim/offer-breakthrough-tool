@@ -7,7 +7,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{ backgroundColor: '#f9fafb' }} className="min-h-screen">
       {/* Top Yellow Banner */}
       <div className="bg-yellow-300 py-3 px-4 text-center">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center sm:justify-between">

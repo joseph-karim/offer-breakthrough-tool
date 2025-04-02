@@ -15,10 +15,10 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const baseClasses = "font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
   
-  const variantClasses = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
-    secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500",
-    outline: "bg-transparent text-gray-900 border border-gray-300 hover:bg-gray-50 focus:ring-gray-500"
+  const variantStyles = {
+    primary: "bg-primary text-white shadow-sm hover:bg-primary-600 focus:ring-primary-500",
+    secondary: "bg-secondary text-white shadow-sm hover:bg-secondary-600 focus:ring-secondary-500",
+    outline: "bg-transparent text-gray-900 border border-gray-300 hover:bg-white hover:border-gray-400 focus:ring-gray-500"
   };
   
   const sizeClasses = {
@@ -29,7 +29,7 @@ export const Button: React.FC<ButtonProps> = ({
   
   const disabledClasses = disabled ? "opacity-50 cursor-not-allowed" : "";
   
-  const buttonClasses = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabledClasses} ${className}`;
+  const buttonClasses = `${baseClasses} ${variantStyles[variant]} ${sizeClasses[size]} ${disabledClasses} ${className}`;
   
   return (
     <button 

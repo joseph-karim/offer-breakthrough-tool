@@ -3,7 +3,7 @@ import React from 'react';
 interface CardProps {
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'outline' | 'muted' | 'gradient';
+  variant?: 'default' | 'outline' | 'muted' | 'gradient' | 'primary' | 'secondary';
   padding?: 'none' | 'sm' | 'md' | 'lg';
   hover?: boolean;
 }
@@ -20,7 +20,9 @@ const Card: React.FC<CardProps> = ({
   const variantStyles = {
     default: 'bg-white border border-gray-200 shadow-sm',
     outline: 'bg-white border border-gray-200',
-    muted: 'bg-gray-50 border border-gray-100',
+    primary: 'bg-primary-50 border border-primary-100',
+    secondary: 'bg-secondary-50 border border-secondary-100',
+    muted: 'border border-gray-100',
     gradient: 'bg-gradient-to-br from-white to-gray-50 border border-gray-100 shadow-sm',
   };
   
