@@ -1,4 +1,7 @@
 import { useWorkshopStore } from '../../../store/workshopStore';
+import { StepHeader } from '../../shared/StepHeader';
+import { Card } from '../../shared/Card';
+import { TextArea } from '../../shared/TextArea';
 import type { AntiGoals } from '../../../types/workshop';
 
 export const Step03_AntiGoals = () => {
@@ -21,84 +24,76 @@ export const Step03_AntiGoals = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-bold">Set Your Anti-Goals</h2>
+    <div className="space-y-8">
+      <StepHeader
+        title="Set Your Anti-Goals"
+        description="Define what you don't want to help avoid creating an offer that conflicts with your values and desired lifestyle."
+      />
 
       <div className="prose prose-slate max-w-none">
         <p className="text-lg">
-          Before defining what you want, it's important to be clear about what you don't want. Anti-goals
-          help you avoid creating an offer that conflicts with your values and desired lifestyle.
+          Anti-goals are just as important as your positive goals. They help you avoid paths that might
+          lead to success but would make you miserable. Take time to think about what you definitely
+          don't want in your business.
         </p>
 
-        <div className="space-y-6 mt-8">
-          <div>
-            <label className="block text-lg font-semibold mb-2">Market Anti-Goals</label>
-            <p className="text-muted-foreground mb-3">
-              What types of markets or customers do you want to avoid working with?
-            </p>
-            <textarea
+        <Card className="mt-8">
+          <div className="space-y-8">
+            <TextArea
+              label="Market Anti-Goals"
+              description="What types of markets or customers do you want to avoid working with?"
               value={antiGoals.market}
               onChange={handleChange('market')}
-              className="w-full min-h-[100px] p-3 rounded-md border bg-background"
-              placeholder="Example: Markets that require 24/7 availability..."
+              placeholder="Example: Markets that require 24/7 availability, customers who consistently demand discounts..."
             />
-          </div>
 
-          <div>
-            <label className="block text-lg font-semibold mb-2">Offer Anti-Goals</label>
-            <p className="text-muted-foreground mb-3">
-              What types of products or services do you want to avoid offering?
-            </p>
-            <textarea
+            <TextArea
+              label="Offer Anti-Goals"
+              description="What types of products or services do you want to avoid offering?"
               value={antiGoals.offer}
               onChange={handleChange('offer')}
-              className="w-full min-h-[100px] p-3 rounded-md border bg-background"
-              placeholder="Example: Products that require constant updates..."
+              placeholder="Example: Products that require constant updates, services with high liability risks..."
             />
-          </div>
 
-          <div>
-            <label className="block text-lg font-semibold mb-2">Delivery Anti-Goals</label>
-            <p className="text-muted-foreground mb-3">
-              What delivery or fulfillment methods do you want to avoid?
-            </p>
-            <textarea
+            <TextArea
+              label="Delivery Anti-Goals"
+              description="What delivery or fulfillment methods do you want to avoid?"
               value={antiGoals.delivery}
               onChange={handleChange('delivery')}
-              className="w-full min-h-[100px] p-3 rounded-md border bg-background"
-              placeholder="Example: Services that require in-person delivery..."
+              placeholder="Example: Services that require in-person delivery, products that need complex shipping..."
             />
-          </div>
 
-          <div>
-            <label className="block text-lg font-semibold mb-2">Lifestyle Anti-Goals</label>
-            <p className="text-muted-foreground mb-3">
-              What impact on your lifestyle do you want to avoid?
-            </p>
-            <textarea
+            <TextArea
+              label="Lifestyle Anti-Goals"
+              description="What impact on your lifestyle do you want to avoid?"
               value={antiGoals.lifestyle}
               onChange={handleChange('lifestyle')}
-              className="w-full min-h-[100px] p-3 rounded-md border bg-background"
-              placeholder="Example: Work schedules that interfere with family time..."
+              placeholder="Example: Work schedules that interfere with family time, constant travel requirements..."
             />
-          </div>
 
-          <div>
-            <label className="block text-lg font-semibold mb-2">Values Anti-Goals</label>
-            <p className="text-muted-foreground mb-3">
-              What would compromise your values or ethics?
-            </p>
-            <textarea
+            <TextArea
+              label="Values Anti-Goals"
+              description="What would compromise your values or ethics?"
               value={antiGoals.values}
               onChange={handleChange('values')}
-              className="w-full min-h-[100px] p-3 rounded-md border bg-background"
-              placeholder="Example: Business practices that harm the environment..."
+              placeholder="Example: Business practices that harm the environment, misleading marketing tactics..."
             />
           </div>
-        </div>
+        </Card>
+
+        <Card className="bg-secondary/50 mt-8">
+          <h4 className="text-lg font-semibold mb-3">Tips for Setting Anti-Goals</h4>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Be specific about what you want to avoid</li>
+            <li>Consider past experiences that you don't want to repeat</li>
+            <li>Think about what drains your energy or causes stress</li>
+            <li>Include both practical and ethical considerations</li>
+            <li>Focus on what's truly important to you, not others' expectations</li>
+          </ul>
+        </Card>
       </div>
 
-      <div className="border-t pt-6 mt-8">
+      <div className="border-t pt-6">
         <p className="text-muted-foreground">
           Your anti-goals will serve as guardrails throughout the workshop, helping you design an offer
           that aligns with your values and desired lifestyle.

@@ -1,3 +1,5 @@
+import type { StepChats } from './chat';
+
 export interface AntiGoals {
   market: string;
   offer: string;
@@ -9,21 +11,20 @@ export interface AntiGoals {
 export interface TriggerEvent {
   id: string;
   description: string;
-  source: 'user' | 'bot';
+  source: 'user' | 'assistant';
 }
 
 export interface Job {
   id: string;
-  statement: string;
-  isMain: boolean;
-  relatedJobs?: string[];
+  description: string;
+  source: 'user' | 'assistant';
 }
 
 export interface Market {
   id: string;
-  segment: string;
-  rating?: number;
-  selected: boolean;
+  description: string;
+  source: 'user' | 'assistant';
+  selected?: boolean;
 }
 
 export interface Problem {
@@ -35,6 +36,7 @@ export interface Problem {
 
 export interface Offer {
   id: string;
+  name: string;
   description: string;
   format: string;
   selected: boolean;
@@ -47,6 +49,7 @@ export interface WorkshopData {
   markets: Market[];
   problems: Problem[];
   selectedOffer?: Offer;
+  stepChats: StepChats;
 }
 
 export interface WorkshopSession {
