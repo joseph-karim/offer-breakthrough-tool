@@ -1,10 +1,11 @@
 import { WorkshopWizard } from './components/workshop/WorkshopWizard';
+import Layout from './components/ui/Layout';
 
 function App() {
   return (
-    <div className="min-h-screen bg-background font-sans antialiased">
+    <Layout>
       <WorkshopWizard />
-    </div>
+    </Layout>
   );
 }
 

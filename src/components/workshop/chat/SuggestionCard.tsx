@@ -1,5 +1,7 @@
-import { Card } from '../../shared/Card';
+import Card from '../../../components/ui/Card';
+import Button from '../../../components/ui/Button';
 import { ChatSuggestion } from '../../../types/chat';
+import { Lightbulb } from 'lucide-react';
 
 interface SuggestionCardProps {
   suggestion: ChatSuggestion;
@@ -9,22 +11,28 @@ interface SuggestionCardProps {
 
 export const SuggestionCard = ({ suggestion, onAccept, isLoading }: SuggestionCardProps) => {
   return (
-    <Card className="bg-secondary/50">
+    <Card className="suggestion-card bg-primary-50 border-primary-200">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="font-semibold">AI Suggestion</h4>
-          <button
+          <h4 className="heading-section flex items-center text-primary-700">
+            <Lightbulb className="h-5 w-5 mr-2" />
+            AI Suggestion
+          </h4>
+          <Button
             onClick={onAccept}
             disabled={isLoading}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+            variant="primary"
+            size="sm"
           >
             {isLoading ? 'Processing...' : 'Accept & Populate'}
-          </button>
+          </Button>
         </div>
         
         <div className="prose prose-sm max-w-none">
-          <pre className="whitespace-pre-wrap bg-background/50 p-3 rounded-md">
-            {JSON.stringify(suggestion.content, null, 2)}
+          <pre className="whitespace-pre-wrap bg-white p-3 rounded-md border border-primary-100 text-gray-800">
+            {typeof suggestion.content === 'string' 
+              ? suggestion.content 
+              : JSON.stringify(suggestion.content, null, 2)}
           </pre>
         </div>
       </div>

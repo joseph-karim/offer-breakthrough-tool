@@ -1,4 +1,6 @@
 import { AIMessage } from '../../../types/chat';
+import Button from '../../../components/ui/Button';
+import { User, Bot } from 'lucide-react';
 
 interface ChatMessageProps {
   message: AIMessage;
@@ -7,9 +9,17 @@ interface ChatMessageProps {
 
 export const ChatMessage = ({ message, onSuggestionAccept }: ChatMessageProps) => {
   const isUser = message.role === 'user';
+  
+  // Use our design system classes
+  const messageContainerClasses = isUser 
+    ? 'flex flex-row-reverse'
+    : 'flex';
+    
   const messageClasses = isUser
-    ? 'bg-blue-500 text-white ml-auto'
-    : 'bg-gray-200 text-gray-800';
+    ? 'chat-message-user max-w-[80%] rounded-lg p-3 rounded-tr-none'
+    : 'chat-message-ai max-w-[80%] rounded-lg p-3 rounded-tl-none';
+    
+  const avatarClasses = 'flex items-center justify-center h-8 w-8 rounded-full text-white flex-shrink-0';
 
   const renderSuggestions = () => {
     if (!message.suggestions || message.suggestions.length === 0) return null;
@@ -17,15 +27,21 @@ export const ChatMessage = ({ message, onSuggestionAccept }: ChatMessageProps) =
     return (
       <div className="mt-2 space-y-2">
         {message.suggestions.map((suggestion, index) => (
-          <div key={index} className="p-2 bg-white border rounded-md shadow-sm">
-            <div className="text-sm">{JSON.stringify(suggestion.content)}</div>
+          <div key={index} className="p-3 bg-white border border-gray-200 rounded-md shadow-sm">
+            <div className="text-sm whitespace-pre-wrap text-gray-700">
+              {typeof suggestion.content === 'string' 
+                ? suggestion.content 
+                : JSON.stringify(suggestion.content, null, 2)}
+            </div>
             {onSuggestionAccept && (
-              <button
+              <Button
                 onClick={() => onSuggestionAccept(suggestion)}
-                className="mt-1 px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600"
+                variant="primary"
+                size="sm"
+                className="mt-2"
               >
                 Accept
-              </button>
+              </Button>
             )}
           </div>
         ))}
@@ -34,9 +50,21 @@ export const ChatMessage = ({ message, onSuggestionAccept }: ChatMessageProps) =
   };
 
   return (
-    <div className={`max-w-[80%] p-3 rounded-lg ${messageClasses}`}>
-      <div className="whitespace-pre-wrap">{message.content}</div>
-      {renderSuggestions()}
+    <div className={`${messageContainerClasses} mb-3`}>
+      {!isUser && (
+        <div className={`${avatarClasses} bg-secondary mr-2`}>
+          <Bot size={16} />
+        </div>
+      )}
+      <div className={messageClasses}>
+        <div className="whitespace-pre-wrap">{message.content}</div>
+        {renderSuggestions()}
+      </div>
+      {isUser && (
+        <div className={`${avatarClasses} bg-primary ml-2`}>
+          <User size={16} />
+        </div>
+      )}
     </div>
   );
 }; 
