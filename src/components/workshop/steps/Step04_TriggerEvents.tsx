@@ -1,46 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import type { TriggerEvent } from '../../../types/workshop'; // Import the correct type
+import type { WorkshopStore } from '../../../store/workshopStore';
+import type { TriggerEvent } from '../../../types/workshop';
 import { Info } from 'lucide-react';
 
+// Separate selectors to prevent unnecessary re-renders
+const selectTriggerEvents = (state: WorkshopStore) => 
+  state.workshopData.triggerEvents?.map(event => event.description).join('\n') || '';
+const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+
 export const Step04_TriggerEvents: React.FC = () => {
-  const { initialTriggerEvents, updateWorkshopData } = useWorkshopStore(state => ({
-    initialTriggerEvents: state.workshopData.triggerEvents || [], 
-    updateWorkshopData: state.updateWorkshopData,
-  }));
+  const storeValue = useWorkshopStore(selectTriggerEvents);
+  const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 
-  const [triggerEventsText, setTriggerEventsText] = useState<string>(
-    initialTriggerEvents.map(event => event.description).join('\n')
-  );
+  // Use local state for the textarea
+  const [localValue, setLocalValue] = useState(storeValue);
 
+  // Update local state when store value changes
   useEffect(() => {
-    setTriggerEventsText(initialTriggerEvents.map(event => event.description).join('\n'));
-  }, [initialTriggerEvents]);
+    setLocalValue(storeValue);
+  }, [storeValue]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTriggerEventsText(event.target.value);
-  };
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setLocalValue(event.target.value);
+  }, []);
 
-  const handleSave = () => {
-    // Map strings back to TriggerEvent objects, generating ID and source
-    const triggerEvents: TriggerEvent[] = triggerEventsText
-      .split('\n')
-      .map(desc => desc.trim())
-      .filter(desc => desc !== '')
-      .map((description, index) => ({
-        id: `user-${Date.now()}-${index}`, // Simple generated ID
-        description,
-        source: 'user' // Corrected source type
-      })); 
+  const handleSave = useCallback(() => {
+    if (localValue.trim() !== '') {
+      // Map strings back to TriggerEvent objects
+      const triggerEvents: TriggerEvent[] = localValue
+        .split('\n')
+        .map(desc => desc.trim())
+        .filter(desc => desc !== '')
+        .map((description, index) => ({
+          id: `user-${Date.now()}-${index}`,
+          description,
+          source: 'user'
+        }));
       
-    updateWorkshopData({ triggerEvents });
-    console.log('Trigger Events saved:', triggerEvents);
-  };
+      updateWorkshopData({ triggerEvents });
+    }
+  }, [localValue, updateWorkshopData]);
 
-  const canSave = triggerEventsText.trim() !== '';
+  const canSave = localValue.trim() !== '' && localValue !== storeValue;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -54,10 +59,10 @@ export const Step04_TriggerEvents: React.FC = () => {
         <div style={{ display: 'grid', gap: '20px' }}>
           <div style={{
             padding: '12px 16px',
-            backgroundColor: '#eef2ff', // indigo-50
-            borderLeft: '4px solid #4f46e5', // indigo-600
+            backgroundColor: '#eef2ff',
+            borderLeft: '4px solid #4f46e5',
             borderRadius: '0 8px 8px 0',
-            color: '#3730a3', // indigo-800
+            color: '#3730a3',
             display: 'flex',
             alignItems: 'center',
             fontSize: '14px',
@@ -76,14 +81,14 @@ export const Step04_TriggerEvents: React.FC = () => {
           <textarea
             id="triggerEvents"
             rows={8}
-            value={triggerEventsText}
+            value={localValue}
             onChange={handleInputChange}
             placeholder={
-              "e.g., Just got a promotion but feel overwhelmed\n" +
-              "Received negative customer feedback\n" +
-              "Competitor launched a new feature\n" +
-              "Yearly planning session is approaching\n" +
-              "Failed an important audit/compliance check"
+              "e.g., Just got promoted to manager\n" +
+              "Lost a major client due to poor reporting\n" +
+              "Team doubled in size in 3 months\n" +
+              "Received negative feedback about leadership style\n" +
+              "Missed quarterly targets for the first time"
             }
             style={{
               width: '100%',
@@ -102,7 +107,7 @@ export const Step04_TriggerEvents: React.FC = () => {
         <Button 
           variant="primary"
           onClick={handleSave}
-          disabled={!canSave} // Disable if empty
+          disabled={!canSave}
         >
           Save Trigger Events
         </Button>

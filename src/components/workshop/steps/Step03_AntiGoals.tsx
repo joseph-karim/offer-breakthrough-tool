@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
+import type { WorkshopStore } from '../../../store/workshopStore';
 import type { AntiGoals } from '../../../types/workshop';
 import { Info } from 'lucide-react';
 
@@ -33,27 +34,36 @@ const getTitle = (key: keyof AntiGoals): string => {
   }
 };
 
+// Separate selectors to prevent unnecessary re-renders
+const selectAntiGoals = (state: WorkshopStore) => state.workshopData.antiGoals || {
+  market: '', offer: '', delivery: '', lifestyle: '', values: ''
+};
+const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+
 export const Step03_AntiGoals: React.FC = () => {
-  const { initialAntiGoals, updateWorkshopData } = useWorkshopStore(state => ({
-    initialAntiGoals: state.workshopData.antiGoals,
-    updateWorkshopData: state.updateWorkshopData,
-  }));
+  const storeValue = useWorkshopStore(selectAntiGoals);
+  const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 
-  const [antiGoals, setAntiGoals] = useState<AntiGoals>(initialAntiGoals || {
-    market: '', offer: '', delivery: '', lifestyle: '', values: ''
-  });
+  // Use local state for the form
+  const [localValue, setLocalValue] = useState<AntiGoals>(storeValue);
 
-  const handleInputChange = (key: keyof AntiGoals, value: string) => {
-    setAntiGoals(prev => ({ ...prev, [key]: value }));
-  };
+  // Update local state when store value changes
+  useEffect(() => {
+    setLocalValue(storeValue);
+  }, [storeValue]);
 
-  const handleSave = () => {
-    updateWorkshopData({ antiGoals });
-    console.log('Anti-Goals saved:', antiGoals);
-  };
+  const handleInputChange = useCallback((key: keyof AntiGoals, value: string) => {
+    setLocalValue(prev => ({ ...prev, [key]: value }));
+  }, []);
 
-  // Check if any anti-goal field has been filled
-  const canSave = antiGoalKeys.some(key => antiGoals[key]?.trim());
+  const handleSave = useCallback(() => {
+    updateWorkshopData({ antiGoals: localValue });
+  }, [localValue, updateWorkshopData]);
+
+  // Check if any changes have been made
+  const hasChanges = JSON.stringify(localValue) !== JSON.stringify(storeValue);
+  const hasContent = Object.values(localValue).some(value => value.trim() !== '');
+  const canSave = hasChanges && hasContent;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -67,10 +77,10 @@ export const Step03_AntiGoals: React.FC = () => {
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
             padding: '12px 16px',
-            backgroundColor: '#eef2ff', // indigo-50
-            borderLeft: '4px solid #4f46e5', // indigo-600
+            backgroundColor: '#eef2ff',
+            borderLeft: '4px solid #4f46e5',
             borderRadius: '0 8px 8px 0',
-            color: '#3730a3', // indigo-800
+            color: '#3730a3',
             display: 'flex',
             alignItems: 'center',
             fontSize: '14px',
@@ -91,7 +101,7 @@ export const Step03_AntiGoals: React.FC = () => {
               <textarea
                 id={`antiGoal-${key}`}
                 rows={3}
-                value={antiGoals[key]}
+                value={localValue[key]}
                 onChange={(e) => handleInputChange(key, e.target.value)}
                 placeholder={getPlaceholder(key)}
                 style={{
@@ -108,12 +118,12 @@ export const Step03_AntiGoals: React.FC = () => {
           ))}
         </div>
       </Card>
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button 
           variant="primary"
           onClick={handleSave}
-          disabled={!canSave} // Disable if no anti-goals are filled
+          disabled={!canSave}
         >
           Save Anti-Goals
         </Button>

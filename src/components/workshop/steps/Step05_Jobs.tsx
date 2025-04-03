@@ -1,48 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import type { Job } from '../../../types/workshop'; // Import the Job type
+import type { WorkshopStore } from '../../../store/workshopStore';
+import type { Job } from '../../../types/workshop';
 import { Target } from 'lucide-react';
 
+// Separate selectors to prevent unnecessary re-renders
+const selectJobs = (state: WorkshopStore) => 
+  state.workshopData.jobs?.map(job => job.description).join('\n') || '';
+const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+
 export const Step05_Jobs: React.FC = () => {
-  const { initialJobs, updateWorkshopData } = useWorkshopStore(state => ({
-    initialJobs: state.workshopData.jobs || [], // Ensure it's always an array
-    updateWorkshopData: state.updateWorkshopData,
-  }));
+  const storeValue = useWorkshopStore(selectJobs);
+  const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 
-  // Join descriptions for the textarea
-  const [jobsText, setJobsText] = useState<string>(
-    initialJobs.map(job => job.description).join('\n')
-  );
+  // Use local state for the textarea
+  const [localValue, setLocalValue] = useState(storeValue);
 
-  // Update textarea if store data changes
+  // Update local state when store value changes
   useEffect(() => {
-    setJobsText(initialJobs.map(job => job.description).join('\n'));
-  }, [initialJobs]);
+    setLocalValue(storeValue);
+  }, [storeValue]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setJobsText(event.target.value);
-  };
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setLocalValue(event.target.value);
+  }, []);
 
-  const handleSave = () => {
-    // Map strings back to Job objects
-    const jobs: Job[] = jobsText
-      .split('\n')
-      .map(desc => desc.trim())
-      .filter(desc => desc !== '')
-      .map((description, index) => ({
-        id: `user-${Date.now()}-${index}`, // Simple generated ID
-        description,
-        source: 'user' // Set source
-      })); 
+  const handleSave = useCallback(() => {
+    if (localValue.trim() !== '') {
+      // Map strings back to Job objects
+      const jobs: Job[] = localValue
+        .split('\n')
+        .map(desc => desc.trim())
+        .filter(desc => desc !== '')
+        .map((description, index) => ({
+          id: `user-${Date.now()}-${index}`,
+          description,
+          source: 'user'
+        }));
       
-    updateWorkshopData({ jobs });
-    console.log('Jobs To Be Done saved:', jobs);
-  };
+      updateWorkshopData({ jobs });
+    }
+  }, [localValue, updateWorkshopData]);
 
-  const canSave = jobsText.trim() !== '';
+  const canSave = localValue.trim() !== '' && localValue !== storeValue;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -56,10 +59,10 @@ export const Step05_Jobs: React.FC = () => {
         <div style={{ display: 'grid', gap: '20px' }}>
           <div style={{
             padding: '12px 16px',
-            backgroundColor: '#f0f9ff', // sky-50
-            borderLeft: '4px solid #0ea5e9', // sky-500
+            backgroundColor: '#f0f9ff',
+            borderLeft: '4px solid #0ea5e9',
             borderRadius: '0 8px 8px 0',
-            color: '#0369a1', // sky-800
+            color: '#0369a1',
             display: 'flex',
             alignItems: 'center',
             fontSize: '14px',
@@ -78,7 +81,7 @@ export const Step05_Jobs: React.FC = () => {
           <textarea
             id="jobs"
             rows={8}
-            value={jobsText}
+            value={localValue}
             onChange={handleInputChange}
             placeholder={
               "e.g., Reduce the time it takes to generate monthly reports\n" +
@@ -104,7 +107,7 @@ export const Step05_Jobs: React.FC = () => {
         <Button 
           variant="primary"
           onClick={handleSave}
-          disabled={!canSave} // Disable if empty
+          disabled={!canSave}
         >
           Save Jobs To Be Done
         </Button>
