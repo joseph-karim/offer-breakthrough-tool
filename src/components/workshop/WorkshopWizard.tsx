@@ -22,7 +22,8 @@ export const WorkshopWizard = () => {
     initializeSession, 
     setCurrentStep, 
     canProceedToNextStep,
-    setValidationErrors 
+    setValidationErrors,
+    validationErrors 
   } = useWorkshopStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -49,14 +50,17 @@ export const WorkshopWizard = () => {
   }, []); // Empty dependency array since we only want to run once
 
   const goToPreviousStep = useCallback(() => {
+    setValidationErrors(false); // Reset validation errors when going back
     setCurrentStep(Math.max(1, currentStep - 1));
-  }, [currentStep, setCurrentStep]);
+  }, [currentStep, setCurrentStep, setValidationErrors]);
 
   const goToNextStep = useCallback(() => {
-    if (!canProceedToNextStep()) {
+    const canProceed = canProceedToNextStep();
+    if (!canProceed) {
       setValidationErrors(true);
       return;
     }
+    setValidationErrors(false); // Reset validation errors when successfully moving forward
     setCurrentStep(Math.min(11, currentStep + 1));
   }, [currentStep, setCurrentStep, canProceedToNextStep, setValidationErrors]);
 

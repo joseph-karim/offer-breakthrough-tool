@@ -12,7 +12,7 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 const selectMarkets = (state: WorkshopStore) => state.workshopData.markets || [];
 const selectMarketEvaluations = (state: WorkshopStore) => state.workshopData.marketEvaluations || {};
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
+const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
 
 const CRITERIA = [
   { id: 'marketSize', label: 'Market Size', description: 'How large is this market segment?' },
@@ -26,24 +26,37 @@ export const Step08_MarketEvaluation: React.FC = () => {
   const storeMarkets = useWorkshopStore(selectMarkets);
   const storeEvaluations = useWorkshopStore(selectMarketEvaluations);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  const showErrors = useWorkshopStore(selectValidationErrors);
   
   // Local state
   const [localMarkets, setLocalMarkets] = useState(storeMarkets);
   const [localScores, setLocalScores] = useState<{ [marketId: string]: MarketEvaluation }>(storeEvaluations);
   const [isSaving, setIsSaving] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
-  const [showErrors, setShowErrors] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Update local state when store values change
   useEffect(() => {
     setLocalMarkets(storeMarkets);
-  }, [storeMarkets]);
-
-  useEffect(() => {
     setLocalScores(storeEvaluations);
-  }, [storeEvaluations]);
+  }, [storeMarkets, storeEvaluations]);
+
+  // Initialize market evaluations if they don't exist
+  useEffect(() => {
+    // If we have markets but no evaluations, create empty evaluations
+    if (storeMarkets.length > 0 && Object.keys(storeEvaluations).length === 0) {
+      const initialEvaluations: { [marketId: string]: MarketEvaluation } = {};
+      
+      // Initialize empty evaluation objects for each market
+      storeMarkets.forEach(market => {
+        initialEvaluations[market.id] = {};
+      });
+      
+      // Only update if we actually have markets
+      if (Object.keys(initialEvaluations).length > 0) {
+        updateWorkshopData({ marketEvaluations: initialEvaluations });
+      }
+    }
+  }, [storeMarkets, storeEvaluations, updateWorkshopData]);
 
   // Cleanup timers on unmount
   useEffect(() => {
@@ -67,7 +80,6 @@ export const Step08_MarketEvaluation: React.FC = () => {
   }, [updateWorkshopData]);
 
   const handleScoreChange = useCallback((marketId: string, criteriaId: string, value: number) => {
-    setIsTransitioning(true);
     const updatedScores = {
       ...localScores,
       [marketId]: {
@@ -77,27 +89,22 @@ export const Step08_MarketEvaluation: React.FC = () => {
     };
     setLocalScores(updatedScores);
     saveToStore({ marketEvaluations: updatedScores });
-    
-    // Batch the updates to prevent unnecessary re-renders
-    Promise.resolve().then(() => {
-      setShowErrors(false);
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 100);
-    });
   }, [localScores, saveToStore]);
 
   const handleSelectMarket = useCallback((market: Market) => {
-    setIsTransitioning(true);
-    setIsSaving(true);
-    
     const updatedMarkets = localMarkets.map(m => ({
       ...m,
       selected: m.id === market.id
     }));
+    
+    // Batch updates together to prevent multiple renders
+    // Update local state immediately, but only trigger store update once
     setLocalMarkets(updatedMarkets);
-    saveToStore({ markets: updatedMarkets });
-    setShowErrors(false);
+    
+    // Debounced store update
+    saveToStore({ 
+      markets: updatedMarkets 
+    });
   }, [localMarkets, saveToStore]);
 
   const getMarketScore = useCallback((marketId: string, criteriaId: string): number => {
@@ -105,27 +112,16 @@ export const Step08_MarketEvaluation: React.FC = () => {
   }, [localScores]);
 
   const isMarketIncomplete = useCallback((marketId: string): boolean => {
-    return showErrors && CRITERIA.some(criteria => getMarketScore(marketId, criteria.id) === 0);
+    // Only compute this when errors should be shown
+    if (!showErrors) return false;
+    
+    // Check if any criteria is zero
+    return CRITERIA.some(criteria => getMarketScore(marketId, criteria.id) === 0);
   }, [showErrors, getMarketScore]);
 
   const getTotalScore = useCallback((marketId: string): number => {
     return CRITERIA.reduce((sum, criteria) => sum + getMarketScore(marketId, criteria.id), 0);
   }, [getMarketScore]);
-
-  // Show errors when trying to proceed without completing
-  useEffect(() => {
-    const checkCompletion = () => {
-      const isComplete = canProceedToNextStep();
-      if (!isComplete && !isTransitioning) {
-        setShowErrors(true);
-      }
-    };
-
-    // Only check completion when showErrors is true
-    if (showErrors) {
-      checkCompletion();
-    }
-  }, [canProceedToNextStep, showErrors, isTransitioning]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -151,6 +147,22 @@ export const Step08_MarketEvaluation: React.FC = () => {
             <Users style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#0ea5e9' }} />
             Rate each market segment on the criteria below. Choose the market that best aligns with your goals.
           </div>
+
+          {showErrors && !localMarkets.some(m => m.selected) && (
+            <div style={{ 
+              color: '#ef4444',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '8px 12px',
+              backgroundColor: '#fef2f2',
+              borderRadius: '6px'
+            }}>
+              <AlertCircle size={14} />
+              Please select a target market to proceed
+            </div>
+          )}
 
           {localMarkets.length === 0 ? (
             <div style={{

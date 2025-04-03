@@ -123,16 +123,8 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   setCurrentStep: (step: number) => {
-    const { workshopData, currentStep } = get();
-    
-    // Only allow moving forward if current step is complete
-    if (step > currentStep && !isStepComplete(currentStep, workshopData)) {
-      set({ validationErrors: true });
-      return;
-    }
-
     if (step >= 1 && step <= 11) {
-      set({ currentStep: step, validationErrors: false });
+      set({ currentStep: step });
     }
   },
 
@@ -151,7 +143,6 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
       return {
         workshopData: updatedData,
-        validationErrors: false, // Reset validation errors when data is updated
       };
     });
   },

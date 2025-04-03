@@ -11,19 +11,18 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 // Separate selectors to prevent unnecessary re-renders
 const selectProblems = (state: WorkshopStore) => state.workshopData.problems || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
+const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
 
 export const Step07_Problems: React.FC = () => {
   const storeProblems = useWorkshopStore(selectProblems);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  const showErrors = useWorkshopStore(selectValidationErrors);
   
   // Local state
   const [localProblems, setLocalProblems] = useState(storeProblems);
   const [newProblem, setNewProblem] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
-  const [showErrors, setShowErrors] = useState(false);
 
   // Update local state when store values change
   useEffect(() => {
@@ -38,21 +37,6 @@ export const Step07_Problems: React.FC = () => {
       }
     };
   }, []);
-
-  // Show errors when trying to proceed without completing
-  useEffect(() => {
-    const checkCompletion = () => {
-      const isComplete = canProceedToNextStep();
-      if (!isComplete) {
-        setShowErrors(true);
-      }
-    };
-
-    // Only check completion when showErrors is true
-    if (showErrors) {
-      checkCompletion();
-    }
-  }, [canProceedToNextStep, showErrors]);
 
   const saveToStore = useCallback((problems: Problem[]) => {
     setIsSaving(true);
@@ -80,7 +64,6 @@ export const Step07_Problems: React.FC = () => {
     setLocalProblems(updatedProblems);
     setNewProblem('');
     saveToStore(updatedProblems);
-    setShowErrors(false);
   }, [newProblem, localProblems, saveToStore]);
 
   const handleDeleteProblem = useCallback((id: string) => {
@@ -125,7 +108,6 @@ export const Step07_Problems: React.FC = () => {
     );
     setLocalProblems(updatedProblems);
     saveToStore(updatedProblems);
-    setShowErrors(false);
   }, [localProblems, saveToStore]);
 
   return (
@@ -152,6 +134,22 @@ export const Step07_Problems: React.FC = () => {
             <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#e11d48' }} />
             Focus on the most painful or urgent problems. What keeps your target market up at night?
           </div>
+
+          {showErrors && localProblems.length === 0 && (
+            <div style={{ 
+              color: '#ef4444',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '8px 12px',
+              backgroundColor: '#fef2f2',
+              borderRadius: '6px'
+            }}>
+              <AlertCircle size={14} />
+              Please add at least one problem to proceed
+            </div>
+          )}
 
           {/* Add new problem */}
           <div>
