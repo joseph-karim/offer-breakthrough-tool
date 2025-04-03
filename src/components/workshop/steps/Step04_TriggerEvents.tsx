@@ -5,20 +5,31 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TriggerEvent } from '../../../types/workshop';
-import { Info, Plus, X } from 'lucide-react';
+import { Info, Plus, X, MessageSquare } from 'lucide-react';
+import { ChatInterface } from '../chat/ChatInterface';
+import { STEP_QUESTIONS } from '../../../services/aiService';
+import { AIService } from '../../../services/aiService';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.triggerEvents || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
 
 export const Step04_TriggerEvents: React.FC = () => {
   const storeEvents = useWorkshopStore(selectTriggerEvents);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
 
   // Use local state for the events
   const [events, setEvents] = useState<TriggerEvent[]>(storeEvents);
   const [newEvent, setNewEvent] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [showChat, setShowChat] = useState(false);
+  
+  // Create AI service instance
+  const aiService = new AIService({
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
+  });
 
   // Update local state when store value changes
   useEffect(() => {
@@ -51,6 +62,16 @@ export const Step04_TriggerEvents: React.FC = () => {
       handleAddEvent();
     }
   }, [handleAddEvent]);
+  
+  // Generate step context for AI
+  const stepContext = `
+    Workshop Step: Trigger Events
+    
+    Trigger events are specific moments when potential customers realize they need a solution.
+    
+    Current trigger events:
+    ${events.map(event => `- ${event.description}`).join('\n')}
+  `;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -59,6 +80,28 @@ export const Step04_TriggerEvents: React.FC = () => {
         title="Identify Trigger Events"
         description="What specific events or situations cause someone to actively seek a solution like yours?"
       />
+      
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <Button
+          variant="ghost"
+          onClick={() => setShowChat(!showChat)}
+          rightIcon={<MessageSquare size={16} />}
+        >
+          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
+        </Button>
+      </div>
+      
+      {showChat && (
+        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+          <ChatInterface 
+            step={4}
+            stepContext={stepContext}
+            questions={STEP_QUESTIONS[4] || []}
+            aiService={aiService}
+            onSuggestionAccept={() => acceptSuggestion(4)}
+          />
+        </Card>
+      )}
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>

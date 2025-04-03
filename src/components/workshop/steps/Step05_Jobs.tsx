@@ -5,20 +5,31 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Job } from '../../../types/workshop';
-import { Target, Plus, X } from 'lucide-react';
+import { Target, Plus, X, MessageSquare } from 'lucide-react';
+import { ChatInterface } from '../chat/ChatInterface';
+import { STEP_QUESTIONS } from '../../../services/aiService';
+import { AIService } from '../../../services/aiService';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectJobs = (state: WorkshopStore) => state.workshopData.jobs || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
 
 export const Step05_Jobs: React.FC = () => {
   const storeJobs = useWorkshopStore(selectJobs);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
 
   // Use local state for the jobs
   const [jobs, setJobs] = useState<Job[]>(storeJobs);
   const [newJob, setNewJob] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [showChat, setShowChat] = useState(false);
+  
+  // Create AI service instance
+  const aiService = new AIService({
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
+  });
 
   // Update local state when store value changes
   useEffect(() => {
@@ -51,6 +62,16 @@ export const Step05_Jobs: React.FC = () => {
       handleAddJob();
     }
   }, [handleAddJob]);
+  
+  // Generate step context for AI
+  const stepContext = `
+    Workshop Step: Jobs To Be Done (JTBD)
+    
+    Jobs to be done are the tasks, goals, or objectives that customers are trying to achieve.
+    
+    Current jobs:
+    ${jobs.map(job => `- ${job.description}`).join('\n')}
+  `;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -59,6 +80,28 @@ export const Step05_Jobs: React.FC = () => {
         title="Uncover Jobs To Be Done (JTBD)"
         description="What progress is your customer trying to make? What outcome are they hiring a product/service for?"
       />
+      
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <Button
+          variant="ghost"
+          onClick={() => setShowChat(!showChat)}
+          rightIcon={<MessageSquare size={16} />}
+        >
+          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
+        </Button>
+      </div>
+      
+      {showChat && (
+        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+          <ChatInterface 
+            step={5}
+            stepContext={stepContext}
+            questions={STEP_QUESTIONS[5] || []}
+            aiService={aiService}
+            onSuggestionAccept={() => acceptSuggestion(5)}
+          />
+        </Card>
+      )}
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
