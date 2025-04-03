@@ -1,4 +1,4 @@
-import type { StepChats } from './chat';
+import type { StepChats, AIMessage, ChatSuggestion } from './chat';
 
 export interface AntiGoals {
   market: string;
@@ -50,6 +50,8 @@ export interface WorkshopData {
   problems: Problem[];
   selectedOffer?: Offer;
   stepChats: StepChats;
+  marketDemandAnalysis?: string;
+  pricing?: { strategy: string; justification: string };
 }
 
 export interface WorkshopSession {

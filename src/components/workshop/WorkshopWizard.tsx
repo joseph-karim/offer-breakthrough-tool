@@ -11,7 +11,7 @@ import { Step05_Jobs } from './steps/Step05_Jobs';
 import { Step06_Markets } from './steps/Step06_Markets';
 import { Step10_Pricing } from './steps/Step10_Pricing';
 import { Step11_Summary } from './steps/Step11_Summary';
-import { Button } from '../../ui/Button'; // Import the Button component
+import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
 
 export const WorkshopWizard = () => {
   const { currentStep, initializeSession, setCurrentStep } = useWorkshopStore();

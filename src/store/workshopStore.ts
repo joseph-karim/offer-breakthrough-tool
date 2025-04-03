@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { WorkshopData } from '../types/workshop';
+import type { AIMessage } from '../types/chat';
 
 interface WorkshopStore {
   // Session state
@@ -20,7 +21,7 @@ interface WorkshopStore {
   updateWorkshopData: (data: Partial<WorkshopData>) => void;
   
   // Chat actions
-  addChatMessage: (step: number, message: any) => void;
+  addChatMessage: (step: number, message: AIMessage) => void;
   setCurrentSuggestion: (suggestion: any) => void;
   acceptSuggestion: (step: number) => void;
 }
@@ -37,6 +38,7 @@ const initialWorkshopData: WorkshopData = {
   jobs: [],
   markets: [],
   problems: [],
+  marketDemandAnalysis: '',
   stepChats: {},
 };
 
@@ -101,7 +103,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   // Chat actions
-  addChatMessage: (step: number, message: any) => {
+  addChatMessage: (step: number, message: AIMessage) => {
     set(state => {
       const stepChats = state.workshopData.stepChats || {};
       const stepChat = stepChats[step] || { messages: [] };
