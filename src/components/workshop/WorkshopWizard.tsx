@@ -11,6 +11,7 @@ import { Step05_Jobs } from './steps/Step05_Jobs';
 import { Step06_Markets } from './steps/Step06_Markets';
 import { Step10_Pricing } from './steps/Step10_Pricing';
 import { Step11_Summary } from './steps/Step11_Summary';
+import { Button } from '../../ui/Button'; // Import the Button component
 
 export const WorkshopWizard = () => {
   const { currentStep, initializeSession, setCurrentStep } = useWorkshopStore();
@@ -71,7 +72,7 @@ export const WorkshopWizard = () => {
   const containerStyle: CSSProperties = {
     minHeight: '100vh',
     backgroundImage: 'linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #fdf2f8 100%)',
-    paddingBottom: '128px',
+    paddingBottom: '64px', // Reduced padding bottom
     position: 'relative',
   };
 
@@ -249,121 +250,17 @@ export const WorkshopWizard = () => {
     boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
     border: '1px solid rgba(255, 255, 255, 0.7)',
     padding: '32px',
-    marginBottom: '80px',
+    marginBottom: '0', // Removed margin bottom
   };
 
-  // Navigation styles
-  const navContainerStyle: CSSProperties = {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 20,
-  };
-
-  const navContentStyle: CSSProperties = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '0 24px',
-  };
-
-  const mobileNavStyle: CSSProperties = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '16px',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    borderTopLeftRadius: '16px',
-    borderTopRightRadius: '16px',
-    boxShadow: '0 -4px 20px rgba(79, 70, 229, 0.2)',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
-    borderBottom: 'none',
-  };
-
-  const desktopNavStyle: CSSProperties = {
+  // Navigation styles INLINE with content
+  const inlineNavStyle: CSSProperties = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '24px 32px',
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    backdropFilter: 'blur(20px)',
-    WebkitBackdropFilter: 'blur(20px)',
-    borderRadius: '16px',
-    boxShadow: '0 -4px 50px rgba(79, 70, 229, 0.25)',
-    border: '1px solid rgba(255, 255, 255, 0.5)',
-    margin: '0 16px 24px 16px',
-  };
-
-  // Button styles
-  const prevButtonStyle: CSSProperties = currentStep === 1 
-    ? {
-        backgroundColor: '#f3f4f6',
-        color: '#9ca3af',
-        padding: '12px 20px',
-        borderRadius: '12px',
-        fontWeight: 500,
-        cursor: 'not-allowed',
-        display: 'flex',
-        alignItems: 'center',
-      }
-    : {
-        backgroundColor: 'white',
-        color: colors.primary,
-        padding: '12px 20px',
-        borderRadius: '12px',
-        fontWeight: 500,
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        border: `2px solid ${colors.primary}`,
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        transition: 'all 0.3s ease',
-      };
-
-  const nextButtonStyle: CSSProperties = currentStep === 11
-    ? {
-        backgroundColor: '#f3f4f6',
-        color: '#9ca3af',
-        padding: '12px 20px',
-        borderRadius: '12px',
-        fontWeight: 500,
-        cursor: 'not-allowed',
-        display: 'flex',
-        alignItems: 'center',
-      }
-    : {
-        backgroundImage: `linear-gradient(to right, ${colors.primary}, ${colors.secondary}, ${colors.accent})`,
-        color: 'white',
-        padding: '14px 24px',
-        borderRadius: '12px',
-        fontWeight: 500,
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.15)',
-        transition: 'all 0.3s ease',
-      };
-
-  const stepDotsContainerStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-  };
-
-  const getStepDotStyle = (index: number): CSSProperties => {
-    const isActive = index < currentStep % 5 || (currentStep % 5 === 0 && index === 4);
-    
-    return {
-      width: isActive ? '12px' : '10px',
-      height: isActive ? '12px' : '10px',
-      margin: '0 6px',
-      borderRadius: '50%',
-      background: isActive 
-        ? `linear-gradient(to right, ${colors.primary}, ${colors.accent})` 
-        : '#e5e7eb',
-      transition: 'all 0.3s ease',
-      transform: isActive ? 'scale(1.2)' : 'scale(1)',
-    };
+    padding: '32px 0',
+    marginTop: '24px', // Add space between content and nav
+    borderTop: '1px solid #e5e7eb', // Add a subtle separator
   };
 
   // Create animations
@@ -469,77 +366,36 @@ export const WorkshopWizard = () => {
         <main style={contentContainerStyle}>
           <div style={contentCardStyle}>
             {renderStep()}
+            
+            {/* Inline Navigation Buttons */}
+            <div style={inlineNavStyle}>
+              <Button
+                onClick={goToPreviousStep}
+                disabled={currentStep === 1}
+                variant={currentStep === 1 ? 'default' : 'outline'}
+                size="lg"
+                leftIcon={<ChevronLeft style={{ width: '20px', height: '20px'}} />}
+                style={currentStep === 1 ? {cursor: 'not-allowed', opacity: 0.6} : {}}
+              >
+                Previous Step
+              </Button>
+              
+              <Button
+                onClick={goToNextStep}
+                disabled={currentStep === 11}
+                variant={currentStep === 11 ? 'default' : 'gradient'}
+                size="lg"
+                rightIcon={currentStep === 11 ? <CheckCircle style={{ width: '20px', height: '20px'}} /> : <ArrowRight style={{ width: '20px', height: '20px'}} />}
+                style={currentStep === 11 ? {cursor: 'not-allowed', opacity: 0.6} : {}}
+              >
+                {currentStep === 11 ? 'Complete Workshop' : 'Next Step'}
+              </Button>
+            </div>
           </div>
         </main>
 
-        {/* Navigation */}
-        <nav style={navContainerStyle}>
-          <div style={navContentStyle}>
-            {/* Mobile navigation */}
-            <div style={{
-              ...mobileNavStyle,
-              ['@media (min-width: 768px)' as any]: { display: 'none' }
-            }}>
-              <button
-                onClick={goToPreviousStep}
-                disabled={currentStep === 1}
-                style={prevButtonStyle}
-              >
-                <ChevronLeft style={{ width: '20px', height: '20px', marginRight: '4px' }} />
-                Prev
-              </button>
-              
-              <button
-                onClick={goToNextStep}
-                disabled={currentStep === 11}
-                style={nextButtonStyle}
-              >
-                Next
-                <ChevronRight style={{ width: '20px', height: '20px', marginLeft: '4px' }} />
-              </button>
-            </div>
-            
-            {/* Desktop navigation */}
-            <div style={{
-              ...desktopNavStyle,
-              ['@media (max-width: 767px)' as any]: { display: 'none' } 
-            }}>
-              <button
-                onClick={goToPreviousStep}
-                disabled={currentStep === 1}
-                style={prevButtonStyle}
-              >
-                <ChevronLeft style={{ width: '20px', height: '20px', marginRight: '8px' }} />
-                Previous Step
-              </button>
-              
-              <div style={stepDotsContainerStyle}>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <div key={i} style={getStepDotStyle(i)}></div>
-                ))}
-              </div>
-              
-              <button
-                onClick={goToNextStep}
-                disabled={currentStep === 11}
-                style={nextButtonStyle}
-              >
-                {currentStep === 11 ? (
-                  <>
-                    Complete Workshop
-                    <CheckCircle style={{ width: '20px', height: '20px', marginLeft: '8px' }} />
-                  </>
-                ) : (
-                  <>
-                    Next Step
-                    <ArrowRight style={{ width: '20px', height: '20px', marginLeft: '8px' }} />
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </nav>
+        {/* Removed Fixed Navigation */}
       </div>
     </>
   );
-}; 
+};
