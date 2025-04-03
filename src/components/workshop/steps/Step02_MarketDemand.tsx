@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { StepHeader } from '../../ui/StepHeader'; // Temporarily comment out StepHeader
-import { Card } from '../../ui/Card';
-import { Button } from '../../ui/Button';
+// import { Card } from '../../ui/Card'; // Temporarily comment out Card
+// import { Button } from '../../ui/Button'; // Temporarily comment out Button
 import { useWorkshopStore } from '../../../store/workshopStore';
 // import type { Job } from '../../../types/workshop'; // Keep commented if Job not needed yet
 import { Lightbulb } from 'lucide-react';
@@ -28,27 +28,21 @@ export const Step02_MarketDemand: React.FC = () => {
      }
   }, [initialData]); // Dependency on initialData from store
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMarketAnalysis(event.target.value);
-  };
+  // Use dummy handlers as they are not called
+  const handleInputChange = () => {};
+  const handleSave = () => {};
+  const canSave = false;
 
-  // Use updateWorkshopData to save the specific field
-  const handleSave = () => {
-    updateWorkshopData({ marketDemandAnalysis: marketAnalysis });
-    console.log('Market Demand data saved for Step 2:', { marketAnalysis });
-  };
-  
-  const canSave = marketAnalysis ? marketAnalysis.trim() !== '' : false;
+  console.log('[Step02] Rendering ultra-simplified view (no Card/Button)');
 
-  console.log('[Step02] Rendering simplified view without StepHeader'); // Add log
-
-  // Return statement without StepHeader
+  // Return statement with ONLY the container div and h1
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <h1>Step 2: Market Demand (Minimal Test)</h1>
+      <p>If you see this, the most basic rendering worked, and the issue is likely in Card or Button.</p>
+      
       {/* <StepHeader ... /> */} {/* Commented out */}
-      <h1>Step 2: Market Demand (No Header Test)</h1>
-
-      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+      {/* <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '20px' }}>
           <label htmlFor="marketAnalysis" style={{ fontWeight: 600, color: '#374151' }}>
             Existing Solutions & Competitor Analysis:
@@ -94,7 +88,7 @@ export const Step02_MarketDemand: React.FC = () => {
         >
           Save Analysis
         </Button>
-      </div>
+      </div> */} {/* Commented out */}
     </div>
   );
 }; 
