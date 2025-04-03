@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import type { WorkshopData } from '../types/workshop';
-import type { AIMessage } from '../types/chat';
+import type { AIMessage, ChatSuggestion } from '../types/chat';
+import { AIService } from '../services/aiService';
+import { STEP_QUESTIONS } from '../services/aiService';
 
 export interface WorkshopStore {
   // Session state
@@ -12,7 +14,7 @@ export interface WorkshopStore {
 
   // Workshop data
   workshopData: WorkshopData;
-  currentSuggestion: any | null;
+  currentSuggestion: ChatSuggestion | null;
 
   // Actions
   initializeSession: () => Promise<void>;
@@ -25,7 +27,9 @@ export interface WorkshopStore {
   
   // Chat actions
   addChatMessage: (step: number, message: AIMessage) => void;
-  setCurrentSuggestion: (suggestion: any) => void;
+  setCurrentSuggestion: (suggestion: ChatSuggestion | null) => void;
+  handleUserMessage: (step: number, userMessage: string) => Promise<void>;
+  generateStepSuggestion: (step: number) => Promise<void>;
   acceptSuggestion: (step: number) => void;
 }
 
@@ -78,6 +82,197 @@ const isStepComplete = (step: number, data: WorkshopData): boolean => {
       return true;
   }
 };
+
+// Create AI service instance
+const aiService = new AIService({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY || ''
+});
+
+// Helper function to extract relevant context for a step
+function getStepContext(step: number, workshopData: WorkshopData): string {
+  let context = '';
+  
+  // Add relevant data based on the step
+  switch (step) {
+    case 3: // Anti-Goals
+      context = `
+        Workshop Progress: Step 3 - Anti-Goals
+        
+        Previous inputs:
+        ${workshopData.marketDemandAnalysis ? `Market Demand Analysis: ${workshopData.marketDemandAnalysis}` : ''}
+      `;
+      break;
+      
+    case 4: // Trigger Events
+      context = `
+        Workshop Progress: Step 4 - Trigger Events
+        
+        Previous inputs:
+        ${workshopData.marketDemandAnalysis ? `Market Demand Analysis: ${workshopData.marketDemandAnalysis}` : ''}
+        
+        Anti-Goals:
+        ${Object.entries(workshopData.antiGoals)
+          .filter(([_, value]) => value.trim())
+          .map(([key, value]) => `- ${key}: ${value}`)
+          .join('\n')}
+      `;
+      break;
+      
+    case 5: // Jobs
+      context = `
+        Workshop Progress: Step 5 - Jobs to be Done
+        
+        Previous inputs:
+        Market Demand: ${workshopData.marketDemandAnalysis}
+        
+        Trigger Events:
+        ${workshopData.triggerEvents
+          .map(event => `- ${event.description}`)
+          .join('\n')}
+      `;
+      break;
+      
+    case 6: // Markets
+      context = `
+        Workshop Progress: Step 6 - Target Markets
+        
+        Previous inputs:
+        Jobs to be Done:
+        ${workshopData.jobs
+          .map(job => `- ${job.description}`)
+          .join('\n')}
+          
+        Trigger Events:
+        ${workshopData.triggerEvents
+          .map(event => `- ${event.description}`)
+          .join('\n')}
+      `;
+      break;
+      
+    case 7: // Problems
+      context = `
+        Workshop Progress: Step 7 - Key Problems
+        
+        Previous inputs:
+        Markets:
+        ${workshopData.markets
+          .map(market => `- ${market.description}`)
+          .join('\n')}
+          
+        Jobs to be Done:
+        ${workshopData.jobs
+          .map(job => `- ${job.description}`)
+          .join('\n')}
+      `;
+      break;
+      
+    case 8: // Market Evaluation
+      context = `
+        Workshop Progress: Step 8 - Market Evaluation
+        
+        Markets to Evaluate:
+        ${workshopData.markets
+          .map(market => `- ${market.description}`)
+          .join('\n')}
+          
+        Problems Identified:
+        ${workshopData.problems
+          .map(problem => `- ${problem.description}`)
+          .join('\n')}
+      `;
+      break;
+      
+    case 9: // Value Proposition
+      context = `
+        Workshop Progress: Step 9 - Value Proposition
+        
+        Selected Market:
+        ${workshopData.markets
+          .filter(market => market.selected)
+          .map(market => `- ${market.description}`)
+          .join('\n')}
+          
+        Key Problems:
+        ${workshopData.problems
+          .map(problem => `- ${problem.description}`)
+          .join('\n')}
+      `;
+      break;
+      
+    case 10: // Pricing
+      context = `
+        Workshop Progress: Step 10 - Pricing Strategy
+        
+        Value Proposition:
+        Unique Value: ${workshopData.valueProposition.uniqueValue}
+        Pain Points: ${workshopData.valueProposition.painPoints}
+        Benefits: ${workshopData.valueProposition.benefits}
+        Differentiators: ${workshopData.valueProposition.differentiators}
+        
+        Selected Market:
+        ${workshopData.markets
+          .filter(market => market.selected)
+          .map(market => `- ${market.description}`)
+          .join('\n')}
+      `;
+      break;
+      
+    case 11: // Summary
+      context = `
+        Workshop Summary:
+        
+        Market Demand Analysis:
+        ${workshopData.marketDemandAnalysis}
+        
+        Anti-Goals:
+        ${Object.entries(workshopData.antiGoals)
+          .filter(([_, value]) => value.trim())
+          .map(([key, value]) => `- ${key}: ${value}`)
+          .join('\n')}
+        
+        Trigger Events:
+        ${workshopData.triggerEvents
+          .map(event => `- ${event.description}`)
+          .join('\n')}
+        
+        Jobs to be Done:
+        ${workshopData.jobs
+          .map(job => `- ${job.description}`)
+          .join('\n')}
+        
+        Target Market:
+        ${workshopData.markets
+          .filter(market => market.selected)
+          .map(market => `- ${market.description}`)
+          .join('\n')}
+        
+        Key Problems:
+        ${workshopData.problems
+          .map(problem => `- ${problem.description}`)
+          .join('\n')}
+        
+        Value Proposition:
+        ${workshopData.valueProposition ? `
+          Unique Value: ${workshopData.valueProposition.uniqueValue}
+          Pain Points: ${workshopData.valueProposition.painPoints}
+          Benefits: ${workshopData.valueProposition.benefits}
+          Differentiators: ${workshopData.valueProposition.differentiators}
+        ` : ''}
+        
+        Pricing:
+        ${workshopData.pricing ? `
+          Strategy: ${workshopData.pricing.strategy}
+          Justification: ${workshopData.pricing.justification}
+        ` : ''}
+      `;
+      break;
+      
+    default:
+      context = `Workshop Progress: Step ${step}`;
+  }
+  
+  return context;
+}
 
 export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   // Session state
@@ -165,9 +360,10 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   // Chat actions
   addChatMessage: (step: number, message: AIMessage) => {
     set(state => {
+      // Create a copy of the existing state
       const stepChats = state.workshopData.stepChats || {};
       const stepChat = stepChats[step] || { messages: [] };
-
+      
       return {
         workshopData: {
           ...state.workshopData,
@@ -181,116 +377,316 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         },
       };
     });
+    
+    // Save session after adding a message
+    const { saveSession } = get();
+    saveSession();
   },
-
-  setCurrentSuggestion: (suggestion: any) => {
+  
+  setCurrentSuggestion: (suggestion: ChatSuggestion | null) => {
     set({ currentSuggestion: suggestion });
   },
-
+  
+  handleUserMessage: async (step: number, userMessage: string) => {
+    const { addChatMessage, workshopData, generateStepSuggestion } = get();
+    
+    // Add user message to chat
+    const userMsg: AIMessage = {
+      id: Date.now().toString(),
+      content: userMessage,
+      role: 'user',
+      timestamp: new Date().toISOString(),
+    };
+    addChatMessage(step, userMsg);
+    
+    // Get current step chat history
+    const stepChat = workshopData.stepChats?.[step] || { messages: [] };
+    const messages = stepChat.messages || [];
+    
+    // Find all assistant messages that are questions
+    const assistantQuestions = messages.filter(
+      msg => msg.role === 'assistant' && typeof msg.content === 'string'
+    );
+    
+    // Count how many user responses we have (excluding the one we just added)
+    const userResponses = messages.filter(
+      msg => msg.role === 'user'
+    ).length - 1;
+    
+    // If we've answered all predefined questions, generate a suggestion
+    if (userResponses >= (STEP_QUESTIONS[step]?.length || 0)) {
+      // We've answered all the questions, generate a suggestion
+      await generateStepSuggestion(step);
+    } else {
+      // We have more predefined questions to ask
+      set({ isAiLoading: true });
+      
+      try {
+        // Get next question
+        const nextQuestion = STEP_QUESTIONS[step]?.[userResponses];
+        
+        // First, generate a response to the user's message
+        const responseMsg = await aiService.answerFollowUpQuestion(
+          step,
+          userMessage,
+          getStepContext(step, workshopData)
+        );
+        addChatMessage(step, responseMsg);
+        
+        // Then, after a short delay, ask the next question if it exists
+        if (nextQuestion) {
+          setTimeout(() => {
+            const questionMsg: AIMessage = {
+              id: Date.now().toString(),
+              content: nextQuestion.text,
+              role: 'assistant',
+              timestamp: new Date().toISOString(),
+            };
+            addChatMessage(step, questionMsg);
+            set({ isAiLoading: false });
+          }, 1500);
+        } else {
+          set({ isAiLoading: false });
+        }
+      } catch (error) {
+        console.error('Error handling user message:', error);
+        set({ isAiLoading: false });
+        
+        // Add error message
+        const errorMessage: AIMessage = {
+          id: Date.now().toString(),
+          content: "I'm sorry, I encountered an error processing your message. Please try again.",
+          role: 'assistant',
+          timestamp: new Date().toISOString(),
+        };
+        
+        addChatMessage(step, errorMessage);
+      }
+    }
+  },
+  
+  generateStepSuggestion: async (step: number) => {
+    const { setCurrentSuggestion, workshopData, addChatMessage } = get();
+    
+    set({ isAiLoading: true });
+    
+    try {
+      const suggestion = await aiService.getStepSuggestion(
+        step,
+        getStepContext(step, workshopData)
+      );
+      
+      setCurrentSuggestion(suggestion);
+      
+      // Add a message indicating a suggestion is ready
+      const message: AIMessage = {
+        id: Date.now().toString(),
+        content: "I've prepared some suggestions based on our conversation. You can review and accept them below.",
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+      };
+      
+      addChatMessage(step, message);
+    } catch (error) {
+      console.error('Error generating suggestion:', error);
+      
+      // Add error message
+      const errorMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: "I'm sorry, I had trouble generating suggestions. Please try again or proceed manually.",
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+      };
+      
+      addChatMessage(step, errorMessage);
+    } finally {
+      set({ isAiLoading: false });
+    }
+  },
+  
   acceptSuggestion: (step: number) => {
-    const { currentSuggestion } = get();
+    const { currentSuggestion, updateWorkshopData, workshopData } = get();
+    
     if (!currentSuggestion) return;
-
+    
+    // Apply the suggestion based on the step
     switch (step) {
       case 3: // Anti-Goals
-        if (currentSuggestion.antiGoals) {
-          set(state => ({
-            workshopData: {
-              ...state.workshopData,
-              antiGoals: currentSuggestion.antiGoals,
-            },
-          }));
+        if (currentSuggestion.content?.antiGoals) {
+          updateWorkshopData({
+            antiGoals: currentSuggestion.content.antiGoals,
+          });
         }
         break;
-
+        
       case 4: // Trigger Events
-        if (currentSuggestion.triggerEvents) {
-          set(state => ({
-            workshopData: {
-              ...state.workshopData,
-              triggerEvents: [
-                ...state.workshopData.triggerEvents,
-                ...currentSuggestion.triggerEvents,
-              ],
-            },
+        if (currentSuggestion.content?.triggerEvents) {
+          // Get existing trigger events and append new ones
+          const existingEvents = workshopData.triggerEvents || [];
+          const newEvents = currentSuggestion.content.triggerEvents.map(event => ({
+            ...event,
+            source: 'assistant', // Mark as coming from assistant
           }));
+          
+          updateWorkshopData({
+            triggerEvents: [...existingEvents, ...newEvents],
+          });
         }
         break;
-
+        
       case 5: // Jobs
-        if (currentSuggestion.jobs) {
-          set(state => ({
-            workshopData: {
-              ...state.workshopData,
-              jobs: [
-                ...state.workshopData.jobs,
-                ...currentSuggestion.jobs,
-              ],
-            },
+        if (currentSuggestion.content?.jobs) {
+          // Get existing jobs and append new ones
+          const existingJobs = workshopData.jobs || [];
+          const newJobs = currentSuggestion.content.jobs.map(job => ({
+            ...job,
+            source: 'assistant', // Mark as coming from assistant
           }));
+          
+          updateWorkshopData({
+            jobs: [...existingJobs, ...newJobs],
+          });
         }
         break;
-
+        
       case 6: // Markets
-        if (currentSuggestion.markets) {
-          set(state => ({
-            workshopData: {
-              ...state.workshopData,
-              markets: [
-                ...state.workshopData.markets,
-                ...currentSuggestion.markets,
-              ],
-            },
+        if (currentSuggestion.content?.markets) {
+          // Get existing markets and append new ones
+          const existingMarkets = workshopData.markets || [];
+          const newMarkets = currentSuggestion.content.markets.map(market => ({
+            ...market,
+            source: 'assistant', // Mark as coming from assistant
           }));
+          
+          updateWorkshopData({
+            markets: [...existingMarkets, ...newMarkets],
+          });
         }
         break;
-
+        
       case 7: // Problems
-        if (currentSuggestion.problems) {
-          set(state => ({
-            workshopData: {
-              ...state.workshopData,
-              problems: [
-                ...state.workshopData.problems,
-                ...currentSuggestion.problems,
-              ],
-            },
+        if (currentSuggestion.content?.problems) {
+          // Get existing problems and append new ones
+          const existingProblems = workshopData.problems || [];
+          const newProblems = currentSuggestion.content.problems.map((problem, index) => ({
+            ...problem,
+            id: `ai_${Date.now()}_${index}`,
+            ranking: existingProblems.length + index + 1,
+            selected: false,
           }));
+          
+          updateWorkshopData({
+            problems: [...existingProblems, ...newProblems],
+          });
         }
         break;
-
+        
       case 8: // Market Evaluation
-        if (currentSuggestion.marketScores && currentSuggestion.recommendedMarket) {
-          set(state => ({
-            workshopData: {
-              ...state.workshopData,
-              markets: state.workshopData.markets.map(market => ({
-                ...market,
-                selected: market.description === currentSuggestion.recommendedMarket,
-              })),
-            },
+        if (currentSuggestion.content?.marketScores && currentSuggestion.content?.recommendedMarket) {
+          // Update market evaluations with scores
+          const marketEvaluations = { ...workshopData.marketEvaluations } || {};
+          
+          currentSuggestion.content.marketScores.forEach(marketScore => {
+            // Find matching market by description
+            const market = workshopData.markets.find(
+              m => m.description === marketScore.marketDescription
+            );
+            
+            if (market) {
+              marketEvaluations[market.id] = {
+                marketSize: marketScore.scores.size,
+                growthPotential: marketScore.scores.urgency,
+                competitionLevel: marketScore.scores.competition,
+                accessibilityToMarket: marketScore.scores.accessibility,
+                profitPotential: marketScore.scores.willingness,
+              };
+            }
+          });
+          
+          // Select recommended market
+          const recommendedMarket = workshopData.markets.find(
+            m => m.description === currentSuggestion.content.recommendedMarket
+          );
+          
+          const updatedMarkets = workshopData.markets.map(market => ({
+            ...market,
+            selected: market.id === recommendedMarket?.id,
           }));
+          
+          updateWorkshopData({
+            markets: updatedMarkets,
+            marketEvaluations,
+          });
         }
         break;
-
-      case 9: // Offer Exploration
-        if (currentSuggestion.offers?.length > 0) {
-          const [firstOffer] = currentSuggestion.offers;
-          set(state => ({
-            workshopData: {
-              ...state.workshopData,
-              selectedOffer: {
-                id: Date.now().toString(),
-                ...firstOffer,
-                selected: true,
-              },
+        
+      case 9: // Value Proposition
+        if (currentSuggestion.content?.offers?.length > 0) {
+          const offer = currentSuggestion.content.offers[0];
+          
+          updateWorkshopData({
+            valueProposition: {
+              uniqueValue: offer.description,
+              painPoints: Array.isArray(offer.problemsSolved) ? offer.problemsSolved.join("\n\n") : '',
+              benefits: Array.isArray(offer.benefits) ? offer.benefits.join("\n\n") : '',
+              differentiators: `Format: ${offer.format}\n\n${offer.name}`,
             },
-          }));
+          });
+        }
+        break;
+        
+      case 10: // Pricing
+        if (currentSuggestion.content?.pricingStrategy) {
+          const pricing = currentSuggestion.content.pricingStrategy;
+          const positioning = currentSuggestion.content.positioning;
+          
+          updateWorkshopData({
+            pricing: {
+              strategy: pricing.pricingModel,
+              justification: `
+                Value Metrics:
+                ${Array.isArray(pricing.valueMetrics) ? pricing.valueMetrics.join('\n') : ''}
+                
+                Price Points:
+                ${Array.isArray(pricing.pricePoints) ? pricing.pricePoints.map(pp => `- ${pp.tier}: ${pp.price}`).join('\n') : ''}
+                
+                Positioning:
+                ${positioning?.statement || ''}
+                
+                Differentiators:
+                ${Array.isArray(positioning?.differentiators) ? positioning?.differentiators.join('\n') : ''}
+              `,
+            },
+          });
+        }
+        break;
+        
+      case 11: // Reflections
+        if (currentSuggestion.content?.analysis && currentSuggestion.content?.nextSteps) {
+          const { analysis, nextSteps } = currentSuggestion.content;
+          
+          updateWorkshopData({
+            reflections: {
+              keyInsights: `
+                Strengths:
+                ${Array.isArray(analysis.strengths) ? analysis.strengths.join('\n') : ''}
+                
+                Risks:
+                ${Array.isArray(analysis.risks) ? analysis.risks.join('\n') : ''}
+                
+                Opportunities:
+                ${Array.isArray(analysis.opportunities) ? analysis.opportunities.join('\n') : ''}
+              `,
+              nextSteps: Array.isArray(nextSteps) ? nextSteps.map(step => 
+                `- ${step.action} (${step.priority} priority)`
+              ).join('\n') : '',
+            },
+          });
         }
         break;
     }
-
-    // Clear the current suggestion after accepting
+    
+    // Clear the current suggestion
     set({ currentSuggestion: null });
   },
 })); 

@@ -4,9 +4,13 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { AntiGoals } from '../../../types/workshop';
-import { AlertCircle, HelpCircle } from 'lucide-react';
+import { AlertCircle, HelpCircle, MessageSquare } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
+import { ChatInterface } from '../chat/ChatInterface';
+import { STEP_QUESTIONS } from '../../../services/aiService';
+import { AIService } from '../../../services/aiService';
+import { Button } from '../../ui/Button';
 
 // Define the keys for anti-goals for easier mapping
 const antiGoalKeys: (keyof AntiGoals)[] = ['market', 'offer', 'delivery', 'lifestyle', 'values'];
@@ -90,16 +94,24 @@ const selectAntiGoals = (state: WorkshopStore) => state.workshopData.antiGoals |
   market: '', offer: '', delivery: '', lifestyle: '', values: ''
 };
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
+const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
+const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
 
 export const Step03_AntiGoals: React.FC = () => {
   const antiGoals = useWorkshopStore(selectAntiGoals);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  const showErrors = useWorkshopStore(selectValidationErrors);
+  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
+  
   const [formData, setFormData] = useState<AntiGoals>(antiGoals);
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
-  const [showErrors, setShowErrors] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  
+  // Create AI service instance
+  const aiService = new AIService({
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
+  });
 
   // Update local state when store value changes
   useEffect(() => {
@@ -136,13 +148,20 @@ export const Step03_AntiGoals: React.FC = () => {
     }
     return '';
   };
-
-  // Effect to show errors when trying to proceed
-  useEffect(() => {
-    if (!canProceedToNextStep()) {
-      setShowErrors(true);
-    }
-  }, [canProceedToNextStep]);
+  
+  // Generate step context for AI
+  const stepContext = `
+    Workshop Step: Anti-Goals
+    
+    Anti-goals are things you want to avoid at all costs in your business.
+    
+    Current anti-goals:
+    - Market: ${formData.market}
+    - Offer: ${formData.offer}
+    - Delivery: ${formData.delivery}
+    - Lifestyle: ${formData.lifestyle}
+    - Values: ${formData.values}
+  `;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -151,6 +170,28 @@ export const Step03_AntiGoals: React.FC = () => {
         title="Define Your Anti-Goals"
         description="Clarify what you don't want in your business to make better decisions."
       />
+      
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <Button
+          variant="ghost"
+          onClick={() => setShowChat(!showChat)}
+          rightIcon={<MessageSquare size={16} />}
+        >
+          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
+        </Button>
+      </div>
+      
+      {showChat && (
+        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+          <ChatInterface 
+            step={3}
+            stepContext={stepContext}
+            questions={STEP_QUESTIONS[3] || []}
+            aiService={aiService}
+            onSuggestionAccept={() => acceptSuggestion(3)}
+          />
+        </Card>
+      )}
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
