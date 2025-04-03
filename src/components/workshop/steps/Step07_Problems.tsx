@@ -5,7 +5,7 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Problem } from '../../../types/workshop';
-import { AlertCircle, Plus, X, ChevronUp, ChevronDown, MessageSquare } from 'lucide-react';
+import { AlertCircle, Plus, X, ChevronUp, ChevronDown, MessageSquare, CheckCircle, Lightbulb } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
@@ -28,6 +28,7 @@ export const Step07_Problems: React.FC = () => {
   const [newProblem, setNewProblem] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [selectedPath, setSelectedPath] = useState<'A' | 'B'>('A'); // A = Product-First, B = Problem-First
   const saveTimerRef = useRef<number | null>(null);
   
   // Create AI service instance
@@ -135,8 +136,8 @@ export const Step07_Problems: React.FC = () => {
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
         stepNumber={7}
-        title="Identify Key Problems"
-        description="What specific problems or pain points does your target market experience?"
+        title="Match Problems to Solutions"
+        description="Identify your unique capabilities and match them to your customers' key problems"
       />
       
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
@@ -163,6 +164,305 @@ export const Step07_Problems: React.FC = () => {
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
+          {/* Path Selection */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              Choose Your Path
+            </h3>
+            
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <button
+                onClick={() => setSelectedPath('A')}
+                style={{
+                  flex: 1,
+                  padding: '16px',
+                  borderRadius: '8px',
+                  border: '2px solid',
+                  borderColor: selectedPath === 'A' ? '#3b82f6' : '#e5e7eb',
+                  backgroundColor: selectedPath === 'A' ? '#eff6ff' : 'white',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}
+              >
+                <span style={{ 
+                  fontSize: '16px', 
+                  fontWeight: 600, 
+                  color: selectedPath === 'A' ? '#1e40af' : '#374151' 
+                }}>
+                  Path A: Product-First
+                </span>
+                <span style={{ 
+                  fontSize: '14px', 
+                  color: '#6b7280',
+                  textAlign: 'center' 
+                }}>
+                  You already have a clear idea of what your productized service could be
+                </span>
+              </button>
+              
+              <button
+                onClick={() => setSelectedPath('B')}
+                style={{
+                  flex: 1,
+                  padding: '16px',
+                  borderRadius: '8px',
+                  border: '2px solid',
+                  borderColor: selectedPath === 'B' ? '#3b82f6' : '#e5e7eb',
+                  backgroundColor: selectedPath === 'B' ? '#eff6ff' : 'white',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}
+              >
+                <span style={{ 
+                  fontSize: '16px', 
+                  fontWeight: 600, 
+                  color: selectedPath === 'B' ? '#1e40af' : '#374151' 
+                }}>
+                  Path B: Problem-First
+                </span>
+                <span style={{ 
+                  fontSize: '14px', 
+                  color: '#6b7280',
+                  textAlign: 'center' 
+                }}>
+                  You want to identify high-value problems first, then design your solution
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {/* 5A: Capability Inventory */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              5A: Capability Inventory
+            </h3>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              List your unique capabilities, systems, frameworks, and methods that set you apart:
+            </p>
+            
+            <div style={{ 
+              padding: '16px', 
+              backgroundColor: '#f8fafc', 
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>Example Capabilities:</p>
+              <ul style={{ 
+                margin: '0',
+                paddingLeft: '16px',
+                listStyleType: 'disc',
+                color: '#334155',
+                fontSize: '14px'
+              }}>
+                <li>System for creating email sequences that combine nurturing and selling</li>
+                <li>Methods for segmenting audiences for targeted campaigns</li>
+                <li>Templates for quick content creation without sacrificing quality</li>
+                <li>Frameworks for creating evergreen funnels that sell on autopilot</li>
+                <li>Process for testing and optimizing email performance</li>
+              </ul>
+            </div>
+          </div>
+          
+          {/* 5B: Solution-Problem Matching */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              5B: Solution-Problem Matching
+            </h3>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              Match your capabilities (solutions) to specific customer problems:
+            </p>
+            
+            <div style={{ 
+              padding: '16px', 
+              backgroundColor: '#f0f9ff', 
+              borderRadius: '8px',
+              border: '1px solid #bae6fd'
+            }}>
+              <div style={{ 
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+              }}>
+                <div style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px',
+                  backgroundColor: 'white',
+                  borderRadius: '6px',
+                  border: '1px solid #e0f2fe'
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ 
+                      margin: '0 0 4px 0',
+                      fontWeight: 500,
+                      color: '#0369a1'
+                    }}>
+                      Your solution:
+                    </p>
+                    <p style={{ margin: 0, fontSize: '14px' }}>
+                      Systematic approach to email marketing
+                    </p>
+                  </div>
+                  <CheckCircle size={24} color="#0ea5e9" />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ 
+                      margin: '0 0 4px 0',
+                      fontWeight: 500,
+                      color: '#9f1239'
+                    }}>
+                      Customer problem:
+                    </p>
+                    <p style={{ margin: 0, fontSize: '14px' }}>
+                      The Overwhelmed Creator's lack of systems
+                    </p>
+                  </div>
+                </div>
+                
+                <div style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px',
+                  backgroundColor: 'white',
+                  borderRadius: '6px',
+                  border: '1px solid #e0f2fe'
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ 
+                      margin: '0 0 4px 0',
+                      fontWeight: 500,
+                      color: '#0369a1'
+                    }}>
+                      Your solution:
+                    </p>
+                    <p style={{ margin: 0, fontSize: '14px' }}>
+                      Conversion-focused templates
+                    </p>
+                  </div>
+                  <CheckCircle size={24} color="#0ea5e9" />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ 
+                      margin: '0 0 4px 0',
+                      fontWeight: 500,
+                      color: '#9f1239'
+                    }}>
+                      Customer problem:
+                    </p>
+                    <p style={{ margin: 0, fontSize: '14px' }}>
+                      The Conversion Challenged's struggle with effective CTAs
+                    </p>
+                  </div>
+                </div>
+                
+                <div style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px',
+                  backgroundColor: 'white',
+                  borderRadius: '6px',
+                  border: '1px solid #e0f2fe'
+                }}>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ 
+                      margin: '0 0 4px 0',
+                      fontWeight: 500,
+                      color: '#0369a1'
+                    }}>
+                      Your solution:
+                    </p>
+                    <p style={{ margin: 0, fontSize: '14px' }}>
+                      Evergreen funnel framework
+                    </p>
+                  </div>
+                  <CheckCircle size={24} color="#0ea5e9" />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ 
+                      margin: '0 0 4px 0',
+                      fontWeight: 500,
+                      color: '#9f1239'
+                    }}>
+                      Customer problem:
+                    </p>
+                    <p style={{ margin: 0, fontSize: '14px' }}>
+                      The Revenue Rollercoaster's inconsistent income
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* 5C: Identifying Strongest Matches */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              5C: Identifying Strongest Matches
+            </h3>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              Identify which problem-solution matches offer the greatest opportunity:
+            </p>
+            
+            <div style={{ 
+              padding: '16px', 
+              backgroundColor: '#ecfdf5', 
+              borderRadius: '8px',
+              border: '1px solid #a7f3d0'
+            }}>
+              <div style={{ 
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <Lightbulb size={24} color="#059669" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <p style={{ 
+                  margin: 0,
+                  fontSize: '15px',
+                  fontWeight: 500,
+                  color: '#065f46',
+                  fontStyle: 'italic'
+                }}>
+                  "I'm seeing that my skills are particularly well-suited to solving problems in the 'Revenue Rollercoaster' cluster. I have frameworks and systems that directly address predictable revenue generation."
+                </p>
+              </div>
+              
+              <p style={{ 
+                margin: '0',
+                fontSize: '14px',
+                color: '#047857' 
+              }}>
+                When you find a strong match between your unique capabilities and your customers' most pressing problems, you've identified a high-value opportunity for your productized service.
+              </p>
+            </div>
+          </div>
+
           <div style={{
             padding: '12px 16px',
             backgroundColor: '#fff1f2',
