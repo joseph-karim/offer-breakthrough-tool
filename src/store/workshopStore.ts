@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { WorkshopData } from '../types/workshop';
 import type { AIMessage } from '../types/chat';
 
-interface WorkshopStore {
+export interface WorkshopStore {
   // Session state
   sessionId: string | null;
   currentStep: number;

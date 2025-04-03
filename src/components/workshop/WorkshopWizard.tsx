@@ -1,4 +1,4 @@
-import { useEffect, CSSProperties, useState } from 'react';
+import { useEffect, CSSProperties, useState, useCallback } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
 import { Zap, CheckCircle, ChevronLeft, Sparkles, Star, Layers, ArrowRight } from 'lucide-react';
 
@@ -17,13 +17,35 @@ export const WorkshopWizard = () => {
   const { currentStep, initializeSession, setCurrentStep } = useWorkshopStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
+  // Run initialization only once when component mounts
   useEffect(() => {
+    let mounted = true;
+
     const init = async () => {
-      await initializeSession();
-      setIsInitialized(true);
+      try {
+        await initializeSession();
+        if (mounted) {
+          setIsInitialized(true);
+        }
+      } catch (error) {
+        console.error('Failed to initialize session:', error);
+      }
     };
+
     init();
-  }, [initializeSession]);
+
+    return () => {
+      mounted = false;
+    };
+  }, []); // Empty dependency array since we only want to run once
+
+  const goToPreviousStep = useCallback(() => {
+    setCurrentStep(Math.max(1, currentStep - 1));
+  }, [currentStep, setCurrentStep]);
+
+  const goToNextStep = useCallback(() => {
+    setCurrentStep(Math.min(11, currentStep + 1));
+  }, [currentStep, setCurrentStep]);
 
   // Don't render anything until initialization is complete
   if (!isInitialized) {
@@ -49,36 +71,29 @@ export const WorkshopWizard = () => {
     );
   }
 
-  const renderStep = () => {
+  // Memoize step rendering to prevent unnecessary re-renders
+  const currentStepComponent = (() => {
     switch (currentStep) {
       case 1:
-        return <Step01_Intro />;
+        return <Step01_Intro key="step1" />;
       case 2:
-        return <Step02_MarketDemand />;
+        return <Step02_MarketDemand key="step2" />;
       case 3:
-        return <Step03_AntiGoals />;
+        return <Step03_AntiGoals key="step3" />;
       case 4:
-        return <Step04_TriggerEvents />;
+        return <Step04_TriggerEvents key="step4" />;
       case 5:
-        return <Step05_Jobs />;
+        return <Step05_Jobs key="step5" />;
       case 6:
-        return <Step06_Markets />;
+        return <Step06_Markets key="step6" />;
       case 10:
-        return <Step10_Pricing />;
+        return <Step10_Pricing key="step10" />;
       case 11:
-        return <Step11_Summary />;
+        return <Step11_Summary key="step11" />;
       default:
-        return <div>Step {currentStep} is under construction</div>;
+        return <div key={`step${currentStep}`}>Step {currentStep} is under construction</div>;
     }
-  };
-
-  const goToPreviousStep = () => {
-    setCurrentStep(Math.max(1, currentStep - 1));
-  };
-
-  const goToNextStep = () => {
-    setCurrentStep(Math.min(11, currentStep + 1));
-  };
+  })();
 
   // Calculate completion percentage
   const completionPercentage = Math.round((currentStep / 11) * 100);
@@ -394,7 +409,7 @@ export const WorkshopWizard = () => {
         {/* Main content */}
         <main style={contentContainerStyle}>
           <div style={contentCardStyle}>
-            {renderStep()}
+            {currentStepComponent}
             
             {/* Inline Navigation Buttons */}
             <div style={inlineNavStyle}>

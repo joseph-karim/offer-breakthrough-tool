@@ -1,33 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StepHeader } from '../../ui/StepHeader'; // Restore StepHeader import
 import { Card } from '../../ui/Card'; // Restore Card import
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import { Lightbulb } from 'lucide-react'; // Restore Lightbulb import
+import type { WorkshopStore } from '../../../store/workshopStore';
 
 export const Step02_MarketDemand: React.FC = () => {
   const { marketDemandAnalysis, updateWorkshopData } = useWorkshopStore(
-    (state) => ({ 
+    (state: WorkshopStore) => ({
       marketDemandAnalysis: state.workshopData.marketDemandAnalysis,
-      updateWorkshopData: state.updateWorkshopData 
+      updateWorkshopData: state.updateWorkshopData
     })
   );
   
-  const [localAnalysis, setLocalAnalysis] = useState(marketDemandAnalysis || '');
+  const [localAnalysis, setLocalAnalysis] = useState('');
 
-  // Only sync from store when marketDemandAnalysis changes
+  // Initialize local state once when component mounts
   useEffect(() => {
-    setLocalAnalysis(marketDemandAnalysis || '');
-  }, [marketDemandAnalysis]);
+    let mounted = true;
+    
+    if (mounted) {
+      setLocalAnalysis(marketDemandAnalysis || '');
+    }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    return () => {
+      mounted = false;
+    };
+  }, []); // Empty dependency array since we only want to initialize once
+
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setLocalAnalysis(event.target.value);
-  };
+  }, []);
 
-  const handleSave = () => {
-    updateWorkshopData({ marketDemandAnalysis: localAnalysis });
-    console.log('Market Demand data saved for Step 2:', { localAnalysis });
-  };
+  const handleSave = useCallback(() => {
+    if (localAnalysis.trim() !== '') {
+      updateWorkshopData({ marketDemandAnalysis: localAnalysis });
+    }
+  }, [localAnalysis, updateWorkshopData]);
   
   const canSave = localAnalysis.trim() !== '';
 
