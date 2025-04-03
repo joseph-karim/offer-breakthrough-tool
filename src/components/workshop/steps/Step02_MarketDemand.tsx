@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-// import { StepHeader } from '../../ui/StepHeader'; // Temporarily comment out
+import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-// import { Lightbulb } from 'lucide-react'; // Temporarily comment out
+// import type { Job } from '../../../types/workshop'; // Keep commented if Job not needed yet
+import { Lightbulb } from 'lucide-react';
 
 export const Step02_MarketDemand: React.FC = () => {
-  // Keep state logic for now
+  // Restore state logic
   const { marketDemandAnalysis: initialData, updateWorkshopData } = useWorkshopStore(
     (state) => ({ 
       marketDemandAnalysis: state.workshopData.marketDemandAnalysis,
@@ -32,15 +33,16 @@ export const Step02_MarketDemand: React.FC = () => {
   
   const canSave = marketAnalysis ? marketAnalysis.trim() !== '' : false;
 
-  // Simplified return for diagnostics
+  // Restore the original return statement
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h1>Step 2: Market Demand (Simplified Test)</h1> 
-      {/* <StepHeader ... /> */} {/* Commented out */}
+      <StepHeader
+        stepNumber={2}
+        title="Analyze Market Demand & Existing Solutions"
+        description="Understand what your target audience currently uses and their frustrations. Who are your main competitors?"
+      />
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-        <p>Test Content inside Card</p>
-        {/* 
         <div style={{ display: 'grid', gap: '20px' }}>
           <label htmlFor="marketAnalysis" style={{ fontWeight: 600, color: '#374151' }}>
             Existing Solutions & Competitor Analysis:
@@ -50,15 +52,32 @@ export const Step02_MarketDemand: React.FC = () => {
             rows={8}
             value={marketAnalysis}
             onChange={handleInputChange}
-            placeholder="Describe the solutions..."
-            style={...}
+            placeholder="Describe the solutions your target market currently uses. Who are the main players? What are their strengths and weaknesses? What frustrations do customers have?"
+            style={{
+              width: '100%',
+              padding: '12px',
+              borderRadius: '8px',
+              border: '1px solid #d1d5db',
+              fontSize: '16px',
+              lineHeight: 1.6,
+              backgroundColor: 'white',
+            }}
           />
-          <div style={...}>
-            <Lightbulb ... />
-            Think about...
+          <div style={{
+            padding: '12px 16px',
+            backgroundColor: '#fffbeb', // yellow-50
+            borderLeft: '4px solid #f59e0b', // yellow-400
+            borderRadius: '0 8px 8px 0',
+            color: '#92400e', // yellow-800
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: '14px',
+            fontWeight: 500,
+          }}>
+            <Lightbulb style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#d97706' }} />
+            Think about direct competitors (offering similar solutions) and indirect alternatives (how people solve the problem now, even if differently).
           </div>
         </div>
-        */}
       </Card>
       
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -67,7 +86,7 @@ export const Step02_MarketDemand: React.FC = () => {
           onClick={handleSave}
           disabled={!canSave} 
         >
-          Save Analysis (Test)
+          Save Analysis
         </Button>
       </div>
     </div>
