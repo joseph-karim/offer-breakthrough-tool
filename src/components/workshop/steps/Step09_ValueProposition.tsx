@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
-import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import { Lightbulb, AlertCircle, CheckCircle2 } from 'lucide-react';

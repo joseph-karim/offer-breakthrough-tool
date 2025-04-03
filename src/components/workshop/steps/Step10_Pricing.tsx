@@ -3,7 +3,7 @@ import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { Info, HelpCircle, DollarSign } from 'lucide-react';
+import { AlertCircle, HelpCircle, DollarSign } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
 

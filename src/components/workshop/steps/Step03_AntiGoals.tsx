@@ -160,9 +160,6 @@ export const Step03_AntiGoals: React.FC = () => {
     }
   }, []);
 
-  // Check if all fields are empty
-  const areAllFieldsEmpty = Object.values(localValue).every(value => !value.trim());
-
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader

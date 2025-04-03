@@ -5,7 +5,7 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Market } from '../../../types/workshop';
-import { Users, CheckCircle2, X, Star, AlertCircle } from 'lucide-react';
+import { Users, CheckCircle2, Star, AlertCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 
 // Separate selectors to prevent unnecessary re-renders
