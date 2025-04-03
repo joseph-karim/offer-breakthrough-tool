@@ -69,7 +69,7 @@ export interface WorkshopData {
   marketDemandAnalysis?: string;
   pricing?: { strategy: string; justification: string };
   reflections?: Reflections;
-  valueProposition?: ValueProposition;
+  valueProposition: ValueProposition;
   marketEvaluations?: { [marketId: string]: MarketEvaluation };
 }
 

@@ -9,7 +9,7 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 // Separate selectors to prevent unnecessary re-renders
 const selectValueProposition = (state: WorkshopStore) => state.workshopData.valueProposition || {};
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
+const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
 
 interface ValuePropositionData {
   uniqueValue?: string;
@@ -35,31 +35,33 @@ const PLACEHOLDERS = {
 export const Step09_ValueProposition: React.FC = () => {
   const valueProposition = useWorkshopStore(selectValueProposition);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  const showErrors = useWorkshopStore(selectValidationErrors);
 
   const [formData, setFormData] = useState<ValuePropositionData>(valueProposition);
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
-  const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
     setFormData(valueProposition);
   }, [valueProposition]);
 
-  // Show errors when trying to proceed without completing
+  // Initialize value proposition if it doesn't exist
   useEffect(() => {
-    const checkCompletion = () => {
-      const isComplete = canProceedToNextStep();
-      if (!isComplete) {
-        setShowErrors(true);
-      }
-    };
-
-    // Only check completion when showErrors is true
-    if (showErrors) {
-      checkCompletion();
+    // If valueProposition is empty (no properties or empty strings), initialize it
+    const isEmpty = !valueProposition || Object.keys(valueProposition).length === 0 ||
+      Object.values(valueProposition).every(val => !val || val.trim() === '');
+    
+    if (isEmpty) {
+      updateWorkshopData({
+        valueProposition: {
+          uniqueValue: '',
+          painPoints: '',
+          benefits: '',
+          differentiators: ''
+        }
+      });
     }
-  }, [canProceedToNextStep, showErrors]);
+  }, [valueProposition, updateWorkshopData]);
 
   const handleInputChange = useCallback((field: keyof ValuePropositionData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -77,9 +79,6 @@ export const Step09_ValueProposition: React.FC = () => {
         }
       });
       setIsSaving(false);
-      if (value.trim() !== '') {
-        setShowErrors(false);
-      }
     }, 500);
     setSaveTimer(timer);
   }, [valueProposition, updateWorkshopData, saveTimer]);

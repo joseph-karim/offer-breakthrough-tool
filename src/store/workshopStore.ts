@@ -43,6 +43,12 @@ const initialWorkshopData: WorkshopData = {
   problems: [],
   marketDemandAnalysis: '',
   stepChats: {},
+  valueProposition: {
+    uniqueValue: '',
+    painPoints: '',
+    benefits: '',
+    differentiators: ''
+  },
 };
 
 // Helper function to check if a step is complete
@@ -65,7 +71,7 @@ const isStepComplete = (step: number, data: WorkshopData): boolean => {
     case 8: // Market Evaluation
       return (data.markets ?? []).some(market => market.selected);
     case 9: // Offer Exploration
-      return data.selectedOffer?.selected === true;
+      return Object.values(data.valueProposition).some(value => (value || '').trim().length > 0);
     case 10: // Pricing
       return (data.pricing?.strategy ?? '').length > 0;
     default:
