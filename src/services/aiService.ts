@@ -5,92 +5,170 @@ import { OpenAIService } from './openaiService';
 export const STEP_QUESTIONS: Record<number, StepQuestion[]> = {
   3: [
     {
-      id: 'anti_goals_input',
-      text: 'What are your anti-goals for your business? These are things you want to avoid at all costs in your market, offer, delivery, lifestyle, and values.',
+      id: 'anti_goals_market',
+      text: 'What types of customers or market segments would you prefer to avoid working with?',
       context: 'Anti-goals help you define boundaries for your business.',
-      requirements: 'Consider aspects like target market, type of offer, delivery method, lifestyle impact, and personal values.'
+      requirements: 'Consider demographics, behaviors, or attitudes that would make clients difficult to work with.'
+    },
+    {
+      id: 'anti_goals_business',
+      text: 'What business models or revenue approaches do you want to avoid?',
+      context: 'Setting anti-goals around business models helps focus your offer design.',
+      requirements: 'Consider pricing structures, delivery methods, or business approaches you dislike.'
+    },
+    {
+      id: 'anti_goals_delivery',
+      text: 'Are there specific delivery methods or service aspects you want to avoid?',
+      context: 'Delivery anti-goals define how you won\'t provide your solution.',
+      requirements: 'Think about time commitments, technology requirements, or service aspects.'
+    },
+    {
+      id: 'anti_goals_lifestyle',
+      text: 'What business lifestyle factors do you want to avoid?',
+      context: 'Your business should support your desired lifestyle, not detract from it.',
+      requirements: 'Consider work hours, travel requirements, stress levels, or team management.'
+    },
+    {
+      id: 'anti_goals_values',
+      text: 'What ethical boundaries or values are non-negotiable for you?',
+      context: 'Value-based anti-goals keep your business aligned with your principles.',
+      requirements: 'Think about industries, practices, or approaches that would conflict with your values.'
     }
   ],
   4: [
     {
-      id: 'trigger_events',
-      text: 'What events or situations might trigger someone to seek out your solution?',
-      context: 'Trigger events are specific moments when potential customers realize they need your solution.',
-      requirements: 'List specific situations, problems, or moments of realization.'
+      id: 'trigger_events_situations',
+      text: 'Think about your ideal clients. What specific situations or events happen right before they realize they need a solution like yours?',
+      context: 'Trigger events are specific moments when potential customers recognize they need your solution.',
+      requirements: 'Be specific about the situation, problem, or realization moment.'
+    },
+    {
+      id: 'trigger_events_urgency',
+      text: 'What makes these trigger events urgent enough for someone to take action?',
+      context: 'Understanding urgency helps identify which trigger events are most likely to lead to sales.',
+      requirements: 'Consider financial, emotional, or timeline factors that create urgency.'
     }
   ],
   5: [
     {
-      id: 'jobs_to_be_done',
-      text: 'What jobs, tasks, or goals is your customer trying to accomplish?',
-      context: 'Jobs to be done focus on what the customer is trying to achieve, not just their problems.',
-      requirements: 'Consider functional jobs (tasks), emotional jobs (feelings), and social jobs (perception).'
+      id: 'jtbd_main',
+      text: 'What is the main job (or jobs) that your customer is trying to accomplish?',
+      context: 'The Main Job is the primary outcome your customer wants to achieve.',
+      requirements: 'Express this as "I want to [verb] [object] [qualifier]" - e.g., "I want to increase revenue without hiring more salespeople."'
+    },
+    {
+      id: 'jtbd_related',
+      text: 'What related tasks or outcomes are needed to accomplish this main job?',
+      context: 'Related jobs are the supporting tasks that help achieve the main job.',
+      requirements: 'List specific, actionable tasks that contribute to the main job.'
     }
   ],
   6: [
     {
-      id: 'potential_markets',
-      text: 'What specific groups of people might benefit from your solution?',
-      context: 'Markets are defined by demographics, psychographics, behaviors, and needs.',
-      requirements: 'Be specific about who they are, what they do, and what they care about.'
+      id: 'markets_brainstorm',
+      text: 'Based on the jobs you\'ve identified, what specific markets or customer segments might need to accomplish these jobs?',
+      context: 'Markets are defined groups with common characteristics and needs.',
+      requirements: 'Be specific about demographics, psychographics, behaviors, and needs.'
+    },
+    {
+      id: 'markets_ratings',
+      text: 'How would you rate each market on interest (how interested you are in serving them) and capability (how capable you are of serving them)?',
+      context: 'Evaluating markets on interest and capability helps prioritize focus.',
+      requirements: 'Rate each market on a scale of 1-10 for both interest and capability.'
     }
   ],
   7: [
     {
-      id: 'market_problems',
-      text: 'What problems, pain points, or frustrations does your target market experience?',
+      id: 'problems_brainstorm',
+      text: 'For your selected market/job combinations, what specific problems or pain points do they experience?',
       context: 'Problems are the obstacles preventing your market from accomplishing their jobs.',
-      requirements: 'Consider both functional problems (practical issues) and emotional problems (feelings).'
+      requirements: 'Consider functional problems (practical issues), emotional problems (feelings), and social problems (perception).'
+    },
+    {
+      id: 'problems_ratings',
+      text: 'How would you rate each problem on intensity (how painful it is), frequency (how often it occurs), and financial impact (how much it costs)?',
+      context: 'Rating problems helps identify which ones are most worth solving.',
+      requirements: 'Rate each problem on a scale of 1-10 for intensity, frequency, and financial impact.'
     }
   ],
   8: [
     {
-      id: 'market_evaluation',
-      text: 'Which market do you think would be the best to focus on first, and why?',
-      context: 'The ideal market has urgent problems, is willing to pay, is accessible to you, and has growth potential.',
-      requirements: 'Consider market size, urgency of problems, willingness to pay, accessibility, and growth potential.'
+      id: 'market_evaluation_problem_size',
+      text: 'For each market segment, how would you rate the size of the problem they face? (1-10 scale)',
+      context: 'Problem size considers how many people have this problem and how severe it is.',
+      requirements: 'Consider both the number of people affected and the severity of the problem.'
+    },
+    {
+      id: 'market_evaluation_solution_fit',
+      text: 'How well does your solution fit each market\'s specific needs? (1-10 scale)',
+      context: 'Solution fit measures how perfectly your solution addresses their exact problem.',
+      requirements: 'Consider your expertise, experience, and capability to solve their specific problem.'
+    },
+    {
+      id: 'market_evaluation_economic_value',
+      text: 'What is the economic value of solving this problem for each market? (1-10 scale)',
+      context: 'Economic value measures how much solving the problem is worth financially.',
+      requirements: 'Consider how much money they could save or make by solving this problem.'
+    },
+    {
+      id: 'market_evaluation_joy',
+      text: 'How much would you enjoy serving each market? (1-10 scale)',
+      context: 'Joy to serve matters for long-term satisfaction and motivation.',
+      requirements: 'Consider who you would most enjoy working with and why.'
     }
   ],
   9: [
     {
-      id: 'offer_ideas',
-      text: 'What specific offer would solve the key problems for your chosen market?',
-      context: 'An offer is a specific product or service with a clearly defined outcome, format, and delivery method.',
-      requirements: 'Define what the offer is, what format it takes, and what outcome it delivers.'
+      id: 'offer_confirmation',
+      text: 'Confirm your target Market, the Job they\'re trying to do, and the Problem you\'re solving.',
+      context: 'Clear Market-Job-Problem alignment is essential for a compelling offer.',
+      requirements: 'Restate your chosen market, their primary job, and the key problem you\'re solving.'
+    },
+    {
+      id: 'offer_format',
+      text: 'What format(s) would work best for your solution? (e.g., course, coaching, service, product, software)',
+      context: 'Format determines how your solution is delivered and consumed.',
+      requirements: 'Consider the pros and cons of different formats for your specific solution.'
     }
   ],
   10: [
     {
       id: 'value_metrics',
-      text: 'What value metrics would your customers use to measure the success of your solution?',
-      context: 'Value metrics are how customers measure the value or ROI of your offer.',
-      requirements: 'Consider tangible metrics (time saved, revenue increased) and intangible benefits (peace of mind, confidence).'
+      text: 'What is the primary value metric for your offer (e.g., per user, per project, per outcome)?',
+      context: 'Value metrics determine how customers measure the value they receive.',
+      requirements: 'Consider what customers actually value and how they measure success.'
     },
     {
-      id: 'pricing_model',
-      text: 'What pricing model would best align with the value your offer provides?',
-      context: 'Pricing models include one-time, subscription, tiered, usage-based, etc.',
-      requirements: 'Consider how the pricing structure aligns with how value is delivered and perceived.'
+      id: 'buyer_willingness',
+      text: 'Who is your target buyer and what is their typical budget range or willingness to pay for solving this problem?',
+      context: 'Understanding budget constraints helps set appropriate pricing.',
+      requirements: 'Consider what they\'re currently spending to address this problem or similar ones.'
     },
     {
-      id: 'positioning_statement',
-      text: 'How would you position your offer against alternatives in the market?',
-      context: 'Positioning defines how your offer is distinct from alternatives and why that matters to your market.',
-      requirements: 'Format: For [target market], [your offer] is the [category] that [key differentiator] because [reason to believe].'
+      id: 'pricing_models',
+      text: 'What pricing models are common in your market?',
+      context: 'Industry norms provide a starting point for pricing strategy.',
+      requirements: 'Research competitors and adjacent solutions to understand pricing patterns.'
+    },
+    {
+      id: 'pricing_tiers',
+      text: 'Do you want to offer tiers? If so, what differentiates them?',
+      context: 'Tiered pricing can increase accessibility and lifetime value.',
+      requirements: 'Consider features, service levels, or outcomes that could differentiate tiers.'
     }
   ],
   11: [
     {
       id: 'workshop_review',
-      text: 'Please review the entire workshop and provide analysis and recommendations.',
-      context: 'Review the selected market, job to be done, problems, and offer.',
-      requirements: 'Provide insights on potential strengths, weaknesses, and suggestions for validation.'
+      text: 'Let\'s review your entire workshop and provide analysis and recommendations.',
+      context: 'A comprehensive review identifies strengths, weaknesses, and next steps.',
+      requirements: 'Consider coherence, differentiation, and market viability.'
     },
     {
       id: 'next_steps',
-      text: 'What specific actions should I take to validate and refine my offer?',
-      context: 'Next steps might include customer interviews, prototype creation, or marketing experiments.',
-      requirements: 'Provide 3-5 actionable next steps with specific guidance on how to execute them.'
+      text: 'What specific actions should you take to validate and refine your offer?',
+      context: 'Validation helps confirm assumptions before full implementation.',
+      requirements: 'Prioritize 3-5 concrete actions you can take in the next 1-2 weeks.'
     }
   ]
 };
@@ -113,17 +191,14 @@ export class AIService {
       switch (step) {
         case 3: // Anti-Goals
           const antiGoalsPrompt = `
-            Based on the following context from a workshop about creating a business offer:
+            You are a CustomerCamp AI assistant specializing in buyer psychology and the 'Why We Buy' framework.
+            
+            Based on the user's answers regarding draining customers, undesirable business models, industries to avoid, delivery methods off the table, and unacceptable price points provided in the chat history below, synthesize these into a clear, actionable list of Anti-Goals.
+            
+            Context:
             ${context}
             
-            Generate suggestions for anti-goals in these categories:
-            - Market anti-goals (types of customers or markets to avoid)
-            - Offer anti-goals (types of products or services to avoid)
-            - Delivery anti-goals (ways of delivering value to avoid)
-            - Lifestyle anti-goals (lifestyle impacts to avoid)
-            - Values anti-goals (values or principles to avoid compromising)
-            
-            Return a valid JSON object with this structure:
+            Structure the output as a valid JSON object with this structure:
             {
               "antiGoals": {
                 "market": "string with market anti-goals",
@@ -133,6 +208,8 @@ export class AIService {
                 "values": "string with values anti-goals"
               }
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const antiGoalsResponse = await this.openai.generateStructuredJson(antiGoalsPrompt);
@@ -145,16 +222,14 @@ export class AIService {
           
         case 4: // Trigger Events
           const triggerEventsPrompt = `
-            Based on the following context from a workshop about creating a business offer:
+            You are a CustomerCamp AI assistant trained in buyer psychology. 
+
+            Analyze the user's description of client situations and urgency factors provided in the context below. Generate a list of 5-10 specific, concrete Trigger Events (situations or 'final straws') that might lead someone to seek solutions related to the user's described experiences. 
+            
+            Focus on specific happenings, not general needs. These should be the moments when potential customers realize they need a solution.
+            
+            Context:
             ${context}
-            
-            Generate 3-5 specific trigger events that would cause someone to seek out a solution.
-            A trigger event is a specific situation, realization, or moment when a potential customer recognizes they need a solution.
-            
-            For each trigger event, provide:
-            - A short description of the event
-            - The emotional state of the person experiencing the event
-            - The urgency level (low, medium, high)
             
             Return a valid JSON object with this structure:
             {
@@ -169,6 +244,8 @@ export class AIService {
                 ... additional events ...
               ]
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const triggerEventsResponse = await this.openai.generateStructuredJson(triggerEventsPrompt);
@@ -181,16 +258,12 @@ export class AIService {
           
         case 5: // Jobs
           const jobsPrompt = `
-            Based on the following context from a workshop about creating a business offer:
+            You are a CustomerCamp AI assistant applying JTBD principles.
+            
+            The user identified Main Job(s) and provided initial thoughts in the context below. Generate 5-7 specific, actionable Related Jobs (tasks/outcomes needed) for each Main Job.
+            
+            Context:
             ${context}
-            
-            Generate 3-5 jobs to be done that your potential customers are trying to accomplish.
-            Jobs to be done are the tasks, goals, or objectives that customers are trying to achieve.
-            
-            For each job, provide:
-            - A short description of what the customer is trying to accomplish
-            - The job type (functional, emotional, social)
-            - The importance level (low, medium, high)
             
             Return a valid JSON object with this structure:
             {
@@ -199,11 +272,14 @@ export class AIService {
                   "id": "unique_id_1",
                   "description": "Description of the job to be done",
                   "type": "functional/emotional/social",
-                  "importance": "high/medium/low"
+                  "importance": "high/medium/low",
+                  "source": "assistant"
                 },
                 ... additional jobs ...
               ]
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const jobsResponse = await this.openai.generateStructuredJson(jobsPrompt);
@@ -216,16 +292,12 @@ export class AIService {
           
         case 6: // Markets
           const marketsPrompt = `
-            Based on the following context from a workshop about creating a business offer:
+            You are a CustomerCamp AI assistant.
+            
+            Based on the Related Jobs the user selected in the context below, suggest 5 additional, diverse potential market segments (specific types of businesses or individuals) who frequently need to accomplish these jobs.
+            
+            Context:
             ${context}
-            
-            Generate 3-5 potential target markets that might benefit from a solution.
-            A market is a specific group of people with shared characteristics, problems, and needs.
-            
-            For each market, provide:
-            - A descriptive name/title for this market segment
-            - A detailed description including demographics, psychographics, and behaviors
-            - Key characteristics that define this market
             
             Return a valid JSON object with this structure:
             {
@@ -234,11 +306,14 @@ export class AIService {
                   "id": "unique_id_1",
                   "title": "Title for this market segment",
                   "description": "Detailed description of this market",
-                  "characteristics": ["characteristic 1", "characteristic 2", "characteristic 3"]
+                  "characteristics": ["characteristic 1", "characteristic 2", "characteristic 3"],
+                  "source": "assistant"
                 },
                 ... additional markets ...
               ]
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const marketsResponse = await this.openai.generateStructuredJson(marketsPrompt);
@@ -251,16 +326,12 @@ export class AIService {
           
         case 7: // Problems
           const problemsPrompt = `
-            Based on the following context from a workshop about creating a business offer:
+            You are a CustomerCamp AI assistant performing Painstorming.
+            
+            For the market and related jobs described in the context below, brainstorm a list of 10-15 specific potential problems or pains they might face. Consider functional, emotional, social, and situational aspects based on buyer psychology principles.
+            
+            Context:
             ${context}
-            
-            Generate 3-5 specific problems that your target market experiences.
-            Problems are the obstacles, pain points, or frustrations that prevent customers from accomplishing their jobs to be done.
-            
-            For each problem, provide:
-            - A short description of the problem
-            - The problem type (functional, emotional)
-            - The severity level (low, medium, high)
             
             Return a valid JSON object with this structure:
             {
@@ -268,12 +339,14 @@ export class AIService {
                 {
                   "id": "unique_id_1",
                   "description": "Description of the problem",
-                  "type": "functional/emotional",
+                  "type": "functional/emotional/social",
                   "severity": "high/medium/low"
                 },
                 ... additional problems ...
               ]
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const problemsResponse = await this.openai.generateStructuredJson(problemsPrompt);
@@ -286,18 +359,14 @@ export class AIService {
           
         case 8: // Market Evaluation
           const marketEvalPrompt = `
-            Based on the following context from a workshop about creating a business offer:
+            You are a CustomerCamp AI assistant calculating Problem-Up scores.
+            
+            Given the user ratings for each market segment against their top problems in the context below, calculate a score for each market by summing its ratings across the four criteria: Problem Size, Solution Fit, Economic Value, and Joy to Serve.
+            
+            Identify the market with the highest total score.
+            
+            Context:
             ${context}
-            
-            Evaluate the markets mentioned and recommend which one to focus on first.
-            Consider factors like:
-            - Size and growth potential
-            - Urgency of problems
-            - Willingness to pay
-            - Accessibility (how easy it is to reach them)
-            - Competitive landscape
-            
-            For each market, provide scores (1-10) for the criteria above and an overall recommendation.
             
             Return a valid JSON object with this structure:
             {
@@ -319,6 +388,8 @@ export class AIService {
               "recommendedMarket": "Description of the recommended market",
               "rationale": "Explanation of why this market is recommended"
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const marketEvalResponse = await this.openai.generateStructuredJson(marketEvalPrompt);
@@ -331,16 +402,14 @@ export class AIService {
           
         case 9: // Offer Exploration
           const offerPrompt = `
-            Based on the following context from a workshop about creating a business offer:
-            ${context}
+            You are a CustomerCamp AI assistant applying the PAINKILLER offer concept.
             
-            Generate 2-3 potential offers that would solve the key problems for the selected market.
-            For each offer, provide:
-            - A name/title
-            - A detailed description
-            - The format (course, coaching, service, product, etc.)
-            - Key benefits and outcomes
-            - How it solves the identified problems
+            Generate 3-5 distinct offer ideas specifically designed for the target market to solve their key problems related to their jobs-to-be-done as described in the context below. Structure these offers using appropriate formats.
+
+            Each offer idea should have a compelling, benefit-driven 'name' and a brief description focusing on the pain relief or transformation.
+            
+            Context:
+            ${context}
             
             Return a valid JSON object with this structure:
             {
@@ -355,6 +424,8 @@ export class AIService {
                 ... additional offers ...
               ]
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const offerResponse = await this.openai.generateStructuredJson(offerPrompt);
@@ -367,17 +438,14 @@ export class AIService {
         
         case 10: // Pricing & Positioning
           const pricingPrompt = `
-            Based on the following context from a workshop about creating a business offer:
+            You are a CustomerCamp AI assistant specializing in value-based pricing.
+
+            Based on the selected offer, the target market, the core problems solved, and the user's input on value metric, willingness to pay, and market comparables from the context below, suggest 2-3 potential pricing strategies.
+            
+            For each strategy, provide the model (e.g., Tiered Subscription, Usage-Based, Project Fee), example tiers if applicable, an example price point or range, and a brief justification.
+            
+            Context:
             ${context}
-            
-            Create a comprehensive pricing and positioning strategy for the selected offer.
-            
-            Include:
-            1. Value Metrics - How customers will measure the value of your solution
-            2. Pricing Model - Recommended pricing approach (one-time, subscription, tiered, etc.)
-            3. Price Points - Suggested price points with justification
-            4. Positioning Statement - How to position against alternatives
-            5. Key Differentiators - What makes this offer unique
             
             Return a valid JSON object with this structure:
             {
@@ -400,6 +468,8 @@ export class AIService {
                 "alternativesComparison": "How this positioning compares to alternatives"
               }
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const pricingResponse = await this.openai.generateStructuredJson(pricingPrompt);
@@ -412,15 +482,18 @@ export class AIService {
 
         case 11: // Summary & Analysis
           const summaryPrompt = `
-            Based on the following complete workshop data about creating a business offer:
-            ${context}
+            You are a CustomerCamp AI assistant providing a final reflection.
             
-            Provide a comprehensive analysis of the workshop results, including:
-            1. Overall Assessment - Strengths and potential weaknesses of the selected market and offer
-            2. Validation Plan - Specific steps to validate assumptions
-            3. Refinement Suggestions - Areas that could be improved or need more clarity
-            4. Marketing Approach - Initial ideas for messaging and channels
-            5. Next Actions - Prioritized list of next steps
+            Based on the complete workshop data about creating a business offer in the context below, provide:
+            
+            1. Summary: Briefly summarize the key components the user defined: Target Market, Job-to-be-Done, Top Problem(s) Solved, Core Offer Concept, Pricing Approach.
+            
+            2. Coherence Check: Briefly analyze the overall coherence. Does the offer logically address the specific problems for the target market trying to achieve the identified job? Are there any obvious gaps or misalignments based on 'Why We Buy' principles?
+            
+            3. Suggested Next Steps: Generate a list of 3-5 concrete, actionable next steps focused on VALIDATING this offer idea with the target market.
+            
+            Context:
+            ${context}
             
             Return a valid JSON object with this structure:
             {
@@ -447,6 +520,8 @@ export class AIService {
                 ... additional next steps ...
               ]
             }
+            
+            Only respond with the JSON object, nothing else.
           `;
           
           const summaryResponse = await this.openai.generateStructuredJson(summaryPrompt);
@@ -472,19 +547,142 @@ export class AIService {
   // Answer a follow-up question based on the step context
   async answerFollowUpQuestion(step: number, question: string, context: string): Promise<AIMessage> {
     try {
-      const prompt = `
-        You are an AI assistant helping someone complete a business offer workshop.
+      let prompt = '';
+      
+      switch(step) {
+        case 3: // Anti-Goals
+          prompt = `
+            You are a CustomerCamp AI assistant discussing Anti-Goals.
+            
+            Current workshop context:
+            ${context}
+            
+            Answer the user's follow-up question based on the context above and general best practices for setting business boundaries. Keep responses concise, helpful, and maintain a helpful, insightful, and slightly 'geeky fun' tone, consistent with the CustomerCamp brand.
+            
+            User Question: "${question}"
+          `;
+          break;
         
-        Current workshop context:
-        ${context}
+        case 4: // Trigger Events
+          prompt = `
+            You are a CustomerCamp AI assistant discussing Trigger Events.
+            
+            Current workshop context:
+            ${context}
+            
+            Answer the user's follow-up question based on the context above and principles of buyer journey initiation. Maintain a helpful, insightful, and slightly 'geeky fun' tone, consistent with the CustomerCamp brand.
+            
+            User Question: "${question}"
+          `;
+          break;
         
-        The user is currently on Step ${step} and has asked the following question:
-        "${question}"
-        
-        Provide a helpful, actionable response that guides them through this step of the workshop.
-        Focus on being practical, specific, and encouraging.
-        If appropriate, give examples and suggestions to help them move forward.
-      `;
+        case 5: // Jobs-to-be-Done
+          prompt = `
+            You are a CustomerCamp AI assistant discussing Jobs-to-be-Done.
+            
+            Current workshop context:
+            ${context}
+            
+            Answer the user's follow-up question based on the context above and JTBD concepts. Explain how jobs connect to customer motivations and needs. Be concise, helpful, and maintain a slightly 'geeky fun' tone.
+            
+            User Question: "${question}"
+          `;
+          break;
+          
+        case 6: // Markets
+          prompt = `
+            You are a CustomerCamp AI assistant discussing Target Markets.
+            
+            Current workshop context:
+            ${context}
+            
+            Answer the user's follow-up question based on the context above and concepts of market segmentation and niche selection. Provide practical insights on choosing and prioritizing markets based on the jobs they need done. Be concise and helpful.
+            
+            User Question: "${question}"
+          `;
+          break;
+          
+        case 7: // Problems
+          prompt = `
+            You are a CustomerCamp AI assistant discussing customer Problems (Pains).
+            
+            Current workshop context:
+            ${context}
+            
+            Answer the user's follow-up question based on the context above and the importance of identifying 'ouchy' problems. Help the user understand how pain intensity, frequency, and financial impact affect problem selection.
+            
+            User Question: "${question}"
+          `;
+          break;
+          
+        case 8: // Market Evaluation
+          prompt = `
+            You are a CustomerCamp AI assistant discussing Market Evaluation (Problem-Upping).
+            
+            Current workshop context:
+            ${context}
+            
+            Answer the user's follow-up question based on the context above and the goal of finding Problem-Market fit. Provide insights on evaluating different markets and their suitability for the user's solution.
+            
+            User Question: "${question}"
+          `;
+          break;
+          
+        case 9: // Value Proposition
+          prompt = `
+            You are a CustomerCamp AI assistant discussing Offer Exploration.
+            
+            Current workshop context:
+            ${context}
+            
+            Answer the user's follow-up question based on the context above and principles of crafting compelling value propositions. Help the user understand how to connect their offer to the customer's problems and desired outcomes.
+            
+            User Question: "${question}"
+          `;
+          break;
+          
+        case 10: // Pricing
+          prompt = `
+            You are a CustomerCamp AI assistant discussing Pricing Strategy.
+            
+            Current workshop context:
+            ${context}
+            
+            Answer the user's follow-up question based on the context above and principles of value-based pricing and buyer psychology related to price perception. Provide practical insights on pricing models, tiers, and positioning.
+            
+            User Question: "${question}"
+          `;
+          break;
+          
+        case 11: // Summary & Action Plan
+          prompt = `
+            You are an action-oriented CustomerCamp coach AI.
+            
+            Current workshop context:
+            ${context}
+            
+            The user has completed the Offer Breakthrough workshop. Your goal is to help them solidify a concrete action plan for the next 1-2 weeks. Answer their question in a way that guides them to prioritize, refine, and commit to specific validation activities.
+            
+            User Question: "${question}"
+          `;
+          break;
+          
+        default:
+          prompt = `
+            You are an AI assistant helping someone complete a business offer workshop.
+            
+            Current workshop context:
+            ${context}
+            
+            The user is currently on Step ${step} and has asked the following question:
+            "${question}"
+            
+            Provide a helpful, actionable response that guides them through this step of the workshop.
+            Focus on being practical, specific, and encouraging.
+            If appropriate, give examples and suggestions to help them move forward.
+            Maintain a helpful, insightful, and slightly 'geeky fun' tone, consistent with CustomerCamp's brand.
+          `;
+      }
       
       const response = await this.openai.generateCompletion(prompt);
       
