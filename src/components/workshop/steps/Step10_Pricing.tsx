@@ -1,181 +1,203 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { HelpCircle, DollarSign } from 'lucide-react';
+import { DollarSign, HelpCircle, AlertCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { Tooltip } from '../../ui/Tooltip';
 
 // Separate selectors to prevent unnecessary re-renders
-const selectPricing = (state: WorkshopStore) => state.workshopData.pricing || {
-  strategy: '',
-  justification: ''
-};
+const selectPricing = (state: WorkshopStore) => state.workshopData.pricing || { strategy: '', justification: '' };
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-
-interface PricingFields {
-  strategy: string;
-  justification: string;
-}
+const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
 
 export const Step10_Pricing: React.FC = () => {
-  const storeValue = useWorkshopStore(selectPricing);
+  const pricing = useWorkshopStore(selectPricing);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
 
-  // Use local state for the form
-  const [localValue, setLocalValue] = useState<PricingFields>(storeValue);
+  const [formData, setFormData] = useState(pricing);
   const [isSaving, setIsSaving] = useState(false);
-  const saveTimerRef = useRef<number | null>(null);
-  const savingTimerRef = useRef<number | null>(null);
+  const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
+  const [showErrors, setShowErrors] = useState(false);
 
-  // Update local state when store value changes
   useEffect(() => {
-    setLocalValue(storeValue);
-  }, [storeValue]);
+    setFormData(pricing);
+  }, [pricing]);
 
-  // Cleanup timers on unmount
+  // Show errors when trying to proceed without completing
   useEffect(() => {
-    return () => {
-      if (saveTimerRef.current !== null) {
-        window.clearTimeout(saveTimerRef.current);
-      }
-      if (savingTimerRef.current !== null) {
-        window.clearTimeout(savingTimerRef.current);
-      }
-    };
-  }, []);
+    if (!canProceedToNextStep()) {
+      setShowErrors(true);
+    }
+  }, [canProceedToNextStep]);
 
-  const handleInputChange = useCallback((field: keyof PricingFields, value: string) => {
-    const newValue = { ...localValue, [field]: value };
-    setLocalValue(newValue);
+  const handleInputChange = useCallback((field: 'strategy' | 'justification', value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
     
-    // Show saving indicator
+    if (saveTimer) {
+      clearTimeout(saveTimer);
+    }
+
     setIsSaving(true);
-    
-    // Clear any existing timers
-    if (saveTimerRef.current !== null) {
-      window.clearTimeout(saveTimerRef.current);
-    }
-    if (savingTimerRef.current !== null) {
-      window.clearTimeout(savingTimerRef.current);
-    }
-    
-    // Save to store after a short delay
-    saveTimerRef.current = window.setTimeout(() => {
-      updateWorkshopData({ pricing: newValue });
-      // Keep the saving indicator visible briefly
-      savingTimerRef.current = window.setTimeout(() => setIsSaving(false), 500);
-    }, 300);
-  }, [localValue, updateWorkshopData]);
+    const timer = setTimeout(() => {
+      updateWorkshopData({
+        pricing: {
+          ...pricing,
+          [field]: value
+        }
+      });
+      setIsSaving(false);
+      if (value.trim() !== '') {
+        setShowErrors(false);
+      }
+    }, 500);
+    setSaveTimer(timer);
+  }, [pricing, updateWorkshopData]);
+
+  const isFieldEmpty = (field: 'strategy' | 'justification'): boolean => {
+    return showErrors && !formData[field].trim();
+  };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
         stepNumber={10}
-        title="Determine Your Pricing Strategy"
-        description="Set a price that reflects the value you provide and aligns with your market."
+        title="Pricing Strategy"
+        description="Define your pricing strategy and explain how it aligns with your value proposition."
       />
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
             padding: '12px 16px',
-            backgroundColor: '#f0fdf4',
-            borderLeft: '4px solid #16a34a',
+            backgroundColor: '#f0f9ff',
+            borderLeft: '4px solid #0ea5e9',
             borderRadius: '0 8px 8px 0',
-            color: '#166534',
+            color: '#0369a1',
             display: 'flex',
             alignItems: 'center',
             fontSize: '14px',
             fontWeight: 500,
           }}>
-            <DollarSign style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#16a34a' }} />
-            Your pricing strategy should reflect both the value you provide and your market positioning.
+            <DollarSign style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#0ea5e9' }} />
+            Consider factors like market positioning, customer value perception, and operational costs.
           </div>
 
-          {/* Pricing Strategy */}
           <div>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '8px',
-              marginBottom: '8px'
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <label 
-                htmlFor="pricing-strategy"
-                style={{ fontWeight: 600, color: '#374151' }}
+                htmlFor="strategy"
+                style={{ 
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#374151',
+                  flex: 1
+                }}
               >
-                Pricing Strategy:
+                Pricing Strategy
               </label>
-              <Tooltip content="Choose your overall approach to pricing (e.g., premium, competitive, value-based)" position="right">
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  cursor: 'help' 
-                }}>
-                  <HelpCircle size={16} style={{ color: '#9ca3af' }} />
-                </div>
-              </Tooltip>
+              <div 
+                style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  color: '#6b7280',
+                  fontSize: '14px'
+                }}
+              >
+                <HelpCircle size={14} />
+                What pricing model will you use?
+              </div>
             </div>
             <textarea
-              id="pricing-strategy"
-              rows={3}
-              value={localValue.strategy}
-              onChange={(e) => handleInputChange('strategy', e.target.value)}
-              placeholder="Describe your overall pricing strategy. Will you position as premium, mid-market, or entry-level? Why?"
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid #d1d5db',
-                fontSize: '16px',
-                lineHeight: 1.6,
-                backgroundColor: 'white',
-              }}
-            />
-          </div>
-
-          {/* Pricing Justification */}
-          <div>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '8px',
-              marginBottom: '8px'
-            }}>
-              <label 
-                htmlFor="pricing-justification"
-                style={{ fontWeight: 600, color: '#374151' }}
-              >
-                Pricing Justification:
-              </label>
-              <Tooltip content="Explain the reasoning behind your pricing strategy and specific price points" position="right">
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  cursor: 'help' 
-                }}>
-                  <HelpCircle size={16} style={{ color: '#9ca3af' }} />
-                </div>
-              </Tooltip>
-            </div>
-            <textarea
-              id="pricing-justification"
+              id="strategy"
               rows={4}
-              value={localValue.justification}
-              onChange={(e) => handleInputChange('justification', e.target.value)}
-              placeholder="What factors influenced your pricing decision? Consider market rates, perceived value, your costs, and any tiered offerings. List specific price points and explain the value at each tier."
+              value={formData.strategy}
+              onChange={(e) => handleInputChange('strategy', e.target.value)}
+              placeholder="e.g., Tiered pricing with three levels: Basic ($X/mo), Pro ($Y/mo), and Enterprise (custom pricing)"
               style={{
                 width: '100%',
                 padding: '12px',
                 borderRadius: '8px',
-                border: '1px solid #d1d5db',
+                border: '1px solid',
+                borderColor: isFieldEmpty('strategy') ? '#ef4444' : '#d1d5db',
                 fontSize: '16px',
                 lineHeight: 1.6,
                 backgroundColor: 'white',
               }}
             />
+            {isFieldEmpty('strategy') && (
+              <div style={{ 
+                color: '#ef4444',
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                marginTop: '8px'
+              }}>
+                <AlertCircle size={14} />
+                Please define your pricing strategy
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <label 
+                htmlFor="justification"
+                style={{ 
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#374151',
+                  flex: 1
+                }}
+              >
+                Strategy Justification
+              </label>
+              <div 
+                style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  color: '#6b7280',
+                  fontSize: '14px'
+                }}
+              >
+                <HelpCircle size={14} />
+                Why did you choose this pricing strategy?
+              </div>
+            </div>
+            <textarea
+              id="justification"
+              rows={4}
+              value={formData.justification}
+              onChange={(e) => handleInputChange('justification', e.target.value)}
+              placeholder="Explain why this pricing strategy makes sense for your market and offer. How does it align with your value proposition?"
+              style={{
+                width: '100%',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid',
+                borderColor: isFieldEmpty('justification') ? '#ef4444' : '#d1d5db',
+                fontSize: '16px',
+                lineHeight: 1.6,
+                backgroundColor: 'white',
+              }}
+            />
+            {isFieldEmpty('justification') && (
+              <div style={{ 
+                color: '#ef4444',
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                marginTop: '8px'
+              }}>
+                <AlertCircle size={14} />
+                Please explain your pricing strategy choice
+              </div>
+            )}
           </div>
         </div>
       </Card>

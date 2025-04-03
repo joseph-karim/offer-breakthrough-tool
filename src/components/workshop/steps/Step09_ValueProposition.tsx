@@ -3,13 +3,13 @@ import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { Lightbulb, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Lightbulb, AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { Tooltip } from '../../ui/Tooltip';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectValueProposition = (state: WorkshopStore) => state.workshopData.valueProposition || {};
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
 
 interface ValuePropositionData {
   uniqueValue?: string;
@@ -18,30 +18,40 @@ interface ValuePropositionData {
   differentiators?: string;
 }
 
-const placeholders = {
-  uniqueValue: "Example: We help small business owners increase their revenue by 30% through automated marketing campaigns that require minimal time investment.",
-  painPoints: "Example: Small business owners struggle with limited time and marketing expertise, leading to inconsistent customer acquisition and revenue.",
-  benefits: "Example: Save 10 hours per week on marketing tasks, increase customer engagement by 50%, and generate 25% more qualified leads.",
-  differentiators: "Example: Unlike traditional agencies, we offer AI-powered automation, fixed pricing, and guaranteed results within 90 days."
-};
+const FIELDS = {
+  uniqueValue: 'Unique Value',
+  painPoints: 'Pain Points',
+  benefits: 'Benefits',
+  differentiators: 'Differentiators'
+} as const;
 
-const tooltips = {
-  uniqueValue: "A clear statement that explains how your solution helps customers achieve their desired outcome",
-  painPoints: "The specific challenges and problems your target market faces that your solution addresses",
-  benefits: "Quantifiable advantages and positive outcomes customers gain from using your solution",
-  differentiators: "What makes your solution unique compared to alternatives in the market"
-};
+const PLACEHOLDERS = {
+  uniqueValue: 'What makes your solution unique? What can you offer that others cannot?',
+  painPoints: 'What specific problems or challenges does your solution address?',
+  benefits: 'What tangible outcomes and benefits will customers receive?',
+  differentiators: 'How are you different from existing solutions in the market?'
+} as const;
 
 export const Step09_ValueProposition: React.FC = () => {
   const valueProposition = useWorkshopStore(selectValueProposition);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+
   const [formData, setFormData] = useState<ValuePropositionData>(valueProposition);
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
+  const [showErrors, setShowErrors] = useState(false);
 
   useEffect(() => {
     setFormData(valueProposition);
   }, [valueProposition]);
+
+  // Show errors when trying to proceed without completing
+  useEffect(() => {
+    if (!canProceedToNextStep()) {
+      setShowErrors(true);
+    }
+  }, [canProceedToNextStep]);
 
   const handleInputChange = useCallback((field: keyof ValuePropositionData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -59,118 +69,102 @@ export const Step09_ValueProposition: React.FC = () => {
         }
       });
       setIsSaving(false);
+      if (value.trim() !== '') {
+        setShowErrors(false);
+      }
     }, 500);
     setSaveTimer(timer);
-  }, [valueProposition, updateWorkshopData]);
+  }, [valueProposition, updateWorkshopData, saveTimer]);
 
-  const isComplete = useCallback(() => {
-    return Boolean(
-      formData.uniqueValue?.trim() &&
-      formData.painPoints?.trim() &&
-      formData.benefits?.trim() &&
-      formData.differentiators?.trim()
-    );
-  }, [formData]);
+  const isFieldEmpty = (field: keyof ValuePropositionData): boolean => {
+    return showErrors && !formData[field]?.trim();
+  };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
         stepNumber={9}
-        title="Define Your Value Proposition"
-        description="Create a compelling value proposition that resonates with your target market."
+        title="Value Proposition"
+        description="Define your unique value proposition and how it addresses your market's needs."
       />
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
             padding: '12px 16px',
-            backgroundColor: '#fef3c7',
-            borderLeft: '4px solid #d97706',
+            backgroundColor: '#f0f9ff',
+            borderLeft: '4px solid #0ea5e9',
             borderRadius: '0 8px 8px 0',
-            color: '#92400e',
+            color: '#0369a1',
             display: 'flex',
             alignItems: 'center',
             fontSize: '14px',
             fontWeight: 500,
           }}>
-            <Lightbulb style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#d97706' }} />
-            Your value proposition should clearly communicate the unique benefits and advantages your solution offers to your target market.
+            <Lightbulb style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#0ea5e9' }} />
+            Focus on what makes your solution unique and valuable to your target market.
           </div>
 
           <div style={{ display: 'grid', gap: '20px' }}>
-            {Object.entries({
-              uniqueValue: 'Unique Value Statement',
-              painPoints: 'Customer Pain Points',
-              benefits: 'Key Benefits',
-              differentiators: 'Competitive Differentiators'
-            }).map(([field, label]) => (
-              <div key={field} style={{ display: 'grid', gap: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label
+            {(Object.entries(FIELDS) as [keyof ValuePropositionData, string][]).map(([field, label]) => (
+              <div key={field}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                  <label 
                     htmlFor={field}
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: 600,
-                      color: '#111827'
+                    style={{ 
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      color: '#374151',
+                      flex: 1
                     }}
                   >
                     {label}
                   </label>
-                  <Tooltip
-                    content={tooltips[field as keyof typeof tooltips]}
-                    position="right"
+                  <div 
+                    style={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      color: '#6b7280',
+                      fontSize: '14px'
+                    }}
                   >
-                    <div style={{
-                      cursor: 'help',
-                      display: 'inline-flex',
-                      padding: '2px',
-                      borderRadius: '50%',
-                      backgroundColor: '#f3f4f6'
-                    }}>
-                      <AlertCircle size={14} style={{ color: '#6b7280' }} />
-                    </div>
-                  </Tooltip>
+                    <HelpCircle size={14} />
+                    {PLACEHOLDERS[field]}
+                  </div>
                 </div>
                 <textarea
                   id={field}
-                  value={formData[field as keyof ValuePropositionData] || ''}
-                  onChange={(e) => handleInputChange(field as keyof ValuePropositionData, e.target.value)}
-                  placeholder={placeholders[field as keyof typeof placeholders]}
+                  rows={4}
+                  value={formData[field] || ''}
+                  onChange={(e) => handleInputChange(field, e.target.value)}
+                  placeholder={PLACEHOLDERS[field]}
                   style={{
                     width: '100%',
-                    minHeight: '100px',
                     padding: '12px',
                     borderRadius: '8px',
-                    border: '1px solid #d1d5db',
-                    fontSize: '14px',
-                    lineHeight: '1.5',
-                    resize: 'vertical',
+                    border: '1px solid',
+                    borderColor: isFieldEmpty(field) ? '#ef4444' : '#d1d5db',
+                    fontSize: '16px',
+                    lineHeight: 1.6,
+                    backgroundColor: 'white',
                   }}
                 />
+                {isFieldEmpty(field) && (
+                  <div style={{ 
+                    color: '#ef4444',
+                    fontSize: '14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    marginTop: '8px'
+                  }}>
+                    <AlertCircle size={14} />
+                    Please fill in this field
+                  </div>
+                )}
               </div>
             ))}
-          </div>
-
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '12px',
-            backgroundColor: isComplete() ? '#f0fdf4' : '#fef2f2',
-            borderRadius: '8px',
-            color: isComplete() ? '#166534' : '#991b1b',
-            fontSize: '14px',
-          }}>
-            {isComplete() ? (
-              <CheckCircle2 size={16} style={{ flexShrink: 0 }} />
-            ) : (
-              <AlertCircle size={16} style={{ flexShrink: 0 }} />
-            )}
-            <span>
-              {isComplete()
-                ? 'Great job! Your value proposition is complete.'
-                : 'Please fill in all fields to complete your value proposition.'}
-            </span>
           </div>
         </div>
       </Card>

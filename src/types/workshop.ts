@@ -54,6 +54,10 @@ export interface ValueProposition {
   differentiators?: string;
 }
 
+export interface MarketEvaluation {
+  [criteriaId: string]: number;
+}
+
 export interface WorkshopData {
   antiGoals: AntiGoals;
   triggerEvents: TriggerEvent[];
@@ -66,6 +70,7 @@ export interface WorkshopData {
   pricing?: { strategy: string; justification: string };
   reflections?: Reflections;
   valueProposition?: ValueProposition;
+  marketEvaluations?: { [marketId: string]: MarketEvaluation };
 }
 
 export interface WorkshopSession {

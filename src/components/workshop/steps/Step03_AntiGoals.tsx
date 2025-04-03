@@ -4,7 +4,7 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { AntiGoals } from '../../../types/workshop';
-import { Info, HelpCircle } from 'lucide-react';
+import { Info, HelpCircle, AlertCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
 
@@ -90,176 +90,314 @@ const selectAntiGoals = (state: WorkshopStore) => state.workshopData.antiGoals |
   market: '', offer: '', delivery: '', lifestyle: '', values: ''
 };
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
 
 export const Step03_AntiGoals: React.FC = () => {
-  const storeValue = useWorkshopStore(selectAntiGoals);
+  const antiGoals = useWorkshopStore(selectAntiGoals);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-
-  // Use local state for the form
-  const [localValue, setLocalValue] = useState<AntiGoals>(storeValue);
+  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  const [formData, setFormData] = useState<AntiGoals>(antiGoals);
   const [isSaving, setIsSaving] = useState(false);
-  const saveTimerRef = useRef<number | null>(null);
-  const savingTimerRef = useRef<number | null>(null);
+  const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
+  const [showErrors, setShowErrors] = useState(false);
 
   // Update local state when store value changes
   useEffect(() => {
-    setLocalValue(storeValue);
-  }, [storeValue]);
+    setFormData(antiGoals);
+  }, [antiGoals]);
 
-  // Cleanup timers on unmount
-  useEffect(() => {
-    return () => {
-      if (saveTimerRef.current !== null) {
-        window.clearTimeout(saveTimerRef.current);
-      }
-      if (savingTimerRef.current !== null) {
-        window.clearTimeout(savingTimerRef.current);
-      }
-    };
-  }, []);
-
-  const handleInputChange = useCallback((key: keyof AntiGoals, value: string) => {
-    const newValue = { ...localValue, [key]: value };
-    setLocalValue(newValue);
+  const handleInputChange = useCallback((field: keyof AntiGoals, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
     
-    // Show saving indicator
+    if (saveTimer) {
+      clearTimeout(saveTimer);
+    }
+
     setIsSaving(true);
-    
-    // Clear any existing timers
-    if (saveTimerRef.current !== null) {
-      window.clearTimeout(saveTimerRef.current);
-    }
-    if (savingTimerRef.current !== null) {
-      window.clearTimeout(savingTimerRef.current);
-    }
-    
-    // Save to store after a short delay
-    saveTimerRef.current = window.setTimeout(() => {
-      updateWorkshopData({ antiGoals: newValue });
-      // Keep the saving indicator visible briefly
-      savingTimerRef.current = window.setTimeout(() => setIsSaving(false), 500);
-    }, 300);
-  }, [localValue, updateWorkshopData]);
+    const timer = setTimeout(() => {
+      updateWorkshopData({
+        antiGoals: {
+          ...antiGoals,
+          [field]: value
+        }
+      });
+      setIsSaving(false);
+    }, 500);
+    setSaveTimer(timer);
+  }, [antiGoals, updateWorkshopData]);
 
-  // Handle keyboard navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent, currentKey: keyof AntiGoals) => {
-    const currentIndex = antiGoalKeys.indexOf(currentKey);
-    
-    if (e.key === 'Tab') {
-      // Let the browser handle normal tab navigation
-      return;
+  // Check if a field is empty
+  const isFieldEmpty = (field: keyof AntiGoals) => showErrors && !formData[field]?.trim();
+
+  // Get error message for a field
+  const getErrorMessage = (field: keyof AntiGoals) => {
+    if (isFieldEmpty(field)) {
+      return 'This field is required to proceed';
     }
-    
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      // Move to next field if available
-      if (currentIndex < antiGoalKeys.length - 1) {
-        const nextKey = antiGoalKeys[currentIndex + 1];
-        document.getElementById(`antiGoal-${nextKey}`)?.focus();
-      }
+    return '';
+  };
+
+  // Effect to show errors when trying to proceed
+  useEffect(() => {
+    if (!canProceedToNextStep()) {
+      setShowErrors(true);
     }
-  }, []);
+  }, [canProceedToNextStep]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
         stepNumber={3}
         title="Define Your Anti-Goals"
-        description="Clarify what you *don't* want to happen. Setting boundaries helps focus your offer and attract the right clients."
+        description="Clarify what you don't want in your business to make better decisions."
       />
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
             padding: '12px 16px',
-            backgroundColor: '#eef2ff',
-            borderLeft: '4px solid #4f46e5',
+            backgroundColor: '#fff7ed',
+            borderLeft: '4px solid #ea580c',
             borderRadius: '0 8px 8px 0',
-            color: '#3730a3',
+            color: '#9a3412',
             display: 'flex',
             alignItems: 'center',
             fontSize: '14px',
             fontWeight: 500,
           }}>
-            <Info style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#4f46e5' }} />
-            Being clear about what you *don't* want is as important as knowing what you *do* want. It prevents future frustration.
+            <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#ea580c' }} />
+            Define what you want to avoid in each area to make better decisions about your offer.
           </div>
 
-          {antiGoalKeys.map(key => (
-            <div key={key}>
+          {/* Market Anti-Goals */}
+          <div>
+            <label 
+              htmlFor="market-anti-goals"
+              style={{ 
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: 600,
+                color: '#374151'
+              }}
+            >
+              Market Anti-Goals:
+            </label>
+            <textarea
+              id="market-anti-goals"
+              value={formData.market}
+              onChange={(e) => handleInputChange('market', e.target.value)}
+              placeholder="What types of customers or markets do you want to avoid?"
+              style={{
+                width: '100%',
+                minHeight: '100px',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid',
+                borderColor: isFieldEmpty('market') ? '#ef4444' : '#d1d5db',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                resize: 'vertical',
+                backgroundColor: 'white',
+              }}
+            />
+            {isFieldEmpty('market') && (
               <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px',
-                marginBottom: '8px'
+                color: '#ef4444',
+                fontSize: '14px',
+                marginTop: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
               }}>
-                <label 
-                  htmlFor={`antiGoal-${key}`}
-                  style={{ fontWeight: 600, color: '#374151' }}
-                >
-                  {getTitle(key)}:
-                </label>
-                <Tooltip content={getTooltip(key)} position="right">
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    cursor: 'help' 
-                  }}>
-                    <HelpCircle size={16} style={{ color: '#9ca3af' }} />
-                  </div>
-                </Tooltip>
+                <AlertCircle size={14} />
+                {getErrorMessage('market')}
               </div>
-              <textarea
-                id={`antiGoal-${key}`}
-                rows={3}
-                value={localValue[key]}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(e, key)}
-                placeholder={getPlaceholder(key)}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: '1px solid #d1d5db',
-                  fontSize: '16px',
-                  lineHeight: 1.6,
-                  backgroundColor: 'white',
-                }}
-              />
-              
-              {/* Show examples when the field is empty */}
-              {!localValue[key].trim() && (
-                <div style={{ 
-                  marginTop: '8px',
-                  padding: '12px',
-                  backgroundColor: '#f9fafb',
-                  borderRadius: '8px',
-                  border: '1px dashed #d1d5db'
-                }}>
-                  <p style={{ 
-                    fontSize: '14px',
-                    color: '#6b7280',
-                    fontStyle: 'italic',
-                    marginBottom: '8px'
-                  }}>
-                    Example {getTitle(key).toLowerCase()}:
-                  </p>
-                  <ul style={{ 
-                    listStyle: 'disc',
-                    paddingLeft: '24px',
-                    color: '#6b7280',
-                    fontSize: '14px',
-                    display: 'grid',
-                    gap: '4px'
-                  }}>
-                    {getExamples(key).map((example, index) => (
-                      <li key={index}>{example}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ))}
+            )}
+          </div>
+
+          {/* Offer Anti-Goals */}
+          <div>
+            <label 
+              htmlFor="offer-anti-goals"
+              style={{ 
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: 600,
+                color: '#374151'
+              }}
+            >
+              Offer Anti-Goals:
+            </label>
+            <textarea
+              id="offer-anti-goals"
+              value={formData.offer}
+              onChange={(e) => handleInputChange('offer', e.target.value)}
+              placeholder="What types of products or services do you want to avoid offering?"
+              style={{
+                width: '100%',
+                minHeight: '100px',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid',
+                borderColor: isFieldEmpty('offer') ? '#ef4444' : '#d1d5db',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                resize: 'vertical',
+                backgroundColor: 'white',
+              }}
+            />
+            {isFieldEmpty('offer') && (
+              <div style={{ 
+                color: '#ef4444',
+                fontSize: '14px',
+                marginTop: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <AlertCircle size={14} />
+                {getErrorMessage('offer')}
+              </div>
+            )}
+          </div>
+
+          {/* Delivery Anti-Goals */}
+          <div>
+            <label 
+              htmlFor="delivery-anti-goals"
+              style={{ 
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: 600,
+                color: '#374151'
+              }}
+            >
+              Delivery Anti-Goals:
+            </label>
+            <textarea
+              id="delivery-anti-goals"
+              value={formData.delivery}
+              onChange={(e) => handleInputChange('delivery', e.target.value)}
+              placeholder="What delivery methods or processes do you want to avoid?"
+              style={{
+                width: '100%',
+                minHeight: '100px',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid',
+                borderColor: isFieldEmpty('delivery') ? '#ef4444' : '#d1d5db',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                resize: 'vertical',
+                backgroundColor: 'white',
+              }}
+            />
+            {isFieldEmpty('delivery') && (
+              <div style={{ 
+                color: '#ef4444',
+                fontSize: '14px',
+                marginTop: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <AlertCircle size={14} />
+                {getErrorMessage('delivery')}
+              </div>
+            )}
+          </div>
+
+          {/* Business Lifestyle Anti-Goals */}
+          <div>
+            <label 
+              htmlFor="lifestyle-anti-goals"
+              style={{ 
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: 600,
+                color: '#374151'
+              }}
+            >
+              Business Lifestyle Anti-Goals:
+            </label>
+            <textarea
+              id="lifestyle-anti-goals"
+              value={formData.lifestyle}
+              onChange={(e) => handleInputChange('lifestyle', e.target.value)}
+              placeholder="What aspects of running the business do you want to avoid?"
+              style={{
+                width: '100%',
+                minHeight: '100px',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid',
+                borderColor: isFieldEmpty('lifestyle') ? '#ef4444' : '#d1d5db',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                resize: 'vertical',
+                backgroundColor: 'white',
+              }}
+            />
+            {isFieldEmpty('lifestyle') && (
+              <div style={{ 
+                color: '#ef4444',
+                fontSize: '14px',
+                marginTop: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <AlertCircle size={14} />
+                {getErrorMessage('lifestyle')}
+              </div>
+            )}
+          </div>
+
+          {/* Values & Ethics Anti-Goals */}
+          <div>
+            <label 
+              htmlFor="values-anti-goals"
+              style={{ 
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: 600,
+                color: '#374151'
+              }}
+            >
+              Values & Ethics Anti-Goals:
+            </label>
+            <textarea
+              id="values-anti-goals"
+              value={formData.values}
+              onChange={(e) => handleInputChange('values', e.target.value)}
+              placeholder="What ethical boundaries or values do you want to maintain?"
+              style={{
+                width: '100%',
+                minHeight: '100px',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid',
+                borderColor: isFieldEmpty('values') ? '#ef4444' : '#d1d5db',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                resize: 'vertical',
+                backgroundColor: 'white',
+              }}
+            />
+            {isFieldEmpty('values') && (
+              <div style={{ 
+                color: '#ef4444',
+                fontSize: '14px',
+                marginTop: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <AlertCircle size={14} />
+                {getErrorMessage('values')}
+              </div>
+            )}
+          </div>
         </div>
       </Card>
 

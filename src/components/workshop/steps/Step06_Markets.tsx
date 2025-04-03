@@ -5,25 +5,35 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Market } from '../../../types/workshop';
-import { Users, Plus, X } from 'lucide-react';
+import { Users, Plus, X, AlertCircle } from 'lucide-react';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectMarkets = (state: WorkshopStore) => state.workshopData.markets || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
 
 export const Step06_Markets: React.FC = () => {
   const storeMarkets = useWorkshopStore(selectMarkets);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
 
   // Use local state for the markets
   const [markets, setMarkets] = useState<Market[]>(storeMarkets);
   const [newMarket, setNewMarket] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
 
   // Update local state when store value changes
   useEffect(() => {
     setMarkets(storeMarkets);
   }, [storeMarkets]);
+
+  // Show error when trying to proceed without completing
+  useEffect(() => {
+    if (!canProceedToNextStep()) {
+      setShowError(true);
+    }
+  }, [canProceedToNextStep]);
 
   const handleAddMarket = useCallback(() => {
     if (newMarket.trim() !== '') {
@@ -36,6 +46,7 @@ export const Step06_Markets: React.FC = () => {
       setMarkets(prev => [...prev, market]);
       setNewMarket(''); // Clear input
       updateWorkshopData({ markets: [...markets, market] });
+      setShowError(false);
     }
   }, [newMarket, markets, updateWorkshopData]);
 
@@ -51,6 +62,8 @@ export const Step06_Markets: React.FC = () => {
       handleAddMarket();
     }
   }, [handleAddMarket]);
+
+  const isListEmpty = () => showError && markets.length === 0;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -78,44 +91,57 @@ export const Step06_Markets: React.FC = () => {
           </div>
 
           {/* List of existing markets */}
-          {markets.length > 0 && (
-            <div style={{ display: 'grid', gap: '12px' }}>
-              {markets.map(market => (
-                <div 
-                  key={market.id}
+          <div style={{ display: 'grid', gap: '12px' }}>
+            {markets.map(market => (
+              <div 
+                key={market.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '8px',
+                  border: '1px solid #e5e7eb',
+                }}
+              >
+                <span style={{ flex: 1, color: '#374151' }}>{market.description}</span>
+                <button
+                  onClick={() => handleDeleteMarket(market.id)}
+                  onMouseEnter={() => setHoveredId(market.id)}
+                  onMouseLeave={() => setHoveredId(null)}
                   style={{
+                    padding: '4px',
+                    borderRadius: '4px',
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px',
-                    padding: '12px 16px',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '8px',
-                    border: '1px solid #e5e7eb',
+                    color: hoveredId === market.id ? '#ef4444' : '#6b7280',
+                    transition: 'color 0.2s ease'
                   }}
                 >
-                  <span style={{ flex: 1, color: '#374151' }}>{market.description}</span>
-                  <button
-                    onClick={() => handleDeleteMarket(market.id)}
-                    onMouseEnter={() => setHoveredId(market.id)}
-                    onMouseLeave={() => setHoveredId(null)}
-                    style={{
-                      padding: '4px',
-                      borderRadius: '4px',
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      color: hoveredId === market.id ? '#ef4444' : '#6b7280',
-                      transition: 'color 0.2s ease'
-                    }}
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                  <X size={16} />
+                </button>
+              </div>
+            ))}
+            {isListEmpty() && (
+              <div style={{ 
+                color: '#ef4444',
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '8px 12px',
+                backgroundColor: '#fef2f2',
+                borderRadius: '6px'
+              }}>
+                <AlertCircle size={14} />
+                Add at least one target market to proceed
+              </div>
+            )}
+          </div>
 
           {/* Add new market input */}
           <div>
@@ -136,7 +162,8 @@ export const Step06_Markets: React.FC = () => {
                   flex: 1,
                   padding: '12px',
                   borderRadius: '8px',
-                  border: '1px solid #d1d5db',
+                  border: '1px solid',
+                  borderColor: isListEmpty() ? '#ef4444' : '#d1d5db',
                   fontSize: '16px',
                   backgroundColor: 'white',
                 }}

@@ -2,25 +2,35 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, AlertCircle } from 'lucide-react';
 import type { WorkshopStore } from '../../../store/workshopStore';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectMarketDemandAnalysis = (state: WorkshopStore) => state.workshopData.marketDemandAnalysis || '';
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
 
 export const Step02_MarketDemand: React.FC = () => {
   // Get initial value from store
   const storeValue = useWorkshopStore(selectMarketDemandAnalysis);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
   
   // Use local state for the textarea
   const [localValue, setLocalValue] = useState(storeValue);
+  const [showError, setShowError] = useState(false);
 
   // Update local state when store value changes (e.g., when navigating back to this step)
   useEffect(() => {
     setLocalValue(storeValue);
   }, [storeValue]);
+
+  // Show error when trying to proceed without completing
+  useEffect(() => {
+    if (!canProceedToNextStep()) {
+      setShowError(true);
+    }
+  }, [canProceedToNextStep]);
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = event.target.value;
@@ -28,8 +38,11 @@ export const Step02_MarketDemand: React.FC = () => {
     // Save to store immediately if there's content
     if (newValue.trim() !== '') {
       updateWorkshopData({ marketDemandAnalysis: newValue });
+      setShowError(false);
     }
   }, [updateWorkshopData]);
+
+  const isFieldEmpty = () => showError && !localValue.trim();
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -54,12 +67,25 @@ export const Step02_MarketDemand: React.FC = () => {
               width: '100%',
               padding: '12px',
               borderRadius: '8px',
-              border: '1px solid #d1d5db',
+              border: '1px solid',
+              borderColor: isFieldEmpty() ? '#ef4444' : '#d1d5db',
               fontSize: '16px',
               lineHeight: 1.6,
               backgroundColor: 'white',
             }}
           />
+          {isFieldEmpty() && (
+            <div style={{ 
+              color: '#ef4444',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              <AlertCircle size={14} />
+              This field is required to proceed
+            </div>
+          )}
           <div style={{
             padding: '12px 16px',
             backgroundColor: '#fffbeb',

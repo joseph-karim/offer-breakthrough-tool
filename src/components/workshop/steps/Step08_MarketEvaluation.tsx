@@ -1,51 +1,74 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import type { Market } from '../../../types/workshop';
-import { Users, CheckCircle2, Star, AlertCircle } from 'lucide-react';
+import type { Market, MarketEvaluation } from '../../../types/workshop';
+import { Users, CheckCircle2, Star, AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectMarkets = (state: WorkshopStore) => state.workshopData.markets || [];
+const selectMarketEvaluations = (state: WorkshopStore) => state.workshopData.marketEvaluations || {};
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
 
-// Evaluation criteria
-const evaluationCriteria = [
-  { id: 'size', label: 'Market Size', description: 'How large is this market segment?' },
-  { id: 'growth', label: 'Growth Potential', description: 'Is this market growing?' },
-  { id: 'accessibility', label: 'Accessibility', description: 'Can you easily reach and connect with this market?' },
-  { id: 'profitability', label: 'Profitability', description: 'What is the potential profit margin?' },
-  { id: 'competition', label: 'Competition Level', description: 'How saturated is this market?' },
-  { id: 'urgency', label: 'Problem Urgency', description: 'How urgent are their problems?' }
+const CRITERIA = [
+  { id: 'marketSize', label: 'Market Size', description: 'How large is this market segment?' },
+  { id: 'growthPotential', label: 'Growth Potential', description: 'How fast is this market segment growing?' },
+  { id: 'competitionLevel', label: 'Competition Level', description: 'How strong is the competition in this segment?' },
+  { id: 'accessibilityToMarket', label: 'Accessibility', description: 'How easy is it to reach and sell to this market?' },
+  { id: 'profitPotential', label: 'Profit Potential', description: 'What is the potential for high profit margins?' },
 ];
 
 export const Step08_MarketEvaluation: React.FC = () => {
   const markets = useWorkshopStore(selectMarkets);
+  const marketEvaluations = useWorkshopStore(selectMarketEvaluations);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
   const [isSaving, setIsSaving] = useState(false);
-  const [scores, setScores] = useState<Record<string, Record<string, number>>>({});
+  const [scores, setScores] = useState<{ [marketId: string]: MarketEvaluation }>(marketEvaluations);
+  const [showErrors, setShowErrors] = useState(false);
 
-  const handleScoreChange = useCallback((marketId: string, criteriaId: string, score: number) => {
-    setScores(prev => ({
-      ...prev,
+  // Update local state when store values change
+  useEffect(() => {
+    setScores(marketEvaluations);
+  }, [marketEvaluations]);
+
+  // Show errors when trying to proceed without completing
+  useEffect(() => {
+    if (!canProceedToNextStep()) {
+      setShowErrors(true);
+    }
+  }, [canProceedToNextStep]);
+
+  const handleScoreChange = (marketId: string, criteriaId: string, value: number) => {
+    const updatedScores = {
+      ...scores,
       [marketId]: {
-        ...(prev[marketId] || {}),
-        [criteriaId]: score
+        ...scores[marketId],
+        [criteriaId]: value
       }
-    }));
-  }, []);
+    };
+    setScores(updatedScores);
+    updateWorkshopData({ marketEvaluations: updatedScores });
+    setShowErrors(false);
+  };
 
-  const getMarketScore = useCallback((marketId: string) => {
-    const marketScores = scores[marketId] || {};
-    const totalScore = Object.values(marketScores).reduce((sum, score) => sum + score, 0);
-    const maxPossibleScore = evaluationCriteria.length * 5;
-    return Math.round((totalScore / maxPossibleScore) * 100);
-  }, [scores]);
+  const getMarketScore = (marketId: string, criteriaId: string): number => {
+    return scores[marketId]?.[criteriaId] || 0;
+  };
 
-  const handleSelectMarket = useCallback((market: Market) => {
+  const isMarketIncomplete = (marketId: string): boolean => {
+    return showErrors && CRITERIA.some(criteria => getMarketScore(marketId, criteria.id) === 0);
+  };
+
+  const getTotalScore = (marketId: string): number => {
+    return CRITERIA.reduce((sum, criteria) => sum + getMarketScore(marketId, criteria.id), 0);
+  };
+
+  const handleSelectMarket = (market: Market) => {
     setIsSaving(true);
     updateWorkshopData({
       markets: markets.map(m => ({
@@ -54,14 +77,14 @@ export const Step08_MarketEvaluation: React.FC = () => {
       }))
     });
     setTimeout(() => setIsSaving(false), 500);
-  }, [markets, updateWorkshopData]);
+  };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
         stepNumber={8}
-        title="Evaluate Target Markets"
-        description="Score each market segment to identify the most promising opportunity."
+        title="Market Evaluation"
+        description="Score each market segment based on the following criteria to identify the most promising opportunities."
       />
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
@@ -137,7 +160,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
                           fontSize: '14px',
                           color: '#6b7280'
                         }}>
-                          Overall Score: {getMarketScore(market.id)}%
+                          Overall Score: {getTotalScore(market.id)}%
                         </span>
                       </div>
                     </div>
@@ -157,8 +180,24 @@ export const Step08_MarketEvaluation: React.FC = () => {
                     </Button>
                   </div>
 
+                  {isMarketIncomplete(market.id) && (
+                    <div style={{ 
+                      color: '#ef4444',
+                      fontSize: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '8px 12px',
+                      backgroundColor: '#fef2f2',
+                      borderRadius: '6px'
+                    }}>
+                      <AlertCircle size={14} />
+                      Please score all criteria for this market
+                    </div>
+                  )}
+
                   <div style={{ display: 'grid', gap: '12px' }}>
-                    {evaluationCriteria.map(criteria => (
+                    {CRITERIA.map(criteria => (
                       <div
                         key={criteria.id}
                         style={{
@@ -171,38 +210,53 @@ export const Step08_MarketEvaluation: React.FC = () => {
                         }}
                       >
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontWeight: 500, color: '#374151' }}>
-                            {criteria.label}
-                          </div>
-                          <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                            {criteria.description}
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: '4px' }}>
-                          {[1, 2, 3, 4, 5].map(score => (
-                            <button
-                              key={score}
-                              onClick={() => handleScoreChange(market.id, criteria.id, score)}
-                              style={{
-                                width: '32px',
-                                height: '32px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                border: '1px solid',
-                                borderColor: (scores[market.id]?.[criteria.id] === score) ? '#4f46e5' : '#d1d5db',
-                                borderRadius: '6px',
-                                backgroundColor: (scores[market.id]?.[criteria.id] === score) ? '#4f46e5' : 'white',
-                                color: (scores[market.id]?.[criteria.id] === score) ? 'white' : '#374151',
-                                cursor: 'pointer',
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                            <label 
+                              htmlFor={`${market.id}-${criteria.id}`}
+                              style={{ 
                                 fontSize: '14px',
                                 fontWeight: 500,
-                                transition: 'all 0.2s',
+                                color: '#374151',
+                                flex: 1
                               }}
                             >
-                              {score}
-                            </button>
-                          ))}
+                              {criteria.label}
+                            </label>
+                            <div 
+                              style={{ 
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                color: '#6b7280',
+                                fontSize: '14px'
+                              }}
+                            >
+                              <HelpCircle size={14} />
+                              {criteria.description}
+                            </div>
+                          </div>
+                          <input
+                            id={`${market.id}-${criteria.id}`}
+                            type="range"
+                            min="0"
+                            max="10"
+                            value={getMarketScore(market.id, criteria.id)}
+                            onChange={(e) => handleScoreChange(market.id, criteria.id, parseInt(e.target.value))}
+                            style={{
+                              width: '100%',
+                              accentColor: showErrors && getMarketScore(market.id, criteria.id) === 0 ? '#ef4444' : '#0ea5e9'
+                            }}
+                          />
+                          <div style={{ 
+                            display: 'flex', 
+                            justifyContent: 'space-between',
+                            fontSize: '12px',
+                            color: '#6b7280'
+                          }}>
+                            <span>Low</span>
+                            <span>Score: {getMarketScore(market.id, criteria.id)}</span>
+                            <span>High</span>
+                          </div>
                         </div>
                       </div>
                     ))}
