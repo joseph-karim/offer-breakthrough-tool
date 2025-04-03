@@ -55,17 +55,11 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
   // Actions
   initializeSession: async () => {
-    // Simulate a small delay to ensure proper initialization
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
     const newSessionId = `session_${Date.now()}`;
     set({
       sessionId: newSessionId,
       currentStep: 1,
-      workshopData: {
-        ...initialWorkshopData,
-        stepChats: {},
-      },
+      workshopData: { ...initialWorkshopData },
     });
   },
 
@@ -97,16 +91,28 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   setCurrentStep: (step: number) => {
-    set({ currentStep: step });
+    if (step >= 1 && step <= 11) {
+      set({ currentStep: step });
+    }
   },
 
   updateWorkshopData: (data: Partial<WorkshopData>) => {
-    set(state => ({
-      workshopData: {
+    set(state => {
+      // Create a new workshopData object with the updates
+      const updatedData = {
         ...state.workshopData,
         ...data,
-      },
-    }));
+      };
+
+      // Ensure all required fields exist
+      if (!updatedData.stepChats) {
+        updatedData.stepChats = {};
+      }
+
+      return {
+        workshopData: updatedData,
+      };
+    });
   },
 
   // Chat actions
@@ -208,7 +214,6 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
       case 8: // Market Evaluation
         if (currentSuggestion.marketScores && currentSuggestion.recommendedMarket) {
-          // Update market scores and select recommended market
           set(state => ({
             workshopData: {
               ...state.workshopData,
@@ -235,10 +240,6 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
             },
           }));
         }
-        break;
-
-      case 11: // Summary & Action Plan
-        // No need to update state for analysis suggestions
         break;
     }
 

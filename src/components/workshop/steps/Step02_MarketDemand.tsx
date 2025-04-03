@@ -1,49 +1,25 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { StepHeader } from '../../ui/StepHeader'; // Restore StepHeader import
-import { Card } from '../../ui/Card'; // Restore Card import
+import React, { useCallback } from 'react';
+import { StepHeader } from '../../ui/StepHeader';
+import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { Lightbulb } from 'lucide-react'; // Restore Lightbulb import
+import { Lightbulb } from 'lucide-react';
 import type { WorkshopStore } from '../../../store/workshopStore';
 
 export const Step02_MarketDemand: React.FC = () => {
   const { marketDemandAnalysis, updateWorkshopData } = useWorkshopStore(
     (state: WorkshopStore) => ({
-      marketDemandAnalysis: state.workshopData.marketDemandAnalysis,
+      marketDemandAnalysis: state.workshopData.marketDemandAnalysis || '',
       updateWorkshopData: state.updateWorkshopData
     })
   );
-  
-  const [localAnalysis, setLocalAnalysis] = useState('');
-
-  // Initialize local state once when component mounts
-  useEffect(() => {
-    let mounted = true;
-    
-    if (mounted) {
-      setLocalAnalysis(marketDemandAnalysis || '');
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, []); // Empty dependency array since we only want to initialize once
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setLocalAnalysis(event.target.value);
-  }, []);
-
-  const handleSave = useCallback(() => {
-    if (localAnalysis.trim() !== '') {
-      updateWorkshopData({ marketDemandAnalysis: localAnalysis });
-    }
-  }, [localAnalysis, updateWorkshopData]);
+    updateWorkshopData({ marketDemandAnalysis: event.target.value });
+  }, [updateWorkshopData]);
   
-  const canSave = localAnalysis.trim() !== '';
+  const canSave = marketDemandAnalysis.trim() !== '';
 
-  // console.log('[Step02] Rendering full component'); // Keep log for now
-
-  // Restore the FULL original return statement
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
@@ -60,7 +36,7 @@ export const Step02_MarketDemand: React.FC = () => {
           <textarea
             id="marketAnalysis"
             rows={8}
-            value={localAnalysis}
+            value={marketDemandAnalysis}
             onChange={handleInputChange}
             placeholder="Describe the solutions your target market currently uses. Who are the main players? What are their strengths and weaknesses? What frustrations do customers have?"
             style={{
@@ -75,10 +51,10 @@ export const Step02_MarketDemand: React.FC = () => {
           />
           <div style={{
             padding: '12px 16px',
-            backgroundColor: '#fffbeb', // yellow-50
-            borderLeft: '4px solid #f59e0b', // yellow-400
+            backgroundColor: '#fffbeb',
+            borderLeft: '4px solid #f59e0b',
             borderRadius: '0 8px 8px 0',
-            color: '#92400e', // yellow-800
+            color: '#92400e',
             display: 'flex',
             alignItems: 'center',
             fontSize: '14px',
@@ -93,7 +69,7 @@ export const Step02_MarketDemand: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button 
           variant="primary"
-          onClick={handleSave}
+          onClick={() => {}} // Remove save button since we're saving on every change
           disabled={!canSave}
         >
           Save Analysis
