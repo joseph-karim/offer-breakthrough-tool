@@ -4,7 +4,7 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Reflections } from '../../../types/workshop';
-import { AlertCircle, CheckCircle2, HelpCircle } from 'lucide-react';
+import { CheckCircle2, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
 
