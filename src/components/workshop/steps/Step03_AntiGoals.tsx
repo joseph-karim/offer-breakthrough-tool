@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { AntiGoals } from '../../../types/workshop';
-import { Info, HelpCircle, AlertCircle } from 'lucide-react';
+import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
 
@@ -169,235 +169,63 @@ export const Step03_AntiGoals: React.FC = () => {
             Define what you want to avoid in each area to make better decisions about your offer.
           </div>
 
-          {/* Market Anti-Goals */}
-          <div>
-            <label 
-              htmlFor="market-anti-goals"
-              style={{ 
-                display: 'block',
-                marginBottom: '8px',
-                fontWeight: 600,
-                color: '#374151'
-              }}
-            >
-              Market Anti-Goals:
-            </label>
-            <textarea
-              id="market-anti-goals"
-              value={formData.market}
-              onChange={(e) => handleInputChange('market', e.target.value)}
-              placeholder="What types of customers or markets do you want to avoid?"
-              style={{
-                width: '100%',
-                minHeight: '100px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('market') ? '#ef4444' : '#d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: 'white',
-              }}
-            />
-            {isFieldEmpty('market') && (
-              <div style={{ 
-                color: '#ef4444',
-                fontSize: '14px',
-                marginTop: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}>
-                <AlertCircle size={14} />
-                {getErrorMessage('market')}
+          {antiGoalKeys.map((key) => (
+            <div key={key}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <label 
+                  htmlFor={`${key}-anti-goals`}
+                  style={{ 
+                    display: 'block',
+                    fontWeight: 600,
+                    color: '#374151'
+                  }}
+                >
+                  {getTitle(key)}:
+                </label>
+                <Tooltip content={getTooltip(key)}>
+                  <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
+                </Tooltip>
               </div>
-            )}
-          </div>
-
-          {/* Offer Anti-Goals */}
-          <div>
-            <label 
-              htmlFor="offer-anti-goals"
-              style={{ 
-                display: 'block',
-                marginBottom: '8px',
-                fontWeight: 600,
-                color: '#374151'
-              }}
-            >
-              Offer Anti-Goals:
-            </label>
-            <textarea
-              id="offer-anti-goals"
-              value={formData.offer}
-              onChange={(e) => handleInputChange('offer', e.target.value)}
-              placeholder="What types of products or services do you want to avoid offering?"
-              style={{
-                width: '100%',
-                minHeight: '100px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('offer') ? '#ef4444' : '#d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: 'white',
-              }}
-            />
-            {isFieldEmpty('offer') && (
-              <div style={{ 
-                color: '#ef4444',
-                fontSize: '14px',
-                marginTop: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
+              <textarea
+                id={`${key}-anti-goals`}
+                value={formData[key]}
+                onChange={(e) => handleInputChange(key, e.target.value)}
+                placeholder={getPlaceholder(key)}
+                style={{
+                  width: '100%',
+                  minHeight: '100px',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid',
+                  borderColor: isFieldEmpty(key) ? '#ef4444' : '#d1d5db',
+                  fontSize: '14px',
+                  lineHeight: '1.5',
+                  resize: 'vertical',
+                  backgroundColor: 'white',
+                }}
+              />
+              {isFieldEmpty(key) && (
+                <div style={{ 
+                  color: '#ef4444',
+                  fontSize: '14px',
+                  marginTop: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <AlertCircle size={14} />
+                  {getErrorMessage(key)}
+                </div>
+              )}
+              <div style={{
+                marginTop: '8px',
+                fontSize: '12px',
+                color: '#6b7280',
               }}>
-                <AlertCircle size={14} />
-                {getErrorMessage('offer')}
+                Examples: {getExamples(key).join(' • ')}
               </div>
-            )}
-          </div>
-
-          {/* Delivery Anti-Goals */}
-          <div>
-            <label 
-              htmlFor="delivery-anti-goals"
-              style={{ 
-                display: 'block',
-                marginBottom: '8px',
-                fontWeight: 600,
-                color: '#374151'
-              }}
-            >
-              Delivery Anti-Goals:
-            </label>
-            <textarea
-              id="delivery-anti-goals"
-              value={formData.delivery}
-              onChange={(e) => handleInputChange('delivery', e.target.value)}
-              placeholder="What delivery methods or processes do you want to avoid?"
-              style={{
-                width: '100%',
-                minHeight: '100px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('delivery') ? '#ef4444' : '#d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: 'white',
-              }}
-            />
-            {isFieldEmpty('delivery') && (
-              <div style={{ 
-                color: '#ef4444',
-                fontSize: '14px',
-                marginTop: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}>
-                <AlertCircle size={14} />
-                {getErrorMessage('delivery')}
-              </div>
-            )}
-          </div>
-
-          {/* Business Lifestyle Anti-Goals */}
-          <div>
-            <label 
-              htmlFor="lifestyle-anti-goals"
-              style={{ 
-                display: 'block',
-                marginBottom: '8px',
-                fontWeight: 600,
-                color: '#374151'
-              }}
-            >
-              Business Lifestyle Anti-Goals:
-            </label>
-            <textarea
-              id="lifestyle-anti-goals"
-              value={formData.lifestyle}
-              onChange={(e) => handleInputChange('lifestyle', e.target.value)}
-              placeholder="What aspects of running the business do you want to avoid?"
-              style={{
-                width: '100%',
-                minHeight: '100px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('lifestyle') ? '#ef4444' : '#d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: 'white',
-              }}
-            />
-            {isFieldEmpty('lifestyle') && (
-              <div style={{ 
-                color: '#ef4444',
-                fontSize: '14px',
-                marginTop: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}>
-                <AlertCircle size={14} />
-                {getErrorMessage('lifestyle')}
-              </div>
-            )}
-          </div>
-
-          {/* Values & Ethics Anti-Goals */}
-          <div>
-            <label 
-              htmlFor="values-anti-goals"
-              style={{ 
-                display: 'block',
-                marginBottom: '8px',
-                fontWeight: 600,
-                color: '#374151'
-              }}
-            >
-              Values & Ethics Anti-Goals:
-            </label>
-            <textarea
-              id="values-anti-goals"
-              value={formData.values}
-              onChange={(e) => handleInputChange('values', e.target.value)}
-              placeholder="What ethical boundaries or values do you want to maintain?"
-              style={{
-                width: '100%',
-                minHeight: '100px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('values') ? '#ef4444' : '#d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: 'white',
-              }}
-            />
-            {isFieldEmpty('values') && (
-              <div style={{ 
-                color: '#ef4444',
-                fontSize: '14px',
-                marginTop: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}>
-                <AlertCircle size={14} />
-                {getErrorMessage('values')}
-              </div>
-            )}
-          </div>
+            </div>
+          ))}
         </div>
       </Card>
 
