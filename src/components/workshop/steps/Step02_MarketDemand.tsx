@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StepHeader } from '../../ui/StepHeader';
+// import { StepHeader } from '../../ui/StepHeader'; // Temporarily comment out StepHeader
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
@@ -40,15 +40,14 @@ export const Step02_MarketDemand: React.FC = () => {
   
   const canSave = marketAnalysis ? marketAnalysis.trim() !== '' : false;
 
-  // Restore the original return statement
+  console.log('[Step02] Rendering simplified view without StepHeader'); // Add log
+
+  // Return statement without StepHeader
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <StepHeader
-        stepNumber={2}
-        title="Analyze Market Demand & Existing Solutions"
-        description="Understand what your target audience currently uses and their frustrations. Who are your main competitors?"
-      />
-      
+      {/* <StepHeader ... /> */} {/* Commented out */}
+      <h1>Step 2: Market Demand (No Header Test)</h1>
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '20px' }}>
           <label htmlFor="marketAnalysis" style={{ fontWeight: 600, color: '#374151' }}>
@@ -59,7 +58,7 @@ export const Step02_MarketDemand: React.FC = () => {
             rows={8}
             value={marketAnalysis}
             onChange={handleInputChange}
-            placeholder="Describe the solutions your target market currently uses. Who are the main players? What are their strengths and weaknesses? What frustrations do customers have?"
+            placeholder="Describe the solutions your target market currently uses..."
             style={{
               width: '100%',
               padding: '12px',
@@ -72,17 +71,17 @@ export const Step02_MarketDemand: React.FC = () => {
           />
           <div style={{
             padding: '12px 16px',
-            backgroundColor: '#fffbeb', // yellow-50
-            borderLeft: '4px solid #f59e0b', // yellow-400
+            backgroundColor: '#fffbeb',
+            borderLeft: '4px solid #f59e0b',
             borderRadius: '0 8px 8px 0',
-            color: '#92400e', // yellow-800
+            color: '#92400e',
             display: 'flex',
             alignItems: 'center',
             fontSize: '14px',
             fontWeight: 500,
           }}>
             <Lightbulb style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#d97706' }} />
-            Think about direct competitors (offering similar solutions) and indirect alternatives (how people solve the problem now, even if differently).
+            Think about direct competitors...
           </div>
         </div>
       </Card>
