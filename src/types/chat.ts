@@ -31,4 +31,15 @@ export interface StepQuestion {
 
 export interface StepQuestions {
   [step: number]: StepQuestion[];
-} 
+}
+
+// Define the specialized assistant types for the Buyer Breakthrough Toolkit
+export type AssistantType = 
+  'default' | 
+  'business-analyzer' | 
+  'anti-goal-generator' | 
+  'job-statement-refiner' | 
+  'problem-expander' | 
+  'capability-analyzer' | 
+  'market-evaluator' | 
+  'research-designer'; 

@@ -6,86 +6,11 @@ import { ChatMessage } from './ChatMessage';
 import { SuggestionCard } from './SuggestionCard';
 import type { AIMessage, StepQuestion } from '../../../types/chat';
 import type { AIService } from '../../../services/aiService';
-import { Send, Loader2, Brain, BarChart, Target, AlertCircle, Lightbulb, ArrowRightLeft, LineChart, Microscope } from 'lucide-react';
+import { Send, Loader2, Brain } from 'lucide-react';
 
-// Define the specialized assistant types for the Buyer Breakthrough Toolkit
-export type AssistantType = 
-  'default' | 
-  'business-analyzer' | 
-  'anti-goal-generator' | 
-  'job-statement-refiner' | 
-  'problem-expander' | 
-  'capability-analyzer' | 
-  'market-evaluator' | 
-  'research-designer';
-
-interface AssistantDefinition {
-  id: AssistantType;
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-  availableSteps: number[];
-}
-
-// Define the available assistants in the Buyer Breakthrough Toolkit
-const ASSISTANTS: AssistantDefinition[] = [
-  {
-    id: 'default',
-    name: 'General Assistant',
-    description: 'General guidance for the current workshop step',
-    icon: <Brain size={20} />,
-    availableSteps: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-  },
-  {
-    id: 'business-analyzer',
-    name: 'Business Analyzer',
-    description: 'Analyzes current business structure and client base to identify patterns and opportunities',
-    icon: <BarChart size={20} />,
-    availableSteps: [1, 2]
-  },
-  {
-    id: 'anti-goal-generator',
-    name: 'Anti-Goal Generator',
-    description: 'Helps identify client types and situations to avoid based on past experiences',
-    icon: <AlertCircle size={20} />,
-    availableSteps: [3]
-  },
-  {
-    id: 'job-statement-refiner',
-    name: 'Job Statement Refiner',
-    description: 'Refines job statements using the JTBD framework',
-    icon: <Target size={20} />,
-    availableSteps: [5]
-  },
-  {
-    id: 'problem-expander',
-    name: 'Problem Expander',
-    description: 'Generates additional problem ideas based on initial input',
-    icon: <Lightbulb size={20} />,
-    availableSteps: [7]
-  },
-  {
-    id: 'capability-analyzer',
-    name: 'Capability Analyzer',
-    description: 'Maps solution capabilities to potential problems',
-    icon: <ArrowRightLeft size={20} />,
-    availableSteps: [7]
-  },
-  {
-    id: 'market-evaluator',
-    name: 'Market Evaluator',
-    description: 'Provides market intelligence to assist with segment scoring',
-    icon: <LineChart size={20} />,
-    availableSteps: [6]
-  },
-  {
-    id: 'research-designer',
-    name: 'Research Designer',
-    description: 'Creates customized research protocols based on identified problems and segments',
-    icon: <Microscope size={20} />,
-    availableSteps: [8, 9, 10, 11]
-  }
-];
+// Remove the circular dependency by removing this export
+// This type is now defined in src/types/chat.ts
+// type AssistantType = ...
 
 interface ChatInterfaceProps {
   step: number;
@@ -105,8 +30,6 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAssistant, setSelectedAssistant] = useState<AssistantType>('default');
-  const [showAssistantSelector, setShowAssistantSelector] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -236,8 +159,29 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   return (
     <Card className="flex flex-col h-[500px] shadow-md overflow-hidden" padding="none">
       <div className="flex flex-col h-full overflow-hidden rounded-lg border border-gray-200">
+        {/* Buyer Breakthrough Toolkit Header - Simplified for now */}
+        <div style={{ 
+          backgroundColor: '#f0f9ff', 
+          borderBottom: '1px solid #e0f2fe',
+          padding: '10px 16px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Brain size={20} color="#0ea5e9" />
+            <span style={{ 
+              fontWeight: 600, 
+              fontSize: '15px', 
+              color: '#0369a1'
+            }}>
+              Buyer Breakthrough Toolkit
+            </span>
+          </div>
+        </div>
+
         <div style={{ backgroundColor: '#f9fafb' }} className="flex-1 overflow-y-auto p-4 space-y-1 h-[400px]">
-          {messages.map((message) => (
+          {messages.map((message: AIMessage) => (
             <ChatMessage key={message.id} message={message} />
           ))}
           

@@ -1,8 +1,5 @@
-import type { AIMessage, ChatSuggestion, StepQuestion } from '../types/chat';
+import type { AIMessage, ChatSuggestion, StepQuestion, AssistantType } from '../types/chat';
 import { OpenAIService } from './openaiService';
-
-// Import the AssistantType from ChatInterface
-import { AssistantType } from '../components/workshop/chat/ChatInterface';
 
 // Define questions for each step
 export const STEP_QUESTIONS: Record<number, StepQuestion[]> = {
