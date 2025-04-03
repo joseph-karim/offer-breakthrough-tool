@@ -1,70 +1,109 @@
 import { ReactNode } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
+import { Button } from '../ui/Button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface WorkshopLayoutProps {
   children: ReactNode;
 }
 
 export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
-  const { currentStep, setCurrentStep } = useWorkshopStore();
+  const { currentStep, setCurrentStep, canProceedToNextStep } = useWorkshopStore();
 
   const totalSteps = 10;
 
-  const handleNext = async () => {
+  const handleNext = () => {
     if (currentStep < totalSteps) {
-      await setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep + 1);
     }
   };
 
-  const handlePrevious = async () => {
+  const handlePrevious = () => {
     if (currentStep > 1) {
-      await setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep - 1);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Offer Breakthrough Workshop</h1>
-            <div className="text-sm text-muted-foreground">
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+      <header style={{ borderBottom: '1px solid #e5e7eb' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>
+              Offer Breakthrough Workshop
+            </h1>
+            <div style={{ fontSize: '14px', color: '#6b7280' }}>
               Step {currentStep} of {totalSteps}
             </div>
           </div>
-          <div className="mt-4 h-2 w-full rounded-full bg-secondary">
+          <div style={{ 
+            marginTop: '16px',
+            height: '8px',
+            width: '100%',
+            backgroundColor: '#e5e7eb',
+            borderRadius: '9999px',
+            overflow: 'hidden'
+          }}>
             <div
-              className="h-full rounded-full bg-primary transition-all duration-300"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+              style={{
+                height: '100%',
+                width: `${(currentStep / totalSteps) * 100}%`,
+                backgroundColor: '#4f46e5',
+                borderRadius: '9999px',
+                transition: 'width 0.3s ease'
+              }}
             />
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mx-auto max-w-4xl">{children}</div>
-      </main>
-
-      <footer className="fixed bottom-0 left-0 right-0 border-t bg-background">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex justify-between">
-            <button
-              onClick={handlePrevious}
-              disabled={currentStep === 1}
-              className="rounded-md bg-secondary px-4 py-2 text-secondary-foreground hover:bg-secondary/90 disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={currentStep === totalSteps}
-              className="rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          {children}
         </div>
-      </footer>
+        
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '48px',
+          maxWidth: '800px',
+          margin: '48px auto 0'
+        }}>
+          <Button
+            variant="outline"
+            onClick={handlePrevious}
+            disabled={currentStep === 1}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            <ChevronLeft size={20} />
+            Previous Step
+          </Button>
+
+          <div style={{ 
+            flex: 1, 
+            textAlign: 'center',
+            fontSize: '14px',
+            color: !canProceedToNextStep() ? '#ef4444' : '#6b7280',
+            marginLeft: '24px',
+            marginRight: '24px'
+          }}>
+            {!canProceedToNextStep() && currentStep < totalSteps && (
+              "Please complete this step before proceeding"
+            )}
+          </div>
+
+          <Button
+            variant="primary"
+            onClick={handleNext}
+            disabled={currentStep === totalSteps || !canProceedToNextStep()}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            Next Step
+            <ChevronRight size={20} />
+          </Button>
+        </div>
+      </main>
     </div>
   );
 }; 

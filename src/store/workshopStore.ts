@@ -19,6 +19,7 @@ export interface WorkshopStore {
   saveSession: () => Promise<void>;
   setCurrentStep: (step: number) => void;
   updateWorkshopData: (data: Partial<WorkshopData>) => void;
+  canProceedToNextStep: () => boolean;
   
   // Chat actions
   addChatMessage: (step: number, message: AIMessage) => void;
@@ -40,6 +41,34 @@ const initialWorkshopData: WorkshopData = {
   problems: [],
   marketDemandAnalysis: '',
   stepChats: {},
+};
+
+// Helper function to check if a step is complete
+const isStepComplete = (step: number, data: WorkshopData): boolean => {
+  switch (step) {
+    case 1: // Intro
+      return true; // Always allow proceeding from intro
+    case 2: // Market Demand
+      return (data.marketDemandAnalysis ?? '').trim().length > 0;
+    case 3: // Anti-Goals
+      return Object.values(data.antiGoals).some(value => value.trim().length > 0);
+    case 4: // Trigger Events
+      return (data.triggerEvents ?? []).length > 0;
+    case 5: // Jobs
+      return (data.jobs ?? []).length > 0;
+    case 6: // Markets
+      return (data.markets ?? []).length > 0;
+    case 7: // Problems
+      return (data.problems ?? []).length > 0;
+    case 8: // Market Evaluation
+      return (data.markets ?? []).some(market => market.selected);
+    case 9: // Offer Exploration
+      return data.selectedOffer?.selected === true;
+    case 10: // Pricing
+      return (data.pricing?.strategy ?? '').length > 0;
+    default:
+      return true;
+  }
 };
 
 export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
@@ -91,6 +120,13 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   setCurrentStep: (step: number) => {
+    const { workshopData, currentStep } = get();
+    
+    // Only allow moving forward if current step is complete
+    if (step > currentStep && !isStepComplete(currentStep, workshopData)) {
+      return;
+    }
+
     if (step >= 1 && step <= 11) {
       set({ currentStep: step });
     }
@@ -113,6 +149,11 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         workshopData: updatedData,
       };
     });
+  },
+
+  canProceedToNextStep: () => {
+    const { currentStep, workshopData } = get();
+    return isStepComplete(currentStep, workshopData);
   },
 
   // Chat actions
