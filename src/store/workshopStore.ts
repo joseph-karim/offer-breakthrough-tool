@@ -403,11 +403,6 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
     const stepChat = workshopData.stepChats?.[step] || { messages: [] };
     const messages = stepChat.messages || [];
     
-    // Find all assistant messages that are questions
-    const assistantQuestions = messages.filter(
-      msg => msg.role === 'assistant' && typeof msg.content === 'string'
-    );
-    
     // Count how many user responses we have (excluding the one we just added)
     const userResponses = messages.filter(
       msg => msg.role === 'user'
@@ -523,7 +518,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.triggerEvents) {
           // Get existing trigger events and append new ones
           const existingEvents = workshopData.triggerEvents || [];
-          const newEvents = currentSuggestion.content.triggerEvents.map(event => ({
+          const newEvents = currentSuggestion.content.triggerEvents.map((event: any) => ({
             ...event,
             source: 'assistant', // Mark as coming from assistant
           }));
@@ -538,7 +533,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.jobs) {
           // Get existing jobs and append new ones
           const existingJobs = workshopData.jobs || [];
-          const newJobs = currentSuggestion.content.jobs.map(job => ({
+          const newJobs = currentSuggestion.content.jobs.map((job: any) => ({
             ...job,
             source: 'assistant', // Mark as coming from assistant
           }));
@@ -553,7 +548,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.markets) {
           // Get existing markets and append new ones
           const existingMarkets = workshopData.markets || [];
-          const newMarkets = currentSuggestion.content.markets.map(market => ({
+          const newMarkets = currentSuggestion.content.markets.map((market: any) => ({
             ...market,
             source: 'assistant', // Mark as coming from assistant
           }));
@@ -568,7 +563,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.problems) {
           // Get existing problems and append new ones
           const existingProblems = workshopData.problems || [];
-          const newProblems = currentSuggestion.content.problems.map((problem, index) => ({
+          const newProblems = currentSuggestion.content.problems.map((problem: any, index: number) => ({
             ...problem,
             id: `ai_${Date.now()}_${index}`,
             ranking: existingProblems.length + index + 1,
@@ -582,11 +577,11 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         break;
         
       case 8: // Market Evaluation
-        if (currentSuggestion.content?.marketScores && currentSuggestion.content?.recommendedMarket) {
+        if (currentSuggestion.content?.marketScores && currentSuggestion.content.recommendedMarket) {
           // Update market evaluations with scores
-          const marketEvaluations = { ...workshopData.marketEvaluations } || {};
+          const marketEvaluations = { ...(workshopData.marketEvaluations || {}) };
           
-          currentSuggestion.content.marketScores.forEach(marketScore => {
+          currentSuggestion.content.marketScores.forEach((marketScore: any) => {
             // Find matching market by description
             const market = workshopData.markets.find(
               m => m.description === marketScore.marketDescription
@@ -648,7 +643,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
                 ${Array.isArray(pricing.valueMetrics) ? pricing.valueMetrics.join('\n') : ''}
                 
                 Price Points:
-                ${Array.isArray(pricing.pricePoints) ? pricing.pricePoints.map(pp => `- ${pp.tier}: ${pp.price}`).join('\n') : ''}
+                ${Array.isArray(pricing.pricePoints) ? pricing.pricePoints.map((pp: any) => `- ${pp.tier}: ${pp.price}`).join('\n') : ''}
                 
                 Positioning:
                 ${positioning?.statement || ''}
