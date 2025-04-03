@@ -186,104 +186,6 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
   }
 };
 
-// Get hover styles
-const getHoverStyles = (variant: ButtonVariant): CSSProperties => {
-  switch (variant) {
-    case 'primary':
-      return {
-        backgroundColor: '#4338ca', // indigo-700
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-      };
-    case 'outline':
-      return {
-        backgroundColor: 'rgba(79, 70, 229, 0.1)', // indigo-600 with opacity
-      };
-    case 'ghost':
-      return {
-        backgroundColor: 'rgba(79, 70, 229, 0.1)', // indigo-600 with opacity
-      };
-    case 'destructive':
-      return {
-        backgroundColor: '#dc2626', // red-600
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-      };
-    case 'link':
-      return {
-        textDecoration: 'none',
-      };
-    case 'subtle':
-      return {
-        backgroundColor: '#dbeafe', // indigo-100
-      };
-    case 'gradient':
-      return {
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        backgroundSize: '200% 200%',
-        backgroundPosition: 'right center',
-      };
-    case 'glass':
-      return {
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-      };
-    case 'indigo':
-      return {
-        backgroundColor: '#4338ca', // indigo-700
-        boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.05)',
-      };
-    case 'purple':
-      return {
-        backgroundColor: '#9333ea', // purple-700
-        boxShadow: '0 10px 15px -3px rgba(168, 85, 247, 0.3), 0 4px 6px -2px rgba(168, 85, 247, 0.05)',
-      };
-    case 'pink':
-      return {
-        backgroundColor: '#db2777', // pink-700
-        boxShadow: '0 10px 15px -3px rgba(236, 72, 153, 0.3), 0 4px 6px -2px rgba(236, 72, 153, 0.05)',
-      };
-    case 'indigoToPurple':
-    case 'purpleToPink':
-      return {
-        boxShadow: '0 10px 15px -3px rgba(79, 70, 229, 0.3), 0 4px 6px -2px rgba(79, 70, 229, 0.05)',
-        transform: 'translateY(-1px)',
-      };
-    default:
-      return {
-        backgroundColor: '#f9fafb', // gray-50
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-      };
-  }
-};
-
-// Get focus styles
-const getFocusStyles = (variant: ButtonVariant): CSSProperties => {
-  return {
-    outline: 'none',
-    boxShadow: `0 0 0 3px ${
-      variant === 'destructive' 
-        ? 'rgba(239, 68, 68, 0.5)' 
-        : 'rgba(79, 70, 229, 0.5)'
-    }`,
-  };
-};
-
-// Get disabled styles
-const getDisabledStyles = (variant: ButtonVariant): CSSProperties => {
-  if (variant === 'link') {
-    return {
-      opacity: 0.6,
-      cursor: 'not-allowed',
-      textDecoration: 'none',
-    };
-  }
-  
-  return {
-    opacity: 0.6,
-    cursor: 'not-allowed',
-    boxShadow: 'none',
-  };
-};
-
 export const Button = ({
   children,
   variant = 'default',
@@ -333,6 +235,7 @@ export const Button = ({
     width: fullWidth ? '100%' : 'auto',
     ...sizeStyles,
     ...variantStyles,
+    ...(disabled || isLoading ? { opacity: 0.6, cursor: 'not-allowed', boxShadow: 'none' } : {}),
     ...style,
   };
 

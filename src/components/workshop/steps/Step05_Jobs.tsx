@@ -1,19 +1,19 @@
 import React from 'react';
-import StepHeader from '../../ui/StepHeader';
-import Card from '../../ui/Card';
+import { StepHeader } from '../../ui/StepHeader';
+import { Card } from '../../ui/Card';
 
 export const Step05_Jobs: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <StepHeader
-        step={5}
-        title="Jobs To Be Done"
-        description="Understand what your customers are really trying to accomplish."
+        stepNumber={5}
+        title="Uncover Jobs To Be Done"
+        description="Determine the underlying motivations and goals your customers are trying to achieve."
       />
       
-      <Card className="bg-white border border-gray-200 shadow-sm p-6">
+      <Card variant="default" padding="lg" shadow="md">
         <p className="text-gray-700">
-          This step is coming soon. We'll help you identify the key jobs your customers need done through their purchase.
+          This step is coming soon. We'll help you uncover the 'jobs' your customers are hiring your product/service to do.
         </p>
       </Card>
     </div>

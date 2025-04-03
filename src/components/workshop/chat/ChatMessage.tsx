@@ -1,5 +1,5 @@
 import { AIMessage } from '../../../types/chat';
-import Button from '../../../components/ui/Button';
+import { Button } from '../../../components/ui/Button';
 import { User, Bot } from 'lucide-react';
 
 interface ChatMessageProps {

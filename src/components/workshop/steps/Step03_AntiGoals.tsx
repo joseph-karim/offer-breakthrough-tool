@@ -1,19 +1,19 @@
 import React from 'react';
-import StepHeader from '../../ui/StepHeader';
-import Card from '../../ui/Card';
+import { StepHeader } from '../../ui/StepHeader';
+import { Card } from '../../ui/Card';
 
 export const Step03_AntiGoals: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <StepHeader
-        step={3}
-        title="Anti-Goals"
-        description="Define what you don't want to help clarify what you do want."
+        stepNumber={3}
+        title="Define Your Anti-Goals"
+        description="Clarify what you *don't* want to happen as a result of your offer."
       />
       
-      <Card className="bg-white border border-gray-200 shadow-sm p-6">
+      <Card variant="default" padding="lg" shadow="md">
         <p className="text-gray-700">
-          This step is coming soon. We'll help you identify anti-goals to create clear boundaries for your offer.
+          This step is coming soon. We'll guide you in defining anti-goals to refine your offer strategy.
         </p>
       </Card>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, KeyboardEvent } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import Button from '../../ui/Button';
-import Card from '../../ui/Card';
+import { Button } from '../../ui/Button';
+import { Card } from '../../ui/Card';
 import { ChatMessage } from './ChatMessage';
 import { SuggestionCard } from './SuggestionCard';
 import type { AIMessage, StepQuestion } from '../../../types/chat';
@@ -185,7 +185,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             <Button 
               onClick={handleSendMessage} 
               disabled={isTyping || !inputValue.trim()}
-              icon={<Send className="h-4 w-4" />}
+              rightIcon={<Send className="h-4 w-4" />}
               variant="primary"
             >
               Send
