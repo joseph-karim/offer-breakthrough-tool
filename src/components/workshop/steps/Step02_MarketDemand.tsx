@@ -6,32 +6,30 @@ import { useWorkshopStore } from '../../../store/workshopStore';
 import { Lightbulb } from 'lucide-react'; // Restore Lightbulb import
 
 export const Step02_MarketDemand: React.FC = () => {
-  // Restore full state logic and handlers
-  const { marketDemandAnalysis: initialData, updateWorkshopData } = useWorkshopStore(
+  const { marketDemandAnalysis, updateWorkshopData } = useWorkshopStore(
     (state) => ({ 
       marketDemandAnalysis: state.workshopData.marketDemandAnalysis,
       updateWorkshopData: state.updateWorkshopData 
     })
   );
-  const [marketAnalysis, setMarketAnalysis] = useState<string>(initialData || '');
+  
+  const [localAnalysis, setLocalAnalysis] = useState(marketDemandAnalysis || '');
 
+  // Only sync from store when marketDemandAnalysis changes
   useEffect(() => {
-     // console.log('[Step02] useEffect - initialData changed:', initialData); // Keep log for now
-     if (initialData !== undefined && initialData !== marketAnalysis) {
-       setMarketAnalysis(initialData);
-     }
-  }, [initialData]);
+    setLocalAnalysis(marketDemandAnalysis || '');
+  }, [marketDemandAnalysis]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMarketAnalysis(event.target.value);
+    setLocalAnalysis(event.target.value);
   };
 
   const handleSave = () => {
-    updateWorkshopData({ marketDemandAnalysis: marketAnalysis });
-    console.log('Market Demand data saved for Step 2:', { marketAnalysis });
+    updateWorkshopData({ marketDemandAnalysis: localAnalysis });
+    console.log('Market Demand data saved for Step 2:', { localAnalysis });
   };
   
-  const canSave = marketAnalysis ? marketAnalysis.trim() !== '' : false;
+  const canSave = localAnalysis.trim() !== '';
 
   // console.log('[Step02] Rendering full component'); // Keep log for now
 
@@ -52,8 +50,8 @@ export const Step02_MarketDemand: React.FC = () => {
           <textarea
             id="marketAnalysis"
             rows={8}
-            value={marketAnalysis} // Use state
-            onChange={handleInputChange} // Use handler
+            value={localAnalysis}
+            onChange={handleInputChange}
             placeholder="Describe the solutions your target market currently uses. Who are the main players? What are their strengths and weaknesses? What frustrations do customers have?"
             style={{
               width: '100%',
@@ -86,7 +84,7 @@ export const Step02_MarketDemand: React.FC = () => {
         <Button 
           variant="primary"
           onClick={handleSave}
-          disabled={!canSave} 
+          disabled={!canSave}
         >
           Save Analysis
         </Button>
