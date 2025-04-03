@@ -5,47 +5,52 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TriggerEvent } from '../../../types/workshop';
-import { Info } from 'lucide-react';
+import { Info, Plus, X } from 'lucide-react';
 
 // Separate selectors to prevent unnecessary re-renders
-const selectTriggerEvents = (state: WorkshopStore) => 
-  state.workshopData.triggerEvents?.map(event => event.description).join('\n') || '';
+const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.triggerEvents || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 
 export const Step04_TriggerEvents: React.FC = () => {
-  const storeValue = useWorkshopStore(selectTriggerEvents);
+  const storeEvents = useWorkshopStore(selectTriggerEvents);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 
-  // Use local state for the textarea
-  const [localValue, setLocalValue] = useState(storeValue);
+  // Use local state for the events
+  const [events, setEvents] = useState<TriggerEvent[]>(storeEvents);
+  const [newEvent, setNewEvent] = useState('');
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   // Update local state when store value changes
   useEffect(() => {
-    setLocalValue(storeValue);
-  }, [storeValue]);
+    setEvents(storeEvents);
+  }, [storeEvents]);
 
-  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setLocalValue(event.target.value);
-  }, []);
-
-  const handleSave = useCallback(() => {
-    if (localValue.trim() !== '') {
-      // Map strings back to TriggerEvent objects
-      const triggerEvents: TriggerEvent[] = localValue
-        .split('\n')
-        .map(desc => desc.trim())
-        .filter(desc => desc !== '')
-        .map((description, index) => ({
-          id: `user-${Date.now()}-${index}`,
-          description,
-          source: 'user'
-        }));
+  const handleAddEvent = useCallback(() => {
+    if (newEvent.trim() !== '') {
+      const event: TriggerEvent = {
+        id: `user-${Date.now()}`,
+        description: newEvent.trim(),
+        source: 'user'
+      };
       
-      updateWorkshopData({ triggerEvents });
+      setEvents(prev => [...prev, event]);
+      setNewEvent(''); // Clear input
+      updateWorkshopData({ triggerEvents: [...events, event] });
     }
-  }, [localValue, updateWorkshopData]);
+  }, [newEvent, events, updateWorkshopData]);
 
-  const canSave = localValue.trim() !== '' && localValue !== storeValue;
+  const handleDeleteEvent = useCallback((id: string) => {
+    const updatedEvents = events.filter(event => event.id !== id);
+    setEvents(updatedEvents);
+    updateWorkshopData({ triggerEvents: updatedEvents });
+  }, [events, updateWorkshopData]);
+
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleAddEvent();
+    }
+  }, [handleAddEvent]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -56,7 +61,7 @@ export const Step04_TriggerEvents: React.FC = () => {
       />
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-        <div style={{ display: 'grid', gap: '20px' }}>
+        <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
             padding: '12px 16px',
             backgroundColor: '#eef2ff',
@@ -72,46 +77,114 @@ export const Step04_TriggerEvents: React.FC = () => {
             Focus on the *moment* of change. What just happened that made them realize they need help NOW?
           </div>
 
-          <label 
-            htmlFor="triggerEvents"
-            style={{ fontWeight: 600, color: '#374151' }}
-          >
-            List Trigger Events (one per line):
-          </label>
-          <textarea
-            id="triggerEvents"
-            rows={8}
-            value={localValue}
-            onChange={handleInputChange}
-            placeholder={
-              "e.g., Just got promoted to manager\n" +
-              "Lost a major client due to poor reporting\n" +
-              "Team doubled in size in 3 months\n" +
-              "Received negative feedback about leadership style\n" +
-              "Missed quarterly targets for the first time"
-            }
-            style={{
-              width: '100%',
-              padding: '12px',
+          {/* List of existing events */}
+          {events.length > 0 && (
+            <div style={{ display: 'grid', gap: '12px' }}>
+              {events.map(event => (
+                <div 
+                  key={event.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '12px 16px',
+                    backgroundColor: '#f9fafb',
+                    borderRadius: '8px',
+                    border: '1px solid #e5e7eb',
+                  }}
+                >
+                  <span style={{ flex: 1, color: '#374151' }}>{event.description}</span>
+                  <button
+                    onClick={() => handleDeleteEvent(event.id)}
+                    onMouseEnter={() => setHoveredId(event.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    style={{
+                      padding: '4px',
+                      borderRadius: '4px',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: hoveredId === event.id ? '#ef4444' : '#6b7280',
+                      transition: 'color 0.2s ease'
+                    }}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add new event input */}
+          <div>
+            <label 
+              htmlFor="newTriggerEvent"
+              style={{ fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}
+            >
+              Add Trigger Event:
+            </label>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <input
+                id="newTriggerEvent"
+                value={newEvent}
+                onChange={(e) => setNewEvent(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="e.g., Just got promoted to manager"
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                  fontSize: '16px',
+                  backgroundColor: 'white',
+                }}
+              />
+              <Button 
+                variant="primary"
+                onClick={handleAddEvent}
+                disabled={!newEvent.trim()}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <Plus size={20} />
+                Add
+              </Button>
+            </div>
+          </div>
+
+          {/* Example trigger events */}
+          {events.length === 0 && (
+            <div style={{ 
+              padding: '16px',
+              backgroundColor: '#f9fafb',
               borderRadius: '8px',
-              border: '1px solid #d1d5db',
-              fontSize: '16px',
-              lineHeight: 1.6,
-              backgroundColor: 'white',
-            }}
-          />
+              border: '1px dashed #d1d5db'
+            }}>
+              <p style={{ 
+                fontSize: '14px',
+                color: '#6b7280',
+                fontStyle: 'italic',
+                marginBottom: '12px'
+              }}>
+                Example trigger events:
+              </p>
+              <ul style={{ 
+                listStyle: 'disc',
+                paddingLeft: '24px',
+                color: '#6b7280',
+                fontSize: '14px'
+              }}>
+                <li>Lost a major client due to poor reporting</li>
+                <li>Team doubled in size in 3 months</li>
+                <li>Received negative feedback about leadership style</li>
+                <li>Missed quarterly targets for the first time</li>
+                <li>New competitor entered the market with better features</li>
+              </ul>
+            </div>
+          )}
         </div>
       </Card>
-      
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button 
-          variant="primary"
-          onClick={handleSave}
-          disabled={!canSave}
-        >
-          Save Trigger Events
-        </Button>
-      </div>
     </div>
   );
 };

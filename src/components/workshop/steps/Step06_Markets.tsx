@@ -5,47 +5,52 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Market } from '../../../types/workshop';
-import { Users } from 'lucide-react';
+import { Users, Plus, X } from 'lucide-react';
 
 // Separate selectors to prevent unnecessary re-renders
-const selectMarkets = (state: WorkshopStore) => 
-  state.workshopData.markets?.map(market => market.description).join('\n') || '';
+const selectMarkets = (state: WorkshopStore) => state.workshopData.markets || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 
 export const Step06_Markets: React.FC = () => {
-  const storeValue = useWorkshopStore(selectMarkets);
+  const storeMarkets = useWorkshopStore(selectMarkets);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 
-  // Use local state for the textarea
-  const [localValue, setLocalValue] = useState(storeValue);
+  // Use local state for the markets
+  const [markets, setMarkets] = useState<Market[]>(storeMarkets);
+  const [newMarket, setNewMarket] = useState('');
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   // Update local state when store value changes
   useEffect(() => {
-    setLocalValue(storeValue);
-  }, [storeValue]);
+    setMarkets(storeMarkets);
+  }, [storeMarkets]);
 
-  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setLocalValue(event.target.value);
-  }, []);
-
-  const handleSave = useCallback(() => {
-    if (localValue.trim() !== '') {
-      // Map strings back to Market objects
-      const markets: Market[] = localValue
-        .split('\n')
-        .map(desc => desc.trim())
-        .filter(desc => desc !== '')
-        .map((description, index) => ({
-          id: `user-${Date.now()}-${index}`,
-          description,
-          source: 'user'
-        }));
+  const handleAddMarket = useCallback(() => {
+    if (newMarket.trim() !== '') {
+      const market: Market = {
+        id: `user-${Date.now()}`,
+        description: newMarket.trim(),
+        source: 'user'
+      };
       
-      updateWorkshopData({ markets });
+      setMarkets(prev => [...prev, market]);
+      setNewMarket(''); // Clear input
+      updateWorkshopData({ markets: [...markets, market] });
     }
-  }, [localValue, updateWorkshopData]);
+  }, [newMarket, markets, updateWorkshopData]);
 
-  const canSave = localValue.trim() !== '' && localValue !== storeValue;
+  const handleDeleteMarket = useCallback((id: string) => {
+    const updatedMarkets = markets.filter(market => market.id !== id);
+    setMarkets(updatedMarkets);
+    updateWorkshopData({ markets: updatedMarkets });
+  }, [markets, updateWorkshopData]);
+
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleAddMarket();
+    }
+  }, [handleAddMarket]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -56,7 +61,7 @@ export const Step06_Markets: React.FC = () => {
       />
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-        <div style={{ display: 'grid', gap: '20px' }}>
+        <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
             padding: '12px 16px',
             backgroundColor: '#f0f9ff',
@@ -72,46 +77,114 @@ export const Step06_Markets: React.FC = () => {
             Be specific about who your ideal customers are. Consider demographics, behaviors, and pain points.
           </div>
 
-          <label 
-            htmlFor="markets"
-            style={{ fontWeight: 600, color: '#374151' }}
-          >
-            List Target Markets (one per line):
-          </label>
-          <textarea
-            id="markets"
-            rows={8}
-            value={localValue}
-            onChange={handleInputChange}
-            placeholder={
-              "e.g., Mid-sized SaaS companies (50-200 employees)\n" +
-              "Product managers at enterprise tech firms\n" +
-              "E-commerce businesses doing $1M-5M annual revenue\n" +
-              "Marketing agencies with 5-20 employees\n" +
-              "B2B software startups in growth phase"
-            }
-            style={{
-              width: '100%',
-              padding: '12px',
+          {/* List of existing markets */}
+          {markets.length > 0 && (
+            <div style={{ display: 'grid', gap: '12px' }}>
+              {markets.map(market => (
+                <div 
+                  key={market.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '12px 16px',
+                    backgroundColor: '#f9fafb',
+                    borderRadius: '8px',
+                    border: '1px solid #e5e7eb',
+                  }}
+                >
+                  <span style={{ flex: 1, color: '#374151' }}>{market.description}</span>
+                  <button
+                    onClick={() => handleDeleteMarket(market.id)}
+                    onMouseEnter={() => setHoveredId(market.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    style={{
+                      padding: '4px',
+                      borderRadius: '4px',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: hoveredId === market.id ? '#ef4444' : '#6b7280',
+                      transition: 'color 0.2s ease'
+                    }}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add new market input */}
+          <div>
+            <label 
+              htmlFor="newMarket"
+              style={{ fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}
+            >
+              Add Target Market:
+            </label>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <input
+                id="newMarket"
+                value={newMarket}
+                onChange={(e) => setNewMarket(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="e.g., Mid-sized SaaS companies (50-200 employees)"
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                  fontSize: '16px',
+                  backgroundColor: 'white',
+                }}
+              />
+              <Button 
+                variant="primary"
+                onClick={handleAddMarket}
+                disabled={!newMarket.trim()}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <Plus size={20} />
+                Add
+              </Button>
+            </div>
+          </div>
+
+          {/* Example markets */}
+          {markets.length === 0 && (
+            <div style={{ 
+              padding: '16px',
+              backgroundColor: '#f9fafb',
               borderRadius: '8px',
-              border: '1px solid #d1d5db',
-              fontSize: '16px',
-              lineHeight: 1.6,
-              backgroundColor: 'white',
-            }}
-          />
+              border: '1px dashed #d1d5db'
+            }}>
+              <p style={{ 
+                fontSize: '14px',
+                color: '#6b7280',
+                fontStyle: 'italic',
+                marginBottom: '12px'
+              }}>
+                Example target markets:
+              </p>
+              <ul style={{ 
+                listStyle: 'disc',
+                paddingLeft: '24px',
+                color: '#6b7280',
+                fontSize: '14px'
+              }}>
+                <li>Mid-sized SaaS companies (50-200 employees)</li>
+                <li>Product managers at enterprise tech firms</li>
+                <li>E-commerce businesses doing $1M-5M annual revenue</li>
+                <li>Marketing agencies with 5-20 employees</li>
+                <li>B2B software startups in growth phase</li>
+              </ul>
+            </div>
+          )}
         </div>
       </Card>
-      
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button 
-          variant="primary"
-          onClick={handleSave}
-          disabled={!canSave}
-        >
-          Save Target Markets
-        </Button>
-      </div>
     </div>
   );
 }; 
