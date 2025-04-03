@@ -42,6 +42,18 @@ export interface Offer {
   selected: boolean;
 }
 
+export interface Reflections {
+  keyInsights: string;
+  nextSteps: string;
+}
+
+export interface ValueProposition {
+  uniqueValue?: string;
+  painPoints?: string;
+  benefits?: string;
+  differentiators?: string;
+}
+
 export interface WorkshopData {
   antiGoals: AntiGoals;
   triggerEvents: TriggerEvent[];
@@ -52,6 +64,8 @@ export interface WorkshopData {
   stepChats: StepChats;
   marketDemandAnalysis?: string;
   pricing?: { strategy: string; justification: string };
+  reflections?: Reflections;
+  valueProposition?: ValueProposition;
 }
 
 export interface WorkshopSession {

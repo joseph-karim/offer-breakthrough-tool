@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
-import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import { Lightbulb } from 'lucide-react';
 import type { WorkshopStore } from '../../../store/workshopStore';
@@ -24,16 +23,13 @@ export const Step02_MarketDemand: React.FC = () => {
   }, [storeValue]);
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setLocalValue(event.target.value);
-  }, []);
-
-  const handleSave = useCallback(() => {
-    if (localValue.trim() !== '') {
-      updateWorkshopData({ marketDemandAnalysis: localValue });
+    const newValue = event.target.value;
+    setLocalValue(newValue);
+    // Save to store immediately if there's content
+    if (newValue.trim() !== '') {
+      updateWorkshopData({ marketDemandAnalysis: newValue });
     }
-  }, [localValue, updateWorkshopData]);
-  
-  const canSave = localValue.trim() !== '' && localValue !== storeValue;
+  }, [updateWorkshopData]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -80,16 +76,6 @@ export const Step02_MarketDemand: React.FC = () => {
           </div>
         </div>
       </Card>
-      
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button 
-          variant="primary"
-          onClick={handleSave}
-          disabled={!canSave}
-        >
-          Save Analysis
-        </Button>
-      </div>
     </div>
   );
 }; 
