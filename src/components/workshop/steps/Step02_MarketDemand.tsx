@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-// import { StepHeader } from '../../ui/StepHeader'; // Temporarily comment out StepHeader
-// import { Card } from '../../ui/Card'; // Temporarily comment out Card
-// import { Button } from '../../ui/Button'; // Temporarily comment out Button
+// import { StepHeader } from '../../ui/StepHeader'; // StepHeader still commented out
+import { Card } from '../../ui/Card';
+import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 // import type { Job } from '../../../types/workshop'; // Keep commented if Job not needed yet
 import { Lightbulb } from 'lucide-react';
 
 export const Step02_MarketDemand: React.FC = () => {
-  // Access state and actions correctly from the store
+  // Restore state logic and handlers
   const { marketDemandAnalysis: initialData, updateWorkshopData } = useWorkshopStore(
     (state) => ({ 
       marketDemandAnalysis: state.workshopData.marketDemandAnalysis,
@@ -28,21 +28,26 @@ export const Step02_MarketDemand: React.FC = () => {
      }
   }, [initialData]); // Dependency on initialData from store
 
-  // Use dummy handlers as they are not called
-  const handleInputChange = () => {};
-  const handleSave = () => {};
-  const canSave = false;
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMarketAnalysis(event.target.value);
+  };
 
-  console.log('[Step02] Rendering ultra-simplified view (no Card/Button)');
+  const handleSave = () => {
+    updateWorkshopData({ marketDemandAnalysis: marketAnalysis });
+    console.log('Market Demand data saved for Step 2:', { marketAnalysis });
+  };
+  
+  const canSave = marketAnalysis ? marketAnalysis.trim() !== '' : false;
 
-  // Return statement with ONLY the container div and h1
+  console.log('[Step02] Rendering simplified view without StepHeader'); 
+
+  // Restore return statement with Card/Button but NO StepHeader
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1>Step 2: Market Demand (Minimal Test)</h1>
-      <p>If you see this, the most basic rendering worked, and the issue is likely in Card or Button.</p>
-      
-      {/* <StepHeader ... /> */} {/* Commented out */}
-      {/* <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      {/* <StepHeader ... /> */} {/* Still Commented out */}
+      <h1>Step 2: Market Demand (No Header Test)</h1>
+
+      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '20px' }}>
           <label htmlFor="marketAnalysis" style={{ fontWeight: 600, color: '#374151' }}>
             Existing Solutions & Competitor Analysis:
@@ -88,7 +93,7 @@ export const Step02_MarketDemand: React.FC = () => {
         >
           Save Analysis
         </Button>
-      </div> */} {/* Commented out */}
+      </div>
     </div>
   );
 }; 
