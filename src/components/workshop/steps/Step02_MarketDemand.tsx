@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
@@ -6,19 +6,34 @@ import { useWorkshopStore } from '../../../store/workshopStore';
 import { Lightbulb } from 'lucide-react';
 import type { WorkshopStore } from '../../../store/workshopStore';
 
+// Separate selectors to prevent unnecessary re-renders
+const selectMarketDemandAnalysis = (state: WorkshopStore) => state.workshopData.marketDemandAnalysis || '';
+const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+
 export const Step02_MarketDemand: React.FC = () => {
-  const { marketDemandAnalysis, updateWorkshopData } = useWorkshopStore(
-    (state: WorkshopStore) => ({
-      marketDemandAnalysis: state.workshopData.marketDemandAnalysis || '',
-      updateWorkshopData: state.updateWorkshopData
-    })
-  );
+  // Get initial value from store
+  const storeValue = useWorkshopStore(selectMarketDemandAnalysis);
+  const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  
+  // Use local state for the textarea
+  const [localValue, setLocalValue] = useState(storeValue);
+
+  // Update local state when store value changes (e.g., when navigating back to this step)
+  useEffect(() => {
+    setLocalValue(storeValue);
+  }, [storeValue]);
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    updateWorkshopData({ marketDemandAnalysis: event.target.value });
-  }, [updateWorkshopData]);
+    setLocalValue(event.target.value);
+  }, []);
+
+  const handleSave = useCallback(() => {
+    if (localValue.trim() !== '') {
+      updateWorkshopData({ marketDemandAnalysis: localValue });
+    }
+  }, [localValue, updateWorkshopData]);
   
-  const canSave = marketDemandAnalysis.trim() !== '';
+  const canSave = localValue.trim() !== '' && localValue !== storeValue;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -36,7 +51,7 @@ export const Step02_MarketDemand: React.FC = () => {
           <textarea
             id="marketAnalysis"
             rows={8}
-            value={marketDemandAnalysis}
+            value={localValue}
             onChange={handleInputChange}
             placeholder="Describe the solutions your target market currently uses. Who are the main players? What are their strengths and weaknesses? What frustrations do customers have?"
             style={{
@@ -69,7 +84,7 @@ export const Step02_MarketDemand: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button 
           variant="primary"
-          onClick={() => {}} // Remove save button since we're saving on every change
+          onClick={handleSave}
           disabled={!canSave}
         >
           Save Analysis
