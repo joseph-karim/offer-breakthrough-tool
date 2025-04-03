@@ -14,7 +14,7 @@ import { Step11_Summary } from './steps/Step11_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
 
 export const WorkshopWizard = () => {
-  const { currentStep, initializeSession, setCurrentStep, sessionId } = useWorkshopStore();
+  const { currentStep, initializeSession, setCurrentStep } = useWorkshopStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
