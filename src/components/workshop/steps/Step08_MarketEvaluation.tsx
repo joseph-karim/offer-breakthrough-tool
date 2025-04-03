@@ -38,10 +38,18 @@ export const Step08_MarketEvaluation: React.FC = () => {
 
   // Show errors when trying to proceed without completing
   useEffect(() => {
-    if (!canProceedToNextStep()) {
-      setShowErrors(true);
+    const checkCompletion = () => {
+      const isComplete = canProceedToNextStep();
+      if (!isComplete) {
+        setShowErrors(true);
+      }
+    };
+
+    // Only check completion when showErrors is true
+    if (showErrors) {
+      checkCompletion();
     }
-  }, [canProceedToNextStep]);
+  }, [canProceedToNextStep, showErrors]);
 
   const handleScoreChange = (marketId: string, criteriaId: string, value: number) => {
     const updatedScores = {
@@ -52,8 +60,12 @@ export const Step08_MarketEvaluation: React.FC = () => {
       }
     };
     setScores(updatedScores);
-    updateWorkshopData({ marketEvaluations: updatedScores });
-    setShowErrors(false);
+    
+    // Batch the updates to prevent unnecessary re-renders
+    Promise.resolve().then(() => {
+      updateWorkshopData({ marketEvaluations: updatedScores });
+      setShowErrors(false);
+    });
   };
 
   const getMarketScore = (marketId: string, criteriaId: string): number => {

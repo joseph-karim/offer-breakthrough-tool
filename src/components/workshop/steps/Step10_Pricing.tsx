@@ -27,10 +27,18 @@ export const Step10_Pricing: React.FC = () => {
 
   // Show errors when trying to proceed without completing
   useEffect(() => {
-    if (!canProceedToNextStep()) {
-      setShowErrors(true);
+    const checkCompletion = () => {
+      const isComplete = canProceedToNextStep();
+      if (!isComplete) {
+        setShowErrors(true);
+      }
+    };
+
+    // Only check completion when showErrors is true
+    if (showErrors) {
+      checkCompletion();
     }
-  }, [canProceedToNextStep]);
+  }, [canProceedToNextStep, showErrors]);
 
   const handleInputChange = useCallback((field: 'strategy' | 'justification', value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
