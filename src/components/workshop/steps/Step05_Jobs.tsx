@@ -5,7 +5,7 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Job } from '../../../types/workshop';
-import { Target, Plus, X, MessageSquare } from 'lucide-react';
+import { Target, Plus, X, MessageSquare, ArrowRight } from 'lucide-react';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import { AIService } from '../../../services/aiService';
@@ -120,6 +120,125 @@ export const Step05_Jobs: React.FC = () => {
             Think beyond features. Focus on the underlying need or goal. Why are they really looking for a solution?
           </div>
 
+          {/* Job Hierarchy Framework */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              3A: Understanding Job Hierarchy
+            </h3>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              Jobs-to-be-Done exist in a hierarchy with main functional jobs, supporting jobs, and emotional jobs:
+            </p>
+            
+            <div style={{ 
+              padding: '16px', 
+              backgroundColor: '#f8fafc', 
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>Main Functional Job:</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+                <div style={{ padding: '12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  <span style={{ color: '#64748b', fontSize: '12px' }}>Initial attempt:</span>
+                  <p style={{ margin: '4px 0 0 0' }}>"Help me write email sequences"</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <ArrowRight size={16} color="#94a3b8" />
+                </div>
+                <div style={{ padding: '12px', backgroundColor: '#e0f2fe', borderRadius: '6px', fontSize: '14px' }}>
+                  <span style={{ color: '#0369a1', fontSize: '12px' }}>Refined:</span>
+                  <p style={{ margin: '4px 0 0 0' }}>"Help me generate consistent revenue from my existing audience without spending more on ads"</p>
+                </div>
+              </div>
+              
+              <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>Supporting Jobs:</p>
+              <ul style={{ 
+                margin: '0 0 16px 0',
+                paddingLeft: '16px',
+                listStyleType: 'disc',
+                color: '#334155',
+                fontSize: '14px'
+              }}>
+                <li>"Help me stay top-of-mind with my audience"</li>
+                <li>"Help me move prospects from interested to ready-to-buy"</li>
+                <li>"Help me re-engage people who have gone cold"</li>
+                <li>"Help me maximize the value of each subscriber"</li>
+              </ul>
+              
+              <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>Emotional Jobs:</p>
+              <ul style={{ 
+                margin: '0',
+                paddingLeft: '16px',
+                listStyleType: 'disc',
+                color: '#334155',
+                fontSize: '14px'
+              }}>
+                <li>"Help me feel confident my marketing is working even when I'm not actively selling"</li>
+                <li>"Help me stop worrying about feast-or-famine income cycles"</li>
+                <li>"Help me feel professional and systematic in my approach to sales"</li>
+              </ul>
+            </div>
+          </div>
+          
+          {/* Job Statement Refinement */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              3B: Refining Your Job Statement
+            </h3>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              Use the "so that" technique to dig deeper into the true job your customers are hiring you for:
+            </p>
+            
+            <div style={{ 
+              padding: '16px', 
+              backgroundColor: '#f8fafc', 
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>Example Refinement:</p>
+              <div style={{ color: '#334155', fontSize: '14px', fontStyle: 'italic' }}>
+                "I want email sequences... <span style={{ color: '#0ea5e9' }}>so that</span>... I can sell to my list... <span style={{ color: '#0ea5e9' }}>so that</span>... I can generate revenue... <span style={{ color: '#0ea5e9' }}>so that</span>... I can have predictable income without constantly chasing new leads"
+              </div>
+              
+              <div style={{ 
+                marginTop: '16px', 
+                padding: '12px',
+                backgroundColor: '#dcfce7',
+                borderRadius: '6px',
+                fontSize: '15px',
+                fontWeight: 500,
+                color: '#166534'
+              }}>
+                Final Job Statement:<br />
+                "Help me generate predictable revenue from my existing audience without spending more on ads or constantly creating new content"
+              </div>
+              
+              <p style={{ margin: '16px 0 0 0', fontSize: '14px', color: '#475569' }}>
+                This job statement exercise shifts perspective from focusing on the craft (writing emails) to solving the actual business problem—reliable revenue generation.
+              </p>
+            </div>
+          </div>
+
+          {/* Your Jobs To Be Done */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '8px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              3C: Your Jobs To Be Done
+            </h3>
+          
           {/* List of existing jobs */}
           {jobs.length > 0 && (
             <div style={{ display: 'grid', gap: '12px' }}>
@@ -174,7 +293,7 @@ export const Step05_Jobs: React.FC = () => {
                 value={newJob}
                 onChange={(e) => setNewJob(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="e.g., Reduce the time it takes to generate monthly reports"
+                placeholder="e.g., Help my clients generate predictable revenue from their existing audience"
                 style={{
                   flex: 1,
                   padding: '12px',
@@ -218,14 +337,15 @@ export const Step05_Jobs: React.FC = () => {
                 color: '#6b7280',
                 fontSize: '14px'
               }}>
-                <li>Reduce the time it takes to generate monthly reports</li>
-                <li>Feel more confident presenting to executives</li>
-                <li>Avoid costly mistakes in financial planning</li>
-                <li>Impress my boss with proactive insights</li>
-                <li>Delegate tasks more effectively to my team</li>
+                <li>Help me generate predictable revenue from my existing audience</li>
+                <li>Help me stay top-of-mind with my audience between launches</li>
+                <li>Help me convert more subscribers into paying customers</li>
+                <li>Help me feel confident my marketing systems are working</li>
+                <li>Help me maximize the value of each email subscriber</li>
               </ul>
             </div>
           )}
+          </div>
         </div>
       </Card>
     </div>
