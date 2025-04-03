@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
@@ -11,12 +11,60 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 // Separate selectors to prevent unnecessary re-renders
 const selectProblems = (state: WorkshopStore) => state.workshopData.problems || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
 
 export const Step07_Problems: React.FC = () => {
-  const problems = useWorkshopStore(selectProblems);
+  const storeProblems = useWorkshopStore(selectProblems);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  
+  // Local state
+  const [localProblems, setLocalProblems] = useState(storeProblems);
   const [newProblem, setNewProblem] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const saveTimerRef = useRef<number | null>(null);
+  const [showErrors, setShowErrors] = useState(false);
+
+  // Update local state when store values change
+  useEffect(() => {
+    setLocalProblems(storeProblems);
+  }, [storeProblems]);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current !== null) {
+        window.clearTimeout(saveTimerRef.current);
+      }
+    };
+  }, []);
+
+  // Show errors when trying to proceed without completing
+  useEffect(() => {
+    const checkCompletion = () => {
+      const isComplete = canProceedToNextStep();
+      if (!isComplete) {
+        setShowErrors(true);
+      }
+    };
+
+    // Only check completion when showErrors is true
+    if (showErrors) {
+      checkCompletion();
+    }
+  }, [canProceedToNextStep, showErrors]);
+
+  const saveToStore = useCallback((problems: Problem[]) => {
+    setIsSaving(true);
+    if (saveTimerRef.current !== null) {
+      window.clearTimeout(saveTimerRef.current);
+    }
+    
+    saveTimerRef.current = window.setTimeout(() => {
+      updateWorkshopData({ problems });
+      setIsSaving(false);
+    }, 500);
+  }, [updateWorkshopData]);
 
   const handleAddProblem = useCallback(() => {
     if (!newProblem.trim()) return;
@@ -24,31 +72,26 @@ export const Step07_Problems: React.FC = () => {
     const problem: Problem = {
       id: Date.now().toString(),
       description: newProblem.trim(),
-      ranking: problems.length + 1,
+      ranking: localProblems.length + 1,
       selected: false
     };
 
-    setIsSaving(true);
-    updateWorkshopData({
-      problems: [...problems, problem]
-    });
+    const updatedProblems = [...localProblems, problem];
+    setLocalProblems(updatedProblems);
     setNewProblem('');
-    setTimeout(() => setIsSaving(false), 500);
-  }, [newProblem, problems, updateWorkshopData]);
+    saveToStore(updatedProblems);
+  }, [newProblem, localProblems, saveToStore]);
 
   const handleDeleteProblem = useCallback((id: string) => {
-    setIsSaving(true);
-    updateWorkshopData({
-      problems: problems.filter(p => p.id !== id)
-    });
-    setTimeout(() => setIsSaving(false), 500);
-  }, [problems, updateWorkshopData]);
+    const updatedProblems = localProblems.filter(p => p.id !== id);
+    setLocalProblems(updatedProblems);
+    saveToStore(updatedProblems);
+  }, [localProblems, saveToStore]);
 
   const handleMoveUp = useCallback((index: number) => {
     if (index <= 0) return;
     
-    setIsSaving(true);
-    const newProblems = [...problems];
+    const newProblems = [...localProblems];
     [newProblems[index - 1], newProblems[index]] = [newProblems[index], newProblems[index - 1]];
     
     // Update rankings
@@ -56,15 +99,14 @@ export const Step07_Problems: React.FC = () => {
       p.ranking = i + 1;
     });
 
-    updateWorkshopData({ problems: newProblems });
-    setTimeout(() => setIsSaving(false), 500);
-  }, [problems, updateWorkshopData]);
+    setLocalProblems(newProblems);
+    saveToStore(newProblems);
+  }, [localProblems, saveToStore]);
 
   const handleMoveDown = useCallback((index: number) => {
-    if (index >= problems.length - 1) return;
+    if (index >= localProblems.length - 1) return;
     
-    setIsSaving(true);
-    const newProblems = [...problems];
+    const newProblems = [...localProblems];
     [newProblems[index], newProblems[index + 1]] = [newProblems[index + 1], newProblems[index]];
     
     // Update rankings
@@ -72,19 +114,17 @@ export const Step07_Problems: React.FC = () => {
       p.ranking = i + 1;
     });
 
-    updateWorkshopData({ problems: newProblems });
-    setTimeout(() => setIsSaving(false), 500);
-  }, [problems, updateWorkshopData]);
+    setLocalProblems(newProblems);
+    saveToStore(newProblems);
+  }, [localProblems, saveToStore]);
 
   const handleToggleSelect = useCallback((id: string) => {
-    setIsSaving(true);
-    updateWorkshopData({
-      problems: problems.map(p => 
-        p.id === id ? { ...p, selected: !p.selected } : p
-      )
-    });
-    setTimeout(() => setIsSaving(false), 500);
-  }, [problems, updateWorkshopData]);
+    const updatedProblems = localProblems.map(p => 
+      p.id === id ? { ...p, selected: !p.selected } : p
+    );
+    setLocalProblems(updatedProblems);
+    saveToStore(updatedProblems);
+  }, [localProblems, saveToStore]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -151,7 +191,7 @@ export const Step07_Problems: React.FC = () => {
 
           {/* List of problems */}
           <div style={{ display: 'grid', gap: '12px' }}>
-            {problems.map((problem, index) => (
+            {localProblems.map((problem, index) => (
               <div
                 key={problem.id}
                 style={{
@@ -183,7 +223,7 @@ export const Step07_Problems: React.FC = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => handleMoveDown(index)}
-                    disabled={index === problems.length - 1}
+                    disabled={index === localProblems.length - 1}
                     style={{ padding: '4px' }}
                   >
                     <ChevronDown size={16} />
@@ -234,7 +274,7 @@ export const Step07_Problems: React.FC = () => {
               </div>
             ))}
 
-            {problems.length === 0 && (
+            {localProblems.length === 0 && (
               <div style={{
                 padding: '24px',
                 textAlign: 'center',

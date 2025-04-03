@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
@@ -23,24 +23,99 @@ const CRITERIA = [
 ];
 
 export const Step08_MarketEvaluation: React.FC = () => {
-  const markets = useWorkshopStore(selectMarkets);
-  const marketEvaluations = useWorkshopStore(selectMarketEvaluations);
+  const storeMarkets = useWorkshopStore(selectMarkets);
+  const storeEvaluations = useWorkshopStore(selectMarketEvaluations);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  
+  // Local state
+  const [localMarkets, setLocalMarkets] = useState(storeMarkets);
+  const [localScores, setLocalScores] = useState<{ [marketId: string]: MarketEvaluation }>(storeEvaluations);
   const [isSaving, setIsSaving] = useState(false);
-  const [scores, setScores] = useState<{ [marketId: string]: MarketEvaluation }>(marketEvaluations);
+  const saveTimerRef = useRef<number | null>(null);
   const [showErrors, setShowErrors] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Update local state when store values change
   useEffect(() => {
-    setScores(marketEvaluations);
-  }, [marketEvaluations]);
+    setLocalMarkets(storeMarkets);
+  }, [storeMarkets]);
+
+  useEffect(() => {
+    setLocalScores(storeEvaluations);
+  }, [storeEvaluations]);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current !== null) {
+        window.clearTimeout(saveTimerRef.current);
+      }
+    };
+  }, []);
+
+  const saveToStore = useCallback((data: { markets?: Market[], marketEvaluations?: { [marketId: string]: MarketEvaluation } }) => {
+    setIsSaving(true);
+    if (saveTimerRef.current !== null) {
+      window.clearTimeout(saveTimerRef.current);
+    }
+    
+    saveTimerRef.current = window.setTimeout(() => {
+      updateWorkshopData(data);
+      setIsSaving(false);
+    }, 500);
+  }, [updateWorkshopData]);
+
+  const handleScoreChange = useCallback((marketId: string, criteriaId: string, value: number) => {
+    setIsTransitioning(true);
+    const updatedScores = {
+      ...localScores,
+      [marketId]: {
+        ...localScores[marketId],
+        [criteriaId]: value
+      }
+    };
+    setLocalScores(updatedScores);
+    saveToStore({ marketEvaluations: updatedScores });
+    
+    // Batch the updates to prevent unnecessary re-renders
+    Promise.resolve().then(() => {
+      setShowErrors(false);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 100);
+    });
+  }, [localScores, saveToStore]);
+
+  const handleSelectMarket = useCallback((market: Market) => {
+    setIsTransitioning(true);
+    setIsSaving(true);
+    
+    const updatedMarkets = localMarkets.map(m => ({
+      ...m,
+      selected: m.id === market.id
+    }));
+    setLocalMarkets(updatedMarkets);
+    saveToStore({ markets: updatedMarkets });
+  }, [localMarkets, saveToStore]);
+
+  const getMarketScore = useCallback((marketId: string, criteriaId: string): number => {
+    return localScores[marketId]?.[criteriaId] || 0;
+  }, [localScores]);
+
+  const isMarketIncomplete = useCallback((marketId: string): boolean => {
+    return showErrors && CRITERIA.some(criteria => getMarketScore(marketId, criteria.id) === 0);
+  }, [showErrors, getMarketScore]);
+
+  const getTotalScore = useCallback((marketId: string): number => {
+    return CRITERIA.reduce((sum, criteria) => sum + getMarketScore(marketId, criteria.id), 0);
+  }, [getMarketScore]);
 
   // Show errors when trying to proceed without completing
   useEffect(() => {
     const checkCompletion = () => {
       const isComplete = canProceedToNextStep();
-      if (!isComplete) {
+      if (!isComplete && !isTransitioning) {
         setShowErrors(true);
       }
     };
@@ -49,47 +124,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
     if (showErrors) {
       checkCompletion();
     }
-  }, [canProceedToNextStep, showErrors]);
-
-  const handleScoreChange = (marketId: string, criteriaId: string, value: number) => {
-    const updatedScores = {
-      ...scores,
-      [marketId]: {
-        ...scores[marketId],
-        [criteriaId]: value
-      }
-    };
-    setScores(updatedScores);
-    
-    // Batch the updates to prevent unnecessary re-renders
-    Promise.resolve().then(() => {
-      updateWorkshopData({ marketEvaluations: updatedScores });
-      setShowErrors(false);
-    });
-  };
-
-  const getMarketScore = (marketId: string, criteriaId: string): number => {
-    return scores[marketId]?.[criteriaId] || 0;
-  };
-
-  const isMarketIncomplete = (marketId: string): boolean => {
-    return showErrors && CRITERIA.some(criteria => getMarketScore(marketId, criteria.id) === 0);
-  };
-
-  const getTotalScore = (marketId: string): number => {
-    return CRITERIA.reduce((sum, criteria) => sum + getMarketScore(marketId, criteria.id), 0);
-  };
-
-  const handleSelectMarket = (market: Market) => {
-    setIsSaving(true);
-    updateWorkshopData({
-      markets: markets.map(m => ({
-        ...m,
-        selected: m.id === market.id
-      }))
-    });
-    setTimeout(() => setIsSaving(false), 500);
-  };
+  }, [canProceedToNextStep, showErrors, isTransitioning]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -116,7 +151,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
             Rate each market segment on the criteria below. Choose the market that best aligns with your goals.
           </div>
 
-          {markets.length === 0 ? (
+          {localMarkets.length === 0 ? (
             <div style={{
               padding: '24px',
               textAlign: 'center',
@@ -130,7 +165,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
             </div>
           ) : (
             <div style={{ display: 'grid', gap: '32px' }}>
-              {markets.map(market => (
+              {localMarkets.map(market => (
                 <div
                   key={market.id}
                   style={{
