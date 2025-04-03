@@ -33,7 +33,7 @@ export const Step04_TriggerEvents: React.FC = () => {
       .map((description, index) => ({
         id: `user-${Date.now()}-${index}`, // Simple generated ID
         description,
-        source: 'user_input' // Default source
+        source: 'user' // Corrected source type
       })); 
       
     updateWorkshopData({ triggerEvents });

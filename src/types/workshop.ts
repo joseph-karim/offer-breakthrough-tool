@@ -1,4 +1,4 @@
-import type { StepChats, AIMessage, ChatSuggestion } from './chat';
+import type { StepChats } from './chat';
 
 export interface AntiGoals {
   market: string;

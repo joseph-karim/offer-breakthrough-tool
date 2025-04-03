@@ -1,6 +1,6 @@
 import { useEffect, CSSProperties } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { Zap, CheckCircle, ChevronLeft, ChevronRight, Sparkles, Star, Layers, ArrowRight } from 'lucide-react';
+import { Zap, CheckCircle, ChevronLeft, Sparkles, Star, Layers, ArrowRight } from 'lucide-react';
 
 // Import step components
 import { Step01_Intro } from './steps/Step01_Intro';
