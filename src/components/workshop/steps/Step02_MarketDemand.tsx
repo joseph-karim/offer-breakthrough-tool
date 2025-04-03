@@ -7,25 +7,32 @@ import { useWorkshopStore } from '../../../store/workshopStore';
 import { Lightbulb } from 'lucide-react';
 
 export const Step02_MarketDemand: React.FC = () => {
-  // Restore state logic
+  // Access state and actions correctly from the store
   const { marketDemandAnalysis: initialData, updateWorkshopData } = useWorkshopStore(
     (state) => ({ 
       marketDemandAnalysis: state.workshopData.marketDemandAnalysis,
       updateWorkshopData: state.updateWorkshopData 
     })
   );
+  
+  // *** ADDING LOG HERE ***
+  console.log('[Step02] Initial Market Demand Data:', initialData);
+
   const [marketAnalysis, setMarketAnalysis] = useState<string>(initialData || '');
 
+  // Keep state updated if store changes (e.g., loading session)
   useEffect(() => {
+     console.log('[Step02] useEffect - initialData changed:', initialData);
      if (initialData !== undefined && initialData !== marketAnalysis) {
        setMarketAnalysis(initialData);
      }
-  }, [initialData]);
+  }, [initialData]); // Dependency on initialData from store
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMarketAnalysis(event.target.value);
   };
 
+  // Use updateWorkshopData to save the specific field
   const handleSave = () => {
     updateWorkshopData({ marketDemandAnalysis: marketAnalysis });
     console.log('Market Demand data saved for Step 2:', { marketAnalysis });
