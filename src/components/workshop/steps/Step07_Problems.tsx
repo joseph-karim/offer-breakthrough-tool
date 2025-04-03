@@ -5,24 +5,35 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Problem } from '../../../types/workshop';
-import { AlertCircle, Plus, X, ChevronUp, ChevronDown } from 'lucide-react';
+import { AlertCircle, Plus, X, ChevronUp, ChevronDown, MessageSquare } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
+import { ChatInterface } from '../chat/ChatInterface';
+import { STEP_QUESTIONS } from '../../../services/aiService';
+import { AIService } from '../../../services/aiService';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectProblems = (state: WorkshopStore) => state.workshopData.problems || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
+const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
 
 export const Step07_Problems: React.FC = () => {
   const storeProblems = useWorkshopStore(selectProblems);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
+  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
   
   // Local state
   const [localProblems, setLocalProblems] = useState(storeProblems);
   const [newProblem, setNewProblem] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
+  
+  // Create AI service instance
+  const aiService = new AIService({
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
+  });
 
   // Update local state when store values change
   useEffect(() => {
@@ -109,6 +120,16 @@ export const Step07_Problems: React.FC = () => {
     setLocalProblems(updatedProblems);
     saveToStore(updatedProblems);
   }, [localProblems, saveToStore]);
+  
+  // Generate step context for AI
+  const stepContext = `
+    Workshop Step: Key Problems
+    
+    Problems are the obstacles, pain points, or frustrations that prevent customers from accomplishing their jobs to be done.
+    
+    Current problems:
+    ${localProblems.map(problem => `- ${problem.description}`).join('\n')}
+  `;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -117,6 +138,28 @@ export const Step07_Problems: React.FC = () => {
         title="Identify Key Problems"
         description="What specific problems or pain points does your target market experience?"
       />
+      
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <Button
+          variant="ghost"
+          onClick={() => setShowChat(!showChat)}
+          rightIcon={<MessageSquare size={16} />}
+        >
+          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
+        </Button>
+      </div>
+      
+      {showChat && (
+        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+          <ChatInterface 
+            step={7}
+            stepContext={stepContext}
+            questions={STEP_QUESTIONS[7] || []}
+            aiService={aiService}
+            onSuggestionAccept={() => acceptSuggestion(7)}
+          />
+        </Card>
+      )}
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>

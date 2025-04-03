@@ -5,35 +5,38 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Market } from '../../../types/workshop';
-import { Users, Plus, X, AlertCircle } from 'lucide-react';
+import { Users, Plus, X, AlertCircle, MessageSquare } from 'lucide-react';
+import { ChatInterface } from '../chat/ChatInterface';
+import { STEP_QUESTIONS } from '../../../services/aiService';
+import { AIService } from '../../../services/aiService';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectMarkets = (state: WorkshopStore) => state.workshopData.markets || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
+const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
+const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
 
 export const Step06_Markets: React.FC = () => {
   const storeMarkets = useWorkshopStore(selectMarkets);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  const showError = useWorkshopStore(selectValidationErrors);
+  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
 
   // Use local state for the markets
   const [markets, setMarkets] = useState<Market[]>(storeMarkets);
   const [newMarket, setNewMarket] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [showError, setShowError] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  
+  // Create AI service instance
+  const aiService = new AIService({
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
+  });
 
   // Update local state when store value changes
   useEffect(() => {
     setMarkets(storeMarkets);
   }, [storeMarkets]);
-
-  // Show error when trying to proceed without completing
-  useEffect(() => {
-    if (!canProceedToNextStep()) {
-      setShowError(true);
-    }
-  }, [canProceedToNextStep]);
 
   const handleAddMarket = useCallback(() => {
     if (newMarket.trim() !== '') {
@@ -46,7 +49,6 @@ export const Step06_Markets: React.FC = () => {
       setMarkets(prev => [...prev, market]);
       setNewMarket(''); // Clear input
       updateWorkshopData({ markets: [...markets, market] });
-      setShowError(false);
     }
   }, [newMarket, markets, updateWorkshopData]);
 
@@ -64,6 +66,16 @@ export const Step06_Markets: React.FC = () => {
   }, [handleAddMarket]);
 
   const isListEmpty = () => showError && markets.length === 0;
+  
+  // Generate step context for AI
+  const stepContext = `
+    Workshop Step: Target Markets
+    
+    Markets are specific groups of people or organizations that might benefit from your solution.
+    
+    Current markets:
+    ${markets.map(market => `- ${market.description}`).join('\n')}
+  `;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -72,6 +84,28 @@ export const Step06_Markets: React.FC = () => {
         title="Define Target Markets"
         description="Who are the specific groups of people or organizations that would benefit most from your solution?"
       />
+      
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <Button
+          variant="ghost"
+          onClick={() => setShowChat(!showChat)}
+          rightIcon={<MessageSquare size={16} />}
+        >
+          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
+        </Button>
+      </div>
+      
+      {showChat && (
+        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+          <ChatInterface 
+            step={6}
+            stepContext={stepContext}
+            questions={STEP_QUESTIONS[6] || []}
+            aiService={aiService}
+            onSuggestionAccept={() => acceptSuggestion(6)}
+          />
+        </Card>
+      )}
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
