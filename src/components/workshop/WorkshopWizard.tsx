@@ -9,6 +9,9 @@ import { Step03_AntiGoals } from './steps/Step03_AntiGoals';
 import { Step04_TriggerEvents } from './steps/Step04_TriggerEvents';
 import { Step05_Jobs } from './steps/Step05_Jobs';
 import { Step06_Markets } from './steps/Step06_Markets';
+import { Step07_Problems } from './steps/Step07_Problems';
+import { Step08_MarketEvaluation } from './steps/Step08_MarketEvaluation';
+import { Step09_ValueProposition } from './steps/Step09_ValueProposition';
 import { Step10_Pricing } from './steps/Step10_Pricing';
 import { Step11_Summary } from './steps/Step11_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
@@ -86,6 +89,12 @@ export const WorkshopWizard = () => {
         return <Step05_Jobs key="step5" />;
       case 6:
         return <Step06_Markets key="step6" />;
+      case 7:
+        return <Step07_Problems key="step7" />;
+      case 8:
+        return <Step08_MarketEvaluation key="step8" />;
+      case 9:
+        return <Step09_ValueProposition key="step9" />;
       case 10:
         return <Step10_Pricing key="step10" />;
       case 11:
