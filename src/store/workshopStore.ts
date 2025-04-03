@@ -8,6 +8,7 @@ export interface WorkshopStore {
   currentStep: number;
   isSaving: boolean;
   isAiLoading: boolean;
+  validationErrors: boolean;
 
   // Workshop data
   workshopData: WorkshopData;
@@ -20,6 +21,7 @@ export interface WorkshopStore {
   setCurrentStep: (step: number) => void;
   updateWorkshopData: (data: Partial<WorkshopData>) => void;
   canProceedToNextStep: () => boolean;
+  setValidationErrors: (show: boolean) => void;
   
   // Chat actions
   addChatMessage: (step: number, message: AIMessage) => void;
@@ -77,6 +79,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   currentStep: 1,
   isSaving: false,
   isAiLoading: false,
+  validationErrors: false,
 
   // Workshop data
   workshopData: initialWorkshopData,
@@ -124,11 +127,12 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
     
     // Only allow moving forward if current step is complete
     if (step > currentStep && !isStepComplete(currentStep, workshopData)) {
+      set({ validationErrors: true });
       return;
     }
 
     if (step >= 1 && step <= 11) {
-      set({ currentStep: step });
+      set({ currentStep: step, validationErrors: false });
     }
   },
 
@@ -147,6 +151,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
       return {
         workshopData: updatedData,
+        validationErrors: false, // Reset validation errors when data is updated
       };
     });
   },
@@ -154,6 +159,10 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   canProceedToNextStep: () => {
     const { currentStep, workshopData } = get();
     return isStepComplete(currentStep, workshopData);
+  },
+
+  setValidationErrors: (show: boolean) => {
+    set({ validationErrors: show });
   },
 
   // Chat actions

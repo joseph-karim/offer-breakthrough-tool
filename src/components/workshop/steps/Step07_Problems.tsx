@@ -80,6 +80,7 @@ export const Step07_Problems: React.FC = () => {
     setLocalProblems(updatedProblems);
     setNewProblem('');
     saveToStore(updatedProblems);
+    setShowErrors(false);
   }, [newProblem, localProblems, saveToStore]);
 
   const handleDeleteProblem = useCallback((id: string) => {
@@ -124,6 +125,7 @@ export const Step07_Problems: React.FC = () => {
     );
     setLocalProblems(updatedProblems);
     saveToStore(updatedProblems);
+    setShowErrors(false);
   }, [localProblems, saveToStore]);
 
   return (

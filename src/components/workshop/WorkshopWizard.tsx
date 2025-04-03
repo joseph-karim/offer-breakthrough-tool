@@ -17,7 +17,13 @@ import { Step11_Summary } from './steps/Step11_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
 
 export const WorkshopWizard = () => {
-  const { currentStep, initializeSession, setCurrentStep } = useWorkshopStore();
+  const { 
+    currentStep, 
+    initializeSession, 
+    setCurrentStep, 
+    canProceedToNextStep,
+    setValidationErrors 
+  } = useWorkshopStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
   // Run initialization only once when component mounts
@@ -47,8 +53,12 @@ export const WorkshopWizard = () => {
   }, [currentStep, setCurrentStep]);
 
   const goToNextStep = useCallback(() => {
+    if (!canProceedToNextStep()) {
+      setValidationErrors(true);
+      return;
+    }
     setCurrentStep(Math.min(11, currentStep + 1));
-  }, [currentStep, setCurrentStep]);
+  }, [currentStep, setCurrentStep, canProceedToNextStep, setValidationErrors]);
 
   // Don't render anything until initialization is complete
   if (!isInitialized) {

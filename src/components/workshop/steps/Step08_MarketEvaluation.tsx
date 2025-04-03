@@ -97,6 +97,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
     }));
     setLocalMarkets(updatedMarkets);
     saveToStore({ markets: updatedMarkets });
+    setShowErrors(false);
   }, [localMarkets, saveToStore]);
 
   const getMarketScore = useCallback((marketId: string, criteriaId: string): number => {
