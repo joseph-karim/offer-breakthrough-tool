@@ -1,32 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
-import { Button } from '../../ui/Button'; // Corrected path again
+import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { Lightbulb } from 'lucide-react';
+import type { Job } from '../../../types/workshop'; // Keep type import if needed elsewhere, or remove if only for JTBD
+import { Lightbulb } from 'lucide-react'; // Keep icon import
 
 export const Step02_MarketDemand: React.FC = () => {
-  // Access state and actions correctly from the store
+  // Keep state logic for now, but we won't use it in the return
   const { marketDemandAnalysis: initialData, updateWorkshopData } = useWorkshopStore(
     (state) => ({ 
       marketDemandAnalysis: state.workshopData.marketDemandAnalysis,
       updateWorkshopData: state.updateWorkshopData 
     })
   );
-  
   const [marketAnalysis, setMarketAnalysis] = useState<string>(initialData || '');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMarketAnalysis(event.target.value);
   };
 
-  // Use updateWorkshopData to save the specific field
   const handleSave = () => {
     updateWorkshopData({ marketDemandAnalysis: marketAnalysis });
     console.log('Market Demand data saved for Step 2:', { marketAnalysis });
-    // Later: Add logic to trigger AI analysis if needed
   };
 
+  // TEMPORARY: Return a simple div for testing
+  return (
+    <div>
+      <h1>Step 2: Market Demand (Test)</h1>
+      <p>If you see this, the basic component rendering works.</p>
+    </div>
+  );
+  
+  /* Original Return (commented out for testing)
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
@@ -84,4 +91,5 @@ export const Step02_MarketDemand: React.FC = () => {
       </div>
     </div>
   );
+  */
 }; 
