@@ -87,7 +87,7 @@ export const StepHeader = ({ stepNumber, title, description }: StepHeaderProps) 
     fontWeight: 700,
     fontSize: '18px',
     marginRight: '12px',
-    boxShadow: `0 4px 12px rgba(${parseInt(colors.primary.slice(1, 3), 16)}, ${parseInt(colors.primary.slice(3, 5), 16)}, ${parseInt(colors.primary.slice(5, 7), 16)}, 0.3)`,
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
     position: 'relative',
   };
   
@@ -141,7 +141,7 @@ export const StepHeader = ({ stepNumber, title, description }: StepHeaderProps) 
     WebkitBackdropFilter: 'blur(8px)',
     borderRadius: '16px',
     padding: '24px',
-    border: `1px solid rgba(${parseInt(colors.light.slice(1, 3), 16)}, ${parseInt(colors.light.slice(3, 5), 16)}, ${parseInt(colors.light.slice(5, 7), 16)}, 0.7)`,
+    border: '1px solid rgba(0, 0, 0, 0.1)',
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
     fontSize: '16px',
     lineHeight: 1.7,
