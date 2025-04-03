@@ -1,104 +1,174 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
+import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { Lightbulb, AlertCircle } from 'lucide-react';
-import type { WorkshopStore } from '../../../store/workshopStore';
+import { ChevronRight } from 'lucide-react';
 
-// Separate selectors to prevent unnecessary re-renders
-const selectMarketDemandAnalysis = (state: WorkshopStore) => state.workshopData.marketDemandAnalysis || '';
-const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
+// Since we don't have a Textarea component, let's create a simple one
+const Textarea: React.FC<{
+  id: string;
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  rows: number;
+  style?: React.CSSProperties;
+}> = ({ id, placeholder, value, onChange, rows, style }) => (
+  <textarea
+    id={id}
+    placeholder={placeholder}
+    value={value}
+    onChange={onChange}
+    rows={rows}
+    style={{
+      width: '100%',
+      padding: '12px',
+      borderRadius: '8px',
+      border: '1px solid #d1d5db',
+      fontSize: '16px',
+      ...style
+    }}
+  />
+);
 
 export const Step02_MarketDemand: React.FC = () => {
-  // Get initial value from store
-  const storeValue = useWorkshopStore(selectMarketDemandAnalysis);
-  const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
-  
-  // Use local state for the textarea
-  const [localValue, setLocalValue] = useState(storeValue);
-  const [showError, setShowError] = useState(false);
+  const { workshopData, updateWorkshopData } = useWorkshopStore();
+  const [analysis, setAnalysis] = useState(workshopData.marketDemandAnalysis || '');
 
-  // Update local state when store value changes (e.g., when navigating back to this step)
-  useEffect(() => {
-    setLocalValue(storeValue);
-  }, [storeValue]);
-
-  // Show error when trying to proceed without completing
-  useEffect(() => {
-    if (!canProceedToNextStep()) {
-      setShowError(true);
-    }
-  }, [canProceedToNextStep]);
-
-  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = event.target.value;
-    setLocalValue(newValue);
-    // Save to store immediately if there's content
-    if (newValue.trim() !== '') {
-      updateWorkshopData({ marketDemandAnalysis: newValue });
-      setShowError(false);
-    }
-  }, [updateWorkshopData]);
-
-  const isFieldEmpty = () => showError && !localValue.trim();
+  const handleSave = () => {
+    updateWorkshopData({
+      marketDemandAnalysis: analysis
+    });
+  };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
         stepNumber={2}
-        title="Analyze Market Demand & Existing Solutions"
-        description="Understand what your target audience currently uses and their frustrations. Who are your main competitors?"
+        title="Understand Market Demand"
+        description="Learn how to truly understand what drives purchase decisions"
       />
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-        <div style={{ display: 'grid', gap: '20px' }}>
-          <label htmlFor="marketAnalysis" style={{ fontWeight: 600, color: '#374151' }}>
-            Existing Solutions & Competitor Analysis:
-          </label>
-          <textarea
-            id="marketAnalysis"
-            rows={8}
-            value={localValue}
-            onChange={handleInputChange}
-            placeholder="Describe the solutions your target market currently uses. Who are the main players? What are their strengths and weaknesses? What frustrations do customers have?"
-            style={{
-              width: '100%',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '1px solid',
-              borderColor: isFieldEmpty() ? '#ef4444' : '#d1d5db',
-              fontSize: '16px',
-              lineHeight: 1.6,
-              backgroundColor: 'white',
-            }}
-          />
-          {isFieldEmpty() && (
-            <div style={{ 
-              color: '#ef4444',
-              fontSize: '14px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
             }}>
-              <AlertCircle size={14} />
-              This field is required to proceed
+              2A: The Demand Paradox
+            </h3>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              The common startup advice to "make something people want" is both true and challenging to implement. 
+              While businesses often focus on their goals and features, success comes from addressing buyer desires 
+              and needs.
+            </p>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              There's frequently a disconnect between what businesses think customers want and what actually 
+              drives purchase decisions. To build a successful product or service, we need to understand the 
+              deeper emotional factors behind buying choices.
+            </p>
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              2B: Understanding Purchase Motivations
+            </h3>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              Most purchases are driven by emotional needs: feeling safe/secure, loved, important, attractive, 
+              or in control. These drivers apply to business purchases too, despite the appearance of 
+              rational decision-making.
+            </p>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              If you want to build a massively successful new product, you need to dig deeper into the buyer's 
+              experience to create a solution they want—and often wouldn't know to ask for directly.
+            </p>
+          </div>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 600, 
+              color: '#1e293b',
+              margin: 0
+            }}>
+              2C: Introducing the Problem-Up Method
+            </h3>
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              The 'Problem-Up Method' differs from traditional "niche down" approaches:
+            </p>
+            <div style={{ 
+              padding: '16px', 
+              backgroundColor: '#f8fafc', 
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <p style={{ margin: '0 0 12px 0', fontWeight: 500 }}>Traditional "Niche Down" Approach:</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                <span style={{ padding: '8px 12px', backgroundColor: '#e0f2fe', borderRadius: '6px', fontSize: '14px' }}>Offer</span>
+                <ChevronRight size={16} color="#94a3b8" />
+                <span style={{ padding: '8px 12px', backgroundColor: '#e0f2fe', borderRadius: '6px', fontSize: '14px' }}>Target Buyer</span>
+                <ChevronRight size={16} color="#94a3b8" />
+                <span style={{ padding: '8px 12px', backgroundColor: '#e0f2fe', borderRadius: '6px', fontSize: '14px' }}>Problems</span>
+              </div>
+              
+              <p style={{ margin: '0 0 12px 0', fontWeight: 500 }}>Problem-Up Method:</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ padding: '8px 12px', backgroundColor: '#dbeafe', borderRadius: '6px', fontSize: '14px' }}>JTBD</span>
+                <ChevronRight size={16} color="#94a3b8" />
+                <span style={{ padding: '8px 12px', backgroundColor: '#dbeafe', borderRadius: '6px', fontSize: '14px' }}>Market Problems</span>
+                <ChevronRight size={16} color="#94a3b8" />
+                <span style={{ padding: '8px 12px', backgroundColor: '#dbeafe', borderRadius: '6px', fontSize: '14px' }}>Target Buyer</span>
+                <ChevronRight size={16} color="#94a3b8" />
+                <span style={{ padding: '8px 12px', backgroundColor: '#dbeafe', borderRadius: '6px', fontSize: '14px' }}>Offer</span>
+              </div>
             </div>
-          )}
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#fffbeb',
-            borderLeft: '4px solid #f59e0b',
-            borderRadius: '0 8px 8px 0',
-            color: '#92400e',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
-            <Lightbulb style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#d97706' }} />
-            Think about direct competitors (offering similar solutions) and indirect alternatives (how people solve the problem now, even if differently).
+            <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
+              Consider Adam's story - a freelance marketer who transformed his business using the Problem-Up method. 
+              Adam started as a freelance email marketer working with various clients. By applying this method, 
+              he clarified his focus: "helping gym owners attract and retain new members, profitably". This allowed him 
+              to design a productized service that addresses specific problems, delivers massive value, and maximizes 
+              profits through scalability.
+            </p>
+          </div>
+
+          <div style={{ marginTop: '16px' }}>
+            <label 
+              htmlFor="marketDemandAnalysis" 
+              style={{ 
+                display: 'block', 
+                marginBottom: '8px', 
+                fontWeight: 500, 
+                color: '#334155' 
+              }}
+            >
+              Your Analysis:
+            </label>
+            <p style={{ 
+              fontSize: '14px', 
+              color: '#64748b', 
+              marginBottom: '12px' 
+            }}>
+              Based on the concepts above, analyze your current understanding of your market's demand:
+            </p>
+            <Textarea
+              id="marketDemandAnalysis"
+              placeholder="What emotional drivers might influence your buyers? How might the Problem-Up method change your approach?"
+              value={analysis}
+              onChange={(e) => setAnalysis(e.target.value)}
+              rows={6}
+              style={{ marginBottom: '16px' }}
+            />
+            <Button variant="primary" onClick={handleSave}>
+              Save Analysis
+            </Button>
           </div>
         </div>
       </Card>
