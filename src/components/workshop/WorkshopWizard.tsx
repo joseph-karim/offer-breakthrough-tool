@@ -1,4 +1,4 @@
-import { useEffect, CSSProperties } from 'react';
+import { useEffect, CSSProperties, useState } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
 import { Zap, CheckCircle, ChevronLeft, Sparkles, Star, Layers, ArrowRight } from 'lucide-react';
 
@@ -14,11 +14,40 @@ import { Step11_Summary } from './steps/Step11_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
 
 export const WorkshopWizard = () => {
-  const { currentStep, initializeSession, setCurrentStep } = useWorkshopStore();
+  const { currentStep, initializeSession, setCurrentStep, sessionId } = useWorkshopStore();
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    initializeSession();
+    const init = async () => {
+      await initializeSession();
+      setIsInitialized(true);
+    };
+    init();
   }, [initializeSession]);
+
+  // Don't render anything until initialization is complete
+  if (!isInitialized) {
+    return (
+      <div style={{ 
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundImage: 'linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #fdf2f8 100%)'
+      }}>
+        <div style={{
+          fontSize: '18px',
+          color: '#4f46e5',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <Sparkles />
+          Initializing workshop...
+        </div>
+      </div>
+    );
+  }
 
   const renderStep = () => {
     switch (currentStep) {

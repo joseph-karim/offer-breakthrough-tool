@@ -14,7 +14,7 @@ interface WorkshopStore {
   currentSuggestion: any | null;
 
   // Actions
-  initializeSession: () => void;
+  initializeSession: () => Promise<void>;
   loadSession: (sessionId: string) => Promise<void>;
   saveSession: () => Promise<void>;
   setCurrentStep: (step: number) => void;
@@ -54,11 +54,18 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   currentSuggestion: null,
 
   // Actions
-  initializeSession: () => {
+  initializeSession: async () => {
+    // Simulate a small delay to ensure proper initialization
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const newSessionId = `session_${Date.now()}`;
     set({
-      sessionId: `session_${Date.now()}`,
+      sessionId: newSessionId,
       currentStep: 1,
-      workshopData: initialWorkshopData,
+      workshopData: {
+        ...initialWorkshopData,
+        stepChats: {},
+      },
     });
   },
 
