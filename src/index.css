@@ -63,8 +63,8 @@
   }
   
   body {
-    background-color: #222222;
-    color: #ffffff;
+    background-color: #FFFFFF;
+    color: #222222;
     @apply antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: 'Mada', sans-serif;
