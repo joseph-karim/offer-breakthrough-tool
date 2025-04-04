@@ -10,248 +10,240 @@ export const Step01_Intro: React.FC = () => {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       {/* Hero Section with Dark Background */}
-      <div className="bg-brand-black text-white py-12 px-6 mb-8 rounded-lg">
+      <div className="black-box mb-4">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="text-4xl font-bold mb-3">
             Welcome to the <span className="text-brand-yellow">Offer Breakthrough Workshop</span>
           </h1>
-          <p className="text-xl mb-6">Design a scalable offer by deeply understanding your market's psychology and needs.</p>
-          <div className="inline-block bg-brand-yellow text-brand-black font-bold px-6 py-3 rounded-md">
+          <p className="text-xl mb-4">Design a scalable offer by deeply understanding your market's psychology and needs.</p>
+          <div className="product-tab">
             Step 1 of 11
           </div>
         </div>
       </div>
       
-      <div style={{ display: 'grid', gap: '24px' }}>
+      <div style={{ display: 'grid', gap: '12px' }}>
         {/* Introduction Card */}
         <Card 
           variant="black"
-          borderRadius="xl"
-          padding="lg"
+          borderRadius="sm"
+          padding="sm"
         >
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
             <div style={{
               backgroundColor: '#FFDD00',
-              padding: '10px',
-              borderRadius: '9999px',
-              marginTop: '4px',
-              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+              padding: '6px',
+              borderRadius: '2px',
+              marginTop: '2px',
             }}>
-              <Sparkles style={{ height: '24px', width: '24px', color: '#222222' }} />
+              <Sparkles style={{ height: '18px', width: '18px', color: '#222222' }} />
             </div>
-            <p style={{ fontSize: '18px', color: '#FFFFFF', lineHeight: 1.7, fontWeight: 'bold' }}>
+            <p style={{ fontSize: '15px', color: '#FFFFFF', lineHeight: 1.4, fontWeight: 'bold' }}>
               This interactive workshop guides you through uncovering profitable problems and designing 
               <span className="highlight-yellow">scalable offers</span> using the "Why We Buy" methodology.
             </p>
           </div>
           <div style={{
-            marginLeft: '56px',
-            marginRight: '16px',
-            marginTop: '20px',
-            padding: '12px 16px',
+            marginLeft: '34px',
+            marginTop: '12px',
+            padding: '10px',
             backgroundColor: '#FFDD00',
-            borderRadius: '8px',
+            borderRadius: '2px',
             color: '#222222',
           }}>
-            <p style={{ fontSize: '14px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Lightbulb style={{ height: '20px', width: '20px', flexShrink: 0, color: '#222222' }} />
+            <p style={{ fontSize: '14px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Lightbulb style={{ height: '16px', width: '16px', flexShrink: 0, color: '#222222' }} />
               Complete all steps to create an offer that resonates.
             </p>
           </div>
         </Card>
 
         {/* Two Column Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
           <Card 
             variant="black"
-            borderRadius="xl" 
-            padding="lg" 
-            hover={true}
+            borderRadius="sm" 
+            padding="sm" 
+            hover={false}
           >
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '8px' }}>
               <div style={{
                 backgroundColor: '#FFDD00',
-                padding: '10px',
-                borderRadius: '8px',
+                padding: '6px',
+                borderRadius: '2px',
               }}>
-                <Target style={{ height: '24px', width: '24px', color: '#222222' }} />
+                <Target style={{ height: '18px', width: '18px', color: '#222222' }} />
               </div>
-              <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#FFFFFF' }}>
                 What You'll Achieve
               </h3>
             </div>
-            <ul style={{ listStyle: 'none', paddingLeft: '12px', paddingRight: '12px', display: 'grid', gap: '16px' }}>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
+            <ul style={{ listStyle: 'none', paddingLeft: '6px', paddingRight: '6px', display: 'grid', gap: '10px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <CheckCircle style={{ height: '16px', width: '16px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
                 <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Identify and avoid <span className="highlight-yellow">common pitfalls</span></span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Discover <span className="highlight-yellow">trigger events</span></span>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <CheckCircle style={{ height: '16px', width: '16px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Discover trigger events</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Understand jobs your customers <span className="highlight-yellow">need done</span></span>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <CheckCircle style={{ height: '16px', width: '16px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Understand jobs your customers need done</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Find <span className="highlight-yellow">profitable target markets</span></span>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <CheckCircle style={{ height: '16px', width: '16px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Find profitable target markets</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Uncover <span className="highlight-yellow">high-value problems</span></span>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <CheckCircle style={{ height: '16px', width: '16px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Uncover high-value problems</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Design a <span className="highlight-yellow">scalable offer</span> that resonates</span>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <CheckCircle style={{ height: '16px', width: '16px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Design a scalable offer that resonates</span>
               </li>
             </ul>
           </Card>
 
           <Card 
             variant="purple"
-            borderRadius="xl"
-            padding="lg"
-            hover={true}
+            borderRadius="sm"
+            padding="sm"
+            hover={false}
           >
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '8px' }}>
               <div style={{
                 backgroundColor: '#FFDD00',
-                padding: '10px',
-                borderRadius: '8px',
+                padding: '6px',
+                borderRadius: '2px',
               }}>
-                <Zap style={{ height: '24px', width: '24px', color: '#222222' }} />
+                <Zap style={{ height: '18px', width: '18px', color: '#222222' }} />
               </div>
-              <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#FFFFFF' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#FFFFFF' }}>
                 How It Works
               </h3>
             </div>
-            <ul style={{ listStyle: 'none', paddingLeft: '12px', paddingRight: '12px', display: 'grid', gap: '16px' }}>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
+            <ul style={{ listStyle: 'none', paddingLeft: '6px', paddingRight: '6px', display: 'grid', gap: '10px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{
                   flexShrink: 0,
                   backgroundColor: '#FFDD00',
                   color: '#222222',
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '9999px',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '2px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginTop: '2px',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   fontWeight: 700,
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   border: 'none',
                 }}>
                   1
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Progress through <span className="highlight-yellow">10 carefully designed steps</span></span>
+                <span style={{ color: '#FFFFFF', fontSize: '14px', lineHeight: '1.3', fontWeight: 'bold' }}>Progress through <span className="highlight-yellow">10 designed steps</span></span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{
                   flexShrink: 0,
                   backgroundColor: '#FFDD00',
                   color: '#222222',
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '9999px',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '2px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginTop: '2px',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   fontWeight: 700,
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   border: 'none',
                 }}>
                   2
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Each step <span className="highlight-yellow">builds on</span> the previous insights</span>
+                <span style={{ color: '#FFFFFF', fontSize: '14px', lineHeight: '1.3', fontWeight: 'bold' }}>Each step builds on the previous insights</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{
                   flexShrink: 0,
                   backgroundColor: '#FFDD00',
                   color: '#222222',
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '9999px',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '2px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginTop: '2px',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   fontWeight: 700,
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   border: 'none',
                 }}>
                   3
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}><span className="highlight-yellow">AI-powered</span> bots help with brainstorming</span>
+                <span style={{ color: '#FFFFFF', fontSize: '14px', lineHeight: '1.3', fontWeight: 'bold' }}>AI-powered bots help with brainstorming</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{
                   flexShrink: 0,
                   backgroundColor: '#FFDD00',
                   color: '#222222',
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '9999px',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '2px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginTop: '2px',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   fontWeight: 700,
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   border: 'none',
                 }}>
                   4
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Save your <span className="highlight-yellow">progress</span> as you go</span>
+                <span style={{ color: '#FFFFFF', fontSize: '14px', lineHeight: '1.3', fontWeight: 'bold' }}>Save your progress as you go</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{
                   flexShrink: 0,
                   backgroundColor: '#FFDD00',
                   color: '#222222',
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '9999px',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '2px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginTop: '2px',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   fontWeight: 700,
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   border: 'none',
                 }}>
                   5
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Get <span className="highlight-yellow">clear action items</span> at each stage</span>
+                <span style={{ color: '#FFFFFF', fontSize: '14px', lineHeight: '1.3', fontWeight: 'bold' }}>Get clear action items at each stage</span>
               </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
+              <li style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <div style={{
                   flexShrink: 0,
                   backgroundColor: '#FFDD00',
                   color: '#222222',
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '9999px',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '2px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginTop: '2px',
-                  fontSize: '14px',
+                  fontSize: '12px',
                   fontWeight: 700,
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   border: 'none',
                 }}>
                   6
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>End with a <span className="highlight-yellow">well-defined offer</span> concept</span>
+                <span style={{ color: '#FFFFFF', fontSize: '14px', lineHeight: '1.3', fontWeight: 'bold' }}>End with a well-defined offer concept</span>
               </li>
             </ul>
           </Card>
@@ -260,71 +252,65 @@ export const Step01_Intro: React.FC = () => {
         {/* Before You Begin Card */}
         <Card 
           variant="yellow"
-          borderRadius="xl"
-          padding="lg"
+          borderRadius="sm"
+          padding="sm"
         >
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px', gap: '8px' }}>
             <div style={{
               backgroundColor: '#222222',
-              padding: '10px',
-              borderRadius: '8px',
+              padding: '6px',
+              borderRadius: '2px',
             }}>
-              <Brain style={{ height: '24px', width: '24px', color: '#FFDD00' }} />
+              <Brain style={{ height: '18px', width: '18px', color: '#FFDD00' }} />
             </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#222222' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#222222' }}>
               Before You Begin
             </h3>
           </div>
-          <div style={{ display: 'grid', gap: '20px' }}>
-            <p style={{ color: '#222222', paddingLeft: '44px', lineHeight: 1.6 }}>
+          <div style={{ display: 'grid', gap: '12px' }}>
+            <p style={{ color: '#222222', paddingLeft: '32px', lineHeight: 1.4 }}>
               Take a moment to reflect on your current business and what you hope to 
               <span className="highlight-black">achieve</span>. 
               The more thoughtful you are in each step, the better your results.
             </p>
             <Card 
               variant="black"
-              borderRadius="lg"
-              padding="md"
-              shadow="sm"
-              style={{ marginLeft: '24px' }}
+              borderRadius="none"
+              padding="sm"
+              shadow="none"
+              style={{ marginLeft: '10px' }}
             >
-              <p style={{ fontWeight: 600, color: '#FFFFFF', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Award style={{ height: '20px', width: '20px', color: '#FFDD00' }} />
+              <p style={{ fontWeight: 600, color: '#FFFFFF', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Award style={{ height: '16px', width: '16px', color: '#FFDD00' }} />
                 Consider having these things handy:
               </p>
-              <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'grid', gap: '12px' }}>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'grid', gap: '8px' }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{
                     backgroundColor: '#FFDD00',
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '9999px',
+                    width: '4px',
+                    height: '4px',
                     flexShrink: 0,
-                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   }}></div>
-                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>Notes about your <span className="highlight-yellow">current business challenges</span></span>
+                  <span style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: 'bold' }}>Notes about your <span className="highlight-yellow">business challenges</span></span>
                 </li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{
                     backgroundColor: '#FFDD00',
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '9999px',
+                    width: '4px',
+                    height: '4px',
                     flexShrink: 0,
-                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   }}></div>
-                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>Ideas or assumptions about your <span className="highlight-yellow">target market</span></span>
+                  <span style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: 'bold' }}>Ideas or assumptions about your target market</span>
                 </li>
-                <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{
                     backgroundColor: '#FFDD00',
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '9999px',
+                    width: '4px',
+                    height: '4px',
                     flexShrink: 0,
-                    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   }}></div>
-                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>A notebook to capture <span className="highlight-yellow">additional insights</span></span>
+                  <span style={{ color: '#FFFFFF', fontSize: '13px', fontWeight: 'bold' }}>A notebook to capture additional insights</span>
                 </li>
               </ul>
             </Card>
@@ -332,11 +318,11 @@ export const Step01_Intro: React.FC = () => {
         </Card>
 
         {/* Start Button */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '16px' }}>
           <Button
             variant="yellow"
-            size="xl"
-            rightIcon={<Rocket style={{ height: '20px', width: '20px' }} />}
+            size="lg"
+            rightIcon={<Rocket style={{ height: '16px', width: '16px' }} />}
             onClick={() => setCurrentStep(2)}
           >
             Start the Workshop

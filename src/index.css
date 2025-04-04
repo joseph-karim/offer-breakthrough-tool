@@ -9,7 +9,7 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 13%;
-    --radius: 0.5rem;
+    --radius: 0.25rem;
   }
   
   * {
@@ -43,6 +43,8 @@
     color: #222222;
     font-weight: bold;
     padding: 0 4px;
+    margin: 0 1px;
+    display: inline;
   }
   
   .highlight-black {
@@ -50,6 +52,8 @@
     color: #FFFFFF;
     font-weight: bold;
     padding: 0 4px;
+    margin: 0 1px;
+    display: inline;
   }
   
   .accent-yellow {
@@ -63,30 +67,33 @@
   
   /* Tabs styling */
   .tab {
-    padding: 0.75rem 1.25rem;
+    padding: 0.5rem 1rem;
     font-weight: 600;
     border-bottom: 3px solid transparent;
     transition: all 0.3s ease;
   }
   
   .tab.active {
-    border-bottom-color: #FFDD00;
+    border-bottom-color: transparent;
     background-color: #FFDD00;
     color: #222222;
   }
   
-  /* Stylized black and yellow boxes with thunderbolts for top bar and title boxes */
-  .title-box {
+  /* Black box styling */
+  .black-box {
     background-color: #222222;
     color: white;
-    padding: 1rem 1.5rem;
-    border-radius: 0.5rem;
-    position: relative;
+    padding: 1rem;
+    border-radius: 0;
   }
   
-  .title-box--yellow {
+  /* Yellow box styling */
+  .yellow-box {
     background-color: #FFDD00;
     color: #222222;
+    padding: 1rem;
+    border-radius: 0;
+    font-weight: bold;
   }
   
   /* Button styling to match learnwhybuy.com */
@@ -94,8 +101,8 @@
     background-color: #FFDD00;
     color: #222222;
     font-weight: bold;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -105,11 +112,31 @@
     background-color: #222222;
     color: white;
     font-weight: bold;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+  }
+  
+  /* Product tab styling */
+  .product-tab {
+    background-color: #FFDD00;
+    color: #222222;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    display: inline-block;
+  }
+  
+  /* Product tab inactive */
+  .product-tab-inactive {
+    background-color: transparent;
+    color: #222222;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    display: inline-block;
   }
 }
 

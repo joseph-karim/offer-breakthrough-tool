@@ -34,48 +34,48 @@ const getSizeStyles = (size: ButtonSize): CSSProperties => {
   switch (size) {
     case 'sm':
       return {
-        padding: '6px 12px',
+        padding: '4px 8px',
         fontSize: '14px',
-        borderRadius: '6px',
-        minHeight: '32px',
+        borderRadius: '2px',
+        minHeight: '28px',
       };
     case 'md':
       return {
-        padding: '8px 16px',
-        fontSize: '16px',
-        borderRadius: '8px',
-        minHeight: '40px',
+        padding: '6px 12px',
+        fontSize: '15px',
+        borderRadius: '2px',
+        minHeight: '36px',
       };
     case 'lg':
       return {
-        padding: '10px 20px',
-        fontSize: '18px',
-        borderRadius: '10px',
-        minHeight: '48px',
+        padding: '8px 16px',
+        fontSize: '16px',
+        borderRadius: '2px',
+        minHeight: '44px',
       };
     case 'xl':
       return {
-        padding: '12px 24px',
-        fontSize: '20px',
-        borderRadius: '12px',
-        minHeight: '56px',
+        padding: '10px 20px',
+        fontSize: '18px',
+        borderRadius: '2px',
+        minHeight: '52px',
       };
     case 'icon':
       return {
         padding: '8px',
-        borderRadius: '8px',
-        minHeight: '40px',
-        minWidth: '40px',
+        borderRadius: '2px',
+        minHeight: '36px',
+        minWidth: '36px',
         display: 'inline-flex',
         justifyContent: 'center',
         alignItems: 'center',
       };
     default:
       return {
-        padding: '8px 16px',
-        fontSize: '16px',
-        borderRadius: '8px',
-        minHeight: '40px',
+        padding: '6px 12px',
+        fontSize: '15px',
+        borderRadius: '2px',
+        minHeight: '36px',
       };
   }
 };

@@ -35,25 +35,25 @@ interface CardProps {
 // Helper functions to convert props to CSS values
 const getPaddingValue = (size: PaddingSize): string => {
   switch (size) {
-    case 'sm': return '16px';
-    case 'md': return '24px';
-    case 'lg': return '32px';
-    case 'xl': return '48px';
+    case 'sm': return '8px';
+    case 'md': return '12px';
+    case 'lg': return '16px';
+    case 'xl': return '24px';
     case 'none': return '0';
-    default: return '24px';
+    default: return '12px';
   }
 };
 
 const getBorderRadiusValue = (size: BorderRadiusSize): string => {
   switch (size) {
-    case 'sm': return '8px';
-    case 'md': return '12px';
-    case 'lg': return '16px';
-    case 'xl': return '24px';
-    case '2xl': return '32px';
+    case 'sm': return '2px';
+    case 'md': return '2px';
+    case 'lg': return '4px';
+    case 'xl': return '8px';
+    case '2xl': return '12px';
     case 'full': return '9999px';
     case 'none': return '0';
-    default: return '12px';
+    default: return '2px';
   }
 };
 
