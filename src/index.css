@@ -8,54 +8,8 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
-    
-    /* CustomerCamp Yellow */
-    --primary: 50 100% 50%;
-    --primary-50: 50 100% 97%;
-    --primary-100: 50 100% 92%;
-    --primary-200: 50 100% 84%;
-    --primary-300: 50 100% 75%;
-    --primary-400: 50 100% 65%;
-    --primary-500: 50 100% 50%;
-    --primary-600: 50 100% 45%;
-    --primary-700: 50 100% 35%;
-    --primary-800: 50 100% 25%;
-    --primary-900: 50 100% 15%;
-    
-    /* CustomerCamp Black/Dark Gray */
-    --secondary: 0 0% 13%;
-    --secondary-50: 0 0% 97%;
-    --secondary-100: 0 0% 92%;
-    --secondary-200: 0 0% 84%;
-    --secondary-300: 0 0% 75%;
-    --secondary-400: 0 0% 65%;
-    --secondary-500: 0 0% 50%;
-    --secondary-600: 0 0% 35%;
-    --secondary-700: 0 0% 25%;
-    --secondary-800: 0 0% 15%;
-    --secondary-900: 0 0% 7%;
-    
-    /* CustomerCamp Purple for accents */
-    --accent: 260 70% 50%;
-    --accent-foreground: 0 0% 100%;
-    
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-    
-    --border: 0 0% 90%;
-    
-    --success: 142 69% 58%;
-    --info: 195 86% 54%;
-    --warning: 50 100% 50%;
-    --danger: 0 91% 71%;
-    
+    --foreground: 0 0% 13%;
     --radius: 0.5rem;
-  }
- 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
   }
   
   * {
@@ -63,224 +17,130 @@
   }
   
   body {
-    background-color: #FFFFFF !important;
+    background-color: #FFFFFF;
     color: #222222;
     @apply antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: 'Mada', sans-serif;
   }
-  
-  /* CustomerCamp Theme */
-  .customercamp-theme {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 13%;
-    
-    background-color: #FFFFFF !important;
+
+  mark, .mark {
+    background-color: #FFDD00;
     color: #222222;
+    font-weight: bold;
+    padding: 0 4px;
   }
   
-  /* Base container styles */
-  .customercamp-theme .min-h-screen {
-    background-color: #FFFFFF !important;
-    background-image: none !important;
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
   }
-  
-  /* Header styles */
-  .customercamp-theme header {
-    background-color: #FFFFFF !important;
-    border-bottom: 1px solid #EEEEEE;
-  }
-  
-  /* Top banner styles */
-  .customercamp-theme .py-3.px-4.text-center {
-    background-color: #FFFFFF !important;
-    border-bottom: 1px solid #EEEEEE;
-  }
-  
-  /* Force white background on specific elements */
-  .bg-yellow-300,
-  .bg-primary,
-  [style*="background-color: rgb(255, 221, 0)"],
-  [style*="background: rgb(255, 221, 0)"] {
-    background-color: #FFFFFF !important;
-    background: #FFFFFF !important;
-  }
-  
-  /* Yellow highlight elements */
+}
+
+@layer components {
+  /* Main styled components based on learnwhybuy.com */
   .highlight-yellow {
     background-color: #FFDD00;
     color: #222222;
+    font-weight: bold;
+    padding: 0 4px;
   }
   
-  /* Black highlight elements */
   .highlight-black {
     background-color: #222222;
     color: #FFFFFF;
+    font-weight: bold;
+    padding: 0 4px;
   }
   
-  /* Yellow accent elements */
   .accent-yellow {
     border-left: 3px solid #FFDD00;
   }
   
   /* Text highlight styles */
-  .highlight-text-yellow {
-    color: #FFDD00;
+  .text-highlight {
+    font-weight: bold;
   }
   
-  .highlight-text-black {
+  /* Tabs styling */
+  .tab {
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .tab.active {
+    border-bottom-color: #FFDD00;
+    background-color: #FFDD00;
     color: #222222;
   }
   
-  /* Border highlight styles */
-  .highlight-border-yellow {
-    border-color: #FFDD00;
+  /* Stylized black and yellow boxes with thunderbolts for top bar and title boxes */
+  .title-box {
+    background-color: #222222;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    position: relative;
   }
   
-  .highlight-border-black {
-    border-color: #222222;
-  }
-}
-
-@layer components {
-  /* Gradient background for border effect */
-  .bg-gradient-padding {
-    background: linear-gradient(to right, #FFDD00, #222222, #6B46C1);
-  }
-  
-  /* Glass card effect */
-  .glassmorphism {
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid #EEEEEE;
-    border-left: 3px solid #FFDD00;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  .title-box--yellow {
+    background-color: #FFDD00;
     color: #222222;
   }
   
-  /* Gradient text */
-  .gradient-text {
-    color: transparent;
-    background-clip: text;
-    background-image: linear-gradient(to right, #FFDD00, #222222, #6B46C1);
+  /* Button styling to match learnwhybuy.com */
+  .button-primary {
+    background-color: #FFDD00;
+    color: #222222;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   
-  /* Gradient backgrounds */
-  .bg-gradient-yellow-black {
-    background-image: linear-gradient(to right, #FFDD00, #222222);
+  .button-secondary {
+    background-color: #222222;
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  
-  .bg-gradient-black-yellow {
-    background-image: linear-gradient(to right, #222222, #FFDD00);
-  }
-  
-  .bg-gradient-yellow-purple {
-    background-image: linear-gradient(to right, #FFDD00, #6B46C1);
-  }
-  
-  .bg-gradient-purple-yellow {
-    background-image: linear-gradient(to right, #6B46C1, #FFDD00);
-  }
-}
-
-/* Force white background on root elements */
-html, body, #root, .min-h-screen {
-  background-color: #FFFFFF !important;
-  background: #FFFFFF !important;
-}
-
-/* Override any yellow backgrounds */
-.bg-yellow-300, 
-[style*="background-color: rgb(255, 221, 0)"],
-[style*="background-color:#FFDD00"],
-[style*="background: rgb(255, 221, 0)"],
-[style*="background-color: #FFDD00"],
-[style*="background: #FFDD00"] {
-  background-color: #FFFFFF !important;
-  background: #FFFFFF !important;
-}
-
-/* Target specific elements with yellow backgrounds */
-body > div, 
-body > div > div,
-body > div > div > div,
-body > div > div > div > div,
-body > div > div > div > div > div {
-  background-color: #FFFFFF !important;
-  background: #FFFFFF !important;
-  background-image: none !important;
 }
 
 @layer utilities {
-  .animated-gradient {
-    background-size: 400% 400%;
-    animation: gradient 8s ease infinite;
-  }
-  
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  
-  .bg-blur {
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  
-  /* Animated hover effects */
+  /* Utility classes for the workshop interface */
   .hover-lift {
-    transition-property: all;
-    transition-duration: 300ms;
+    transition: transform 0.3s ease;
   }
   
   .hover-lift:hover {
     transform: translateY(-0.25rem);
   }
   
-  .hover-scale {
-    transition-property: all;
-    transition-duration: 300ms;
+  .hover-grow {
+    transition: transform 0.3s ease;
   }
   
-  .hover-scale:hover {
+  .hover-grow:hover {
     transform: scale(1.05);
   }
-  
-  .hover-glow {
-    transition-property: all;
-    transition-duration: 300ms;
-  }
-  
-  .hover-glow:hover {
-    box-shadow: 0 0 15px rgba(255, 221, 0, 0.6);
-  }
-  
-  /* Decorative animations */
-  .floating {
-    animation: floating 3s ease-in-out infinite;
-  }
-  
-  @keyframes floating {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
-  }
-  
-  .pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-  
-  @keyframes pulse-glow {
-    0% { box-shadow: 0 0 0px rgba(255, 221, 0, 0); }
-    50% { box-shadow: 0 0 15px rgba(255, 221, 0, 0.6); }
-    100% { box-shadow: 0 0 0px rgba(255, 221, 0, 0); }
-  }
 }
+
+/* Global styles for learnwhybuy.com branding */
+html, body, #root {
+  background-color: #FFFFFF;
+}
+
+/* Fix for highlight spans to ensure proper styling */
+span[style*="background-color: #FFDD00"] {
+  color: #222222 !important;
+  font-weight: bold;
+  padding: 0 4px;
+}
+

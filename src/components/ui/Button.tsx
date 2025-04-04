@@ -85,34 +85,38 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
   switch (variant) {
     case 'primary':
       return {
-        backgroundColor: '#FFDD00', // CustomerCamp Yellow
+        backgroundColor: '#FFDD00', // Brand Yellow
         color: '#222222', // Black text for contrast
         border: 'none',
+        fontWeight: 'bold',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
       };
     case 'outline':
       return {
         backgroundColor: 'transparent',
-        color: '#FFDD00', // CustomerCamp Yellow
+        color: '#222222', // Black text for readability
         border: '2px solid #FFDD00',
+        fontWeight: 'bold',
       };
     case 'ghost':
       return {
         backgroundColor: 'transparent',
-        color: '#FFDD00', // CustomerCamp Yellow
+        color: '#222222', // Black text for readability
         border: 'none',
+        fontWeight: 'bold',
       };
     case 'destructive':
       return {
         backgroundColor: '#ef4444', // red-500
         color: 'white',
         border: 'none',
+        fontWeight: 'bold',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
       };
     case 'link':
       return {
         backgroundColor: 'transparent',
-        color: '#FFDD00', // CustomerCamp Yellow
+        color: '#222222', // Black text for readability 
         border: 'none',
         padding: '0',
         textDecoration: 'underline',
@@ -121,15 +125,17 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
       };
     case 'subtle':
       return {
-        backgroundColor: 'rgba(255, 221, 0, 0.15)', // CustomerCamp Yellow with transparency
-        color: '#FFDD00', // CustomerCamp Yellow
+        backgroundColor: 'rgba(255, 221, 0, 0.15)', // Yellow with transparency
+        color: '#222222', // Black text
         border: 'none',
+        fontWeight: 'bold',
       };
     case 'gradient':
       return {
         backgroundColor: '#FFDD00',
         color: '#222222',
         border: 'none',
+        fontWeight: 'bold',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'glass':
@@ -137,27 +143,31 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
         backgroundColor: '#FFFFFF',
         color: '#222222',
         border: '1px solid #EEEEEE',
+        fontWeight: 'bold',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
       };
     case 'yellow':
       return {
-        backgroundColor: '#FFDD00', // CustomerCamp Yellow
-        color: '#222222', // Black text for contrast
+        backgroundColor: '#FFDD00', // Brand Yellow
+        color: '#222222', // Black text
         border: 'none',
+        fontWeight: 'bold',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'black':
       return {
-        backgroundColor: '#222222', // CustomerCamp Black
-        color: 'white',
+        backgroundColor: '#222222', // Brand Black
+        color: '#FFFFFF', // White text
         border: 'none',
+        fontWeight: 'bold',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'purple':
       return {
-        backgroundColor: '#6B46C1', // CustomerCamp Purple
-        color: 'white',
+        backgroundColor: '#6B46C1', // Brand Purple
+        color: '#FFFFFF', // White text
         border: 'none',
+        fontWeight: 'bold',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'yellowToBlack':
@@ -165,6 +175,7 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
         backgroundColor: '#FFDD00',
         color: '#222222',
         border: 'none',
+        fontWeight: 'bold',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'yellowToPurple':
@@ -172,6 +183,7 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
         backgroundColor: '#FFDD00',
         color: '#222222',
         border: 'none',
+        fontWeight: 'bold',
         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     default:
@@ -179,6 +191,7 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
         backgroundColor: '#FFFFFF',
         color: '#222222', // Black text
         border: '1px solid #EEEEEE',
+        fontWeight: 'bold',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05)',
       };
   }

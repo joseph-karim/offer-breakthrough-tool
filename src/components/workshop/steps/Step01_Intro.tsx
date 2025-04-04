@@ -10,13 +10,13 @@ export const Step01_Intro: React.FC = () => {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       {/* Hero Section with Dark Background */}
-      <div className="bg-black text-white py-12 px-6 mb-8 rounded-lg">
+      <div className="bg-brand-black text-white py-12 px-6 mb-8 rounded-lg">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl font-bold mb-4">
-            <span className="text-yellow-300">Welcome to the Offer Breakthrough Workshop</span> ✨
+            Welcome to the <span className="text-brand-yellow">Offer Breakthrough Workshop</span>
           </h1>
           <p className="text-xl mb-6">Design a scalable offer by deeply understanding your market's psychology and needs.</p>
-          <div className="inline-block bg-yellow-300 text-black font-bold px-6 py-3 rounded-md">
+          <div className="inline-block bg-brand-yellow text-brand-black font-bold px-6 py-3 rounded-md">
             Step 1 of 11
           </div>
         </div>
@@ -25,11 +25,9 @@ export const Step01_Intro: React.FC = () => {
       <div style={{ display: 'grid', gap: '24px' }}>
         {/* Introduction Card */}
         <Card 
-          variant="default"
+          variant="black"
           borderRadius="xl"
           padding="lg"
-          shadow="md"
-          style={{ backgroundColor: '#222222' }}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
             <div style={{
@@ -42,11 +40,8 @@ export const Step01_Intro: React.FC = () => {
               <Sparkles style={{ height: '24px', width: '24px', color: '#222222' }} />
             </div>
             <p style={{ fontSize: '18px', color: '#FFFFFF', lineHeight: 1.7, fontWeight: 'bold' }}>
-              This interactive workshop guides you through uncovering 
-              <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', margin: '0 4px', fontWeight: 'bold' }}>profitable problems</span> 
-              and designing 
-              <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', margin: '0 4px', fontWeight: 'bold' }}>scalable offers</span> 
-              using CustomerCamp's "Why We Buy" methodology.
+              This interactive workshop guides you through uncovering profitable problems and designing 
+              <span className="highlight-yellow">scalable offers</span> using the "Why We Buy" methodology.
             </p>
           </div>
           <div style={{
@@ -68,12 +63,10 @@ export const Step01_Intro: React.FC = () => {
         {/* Two Column Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
           <Card 
-            variant="default"
+            variant="black"
             borderRadius="xl" 
             padding="lg" 
             hover={true}
-            shadow="md"
-            style={{ backgroundColor: '#222222', padding: '24px' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
               <div style={{
@@ -90,38 +83,36 @@ export const Step01_Intro: React.FC = () => {
             <ul style={{ listStyle: 'none', paddingLeft: '12px', paddingRight: '12px', display: 'grid', gap: '16px' }}>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Identify and <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>avoid common pitfalls</span></span>
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Identify and avoid <span className="highlight-yellow">common pitfalls</span></span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Discover <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>trigger events</span></span>
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Discover <span className="highlight-yellow">trigger events</span></span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Understand <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>jobs</span> your customers need done</span>
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Understand jobs your customers <span className="highlight-yellow">need done</span></span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Find <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>profitable target markets</span></span>
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Find <span className="highlight-yellow">profitable target markets</span></span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Uncover <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>high-value problems</span></span>
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Uncover <span className="highlight-yellow">high-value problems</span></span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <CheckCircle style={{ height: '20px', width: '20px', color: '#FFDD00', flexShrink: 0, marginTop: '2px' }} />
-                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Design a <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>scalable offer</span> that resonates</span>
+                <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Design a <span className="highlight-yellow">scalable offer</span> that resonates</span>
               </li>
             </ul>
           </Card>
 
           <Card 
-            variant="default"
+            variant="purple"
             borderRadius="xl"
             padding="lg"
             hover={true}
-            shadow="md"
-            style={{ backgroundColor: '#6B46C1', padding: '24px' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
               <div style={{
@@ -155,7 +146,7 @@ export const Step01_Intro: React.FC = () => {
                 }}>
                   1
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Progress through <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>10 carefully designed steps</span></span>
+                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Progress through <span className="highlight-yellow">10 carefully designed steps</span></span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
                 <div style={{
@@ -176,7 +167,7 @@ export const Step01_Intro: React.FC = () => {
                 }}>
                   2
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Each step <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>builds on</span> the previous insights</span>
+                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Each step <span className="highlight-yellow">builds on</span> the previous insights</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
                 <div style={{
@@ -197,7 +188,7 @@ export const Step01_Intro: React.FC = () => {
                 }}>
                   3
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}><span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>AI-powered</span> bots help with brainstorming</span>
+                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}><span className="highlight-yellow">AI-powered</span> bots help with brainstorming</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
                 <div style={{
@@ -218,7 +209,7 @@ export const Step01_Intro: React.FC = () => {
                 }}>
                   4
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Save your <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>progress</span> as you go</span>
+                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Save your <span className="highlight-yellow">progress</span> as you go</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
                 <div style={{
@@ -239,7 +230,7 @@ export const Step01_Intro: React.FC = () => {
                 }}>
                   5
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Get <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>clear action items</span> at each stage</span>
+                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>Get <span className="highlight-yellow">clear action items</span> at each stage</span>
               </li>
               <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '4px' }}>
                 <div style={{
@@ -260,7 +251,7 @@ export const Step01_Intro: React.FC = () => {
                 }}>
                   6
                 </div>
-                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>End with a <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>well-defined offer</span> concept</span>
+                <span style={{ color: '#FFFFFF', fontSize: '16px', lineHeight: '1.5', fontWeight: 'bold' }}>End with a <span className="highlight-yellow">well-defined offer</span> concept</span>
               </li>
             </ul>
           </Card>
@@ -268,11 +259,9 @@ export const Step01_Intro: React.FC = () => {
 
         {/* Before You Begin Card */}
         <Card 
-          variant="default"
+          variant="yellow"
           borderRadius="xl"
           padding="lg"
-          shadow="md"
-          style={{ backgroundColor: '#FFDD00' }}
         >
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
             <div style={{
@@ -289,15 +278,15 @@ export const Step01_Intro: React.FC = () => {
           <div style={{ display: 'grid', gap: '20px' }}>
             <p style={{ color: '#222222', paddingLeft: '44px', lineHeight: 1.6 }}>
               Take a moment to reflect on your current business and what you hope to 
-              <span style={{ backgroundColor: '#222222', color: '#FFFFFF', padding: '0 4px', margin: '0 4px', fontWeight: 'bold' }}>achieve</span>. 
-              The more <span style={{ backgroundColor: '#222222', color: '#FFFFFF', padding: '0 4px', margin: '0 4px', fontWeight: 'bold' }}>thoughtful</span> you are in each step, the better your results.
+              <span className="highlight-black">achieve</span>. 
+              The more thoughtful you are in each step, the better your results.
             </p>
             <Card 
-              variant="default"
+              variant="black"
               borderRadius="lg"
               padding="md"
               shadow="sm"
-              style={{ marginLeft: '24px', backgroundColor: '#222222', color: '#FFFFFF' }}
+              style={{ marginLeft: '24px' }}
             >
               <p style={{ fontWeight: 600, color: '#FFFFFF', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Award style={{ height: '20px', width: '20px', color: '#FFDD00' }} />
@@ -313,7 +302,7 @@ export const Step01_Intro: React.FC = () => {
                     flexShrink: 0,
                     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   }}></div>
-                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>Notes about your <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>current business challenges</span></span>
+                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>Notes about your <span className="highlight-yellow">current business challenges</span></span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{
@@ -324,7 +313,7 @@ export const Step01_Intro: React.FC = () => {
                     flexShrink: 0,
                     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   }}></div>
-                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>Ideas or assumptions about your <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>target market</span></span>
+                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>Ideas or assumptions about your <span className="highlight-yellow">target market</span></span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{
@@ -335,7 +324,7 @@ export const Step01_Intro: React.FC = () => {
                     flexShrink: 0,
                     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                   }}></div>
-                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>A notebook to capture <span style={{ backgroundColor: '#FFDD00', color: '#222222', padding: '0 4px', fontWeight: 'bold' }}>additional insights</span></span>
+                  <span style={{ color: '#FFFFFF', fontSize: '14px', fontWeight: 'bold' }}>A notebook to capture <span className="highlight-yellow">additional insights</span></span>
                 </li>
               </ul>
             </Card>

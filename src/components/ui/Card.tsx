@@ -83,7 +83,7 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       return {
         backgroundColor: '#F5F5F5',
         border: '1px solid #EEEEEE',
-        color: '#333333',
+        color: '#222222',
       };
     case 'gradient':
       return {
@@ -100,18 +100,18 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
     case 'purple':
       return {
         backgroundColor: '#6B46C1',
-        color: 'white',
+        color: '#FFFFFF',
         border: 'none',
       };
     case 'black':
       return {
         backgroundColor: '#222222',
-        color: 'white',
+        color: '#FFFFFF',
         border: 'none',
       };
     case 'glass':
       return {
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: '#FFFFFF',
         border: '1px solid #EEEEEE',
         borderLeft: '3px solid #FFDD00',
         color: '#222222',
@@ -124,8 +124,8 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       };
     case 'blackToYellow':
       return {
-        backgroundColor: '#FFDD00',
-        color: '#222222',
+        backgroundColor: '#222222',
+        color: '#FFFFFF',
         border: 'none',
       };
     case 'yellowToPurple':
@@ -136,14 +136,14 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       };
     case 'purpleToYellow':
       return {
-        backgroundColor: '#FFDD00',
-        color: '#222222',
+        backgroundColor: '#6B46C1', 
+        color: '#FFFFFF',
         border: 'none',
       };
     case 'darkGradient':
       return {
-        backgroundColor: '#FFFFFF',
-        color: '#222222',
+        backgroundColor: '#222222',
+        color: '#FFFFFF',
         border: '1px solid #FFDD00',
       };
     default:
