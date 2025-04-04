@@ -138,15 +138,6 @@ export const WorkshopWizard = () => {
     color: '#222222', // Black text for light background
   };
 
-  const decorationStyle: CSSProperties = {
-    position: 'absolute',
-    inset: 0,
-    opacity: 0.1,
-    backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23FFDD00\' stroke-width=\'2\'%3E%3Cpath d=\'M13 2L3 14h9l-1 8 10-12h-9l1-8z\'/%3E%3C/svg%3E")',
-    backgroundSize: '60px 60px',
-    backgroundRepeat: 'repeat',
-    pointerEvents: 'none',
-  };
 
   const decorativeBlobs: CSSProperties[] = [
     {
