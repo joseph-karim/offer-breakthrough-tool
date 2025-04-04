@@ -15,26 +15,26 @@ const ListItem = ({ icon: Icon, text, iconColor = '#FFDD00' }: { icon: React.Ele
 
 // Helper component for numbered list items
 const NumberedListItem = ({ number, text }: { number: number, text: string }) => (
-  <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+  <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '8px 12px', marginBottom: '4px' }}>
     <div style={{
       flexShrink: 0,
       backgroundColor: '#FFDD00',
       color: '#222222',
-      width: '24px',
-      height: '24px',
+      width: '28px',
+      height: '28px',
       borderRadius: '9999px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: '2px',
-      fontSize: '12px',
+      fontSize: '14px',
       fontWeight: 700,
       boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
       border: 'none',
     }}>
       {number}
     </div>
-    <span style={{ color: '#222222' }}>{text}</span>
+    <span style={{ color: '#222222', fontSize: '16px', lineHeight: '1.5' }}>{text}</span>
   </li>
 );
 
@@ -113,7 +113,7 @@ export const Step01_Intro: React.FC = () => {
             padding="lg" 
             hover={true}
             shadow="md"
-            style={{ borderLeft: '3px solid #FFDD00', backgroundColor: '#FFFFFF' }}
+            style={{ borderLeft: '3px solid #FFDD00', backgroundColor: '#FFFFFF', padding: '24px' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
               <div style={{
@@ -127,7 +127,7 @@ export const Step01_Intro: React.FC = () => {
                 What You'll Achieve
               </h3>
             </div>
-            <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'grid', gap: '16px' }}>
+            <ul style={{ listStyle: 'none', paddingLeft: '12px', paddingRight: '12px', display: 'grid', gap: '16px' }}>
               <ListItem icon={CheckCircle} text="Identify and avoid common pitfalls" iconColor="#FFDD00" />
               <ListItem icon={CheckCircle} text="Discover trigger events" iconColor="#FFDD00" />
               <ListItem icon={CheckCircle} text="Understand jobs your customers need done" iconColor="#FFDD00" />
@@ -143,7 +143,7 @@ export const Step01_Intro: React.FC = () => {
             padding="lg"
             hover={true}
             shadow="md"
-            style={{ borderLeft: '3px solid #FFDD00', backgroundColor: '#FFFFFF' }}
+            style={{ borderLeft: '3px solid #FFDD00', backgroundColor: '#FFFFFF', padding: '24px' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
               <div style={{
@@ -157,7 +157,7 @@ export const Step01_Intro: React.FC = () => {
                 How It Works
               </h3>
             </div>
-            <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'grid', gap: '16px' }}>
+            <ul style={{ listStyle: 'none', paddingLeft: '12px', paddingRight: '12px', display: 'grid', gap: '16px' }}>
               <NumberedListItem number={1} text="Progress through 10 carefully designed steps" />
               <NumberedListItem number={2} text="Each step builds on the previous insights" />
               <NumberedListItem number={3} text="AI-powered bots help with brainstorming" />
@@ -227,4 +227,4 @@ export const Step01_Intro: React.FC = () => {
       </div>
     </div>
   );
-};                            
+};                                
