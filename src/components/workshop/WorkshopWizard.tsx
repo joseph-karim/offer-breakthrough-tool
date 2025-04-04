@@ -71,22 +71,23 @@ export const WorkshopWizard = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#222222',
-        backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23333333\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M0 0h10v10H0zm10 10h10v10H10z\'/%3E%3C/g%3E%3C/svg%3E")',
+        backgroundColor: '#FFFFFF',
+        backgroundImage: 'none',
       }}>
         <div style={{
           fontSize: '20px',
-          color: '#FFDD00',
+          color: '#222222',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
           padding: '16px 24px',
           borderRadius: '12px',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          border: '2px solid #FFDD00',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #EEEEEE',
+          borderLeft: '3px solid #FFDD00',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
         }}>
-          <Sparkles />
+          <Sparkles style={{ color: '#FFDD00' }} />
           ✨ Initializing workshop... ✨
         </div>
       </div>
@@ -126,28 +127,15 @@ export const WorkshopWizard = () => {
   // Calculate completion percentage
   const completionPercentage = Math.round((currentStep / 11) * 100);
 
-  const colors = {
-    primary: '#FFDD00', // CustomerCamp Yellow
-    primaryHover: '#E6C700', // Darker Yellow
-    secondary: '#222222', // CustomerCamp Black
-    accent: '#6B46C1', // CustomerCamp Purple
-    success: '#10b981', // Emerald
-    background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
-    cardBackground: 'rgba(255, 255, 255, 0.8)',
-    border: 'rgba(255, 255, 255, 0.7)',
-    text: '#111827',
-    textMuted: '#6b7280',
-  };
-
   // Base styles for the whole app
   const containerStyle: CSSProperties = {
     minHeight: '100vh',
-    backgroundColor: '#222222', // CustomerCamp black background
-    backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23333333\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M0 0h10v10H0zm10 10h10v10H10z\'/%3E%3C/g%3E%3C/svg%3E")',
+    backgroundColor: '#FFFFFF', // White background
+    backgroundImage: 'none',
     backgroundRepeat: 'repeat',
     paddingBottom: '64px',
     position: 'relative',
-    color: 'white', // Default text color for dark background
+    color: '#222222', // Black text for light background
   };
 
   const decorationStyle: CSSProperties = {
@@ -168,7 +156,7 @@ export const WorkshopWizard = () => {
       width: '350px',
       height: '350px',
       borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(255, 221, 0, 0.2) 0%, rgba(255, 221, 0, 0) 70%)',
+      background: 'radial-gradient(circle, rgba(255, 221, 0, 0.05) 0%, rgba(255, 221, 0, 0) 70%)',
       filter: 'blur(40px)',
       zIndex: 0,
       animation: 'float 10s ease-in-out infinite',
@@ -180,7 +168,7 @@ export const WorkshopWizard = () => {
       width: '400px',
       height: '400px',
       borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(255, 221, 0, 0.15) 0%, rgba(255, 221, 0, 0) 70%)',
+      background: 'radial-gradient(circle, rgba(255, 221, 0, 0.05) 0%, rgba(255, 221, 0, 0) 70%)',
       filter: 'blur(40px)',
       zIndex: 0,
       animation: 'float 12s ease-in-out infinite reverse',
@@ -192,7 +180,7 @@ export const WorkshopWizard = () => {
       width: '300px',
       height: '300px',
       borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(107, 70, 193, 0.2) 0%, rgba(107, 70, 193, 0) 70%)',
+      background: 'radial-gradient(circle, rgba(107, 70, 193, 0.05) 0%, rgba(107, 70, 193, 0) 70%)',
       filter: 'blur(40px)',
       zIndex: 0,
       animation: 'float 8s ease-in-out infinite',
@@ -203,14 +191,14 @@ export const WorkshopWizard = () => {
     position: 'sticky',
     top: 0,
     zIndex: 20,
-    backgroundColor: '#FFDD00', // CustomerCamp yellow
-    color: '#222222', // Black text on yellow background
-    borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
+    backgroundColor: '#FFFFFF', // White background
+    color: '#222222', // Black text
+    borderBottom: '1px solid #EEEEEE',
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     borderBottomLeftRadius: '16px',
     borderBottomRightRadius: '16px',
-    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
     padding: '16px 24px',
     marginBottom: '32px',
   };
@@ -242,45 +230,45 @@ export const WorkshopWizard = () => {
   const logoIconContainerStyle: CSSProperties = {
     marginRight: '16px',
     borderRadius: '50%',
-    backgroundColor: '#222222',
+    backgroundColor: '#FFDD00',
     padding: '10px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-    border: '2px solid #FFDD00',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+    border: 'none',
   };
 
   const stepIndicatorStyle: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#222222',
+    backgroundColor: '#FFDD00',
     padding: '8px 16px',
     borderRadius: '9999px',
     fontSize: '14px',
     fontWeight: 600,
-    color: colors.primary,
-    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
-    border: '2px solid #FFDD00',
+    color: '#222222',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+    border: 'none',
   };
 
   const progressContainerStyle: CSSProperties = {
     height: '12px',
-    backgroundColor: '#333333',
+    backgroundColor: '#F5F5F5',
     borderRadius: '9999px',
     overflow: 'hidden',
-    boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)',
-    border: '1px solid #444444',
+    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)',
+    border: '1px solid #EEEEEE',
   };
 
   const progressBarStyle: CSSProperties = {
     height: '100%',
-    backgroundImage: `linear-gradient(to right, ${colors.primary}, ${colors.accent})`,
+    backgroundColor: '#FFDD00',
     borderRadius: '9999px',
     transition: 'width 0.5s ease',
     width: `${completionPercentage}%`,
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
+    boxShadow: 'none',
+    border: 'none',
   };
 
   const progressStatsStyle: CSSProperties = {
@@ -294,16 +282,16 @@ export const WorkshopWizard = () => {
     display: 'flex',
     alignItems: 'center',
     fontWeight: 600,
-    color: colors.primary, // Yellow text
-    textShadow: '0px 0px 2px rgba(0, 0, 0, 0.3)',
+    color: '#222222', // Black text for readability
+    textShadow: 'none',
   };
 
   const stepCountStyle: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    color: colors.primary,
+    color: '#222222', // Black text for readability
     fontWeight: 600,
-    textShadow: '0px 0px 2px rgba(0, 0, 0, 0.3)',
+    textShadow: 'none',
   };
 
   // Content container styles
@@ -316,13 +304,14 @@ export const WorkshopWizard = () => {
   };
 
   const contentCardStyle: CSSProperties = {
-    backgroundColor: 'rgba(34, 34, 34, 0.95)',
+    backgroundColor: '#FFFFFF',
     borderRadius: '24px',
-    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
-    border: '2px solid #FFDD00', // Yellow border
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    border: '1px solid #EEEEEE',
+    borderLeft: '3px solid #FFDD00', // Yellow accent border
     padding: '32px',
     marginBottom: '0',
-    color: 'white', // White text on dark background
+    color: '#222222', // Black text on white background
   };
 
   // Navigation styles INLINE with content
@@ -332,7 +321,7 @@ export const WorkshopWizard = () => {
     alignItems: 'center',
     padding: '32px 0',
     marginTop: '24px', // Add space between content and nav
-    borderTop: '2px dashed #FFDD00', // Yellow dashed border matching CustomerCamp style
+    borderTop: '1px solid #EEEEEE', // Light gray border
   };
 
   // Create animations
@@ -368,7 +357,7 @@ export const WorkshopWizard = () => {
             <div style={logoContainerStyle}>
               <h1 style={logoStyle}>
                 <span style={logoIconContainerStyle}>
-                  <Sparkles style={{ width: '24px', height: '24px', color: '#FFDD00' }} />
+                  <Sparkles style={{ width: '24px', height: '24px', color: '#222222' }} />
                 </span>
                 Offer Breakthrough
                 <span style={{ 
@@ -398,7 +387,7 @@ export const WorkshopWizard = () => {
                   width: '20px', 
                   height: '20px', 
                   marginRight: '8px',
-                  color: '#FFDD00'
+                  color: '#222222'
                 }} />
                 ⚡ Step {currentStep} of 11
               </div>
@@ -417,7 +406,7 @@ export const WorkshopWizard = () => {
                     marginRight: '8px',
                     color: '#FFDD00'
                   }} />
-                  ✅ {completionPercentage}% Complete
+                  {completionPercentage}% Complete
                 </div>
                 
                 <div style={stepCountStyle}>
@@ -427,7 +416,7 @@ export const WorkshopWizard = () => {
                     marginRight: '6px',
                     color: '#FFDD00'
                   }} />
-                  📚 11 steps total
+                  11 steps total
                 </div>
               </div>
             </div>
