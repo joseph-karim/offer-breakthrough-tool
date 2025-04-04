@@ -7,7 +7,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div style={{ backgroundColor: '#222222' }} className="min-h-screen">
+    <div style={{ backgroundColor: '#FFFFFF' }} className="min-h-screen">
       {/* Top Yellow Banner */}
       <div style={{ backgroundColor: '#FFDD00' }} className="py-3 px-4 text-center">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center sm:justify-between">
@@ -20,27 +20,27 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </div>
 
-      <header style={{ backgroundColor: '#222222', borderBottom: '2px solid #FFDD00' }}>
+      <header style={{ backgroundColor: '#FFFFFF', borderBottom: '2px solid #FFDD00' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
               <div className="font-display text-2xl font-bold flex items-center">
-                <span style={{ color: '#FFDD00' }} className="font-bold mr-2">WHY</span>
-                <span style={{ color: '#FFDD00' }} className="font-bold">WE</span>
-                <span style={{ color: '#FFDD00' }} className="font-bold block">BUY</span>
+                <span style={{ color: '#222222' }} className="font-bold mr-2">WHY</span>
+                <span style={{ color: '#222222' }} className="font-bold">WE</span>
+                <span style={{ color: '#222222' }} className="font-bold block">BUY</span>
               </div>
             </div>
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6 space-x-8">
                 <a 
                   href="#" 
-                  className="font-semibold text-yellow-300 hover:text-yellow-400"
+                  className="font-semibold text-gray-800 hover:text-black"
                 >
                   NEWSLETTER
                 </a>
                 <a 
                   href="#" 
-                  className="font-semibold text-yellow-300 hover:text-yellow-400 flex items-center"
+                  className="font-semibold text-gray-800 hover:text-black flex items-center"
                 >
                   PRODUCTS <span className="ml-1">👇</span>
                 </a>
@@ -66,10 +66,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {children}
       </main>
       
-      <footer style={{ backgroundColor: '#222222', borderTop: '2px solid #FFDD00' }} className="mt-auto">
+      <footer style={{ backgroundColor: '#FFFFFF', borderTop: '1px solid #EEEEEE' }} className="mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-yellow-300 text-sm">
+            <p className="text-gray-600 text-sm">
               © {new Date().getFullYear()} CustomerCamp. All rights reserved. ✨
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
@@ -77,7 +77,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 href="https://customercamp.co/privacy" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-yellow-300 hover:text-yellow-400 text-sm"
+                className="text-gray-600 hover:text-black text-sm"
               >
                 Privacy Policy
               </a>
@@ -85,7 +85,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 href="https://customercamp.co/terms" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-yellow-300 hover:text-yellow-400 text-sm"
+                className="text-gray-600 hover:text-black text-sm"
               >
                 Terms of Service
               </a>
@@ -97,4 +97,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout;    
+export default Layout;      

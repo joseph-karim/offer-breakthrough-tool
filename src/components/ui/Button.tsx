@@ -127,54 +127,52 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
       };
     case 'gradient':
       return {
-        background: 'linear-gradient(135deg, #FFDD00 0%, #222222 50%, #6B46C1 100%)',
-        color: 'white',
+        backgroundColor: '#FFDD00',
+        color: '#222222',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'glass':
       return {
-        backgroundColor: 'rgba(34, 34, 34, 0.8)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        color: '#FFDD00', // CustomerCamp Yellow
-        border: '2px solid rgba(255, 221, 0, 0.4)',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#FFFFFF',
+        color: '#222222',
+        border: '1px solid #EEEEEE',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
       };
     case 'yellow':
       return {
         backgroundColor: '#FFDD00', // CustomerCamp Yellow
         color: '#222222', // Black text for contrast
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(255, 221, 0, 0.4), 0 2px 4px -1px rgba(255, 221, 0, 0.06)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'black':
       return {
         backgroundColor: '#222222', // CustomerCamp Black
         color: 'white',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(34, 34, 34, 0.4), 0 2px 4px -1px rgba(34, 34, 34, 0.06)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'purple':
       return {
         backgroundColor: '#6B46C1', // CustomerCamp Purple
         color: 'white',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(107, 70, 193, 0.4), 0 2px 4px -1px rgba(107, 70, 193, 0.06)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'yellowToBlack':
       return {
-        background: 'linear-gradient(135deg, #FFDD00 0%, #222222 100%)',
-        color: 'white',
+        backgroundColor: '#FFDD00',
+        color: '#222222',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(255, 221, 0, 0.4), 0 2px 4px -1px rgba(255, 221, 0, 0.06)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     case 'yellowToPurple':
       return {
-        background: 'linear-gradient(135deg, #FFDD00 0%, #6B46C1 100%)',
-        color: 'white',
+        backgroundColor: '#FFDD00',
+        color: '#222222',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(255, 221, 0, 0.4), 0 2px 4px -1px rgba(255, 221, 0, 0.06)',
+        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       };
     default:
       return {
@@ -286,4 +284,4 @@ export const Button = ({
       </button>
     </>
   );
-};                      
+};                        

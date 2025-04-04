@@ -164,20 +164,19 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <div className="flex flex-col h-full overflow-hidden rounded-lg border border-gray-200">
         {/* Buyer Breakthrough Toolkit Header - CustomerCamp Styled */}
         <div style={{ 
-          backgroundColor: '#222222', 
-          borderBottom: '2px solid #FFDD00',
+          backgroundColor: '#FFDD00', 
+          borderBottom: '1px solid #E5E5E5',
           padding: '12px 16px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Brain size={22} color="#FFDD00" />
+            <Brain size={22} color="#222222" />
             <span style={{ 
               fontWeight: 700, 
               fontSize: '16px', 
-              color: '#FFDD00',
-              textShadow: '0px 1px 2px rgba(0, 0, 0, 0.3)'
+              color: '#222222'
             }}>
               ✨ Buyer Breakthrough Toolkit
             </span>
@@ -185,16 +184,15 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         </div>
 
         <div style={{ 
-          backgroundColor: '#333333',
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23444444\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M0 0h10v10H0zm10 10h10v10H10z\'/%3E%3C/g%3E%3C/svg%3E")'
+          backgroundColor: '#FFFFFF'
         }} className="flex-1 overflow-y-auto p-4 space-y-2 h-[400px]">
           {messages.map((message: AIMessage) => (
             <ChatMessage key={message.id} message={message} />
           ))}
           
           {isTyping && (
-            <div className="flex items-center text-yellow-300 ml-10">
-              <Loader2 className="w-5 h-5 mr-2 animate-spin text-yellow-300" />
+            <div className="flex items-center text-gray-600 ml-10">
+              <Loader2 className="w-5 h-5 mr-2 animate-spin text-gray-600" />
               ✨ AI is crafting a response...
             </div>
           )}
@@ -203,8 +201,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         </div>
         
         <div className="p-4 border-t border-gray-200" style={{ 
-          backgroundColor: '#222222', 
-          borderTop: '2px solid #FFDD00'
+          backgroundColor: '#FFFFFF'
         }}>
           <div className="flex">
             <input
@@ -212,9 +209,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               type="text"
               className="flex-1 mr-2 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
               style={{
-                backgroundColor: '#333333',
-                color: 'white',
-                border: '1px solid #444444'
+                backgroundColor: '#FFFFFF',
+                color: '#333333',
+                border: '1px solid #E5E5E5'
               }}
               placeholder={isTyping ? "✨ Please wait..." : "✨ Type your message..."}
               value={inputValue}
@@ -245,4 +242,4 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       </div>
     </Card>
   );
-};      
+};        

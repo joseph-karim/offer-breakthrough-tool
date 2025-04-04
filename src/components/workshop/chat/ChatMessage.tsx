@@ -39,10 +39,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           height: '36px',
           width: '36px',
           borderRadius: '50%',
-          backgroundColor: isUser ? '#222222' : '#FFDD00',
-          color: isUser ? '#FFDD00' : '#222222',
-          border: `2px solid ${isUser ? '#FFDD00' : '#222222'}`,
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+          backgroundColor: isUser ? '#FFFFFF' : '#FFDD00',
+          color: isUser ? '#222222' : '#222222',
+          border: `2px solid ${isUser ? '#EEEEEE' : '#FFDD00'}`,
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           flexShrink: 0
         }}
       >
@@ -53,17 +53,18 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         style={{
           padding: '12px 16px',
           maxWidth: '70%',
-          backgroundColor: isUser ? '#333333' : '#222222',
-          borderColor: isUser ? '#FFDD00' : '#444444',
-          borderWidth: isUser ? '2px' : '1px',
+          backgroundColor: isUser ? '#F5F5F5' : '#FFFFFF',
+          borderColor: isUser ? '#EEEEEE' : isUser ? '#EEEEEE' : '#FFDD00',
+          borderWidth: '1px',
+          borderLeftWidth: isUser ? '1px' : '3px',
           borderRadius: '12px',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
         }}
       >
         <div style={{ 
           fontSize: '14px', 
           marginBottom: '4px', 
-          color: isUser ? '#FFDD00' : '#FFDD00', 
+          color: isUser ? '#222222' : '#222222', 
           fontWeight: 600,
           display: 'flex',
           alignItems: 'center',
@@ -74,7 +75,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         <div style={{ 
           fontSize: '15px', 
           lineHeight: 1.5, 
-          color: '#FFFFFF',
+          color: '#333333',
           whiteSpace: 'pre-wrap'
         }}>
           {typeof message.content === 'string' 
@@ -87,4 +88,4 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       </Card>
     </div>
   );
-};      
+};        

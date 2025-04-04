@@ -12,14 +12,15 @@ interface SuggestionCardProps {
 export const SuggestionCard = ({ suggestion, onAccept, isLoading }: SuggestionCardProps) => {
   return (
     <Card className="my-4" style={{
-      backgroundColor: '#222222',
-      border: '2px solid #FFDD00',
+      backgroundColor: '#FFFFFF',
+      border: '1px solid #EEEEEE',
+      borderLeft: '3px solid #FFDD00',
       borderRadius: '12px',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
     }}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="text-lg font-semibold mb-3 flex items-center" style={{ color: '#FFDD00' }}>
+          <h4 className="text-lg font-semibold mb-3 flex items-center" style={{ color: '#222222' }}>
             <Lightbulb className="h-5 w-5 mr-2" style={{ color: '#FFDD00' }} />
             ✨ AI Suggestion
           </h4>
@@ -34,10 +35,11 @@ export const SuggestionCard = ({ suggestion, onAccept, isLoading }: SuggestionCa
         </div>
         
         <div className="prose prose-sm max-w-none">
-          <pre className="whitespace-pre-wrap p-3 rounded-md text-white" style={{
-            backgroundColor: '#333333',
-            border: '1px solid #444444',
-            boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.2)'
+          <pre className="whitespace-pre-wrap p-3 rounded-md" style={{
+            backgroundColor: '#F5F5F5',
+            border: '1px solid #EEEEEE',
+            color: '#333333',
+            boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)'
           }}>
             {typeof suggestion.content === 'string' 
               ? suggestion.content 
@@ -47,4 +49,4 @@ export const SuggestionCard = ({ suggestion, onAccept, isLoading }: SuggestionCa
       </div>
     </Card>
   );
-};  
+};    

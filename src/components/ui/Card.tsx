@@ -75,85 +75,81 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
   switch (variant) {
     case 'outline':
       return {
-        backgroundColor: '#222222',
+        backgroundColor: '#FFFFFF',
         border: '2px solid #FFDD00',
-        color: 'white',
+        color: '#222222',
       };
     case 'muted':
       return {
-        backgroundColor: '#333333',
-        border: '1px solid #444444',
-        color: 'white',
+        backgroundColor: '#F5F5F5',
+        border: '1px solid #EEEEEE',
+        color: '#333333',
       };
     case 'gradient':
       return {
-        background: 'linear-gradient(135deg, rgba(34, 34, 34, 0.9), rgba(51, 51, 51, 0.95))',
-        border: '1px solid rgba(255, 221, 0, 0.3)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        color: 'white',
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #EEEEEE',
+        color: '#222222',
       };
     case 'yellow':
       return {
-        background: 'linear-gradient(135deg, #FFDD00 0%, #E6C700 100%)',
+        backgroundColor: '#FFDD00',
         color: '#222222',
         border: 'none',
       };
     case 'purple':
       return {
-        background: 'linear-gradient(135deg, #6B46C1 0%, #553098 100%)',
+        backgroundColor: '#6B46C1',
         color: 'white',
         border: 'none',
       };
     case 'black':
       return {
-        background: 'linear-gradient(135deg, #222222 0%, #333333 100%)',
+        backgroundColor: '#222222',
         color: 'white',
         border: 'none',
       };
     case 'glass':
       return {
-        backgroundColor: 'rgba(34, 34, 34, 0.8)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255, 221, 0, 0.3)',
-        color: 'white',
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #EEEEEE',
+        color: '#222222',
       };
     case 'yellowToBlack':
       return {
-        background: 'linear-gradient(135deg, #FFDD00 0%, #222222 100%)',
-        color: 'white',
+        backgroundColor: '#FFDD00',
+        color: '#222222',
         border: 'none',
       };
     case 'blackToYellow':
       return {
-        background: 'linear-gradient(135deg, #222222 0%, #FFDD00 100%)',
-        color: 'white',
+        backgroundColor: '#FFDD00',
+        color: '#222222',
         border: 'none',
       };
     case 'yellowToPurple':
       return {
-        background: 'linear-gradient(135deg, #FFDD00 0%, #6B46C1 100%)',
-        color: 'white',
+        backgroundColor: '#FFDD00',
+        color: '#222222',
         border: 'none',
       };
     case 'purpleToYellow':
       return {
-        background: 'linear-gradient(135deg, #6B46C1 0%, #FFDD00 100%)',
+        backgroundColor: '#FFDD00',
         color: '#222222',
         border: 'none',
       };
     case 'darkGradient':
       return {
-        background: 'linear-gradient(135deg, #222222 0%, #333333 100%)',
-        color: 'white',
+        backgroundColor: '#FFFFFF',
+        color: '#222222',
         border: '1px solid #FFDD00',
       };
     default:
       return {
-        backgroundColor: '#222222',
-        color: 'white',
-        border: '1px solid #444444',
+        backgroundColor: '#FFFFFF',
+        color: '#222222',
+        border: '1px solid #EEEEEE',
       };
   }
 };
@@ -309,9 +305,9 @@ export const Card = ({
   const contentStyle: CSSProperties = {
     padding: paddingValue,
     borderRadius: borderGradient ? `calc(${borderRadiusValue} - 1px)` : undefined,
-    backgroundColor: borderGradient ? '#222222' : undefined,
+    backgroundColor: borderGradient ? '#FFFFFF' : undefined,
     height: '100%',
-    color: 'white',
+    color: '#222222',
   };
 
   // Handle gradient borders
@@ -345,4 +341,4 @@ export const Card = ({
       </div>
     </>
   );
-};                    
+};                        
