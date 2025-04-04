@@ -176,10 +176,10 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
       };
     default:
       return {
-        backgroundColor: '#333333',
-        color: '#FFFFFF', // White text
-        border: '1px solid #444444',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#FFFFFF',
+        color: '#222222', // Black text
+        border: '1px solid #EEEEEE',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.05)',
       };
   }
 };
@@ -284,4 +284,4 @@ export const Button = ({
       </button>
     </>
   );
-};                        
+};                          

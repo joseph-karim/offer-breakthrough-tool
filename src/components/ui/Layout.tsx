@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -7,40 +6,28 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div style={{ backgroundColor: '#FFFFFF' }} className="min-h-screen">
-      {/* Top Banner */}
-      <div style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #EEEEEE' }} className="py-3 px-4 text-center">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center sm:justify-between">
-          <span className="font-medium text-black flex items-center">
-            ✨ Get your FREE AI-powered Buyer Research Bot 🤖
-          </span>
-          <button className="mt-2 sm:mt-0 bg-yellow-300 hover:bg-yellow-400 text-black px-4 py-1 rounded-full text-sm font-bold flex items-center border-2 border-yellow-300">
-            Tell me more <ArrowRight className="ml-1 h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      <header style={{ backgroundColor: '#FFFFFF', borderBottom: '2px solid #FFDD00' }}>
+    <div className="min-h-screen">
+      <header className="bg-black text-white py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
               <div className="font-display text-2xl font-bold flex items-center">
-                <span style={{ color: '#222222' }} className="font-bold mr-2">WHY</span>
-                <span style={{ color: '#222222' }} className="font-bold">WE</span>
-                <span style={{ color: '#222222' }} className="font-bold block">BUY</span>
+                <span className="text-yellow-300 font-bold mr-2">WHY</span>
+                <span className="text-yellow-300 font-bold">WE</span>
+                <span className="text-yellow-300 font-bold block">BUY</span>
               </div>
             </div>
             <div className="hidden md:block">
               <div className="ml-4 flex items-center md:ml-6 space-x-8">
                 <a 
                   href="#" 
-                  className="font-semibold text-gray-800 hover:text-black"
+                  className="font-semibold text-white hover:text-yellow-300"
                 >
                   NEWSLETTER
                 </a>
                 <a 
                   href="#" 
-                  className="font-semibold text-gray-800 hover:text-black flex items-center"
+                  className="font-semibold text-white hover:text-yellow-300 flex items-center"
                 >
                   PRODUCTS <span className="ml-1">👇</span>
                 </a>
@@ -97,4 +84,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout;        
+export default Layout;                      

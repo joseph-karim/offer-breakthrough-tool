@@ -138,46 +138,6 @@ export const WorkshopWizard = () => {
     color: '#222222', // Black text for light background
   };
 
-
-  const decorativeBlobs: CSSProperties[] = [
-    {
-      position: 'absolute',
-      top: '80px',
-      right: '10%',
-      width: '350px',
-      height: '350px',
-      borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(255, 221, 0, 0.05) 0%, rgba(255, 221, 0, 0) 70%)',
-      filter: 'blur(40px)',
-      zIndex: 0,
-      animation: 'float 10s ease-in-out infinite',
-    },
-    {
-      position: 'absolute',
-      top: '30%',
-      left: '5%',
-      width: '400px',
-      height: '400px',
-      borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(255, 221, 0, 0.05) 0%, rgba(255, 221, 0, 0) 70%)',
-      filter: 'blur(40px)',
-      zIndex: 0,
-      animation: 'float 12s ease-in-out infinite reverse',
-    },
-    {
-      position: 'absolute',
-      bottom: '10%',
-      right: '20%',
-      width: '300px',
-      height: '300px',
-      borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(107, 70, 193, 0.05) 0%, rgba(107, 70, 193, 0) 70%)',
-      filter: 'blur(40px)',
-      zIndex: 0,
-      animation: 'float 8s ease-in-out infinite',
-    },
-  ];
-
   const headerStyle: CSSProperties = {
     position: 'sticky',
     top: 0,
@@ -333,20 +293,32 @@ export const WorkshopWizard = () => {
   return (
     <>
       <style>{animationStyles}</style>
-      <div style={{
-        ...containerStyle,
-        backgroundColor: '#FFFFFF',
-        backgroundImage: 'none'
-      }}>
+      <div 
+        className="bg-white customercamp-theme-container"
+        style={{
+          ...containerStyle,
+          backgroundColor: '#FFFFFF',
+          backgroundImage: 'none !important',
+          background: '#FFFFFF !important',
+          backgroundSize: '0 !important',
+          backgroundRepeat: 'no-repeat !important',
+          backgroundPosition: 'center !important',
+          color: '#222222'
+        }}>
         {/* Background decoration - removed for cleaner look */}
         
-        {/* Decorative blobs - reduced opacity for subtlety */}
-        {decorativeBlobs.map((style, index) => (
-          <div key={index} style={{...style, opacity: 0.3}}></div>
-        ))}
+        {/* Decorative blobs - removed completely for cleaner look */}
+        {/* {decorativeBlobs.map((style, index) => (
+          <div key={index} style={{...style, opacity: 0.1}}></div>
+        ))} */}
 
         {/* Header with progress */}
-        <header style={headerStyle}>
+        <header className="customercamp-theme-header" style={{
+          ...headerStyle,
+          backgroundColor: '#FFFFFF',
+          background: '#FFFFFF',
+          backgroundImage: 'none !important'
+        }}>
           <div style={headerContentStyle}>
             <div style={logoContainerStyle}>
               <h1 style={logoStyle}>
