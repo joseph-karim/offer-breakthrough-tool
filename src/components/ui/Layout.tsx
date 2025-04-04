@@ -8,13 +8,13 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div style={{ backgroundColor: '#FFFFFF' }} className="min-h-screen">
-      {/* Top Yellow Banner */}
-      <div style={{ backgroundColor: '#FFDD00' }} className="py-3 px-4 text-center">
+      {/* Top Banner */}
+      <div style={{ backgroundColor: '#FFFFFF', borderBottom: '1px solid #EEEEEE' }} className="py-3 px-4 text-center">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center sm:justify-between">
           <span className="font-medium text-black flex items-center">
             ✨ Get your FREE AI-powered Buyer Research Bot 🤖
           </span>
-          <button className="mt-2 sm:mt-0 bg-black hover:bg-gray-800 text-yellow-300 px-4 py-1 rounded-full text-sm font-bold flex items-center border-2 border-black">
+          <button className="mt-2 sm:mt-0 bg-yellow-300 hover:bg-yellow-400 text-black px-4 py-1 rounded-full text-sm font-bold flex items-center border-2 border-yellow-300">
             Tell me more <ArrowRight className="ml-1 h-4 w-4" />
           </button>
         </div>
@@ -97,4 +97,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout;      
+export default Layout;        
