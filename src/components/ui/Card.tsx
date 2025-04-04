@@ -46,14 +46,14 @@ const getPaddingValue = (size: PaddingSize): string => {
 
 const getBorderRadiusValue = (size: BorderRadiusSize): string => {
   switch (size) {
-    case 'sm': return '2px';
-    case 'md': return '2px';
-    case 'lg': return '4px';
-    case 'xl': return '8px';
-    case '2xl': return '12px';
+    case 'sm': return '0';
+    case 'md': return '0';
+    case 'lg': return '0';
+    case 'xl': return '0';
+    case '2xl': return '0';
     case 'full': return '9999px';
     case 'none': return '0';
-    default: return '2px';
+    default: return '0';
   }
 };
 

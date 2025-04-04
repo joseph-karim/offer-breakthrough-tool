@@ -36,34 +36,34 @@ const getSizeStyles = (size: ButtonSize): CSSProperties => {
       return {
         padding: '4px 8px',
         fontSize: '14px',
-        borderRadius: '2px',
+        borderRadius: '0',
         minHeight: '28px',
       };
     case 'md':
       return {
         padding: '6px 12px',
         fontSize: '15px',
-        borderRadius: '2px',
+        borderRadius: '0',
         minHeight: '36px',
       };
     case 'lg':
       return {
         padding: '8px 16px',
-        fontSize: '16px',
-        borderRadius: '2px',
+        fontSize: '18px',
+        borderRadius: '0',
         minHeight: '44px',
       };
     case 'xl':
       return {
         padding: '10px 20px',
-        fontSize: '18px',
-        borderRadius: '2px',
+        fontSize: '20px',
+        borderRadius: '0',
         minHeight: '52px',
       };
     case 'icon':
       return {
         padding: '8px',
-        borderRadius: '2px',
+        borderRadius: '0',
         minHeight: '36px',
         minWidth: '36px',
         display: 'inline-flex',
@@ -73,8 +73,8 @@ const getSizeStyles = (size: ButtonSize): CSSProperties => {
     default:
       return {
         padding: '6px 12px',
-        fontSize: '15px',
-        borderRadius: '2px',
+        fontSize: '16px',
+        borderRadius: '0',
         minHeight: '36px',
       };
   }
