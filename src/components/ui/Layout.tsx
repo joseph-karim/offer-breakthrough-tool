@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,18 +7,6 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen">
-      {/* Top Banner */}
-      <div className="py-3 px-4 text-center bg-yellow-300">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center sm:justify-between">
-          <span className="font-medium text-black flex items-center">
-            Get your FREE AI-powered Buyer Research Bot 🧠
-          </span>
-          <button className="mt-2 sm:mt-0 bg-black hover:bg-gray-800 text-white px-4 py-1 rounded-full text-sm font-bold flex items-center">
-            Tell me more <ArrowRight className="ml-1 h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
       <header className="bg-black text-white py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
@@ -97,4 +84,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout;                  
+export default Layout;                      
