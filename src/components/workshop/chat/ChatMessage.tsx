@@ -36,42 +36,56 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          height: '32px',
-          width: '32px',
+          height: '36px',
+          width: '36px',
           borderRadius: '50%',
-          backgroundColor: isUser ? '#3b82f6' : '#10b981',
-          color: 'white',
+          backgroundColor: isUser ? '#FFFFFF' : '#FFDD00',
+          color: isUser ? '#222222' : '#222222',
+          border: `2px solid ${isUser ? '#EEEEEE' : '#FFDD00'}`,
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
           flexShrink: 0
         }}
       >
-        {isUser ? <User size={16} /> : <Bot size={16} />}
+        {isUser ? <User size={18} /> : <Bot size={18} />}
       </div>
       
       <Card
         style={{
           padding: '12px 16px',
           maxWidth: '70%',
-          backgroundColor: isUser ? '#f0f9ff' : '#ffffff',
-          borderColor: isUser ? '#bae6fd' : '#e5e7eb',
+          backgroundColor: isUser ? '#F5F5F5' : '#FFFFFF',
+          borderColor: isUser ? '#EEEEEE' : isUser ? '#EEEEEE' : '#FFDD00',
+          borderWidth: '1px',
+          borderLeftWidth: isUser ? '1px' : '3px',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
         }}
       >
-        <div style={{ fontSize: '14px', marginBottom: '4px', color: isUser ? '#0369a1' : '#4b5563', fontWeight: 500 }}>
-          {isUser ? 'You' : 'AI Assistant'}
+        <div style={{ 
+          fontSize: '14px', 
+          marginBottom: '4px', 
+          color: isUser ? '#222222' : '#222222', 
+          fontWeight: 600,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px'
+        }}>
+          {isUser ? '👤 You' : '✨ AI Assistant'}
         </div>
         <div style={{ 
           fontSize: '15px', 
           lineHeight: 1.5, 
-          color: '#374151',
+          color: '#333333',
           whiteSpace: 'pre-wrap'
         }}>
           {typeof message.content === 'string' 
             ? message.content 
             : JSON.stringify(message.content, null, 2)}
         </div>
-        <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '8px', textAlign: isUser ? 'right' : 'left' }}>
+        <div style={{ fontSize: '12px', color: '#888888', marginTop: '8px', textAlign: isUser ? 'right' : 'left' }}>
           {formatTimestamp(message.timestamp)}
         </div>
       </Card>
     </div>
   );
-};  
+};        

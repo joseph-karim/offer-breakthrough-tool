@@ -162,49 +162,58 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   return (
     <Card className="flex flex-col h-[500px] shadow-md overflow-hidden" padding="none">
       <div className="flex flex-col h-full overflow-hidden rounded-lg border border-gray-200">
-        {/* Buyer Breakthrough Toolkit Header - Simplified for now */}
+        {/* Buyer Breakthrough Toolkit Header - CustomerCamp Styled */}
         <div style={{ 
-          backgroundColor: '#f0f9ff', 
-          borderBottom: '1px solid #e0f2fe',
-          padding: '10px 16px',
+          backgroundColor: '#FFDD00', 
+          borderBottom: '1px solid #E5E5E5',
+          padding: '12px 16px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Brain size={20} color="#0ea5e9" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Brain size={22} color="#222222" />
             <span style={{ 
-              fontWeight: 600, 
-              fontSize: '15px', 
-              color: '#0369a1'
+              fontWeight: 700, 
+              fontSize: '16px', 
+              color: '#222222'
             }}>
-              Buyer Breakthrough Toolkit
+              ✨ Buyer Breakthrough Toolkit
             </span>
           </div>
         </div>
 
-        <div style={{ backgroundColor: '#f9fafb' }} className="flex-1 overflow-y-auto p-4 space-y-1 h-[400px]">
+        <div style={{ 
+          backgroundColor: '#FFFFFF'
+        }} className="flex-1 overflow-y-auto p-4 space-y-2 h-[400px]">
           {messages.map((message: AIMessage) => (
             <ChatMessage key={message.id} message={message} />
           ))}
           
           {isTyping && (
-            <div className="flex items-center text-gray-500 ml-10">
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              AI is thinking...
+            <div className="flex items-center text-gray-600 ml-10">
+              <Loader2 className="w-5 h-5 mr-2 animate-spin text-gray-600" />
+              ✨ AI is crafting a response...
             </div>
           )}
           
           <div ref={messagesEndRef} />
         </div>
         
-        <div className="p-4 border-t border-gray-200 bg-white">
+        <div className="p-4 border-t border-gray-200" style={{ 
+          backgroundColor: '#FFFFFF'
+        }}>
           <div className="flex">
             <input
               ref={inputRef}
               type="text"
-              className="flex-1 mr-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder={isTyping ? "Please wait..." : "Type your message..."}
+              className="flex-1 mr-2 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+              style={{
+                backgroundColor: '#FFFFFF',
+                color: '#333333',
+                border: '1px solid #E5E5E5'
+              }}
+              placeholder={isTyping ? "✨ Please wait..." : "✨ Type your message..."}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -214,7 +223,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               onClick={handleSendMessage} 
               disabled={isTyping || !inputValue.trim()}
               rightIcon={<Send className="h-4 w-4" />}
-              variant="primary"
+              variant="yellow"
             >
               Send
             </Button>
@@ -233,4 +242,4 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       </div>
     </Card>
   );
-}; 
+};        
