@@ -11,25 +11,34 @@ interface SuggestionCardProps {
 
 export const SuggestionCard = ({ suggestion, onAccept, isLoading }: SuggestionCardProps) => {
   return (
-    <Card className="bg-primary-50 border border-primary-100 my-4">
+    <Card className="my-4" style={{
+      backgroundColor: '#222222',
+      border: '2px solid #FFDD00',
+      borderRadius: '12px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+    }}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="text-lg font-semibold text-primary-700 mb-3 flex items-center">
-            <Lightbulb className="h-5 w-5 mr-2" />
-            AI Suggestion
+          <h4 className="text-lg font-semibold mb-3 flex items-center" style={{ color: '#FFDD00' }}>
+            <Lightbulb className="h-5 w-5 mr-2" style={{ color: '#FFDD00' }} />
+            ✨ AI Suggestion
           </h4>
           <Button
             onClick={onAccept}
             disabled={isLoading}
-            variant="primary"
+            variant="yellow"
             size="sm"
           >
-            {isLoading ? 'Processing...' : 'Accept & Populate'}
+            {isLoading ? '⏳ Processing...' : '✅ Accept & Populate'}
           </Button>
         </div>
         
         <div className="prose prose-sm max-w-none">
-          <pre className="whitespace-pre-wrap bg-white p-3 rounded-md border border-primary-100 text-gray-800">
+          <pre className="whitespace-pre-wrap p-3 rounded-md text-white" style={{
+            backgroundColor: '#333333',
+            border: '1px solid #444444',
+            boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.2)'
+          }}>
             {typeof suggestion.content === 'string' 
               ? suggestion.content 
               : JSON.stringify(suggestion.content, null, 2)}
@@ -38,4 +47,4 @@ export const SuggestionCard = ({ suggestion, onAccept, isLoading }: SuggestionCa
       </div>
     </Card>
   );
-}; 
+};  

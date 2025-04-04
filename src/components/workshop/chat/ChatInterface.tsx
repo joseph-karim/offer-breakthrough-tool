@@ -162,49 +162,61 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   return (
     <Card className="flex flex-col h-[500px] shadow-md overflow-hidden" padding="none">
       <div className="flex flex-col h-full overflow-hidden rounded-lg border border-gray-200">
-        {/* Buyer Breakthrough Toolkit Header - Simplified for now */}
+        {/* Buyer Breakthrough Toolkit Header - CustomerCamp Styled */}
         <div style={{ 
-          backgroundColor: '#f0f9ff', 
-          borderBottom: '1px solid #e0f2fe',
-          padding: '10px 16px',
+          backgroundColor: '#222222', 
+          borderBottom: '2px solid #FFDD00',
+          padding: '12px 16px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Brain size={20} color="#0ea5e9" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Brain size={22} color="#FFDD00" />
             <span style={{ 
-              fontWeight: 600, 
-              fontSize: '15px', 
-              color: '#0369a1'
+              fontWeight: 700, 
+              fontSize: '16px', 
+              color: '#FFDD00',
+              textShadow: '0px 1px 2px rgba(0, 0, 0, 0.3)'
             }}>
-              Buyer Breakthrough Toolkit
+              ✨ Buyer Breakthrough Toolkit
             </span>
           </div>
         </div>
 
-        <div style={{ backgroundColor: '#f9fafb' }} className="flex-1 overflow-y-auto p-4 space-y-1 h-[400px]">
+        <div style={{ 
+          backgroundColor: '#333333',
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23444444\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M0 0h10v10H0zm10 10h10v10H10z\'/%3E%3C/g%3E%3C/svg%3E")'
+        }} className="flex-1 overflow-y-auto p-4 space-y-2 h-[400px]">
           {messages.map((message: AIMessage) => (
             <ChatMessage key={message.id} message={message} />
           ))}
           
           {isTyping && (
-            <div className="flex items-center text-gray-500 ml-10">
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              AI is thinking...
+            <div className="flex items-center text-yellow-300 ml-10">
+              <Loader2 className="w-5 h-5 mr-2 animate-spin text-yellow-300" />
+              ✨ AI is crafting a response...
             </div>
           )}
           
           <div ref={messagesEndRef} />
         </div>
         
-        <div className="p-4 border-t border-gray-200 bg-white">
+        <div className="p-4 border-t border-gray-200" style={{ 
+          backgroundColor: '#222222', 
+          borderTop: '2px solid #FFDD00'
+        }}>
           <div className="flex">
             <input
               ref={inputRef}
               type="text"
-              className="flex-1 mr-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              placeholder={isTyping ? "Please wait..." : "Type your message..."}
+              className="flex-1 mr-2 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+              style={{
+                backgroundColor: '#333333',
+                color: 'white',
+                border: '1px solid #444444'
+              }}
+              placeholder={isTyping ? "✨ Please wait..." : "✨ Type your message..."}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -214,7 +226,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               onClick={handleSendMessage} 
               disabled={isTyping || !inputValue.trim()}
               rightIcon={<Send className="h-4 w-4" />}
-              variant="primary"
+              variant="yellow"
             >
               Send
             </Button>
@@ -233,4 +245,4 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       </div>
     </Card>
   );
-}; 
+};      

@@ -93,13 +93,13 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
     case 'outline':
       return {
         backgroundColor: 'transparent',
-        color: '#4f46e5', // indigo-600
-        border: '1px solid #4f46e5',
+        color: '#FFDD00', // CustomerCamp Yellow
+        border: '2px solid #FFDD00',
       };
     case 'ghost':
       return {
         backgroundColor: 'transparent',
-        color: '#4f46e5', // indigo-600
+        color: '#FFDD00', // CustomerCamp Yellow
         border: 'none',
       };
     case 'destructive':
@@ -112,7 +112,7 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
     case 'link':
       return {
         backgroundColor: 'transparent',
-        color: '#4f46e5', // indigo-600
+        color: '#FFDD00', // CustomerCamp Yellow
         border: 'none',
         padding: '0',
         textDecoration: 'underline',
@@ -121,25 +121,25 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
       };
     case 'subtle':
       return {
-        backgroundColor: '#eff6ff', // indigo-50
-        color: '#4f46e5', // indigo-600
+        backgroundColor: 'rgba(255, 221, 0, 0.15)', // CustomerCamp Yellow with transparency
+        color: '#FFDD00', // CustomerCamp Yellow
         border: 'none',
       };
     case 'gradient':
       return {
-        background: 'linear-gradient(135deg, #4f46e5 0%, #a855f7 50%, #ec4899 100%)',
+        background: 'linear-gradient(135deg, #FFDD00 0%, #222222 50%, #6B46C1 100%)',
         color: 'white',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1)',
       };
     case 'glass':
       return {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: 'rgba(34, 34, 34, 0.8)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        color: '#1f2937', // gray-800
-        border: '1px solid rgba(255, 255, 255, 0.7)',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+        color: '#FFDD00', // CustomerCamp Yellow
+        border: '2px solid rgba(255, 221, 0, 0.4)',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1)',
       };
     case 'yellow':
       return {
@@ -178,10 +178,10 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
       };
     default:
       return {
-        backgroundColor: 'white',
-        color: '#111827', // gray-900
-        border: '1px solid #e5e7eb', // gray-200
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+        backgroundColor: '#333333',
+        color: '#FFFFFF', // White text
+        border: '1px solid #444444',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1)',
       };
   }
 };
@@ -286,4 +286,4 @@ export const Button = ({
       </button>
     </>
   );
-};        
+};                      

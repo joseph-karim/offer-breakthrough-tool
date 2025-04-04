@@ -5,15 +5,15 @@ type CardVariant =
   | 'outline' 
   | 'muted' 
   | 'gradient' 
-  | 'indigo' 
+  | 'yellow' 
+  | 'black' 
   | 'purple' 
-  | 'pink' 
   | 'glass'
-  | 'indigoToBlue'
-  | 'purpleToIndigo'
-  | 'pinkToPurple'
-  | 'skyToIndigo'
-  | 'tealToLime';
+  | 'yellowToBlack'
+  | 'blackToYellow'
+  | 'yellowToPurple'
+  | 'purpleToYellow'
+  | 'darkGradient';
 
 type PaddingSize = 'sm' | 'md' | 'lg' | 'xl' | 'none';
 type BorderRadiusSize = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' | 'none';
@@ -75,80 +75,85 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
   switch (variant) {
     case 'outline':
       return {
-        backgroundColor: 'white',
-        border: '1px solid rgba(229, 231, 235, 1)', // gray-200
+        backgroundColor: '#222222',
+        border: '2px solid #FFDD00',
+        color: 'white',
       };
     case 'muted':
       return {
-        backgroundColor: 'rgba(249, 250, 251, 1)', // gray-50
-        border: '1px solid rgba(243, 244, 246, 1)', // gray-100
+        backgroundColor: '#333333',
+        border: '1px solid #444444',
+        color: 'white',
       };
     case 'gradient':
       return {
-        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.9))',
-        border: '1px solid rgba(255, 255, 255, 0.7)',
+        background: 'linear-gradient(135deg, rgba(34, 34, 34, 0.9), rgba(51, 51, 51, 0.95))',
+        border: '1px solid rgba(255, 221, 0, 0.3)',
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
-      };
-    case 'indigo':
-      return {
-        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
         color: 'white',
+      };
+    case 'yellow':
+      return {
+        background: 'linear-gradient(135deg, #FFDD00 0%, #E6C700 100%)',
+        color: '#222222',
         border: 'none',
       };
     case 'purple':
       return {
-        background: 'linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%)',
+        background: 'linear-gradient(135deg, #6B46C1 0%, #553098 100%)',
         color: 'white',
         border: 'none',
       };
-    case 'pink':
+    case 'black':
       return {
-        background: 'linear-gradient(135deg, #ec4899 0%, #d946ef 100%)',
+        background: 'linear-gradient(135deg, #222222 0%, #333333 100%)',
         color: 'white',
         border: 'none',
       };
     case 'glass':
       return {
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: 'rgba(34, 34, 34, 0.8)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255, 255, 255, 0.6)',
+        border: '1px solid rgba(255, 221, 0, 0.3)',
+        color: 'white',
       };
-    case 'indigoToBlue':
+    case 'yellowToBlack':
       return {
-        background: 'linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%)',
+        background: 'linear-gradient(135deg, #FFDD00 0%, #222222 100%)',
         color: 'white',
         border: 'none',
       };
-    case 'purpleToIndigo':
+    case 'blackToYellow':
       return {
-        background: 'linear-gradient(135deg, #8b5cf6 0%, #4f46e5 100%)',
+        background: 'linear-gradient(135deg, #222222 0%, #FFDD00 100%)',
         color: 'white',
         border: 'none',
       };
-    case 'pinkToPurple':
+    case 'yellowToPurple':
       return {
-        background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+        background: 'linear-gradient(135deg, #FFDD00 0%, #6B46C1 100%)',
         color: 'white',
         border: 'none',
       };
-    case 'skyToIndigo':
+    case 'purpleToYellow':
       return {
-        background: 'linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%)',
-        color: 'white',
+        background: 'linear-gradient(135deg, #6B46C1 0%, #FFDD00 100%)',
+        color: '#222222',
         border: 'none',
       };
-    case 'tealToLime':
+    case 'darkGradient':
       return {
-        background: 'linear-gradient(135deg, #14b8a6 0%, #84cc16 100%)',
+        background: 'linear-gradient(135deg, #222222 0%, #333333 100%)',
         color: 'white',
-        border: 'none',
+        border: '1px solid #FFDD00',
       };
     default:
       return {
-        backgroundColor: 'white',
-        border: '1px solid rgba(243, 244, 246, 1)', // gray-100
+        backgroundColor: '#222222',
+        color: 'white',
+        border: '1px solid #444444',
       };
   }
 };
@@ -179,33 +184,34 @@ const getHoverStyles = (variant: CardVariant, shouldHover: boolean): CSSProperti
         backgroundColor: 'rgba(255, 255, 255, 0.85)',
         boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
       };
-    case 'indigo':
-    case 'indigoToBlue':
+    case 'yellow':
+    case 'yellowToBlack':
       return {
         ...baseHover,
-        boxShadow: '0 20px 25px -5px rgba(79, 70, 229, 0.4), 0 10px 10px -5px rgba(79, 70, 229, 0.2)',
+        boxShadow: '0 20px 25px -5px rgba(255, 221, 0, 0.4), 0 10px 10px -5px rgba(255, 221, 0, 0.2)',
+      };
+    case 'black':
+    case 'blackToYellow':
+      return {
+        ...baseHover,
+        boxShadow: '0 20px 25px -5px rgba(34, 34, 34, 0.4), 0 10px 10px -5px rgba(34, 34, 34, 0.2)',
       };
     case 'purple':
-    case 'purpleToIndigo':
+    case 'yellowToPurple':
       return {
         ...baseHover,
-        boxShadow: '0 20px 25px -5px rgba(139, 92, 246, 0.4), 0 10px 10px -5px rgba(139, 92, 246, 0.2)',
+        boxShadow: '0 20px 25px -5px rgba(107, 70, 193, 0.4), 0 10px 10px -5px rgba(107, 70, 193, 0.2)',
       };
-    case 'pink':
-    case 'pinkToPurple':
+    case 'purpleToYellow':
       return {
         ...baseHover,
-        boxShadow: '0 20px 25px -5px rgba(236, 72, 153, 0.4), 0 10px 10px -5px rgba(236, 72, 153, 0.2)',
+        boxShadow: '0 20px 25px -5px rgba(107, 70, 193, 0.4), 0 10px 10px -5px rgba(255, 221, 0, 0.2)',
       };
-    case 'skyToIndigo':
+    case 'darkGradient':
       return {
         ...baseHover,
-        boxShadow: '0 20px 25px -5px rgba(14, 165, 233, 0.4), 0 10px 10px -5px rgba(14, 165, 233, 0.2)',
-      };
-    case 'tealToLime':
-      return {
-        ...baseHover,
-        boxShadow: '0 20px 25px -5px rgba(20, 184, 166, 0.4), 0 10px 10px -5px rgba(20, 184, 166, 0.2)',
+        boxShadow: '0 20px 25px -5px rgba(34, 34, 34, 0.4), 0 10px 10px -5px rgba(34, 34, 34, 0.2)',
+        border: '2px solid #FFDD00',
       };
     default:
       return baseHover;
@@ -218,23 +224,23 @@ const getBorderGradientStyle = (variant: CardVariant, hasBorderGradient: boolean
 
   let gradientColors = '';
   switch (variant) {
-    case 'indigo':
-    case 'indigoToBlue':
-      gradientColors = 'linear-gradient(135deg, #4f46e5, #3b82f6)';
+    case 'yellow':
+    case 'yellowToBlack':
+      gradientColors = 'linear-gradient(135deg, #FFDD00, #222222)';
+      break;
+    case 'black':
+    case 'blackToYellow':
+      gradientColors = 'linear-gradient(135deg, #222222, #FFDD00)';
       break;
     case 'purple':
-    case 'purpleToIndigo':
-      gradientColors = 'linear-gradient(135deg, #8b5cf6, #4f46e5)';
+    case 'yellowToPurple':
+      gradientColors = 'linear-gradient(135deg, #FFDD00, #6B46C1)';
       break;
-    case 'pink':
-    case 'pinkToPurple':
-      gradientColors = 'linear-gradient(135deg, #ec4899, #8b5cf6)';
+    case 'purpleToYellow':
+      gradientColors = 'linear-gradient(135deg, #6B46C1, #FFDD00)';
       break;
-    case 'skyToIndigo':
-      gradientColors = 'linear-gradient(135deg, #0ea5e9, #4f46e5)';
-      break;
-    case 'tealToLime':
-      gradientColors = 'linear-gradient(135deg, #14b8a6, #84cc16)';
+    case 'darkGradient':
+      gradientColors = 'linear-gradient(135deg, #222222, #333333)';
       break;
     default:
       gradientColors = 'linear-gradient(135deg, #4f46e5, #ec4899)';
@@ -303,8 +309,9 @@ export const Card = ({
   const contentStyle: CSSProperties = {
     padding: paddingValue,
     borderRadius: borderGradient ? `calc(${borderRadiusValue} - 1px)` : undefined,
-    backgroundColor: borderGradient ? 'white' : undefined,
+    backgroundColor: borderGradient ? '#222222' : undefined,
     height: '100%',
+    color: 'white',
   };
 
   // Handle gradient borders
@@ -338,4 +345,4 @@ export const Card = ({
       </div>
     </>
   );
-}; 
+};                    

@@ -12,46 +12,46 @@ export const StepHeader = ({ stepNumber, title, description }: StepHeaderProps) 
   const getStepColors = (step: number) => {
     const schemes = [
       { 
-        primary: '#4f46e5', // indigo
-        secondary: '#8b5cf6', // violet
-        accent: '#a855f7', // purple
-        light: '#eef2ff', // indigo-50
+        primary: '#FFDD00', // CustomerCamp Yellow
+        secondary: '#6B46C1', // CustomerCamp Purple
+        accent: '#FFDD00', // CustomerCamp Yellow
+        light: '#333333', // Dark background
       },
       {
-        primary: '#8b5cf6', // violet
-        secondary: '#a855f7', // purple
-        accent: '#d946ef', // fuchsia
-        light: '#f5f3ff', // violet-50
+        primary: '#FFDD00', // CustomerCamp Yellow
+        secondary: '#6B46C1', // CustomerCamp Purple
+        accent: '#FFDD00', // CustomerCamp Yellow
+        light: '#333333', // Dark background
       },
       {
-        primary: '#a855f7', // purple
-        secondary: '#d946ef', // fuchsia
-        accent: '#ec4899', // pink
-        light: '#faf5ff', // purple-50
+        primary: '#FFDD00', // CustomerCamp Yellow
+        secondary: '#6B46C1', // CustomerCamp Purple
+        accent: '#FFDD00', // CustomerCamp Yellow
+        light: '#333333', // Dark background
       },
       {
-        primary: '#d946ef', // fuchsia
-        secondary: '#ec4899', // pink
-        accent: '#f43f5e', // rose
-        light: '#fdf4ff', // fuchsia-50
+        primary: '#FFDD00', // CustomerCamp Yellow
+        secondary: '#6B46C1', // CustomerCamp Purple
+        accent: '#FFDD00', // CustomerCamp Yellow
+        light: '#333333', // Dark background
       },
       {
-        primary: '#ec4899', // pink
-        secondary: '#f43f5e', // rose
-        accent: '#f97316', // orange
-        light: '#fdf2f8', // pink-50
+        primary: '#FFDD00', // CustomerCamp Yellow
+        secondary: '#6B46C1', // CustomerCamp Purple
+        accent: '#FFDD00', // CustomerCamp Yellow
+        light: '#333333', // Dark background
       },
       {
-        primary: '#3b82f6', // blue
-        secondary: '#6366f1', // indigo
-        accent: '#8b5cf6', // violet
-        light: '#eff6ff', // blue-50
+        primary: '#FFDD00', // CustomerCamp Yellow
+        secondary: '#6B46C1', // CustomerCamp Purple
+        accent: '#FFDD00', // CustomerCamp Yellow
+        light: '#333333', // Dark background
       },
       {
-        primary: '#14b8a6', // teal
-        secondary: '#0ea5e9', // sky
-        accent: '#3b82f6', // blue
-        light: '#f0fdfa', // teal-50
+        primary: '#FFDD00', // CustomerCamp Yellow
+        secondary: '#6B46C1', // CustomerCamp Purple
+        accent: '#FFDD00', // CustomerCamp Yellow
+        light: '#333333', // Dark background
       },
     ];
     
@@ -136,16 +136,16 @@ export const StepHeader = ({ stepNumber, title, description }: StepHeaderProps) 
   
   // Description styles with glassmorphism card
   const descriptionCardStyle: CSSProperties = {
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: 'rgba(34, 34, 34, 0.8)',
     backdropFilter: 'blur(8px)',
     WebkitBackdropFilter: 'blur(8px)',
     borderRadius: '16px',
     padding: '24px',
-    border: '1px solid rgba(0, 0, 0, 0.1)',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+    border: '1px solid rgba(255, 221, 0, 0.3)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
     fontSize: '16px',
     lineHeight: 1.7,
-    color: '#4b5563', // gray-600
+    color: '#FFFFFF', // White text
     maxWidth: '800px',
   };
   
@@ -195,4 +195,4 @@ export const StepHeader = ({ stepNumber, title, description }: StepHeaderProps) 
       </div>
     </>
   );
-}; 
+};    
