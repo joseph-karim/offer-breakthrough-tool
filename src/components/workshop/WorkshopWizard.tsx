@@ -230,26 +230,26 @@ export const WorkshopWizard = () => {
   const logoIconContainerStyle: CSSProperties = {
     marginRight: '16px',
     borderRadius: '50%',
-    backgroundColor: '#FFDD00',
+    backgroundColor: '#FFFFFF',
     padding: '10px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-    border: 'none',
+    border: '1px solid #FFDD00',
   };
 
   const stepIndicatorStyle: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#FFDD00',
+    backgroundColor: '#FFFFFF',
     padding: '8px 16px',
     borderRadius: '9999px',
     fontSize: '14px',
     fontWeight: 600,
     color: '#222222',
     boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-    border: 'none',
+    border: '1px solid #FFDD00',
   };
 
   const progressContainerStyle: CSSProperties = {
