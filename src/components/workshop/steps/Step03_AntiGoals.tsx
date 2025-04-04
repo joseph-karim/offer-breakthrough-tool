@@ -136,7 +136,7 @@ export const Step03_AntiGoals: React.FC = () => {
       setIsSaving(false);
     }, 500);
     setSaveTimer(timer);
-  }, [antiGoals, updateWorkshopData]);
+  }, [antiGoals, updateWorkshopData, saveTimer]);
 
   // Check if a field is empty
   const isFieldEmpty = (field: keyof AntiGoals) => showErrors && !formData[field]?.trim();

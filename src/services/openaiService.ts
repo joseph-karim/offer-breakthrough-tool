@@ -60,7 +60,7 @@ export class OpenAIService {
   /**
    * Generate structured JSON output from OpenAI
    */
-  async generateStructuredJson(prompt: string, temperature = 0.7): Promise<any> {
+  async generateStructuredJson<T = Record<string, unknown>>(prompt: string, temperature = 0.7): Promise<T> {
     try {
       const systemPrompt = `
         You are an AI assistant with expertise in business strategy and marketing.
@@ -110,7 +110,7 @@ export class OpenAIService {
       } catch (error) {
         console.error('Error parsing JSON from OpenAI response:', error);
         console.debug('Received content:', jsonString);
-        return {}; // Return empty object on parse error
+        return {} as T; // Return empty object on parse error
       }
     } catch (error) {
       console.error('Error calling OpenAI API:', error);

@@ -1,6 +1,6 @@
 export interface AIMessage {
   id: string;
-  content: string | any;
+  content: string | Record<string, unknown>;
   role: 'user' | 'assistant';
   suggestions?: ChatSuggestion[];
   timestamp: string;
@@ -18,7 +18,7 @@ export interface StepChats {
 
 export interface ChatSuggestion {
   step: number;
-  content: any;
+  content: Record<string, unknown>;
   rawResponse: string;
 }
 

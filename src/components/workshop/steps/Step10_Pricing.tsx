@@ -11,6 +11,12 @@ const selectPricing = (state: WorkshopStore) => state.workshopData.pricing || { 
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
 
+// Add the Pricing interface or use the correct type
+interface Pricing {
+  strategy: string;
+  justification: string;
+}
+
 export const Step10_Pricing: React.FC = () => {
   const pricing = useWorkshopStore(selectPricing);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
@@ -40,7 +46,7 @@ export const Step10_Pricing: React.FC = () => {
     }
   }, [canProceedToNextStep, showErrors]);
 
-  const handleInputChange = useCallback((field: 'strategy' | 'justification', value: string) => {
+  const handleInputChange = useCallback((field: keyof Pricing, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     if (saveTimer) {
@@ -61,7 +67,7 @@ export const Step10_Pricing: React.FC = () => {
       }
     }, 500);
     setSaveTimer(timer);
-  }, [pricing, updateWorkshopData]);
+  }, [pricing, updateWorkshopData, saveTimer]);
 
   const isFieldEmpty = (field: 'strategy' | 'justification'): boolean => {
     return showErrors && !formData[field].trim();

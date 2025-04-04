@@ -46,7 +46,7 @@ export const WorkshopWizard = () => {
     return () => {
       mounted = false;
     };
-  }, []); // Empty dependency array since we only want to run once
+  }, [initializeSession]); // Add initializeSession as a dependency
 
   const goToPreviousStep = useCallback(() => {
     setValidationErrors(false); // Reset validation errors when going back

@@ -194,7 +194,7 @@ export class AIService {
     try {
       // Customize the prompt based on the selected assistant type
       switch (step) {
-        case 3: // Anti-Goals
+        case 3: {
           let antiGoalsPrompt = `
             You are a CustomerCamp AI assistant specializing in buyer psychology and the 'Why We Buy' framework.
             
@@ -251,9 +251,10 @@ export class AIService {
             content: antiGoalsResponse,
             rawResponse: antiGoalsResponse
           };
+        }
           
-        case 4: // Trigger Events
-          let triggerEventsPrompt = `
+        case 4: {
+          const triggerEventsPrompt = `
             You are a CustomerCamp AI assistant trained in buyer psychology. 
 
             Analyze the user's description of client situations and urgency factors provided in the context below. Generate a list of 5-10 specific, concrete Trigger Events (situations or 'final straws') that might lead someone to seek solutions related to the user's described experiences. 
@@ -287,8 +288,9 @@ export class AIService {
             content: triggerEventsResponse,
             rawResponse: triggerEventsResponse
           };
+        }
           
-        case 5: // Jobs
+        case 5: {
           let jobsPrompt = `
             You are a CustomerCamp AI assistant applying JTBD principles.
             
@@ -363,8 +365,9 @@ export class AIService {
             content: jobsResponse,
             rawResponse: jobsResponse
           };
+        }
           
-        case 6: // Markets
+        case 6: {
           let marketsPrompt = `
             You are a CustomerCamp AI assistant.
             
@@ -450,8 +453,9 @@ export class AIService {
             content: marketsResponse,
             rawResponse: marketsResponse
           };
+        }
           
-        case 7: // Problems
+        case 7: {
           let problemsPrompt = `
             You are a CustomerCamp AI assistant performing Painstorming.
             
@@ -563,8 +567,9 @@ export class AIService {
             content: problemsResponse,
             rawResponse: problemsResponse
           };
+        }
           
-        case 8: // Market Evaluation
+        case 8: {
           let marketEvalPrompt = `
             You are a CustomerCamp AI assistant calculating Problem-Up scores.
             
@@ -664,8 +669,9 @@ export class AIService {
             content: marketEvalResponse,
             rawResponse: marketEvalResponse
           };
+        }
           
-        case 9: // Offer Exploration
+        case 9: {
           let offerPrompt = `
             You are a CustomerCamp AI assistant applying the PAINKILLER offer concept.
             
@@ -752,9 +758,10 @@ export class AIService {
             content: offerResponse,
             rawResponse: offerResponse
           };
+        }
         
-        case 10: // Pricing & Positioning
-          let pricingPrompt = `
+        case 10: {
+          const pricingPrompt = `
             You are a CustomerCamp AI assistant specializing in value-based pricing.
 
             Based on the selected offer, the target market, the core problems solved, and the user's input on value metric, willingness to pay, and market comparables from the context below, suggest 2-3 potential pricing strategies.
@@ -796,9 +803,10 @@ export class AIService {
             content: pricingResponse,
             rawResponse: pricingResponse
           };
+        }
 
-        case 11: // Summary & Analysis
-          let summaryPrompt = `
+        case 11: {
+          const summaryPrompt = `
             You are a CustomerCamp AI assistant providing a final reflection.
             
             Based on the complete workshop data about creating a business offer in the context below, provide:
@@ -848,6 +856,7 @@ export class AIService {
             content: summaryResponse,
             rawResponse: summaryResponse
           };
+        }
           
         default:
           console.warn(`No suggestion logic defined for step ${step}`);

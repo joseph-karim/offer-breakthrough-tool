@@ -112,7 +112,7 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
         
         Anti-Goals:
         ${Object.entries(workshopData.antiGoals)
-          .filter(([_, value]) => value.trim())
+          .filter(([, value]) => value.trim())
           .map(([key, value]) => `- ${key}: ${value}`)
           .join('\n')}
       `;
@@ -226,7 +226,7 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
         
         Anti-Goals:
         ${Object.entries(workshopData.antiGoals)
-          .filter(([_, value]) => value.trim())
+          .filter(([, value]) => value.trim())
           .map(([key, value]) => `- ${key}: ${value}`)
           .join('\n')}
         
@@ -518,7 +518,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.triggerEvents) {
           // Get existing trigger events and append new ones
           const existingEvents = workshopData.triggerEvents || [];
-          const newEvents = currentSuggestion.content.triggerEvents.map((event: any) => ({
+          const newEvents = (currentSuggestion.content.triggerEvents as TriggerEvent[]).map((event) => ({
             ...event,
             source: 'assistant', // Mark as coming from assistant
           }));
@@ -533,7 +533,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.jobs) {
           // Get existing jobs and append new ones
           const existingJobs = workshopData.jobs || [];
-          const newJobs = currentSuggestion.content.jobs.map((job: any) => ({
+          const newJobs = (currentSuggestion.content.jobs as Job[]).map((job) => ({
             ...job,
             source: 'assistant', // Mark as coming from assistant
           }));
@@ -548,7 +548,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.markets) {
           // Get existing markets and append new ones
           const existingMarkets = workshopData.markets || [];
-          const newMarkets = currentSuggestion.content.markets.map((market: any) => ({
+          const newMarkets = (currentSuggestion.content.markets as Market[]).map((market) => ({
             ...market,
             source: 'assistant', // Mark as coming from assistant
           }));
@@ -563,7 +563,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.problems) {
           // Get existing problems and append new ones
           const existingProblems = workshopData.problems || [];
-          const newProblems = currentSuggestion.content.problems.map((problem: any, index: number) => ({
+          const newProblems = (currentSuggestion.content.problems as Problem[]).map((problem, index: number) => ({
             ...problem,
             id: `ai_${Date.now()}_${index}`,
             ranking: existingProblems.length + index + 1,
@@ -581,7 +581,18 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
           // Update market evaluations with scores
           const marketEvaluations = { ...(workshopData.marketEvaluations || {}) };
           
-          currentSuggestion.content.marketScores.forEach((marketScore: any) => {
+          interface MarketScore {
+            marketDescription: string;
+            scores: {
+              size: number;
+              urgency: number;
+              competition: number;
+              accessibility: number;
+              willingness: number;
+            };
+          }
+          
+          (currentSuggestion.content.marketScores as MarketScore[]).forEach((marketScore) => {
             // Find matching market by description
             const market = workshopData.markets.find(
               m => m.description === marketScore.marketDescription
@@ -643,7 +654,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
                 ${Array.isArray(pricing.valueMetrics) ? pricing.valueMetrics.join('\n') : ''}
                 
                 Price Points:
-                ${Array.isArray(pricing.pricePoints) ? pricing.pricePoints.map((pp: any) => `- ${pp.tier}: ${pp.price}`).join('\n') : ''}
+                ${Array.isArray(pricing.pricePoints) ? pricing.pricePoints.map((pp: { tier: string; price: string | number }) => `- ${pp.tier}: ${pp.price}`).join('\n') : ''}
                 
                 Positioning:
                 ${positioning?.statement || ''}

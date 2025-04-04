@@ -1,0 +1,39 @@
+// This is a fix for the React Hook dependency warnings in TestimonialsBuilder.tsx
+// The warnings are:
+//   51:6  warning  React Hook React.useEffect has a missing dependency: 'testimonials.length'. Either include it or remove the dependency array  
+//   71:6  warning  React Hook React.useEffect has missing dependencies: 'readOnly' and 'saveTestimonials'. Either include them or remove the dependency array
+
+// Fix for line 51 - add testimonials.length to the dependency array:
+React.useEffect(() => {
+  // ... your existing code here ...
+}, [testimonials.length]); // testimonials.length added to the dependency array
+
+// Fix for line 71 - add readOnly and saveTestimonials to the dependency array:
+React.useEffect(() => {
+  // ... your existing code here ...
+}, [debouncedTestimonials, readOnly, saveTestimonials]); // readOnly and saveTestimonials added
+
+// Alternative approach for the second useEffect if you're concerned about the component re-rendering too often
+// You can use useCallback to memoize the saveTestimonials function:
+const memoizedSaveTestimonials = React.useCallback(saveTestimonials, [/* dependencies of saveTestimonials */]);
+
+React.useEffect(() => {
+  if (!readOnly && debouncedTestimonials) {
+    memoizedSaveTestimonials(debouncedTestimonials);
+  }
+}, [debouncedTestimonials, readOnly, memoizedSaveTestimonials]);
+
+// Or if you're worried that the effect runs too often, you can use a ref to track whether it should run:
+const hasInitializedRef = React.useRef(false);
+
+React.useEffect(() => {
+  // Skip the first render or when in readOnly mode
+  if (!hasInitializedRef.current || readOnly) {
+    hasInitializedRef.current = true;
+    return;
+  }
+  
+  if (debouncedTestimonials) {
+    saveTestimonials(debouncedTestimonials);
+  }
+}, [debouncedTestimonials, readOnly, saveTestimonials]); 

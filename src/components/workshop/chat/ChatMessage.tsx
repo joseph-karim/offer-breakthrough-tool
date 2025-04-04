@@ -1,70 +1,75 @@
-import { AIMessage } from '../../../types/chat';
-import { Button } from '../../../components/ui/Button';
+import React from 'react';
+import { Card } from '../../ui/Card';
+import type { AIMessage } from '../../../types/chat';
 import { User, Bot } from 'lucide-react';
 
 interface ChatMessageProps {
   message: AIMessage;
-  onSuggestionAccept?: (suggestion: any) => void;
 }
 
-export const ChatMessage = ({ message, onSuggestionAccept }: ChatMessageProps) => {
+export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isUser = message.role === 'user';
-  
-  // Use direct Tailwind classes
-  const messageContainerClasses = isUser 
-    ? 'flex flex-row-reverse'
-    : 'flex';
-    
-  const messageClasses = isUser
-    ? 'bg-gray-200 text-gray-800 max-w-[80%] rounded-lg p-3 rounded-tr-none'
-    : 'bg-secondary-50 text-gray-800 max-w-[80%] rounded-lg p-3 rounded-tl-none';
-    
-  const avatarClasses = 'flex items-center justify-center h-8 w-8 rounded-full text-white flex-shrink-0';
 
-  const renderSuggestions = () => {
-    if (!message.suggestions || message.suggestions.length === 0) return null;
-    
-    return (
-      <div className="mt-2 space-y-2">
-        {message.suggestions.map((suggestion: any, index: number) => (
-          <div key={index} className="p-3 bg-white border border-gray-200 rounded-md shadow-sm">
-            <div className="text-sm whitespace-pre-wrap text-gray-700">
-              {typeof suggestion.content === 'string' 
-                ? suggestion.content 
-                : JSON.stringify(suggestion.content, null, 2)}
-            </div>
-            {onSuggestionAccept && (
-              <Button
-                onClick={() => onSuggestionAccept(suggestion)}
-                variant="primary"
-                size="sm"
-                className="mt-2"
-              >
-                Accept
-              </Button>
-            )}
-          </div>
-        ))}
-      </div>
-    );
+  // Format timestamp
+  const formatTimestamp = (timestamp: string): string => {
+    try {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (error) {
+      console.error('Invalid timestamp format', error);
+      return '';
+    }
   };
 
   return (
-    <div className={`${messageContainerClasses} mb-3`}>
-      {!isUser && (
-        <div className={`${avatarClasses} bg-secondary mr-2`}>
-          <Bot size={16} />
-        </div>
-      )}
-      <div className={messageClasses}>
-        <div className="whitespace-pre-wrap">{message.content}</div>
-        {renderSuggestions()}
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: isUser ? 'row-reverse' : 'row',
+        marginBottom: '10px',
+        alignItems: 'flex-start',
+        gap: '8px'
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '32px',
+          width: '32px',
+          borderRadius: '50%',
+          backgroundColor: isUser ? '#3b82f6' : '#10b981',
+          color: 'white',
+          flexShrink: 0
+        }}
+      >
+        {isUser ? <User size={16} /> : <Bot size={16} />}
       </div>
-      {isUser && (
-        <div className={`${avatarClasses} bg-primary ml-2`}>
-          <User size={16} />
+      
+      <Card
+        style={{
+          padding: '12px 16px',
+          maxWidth: '70%',
+          backgroundColor: isUser ? '#f0f9ff' : '#ffffff',
+          borderColor: isUser ? '#bae6fd' : '#e5e7eb',
+        }}
+      >
+        <div style={{ fontSize: '14px', marginBottom: '4px', color: isUser ? '#0369a1' : '#4b5563', fontWeight: 500 }}>
+          {isUser ? 'You' : 'AI Assistant'}
         </div>
-      )}
+        <div style={{ 
+          fontSize: '15px', 
+          lineHeight: 1.5, 
+          color: '#374151',
+          whiteSpace: 'pre-wrap'
+        }}>
+          {message.content}
+        </div>
+        <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '8px', textAlign: isUser ? 'right' : 'left' }}>
+          {formatTimestamp(message.timestamp)}
+        </div>
+      </Card>
     </div>
   );
 }; 

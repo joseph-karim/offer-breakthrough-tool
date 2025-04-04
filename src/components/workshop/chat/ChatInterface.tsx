@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, KeyboardEvent } from 'react';
+import React, { useState, useEffect, useRef, KeyboardEvent, useMemo } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
@@ -41,7 +41,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
   } = useWorkshopStore();
 
   const stepChat = workshopData.stepChats?.[step] || { messages: [] };
-  const messages = stepChat.messages || [];
+  
+  // Use useMemo to prevent the messages array from causing rerenders
+  const messages = useMemo(() => stepChat.messages || [], [stepChat.messages]);
+  
   const currentQuestion = questions[currentQuestionIndex];
 
   // Auto-scroll to the bottom of messages
