@@ -342,13 +342,16 @@ export const WorkshopWizard = () => {
   return (
     <>
       <style>{animationStyles}</style>
-      <div style={containerStyle}>
-        {/* Background decoration */}
-        <div style={decorationStyle}></div>
+      <div style={{
+        ...containerStyle,
+        backgroundColor: '#FFFFFF',
+        backgroundImage: 'none'
+      }}>
+        {/* Background decoration - removed for cleaner look */}
         
-        {/* Decorative blobs */}
+        {/* Decorative blobs - reduced opacity for subtlety */}
         {decorativeBlobs.map((style, index) => (
-          <div key={index} style={style}></div>
+          <div key={index} style={{...style, opacity: 0.3}}></div>
         ))}
 
         {/* Header with progress */}
