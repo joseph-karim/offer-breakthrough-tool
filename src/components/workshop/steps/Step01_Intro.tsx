@@ -1,57 +1,8 @@
 import React from 'react';
-import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import { CheckCircle, Target, Lightbulb, Zap, Brain, Sparkles, Award, Rocket } from 'lucide-react';
-
-// Helper component for list items
-const ListItem = ({ icon: Icon, text, iconColor = '#FFDD00' }: { icon: React.ElementType, text: string, iconColor?: string }) => (
-  <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-    <Icon style={{ height: '20px', width: '20px', color: iconColor, flexShrink: 0, marginTop: '2px' }} />
-    <span style={{ color: '#222222' }}>{text}</span>
-  </li>
-);
-
-// Helper component for numbered list items
-const NumberedListItem = ({ number, text }: { number: number, text: string }) => (
-  <li style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '8px 12px', marginBottom: '4px' }}>
-    <div style={{
-      flexShrink: 0,
-      backgroundColor: '#FFDD00',
-      color: '#222222',
-      width: '28px',
-      height: '28px',
-      borderRadius: '9999px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginTop: '2px',
-      fontSize: '14px',
-      fontWeight: 700,
-      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-      border: 'none',
-    }}>
-      {number}
-    </div>
-    <span style={{ color: '#222222', fontSize: '16px', lineHeight: '1.5' }}>{text}</span>
-  </li>
-);
-
-// Helper component for bullet points
-const BulletPoint = ({ text }: { text: string }) => (
-  <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-    <div style={{
-      backgroundColor: '#FFDD00',
-      width: '8px',
-      height: '8px',
-      borderRadius: '9999px',
-      flexShrink: 0,
-      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-    }}></div>
-    <span style={{ color: '#222222', fontSize: '14px' }}>{text}</span>
-  </li>
-);
 
 export const Step01_Intro: React.FC = () => {
   const { setCurrentStep } = useWorkshopStore();
@@ -405,4 +356,4 @@ export const Step01_Intro: React.FC = () => {
       </div>
     </div>
   );
-};                                        
+};                                          
