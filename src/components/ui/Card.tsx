@@ -111,8 +111,9 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       };
     case 'glass':
       return {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
         border: '1px solid #EEEEEE',
+        borderLeft: '3px solid #FFDD00',
         color: '#222222',
       };
     case 'yellowToBlack':
@@ -341,4 +342,4 @@ export const Card = ({
       </div>
     </>
   );
-};                        
+};                          

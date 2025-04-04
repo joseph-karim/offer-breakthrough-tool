@@ -9,7 +9,7 @@ import { CheckCircle, Target, Lightbulb, Zap, Brain, Sparkles, Award, Rocket } f
 const ListItem = ({ icon: Icon, text, iconColor = '#FFDD00' }: { icon: React.ElementType, text: string, iconColor?: string }) => (
   <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
     <Icon style={{ height: '20px', width: '20px', color: iconColor, flexShrink: 0, marginTop: '2px' }} />
-    <span style={{ color: '#222222' }}>✨ {text}</span>
+    <span style={{ color: '#222222' }}>{text}</span>
   </li>
 );
 
@@ -34,7 +34,7 @@ const NumberedListItem = ({ number, text }: { number: number, text: string }) =>
     }}>
       {number}
     </div>
-    <span style={{ color: '#222222' }}>✨ {text}</span>
+    <span style={{ color: '#222222' }}>{text}</span>
   </li>
 );
 
@@ -49,7 +49,7 @@ const BulletPoint = ({ text }: { text: string }) => (
       flexShrink: 0,
       boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
     }}></div>
-    <span style={{ color: '#222222', fontSize: '14px' }}>✨ {text}</span>
+    <span style={{ color: '#222222', fontSize: '14px' }}>{text}</span>
   </li>
 );
 
@@ -71,7 +71,7 @@ export const Step01_Intro: React.FC = () => {
           borderRadius="xl"
           padding="lg"
           shadow="md"
-          style={{ borderLeft: '3px solid #FFDD00'}}
+          style={{ borderLeft: '3px solid #FFDD00', backgroundColor: '#FFFFFF' }}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
             <div style={{
@@ -84,7 +84,7 @@ export const Step01_Intro: React.FC = () => {
               <Sparkles style={{ height: '24px', width: '24px', color: '#222222' }} />
             </div>
             <p style={{ fontSize: '18px', color: '#222222', lineHeight: 1.7 }}>
-              ✨ This interactive workshop guides you through uncovering profitable problems
+              This interactive workshop guides you through uncovering profitable problems
               and designing scalable offers using CustomerCamp's "Why We Buy" methodology.
             </p>
           </div>
@@ -100,7 +100,7 @@ export const Step01_Intro: React.FC = () => {
           }}>
             <p style={{ fontSize: '14px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Lightbulb style={{ height: '20px', width: '20px', flexShrink: 0, color: '#FFDD00' }} />
-              ✨ Complete all steps to create an offer that resonates.
+              Complete all steps to create an offer that resonates.
             </p>
           </div>
         </Card>
@@ -113,7 +113,7 @@ export const Step01_Intro: React.FC = () => {
             padding="lg" 
             hover={true}
             shadow="md"
-            style={{ borderLeft: '3px solid #FFDD00' }}
+            style={{ borderLeft: '3px solid #FFDD00', backgroundColor: '#FFFFFF' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
               <div style={{
@@ -124,7 +124,7 @@ export const Step01_Intro: React.FC = () => {
                 <Target style={{ height: '24px', width: '24px', color: '#222222' }} />
               </div>
               <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#222222' }}>
-                ✨ What You'll Achieve
+                What You'll Achieve
               </h3>
             </div>
             <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'grid', gap: '16px' }}>
@@ -143,7 +143,7 @@ export const Step01_Intro: React.FC = () => {
             padding="lg"
             hover={true}
             shadow="md"
-            style={{ borderLeft: '3px solid #FFDD00' }}
+            style={{ borderLeft: '3px solid #FFDD00', backgroundColor: '#FFFFFF' }}
           >
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
               <div style={{
@@ -154,7 +154,7 @@ export const Step01_Intro: React.FC = () => {
                 <Zap style={{ height: '24px', width: '24px', color: '#222222' }} />
               </div>
               <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#222222' }}>
-                ⚡ How It Works
+                How It Works
               </h3>
             </div>
             <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'grid', gap: '16px' }}>
@@ -174,7 +174,7 @@ export const Step01_Intro: React.FC = () => {
           borderRadius="xl"
           padding="lg"
           shadow="md"
-          style={{ borderLeft: '3px solid #FFDD00' }}
+          style={{ borderLeft: '3px solid #FFDD00', backgroundColor: '#FFFFFF' }}
         >
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
             <div style={{
@@ -185,12 +185,12 @@ export const Step01_Intro: React.FC = () => {
               <Brain style={{ height: '24px', width: '24px', color: '#222222' }} />
             </div>
             <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#222222' }}>
-              🧠 Before You Begin
+              Before You Begin
             </h3>
           </div>
           <div style={{ display: 'grid', gap: '20px' }}>
             <p style={{ color: '#222222', paddingLeft: '44px', lineHeight: 1.6 }}>
-              ✨ Take a moment to reflect on your current business and what you hope to achieve. 
+              Take a moment to reflect on your current business and what you hope to achieve. 
               The more thoughtful you are in each step, the better your results.
             </p>
             <Card 
@@ -202,7 +202,7 @@ export const Step01_Intro: React.FC = () => {
             >
               <p style={{ fontWeight: 600, color: '#222222', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Award style={{ height: '20px', width: '20px', color: '#FFDD00' }} />
-                ✨ Consider having these things handy:
+                Consider having these things handy:
               </p>
               <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'grid', gap: '12px' }}>
                 <BulletPoint text="Notes about your current business challenges" />
@@ -216,15 +216,15 @@ export const Step01_Intro: React.FC = () => {
         {/* Start Button */}
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '32px' }}>
           <Button
-            variant="yellowToBlack"
+            variant="yellow"
             size="xl"
             rightIcon={<Rocket style={{ height: '20px', width: '20px' }} />}
             onClick={() => setCurrentStep(2)}
           >
-            ✨ Start the Workshop
+            Start the Workshop
           </Button>
         </div>
       </div>
     </div>
   );
-};                      
+};                            

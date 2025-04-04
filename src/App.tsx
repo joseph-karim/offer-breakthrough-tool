@@ -1,11 +1,14 @@
 import { WorkshopWizard } from './components/workshop/WorkshopWizard';
 import Layout from './components/ui/Layout';
+import './index.css';
 
 function App() {
   return (
-    <Layout>
-      <WorkshopWizard />
-    </Layout>
+    <div className="customercamp-theme">
+      <Layout>
+        <WorkshopWizard />
+      </Layout>
+    </div>
   );
 }
 
