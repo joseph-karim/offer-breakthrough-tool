@@ -64,7 +64,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           color: '#374151',
           whiteSpace: 'pre-wrap'
         }}>
-          {message.content}
+          {typeof message.content === 'string' 
+            ? message.content 
+            : JSON.stringify(message.content, null, 2)}
         </div>
         <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '8px', textAlign: isUser ? 'right' : 'left' }}>
           {formatTimestamp(message.timestamp)}
@@ -72,4 +74,4 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       </Card>
     </div>
   );
-}; 
+};  

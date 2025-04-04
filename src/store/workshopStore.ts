@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { WorkshopData } from '../types/workshop';
+import type { WorkshopData, AntiGoals, TriggerEvent, Job, Market, Problem } from '../types/workshop';
 import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
@@ -509,7 +509,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
       case 3: // Anti-Goals
         if (currentSuggestion.content?.antiGoals) {
           updateWorkshopData({
-            antiGoals: currentSuggestion.content.antiGoals,
+            antiGoals: currentSuggestion.content.antiGoals as AntiGoals,
           });
         }
         break;
@@ -520,11 +520,11 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
           const existingEvents = workshopData.triggerEvents || [];
           const newEvents = (currentSuggestion.content.triggerEvents as TriggerEvent[]).map((event) => ({
             ...event,
-            source: 'assistant', // Mark as coming from assistant
+            source: 'assistant' as const, // Mark as coming from assistant
           }));
           
           updateWorkshopData({
-            triggerEvents: [...existingEvents, ...newEvents],
+            triggerEvents: [...existingEvents, ...newEvents] as TriggerEvent[],
           });
         }
         break;
@@ -535,11 +535,11 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
           const existingJobs = workshopData.jobs || [];
           const newJobs = (currentSuggestion.content.jobs as Job[]).map((job) => ({
             ...job,
-            source: 'assistant', // Mark as coming from assistant
+            source: 'assistant' as const, // Mark as coming from assistant
           }));
           
           updateWorkshopData({
-            jobs: [...existingJobs, ...newJobs],
+            jobs: [...existingJobs, ...newJobs] as Job[],
           });
         }
         break;
@@ -550,11 +550,11 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
           const existingMarkets = workshopData.markets || [];
           const newMarkets = (currentSuggestion.content.markets as Market[]).map((market) => ({
             ...market,
-            source: 'assistant', // Mark as coming from assistant
+            source: 'assistant' as const, // Mark as coming from assistant
           }));
           
           updateWorkshopData({
-            markets: [...existingMarkets, ...newMarkets],
+            markets: [...existingMarkets, ...newMarkets] as Market[],
           });
         }
         break;
@@ -627,15 +627,15 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         break;
         
       case 9: // Value Proposition
-        if (currentSuggestion.content?.offers?.length > 0) {
-          const offer = currentSuggestion.content.offers[0];
+        if (currentSuggestion.content?.offers && Array.isArray(currentSuggestion.content.offers) && currentSuggestion.content.offers.length > 0) {
+          const offer = currentSuggestion.content.offers[0] as Record<string, any>;
           
           updateWorkshopData({
             valueProposition: {
-              uniqueValue: offer.description,
+              uniqueValue: offer.description || '',
               painPoints: Array.isArray(offer.problemsSolved) ? offer.problemsSolved.join("\n\n") : '',
               benefits: Array.isArray(offer.benefits) ? offer.benefits.join("\n\n") : '',
-              differentiators: `Format: ${offer.format}\n\n${offer.name}`,
+              differentiators: `Format: ${offer.format || ''}\n\n${offer.name || ''}`,
             },
           });
         }
@@ -643,12 +643,12 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         
       case 10: // Pricing
         if (currentSuggestion.content?.pricingStrategy) {
-          const pricing = currentSuggestion.content.pricingStrategy;
-          const positioning = currentSuggestion.content.positioning;
+          const pricing = currentSuggestion.content.pricingStrategy as Record<string, any>;
+          const positioning = currentSuggestion.content.positioning as Record<string, any> || {};
           
           updateWorkshopData({
             pricing: {
-              strategy: pricing.pricingModel,
+              strategy: pricing.pricingModel || '',
               justification: `
                 Value Metrics:
                 ${Array.isArray(pricing.valueMetrics) ? pricing.valueMetrics.join('\n') : ''}
@@ -669,7 +669,8 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         
       case 11: // Reflections
         if (currentSuggestion.content?.analysis && currentSuggestion.content?.nextSteps) {
-          const { analysis, nextSteps } = currentSuggestion.content;
+          const analysis = currentSuggestion.content.analysis as Record<string, any>;
+          const nextSteps = currentSuggestion.content.nextSteps as Array<{action: string, priority: string}>;
           
           updateWorkshopData({
             reflections: {
@@ -695,4 +696,4 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
     // Clear the current suggestion
     set({ currentSuggestion: null });
   },
-})); 
+}));                

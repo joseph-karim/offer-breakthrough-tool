@@ -19,7 +19,7 @@ export interface StepChats {
 export interface ChatSuggestion {
   step: number;
   content: Record<string, unknown>;
-  rawResponse: string;
+  rawResponse: string | Record<string, unknown>;
 }
 
 export interface StepQuestion {
@@ -42,4 +42,4 @@ export type AssistantType =
   'problem-expander' | 
   'capability-analyzer' | 
   'market-evaluator' | 
-  'research-designer'; 
+  'research-designer';  
