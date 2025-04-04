@@ -120,12 +120,11 @@ export const WorkshopWizard = () => {
   // Calculate completion percentage
   const completionPercentage = Math.round((currentStep / 11) * 100);
 
-  // Theme colors for SaaS style
   const colors = {
-    primary: '#4f46e5', // Indigo
-    primaryHover: '#4338ca',
-    secondary: '#a855f7', // Purple
-    accent: '#ec4899', // Pink
+    primary: '#FFDD00', // CustomerCamp Yellow
+    primaryHover: '#E6C700', // Darker Yellow
+    secondary: '#222222', // CustomerCamp Black
+    accent: '#6B46C1', // CustomerCamp Purple
     success: '#10b981', // Emerald
     background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
     cardBackground: 'rgba(255, 255, 255, 0.8)',
@@ -137,7 +136,8 @@ export const WorkshopWizard = () => {
   // Base styles for the whole app
   const containerStyle: CSSProperties = {
     minHeight: '100vh',
-    backgroundImage: 'linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #fdf2f8 100%)',
+    backgroundImage: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
+    backgroundColor: '#222222',
     paddingBottom: '64px', // Reduced padding bottom
     position: 'relative',
   };
@@ -229,20 +229,19 @@ export const WorkshopWizard = () => {
     alignItems: 'center',
     fontWeight: 800,
     fontSize: '24px',
-    backgroundImage: `linear-gradient(to right, ${colors.primary}, ${colors.secondary}, ${colors.accent})`,
-    WebkitBackgroundClip: 'text',
-    backgroundClip: 'text',
-    color: 'transparent',
+    color: colors.primary,
+    textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
   };
 
   const logoIconContainerStyle: CSSProperties = {
     marginRight: '12px',
     borderRadius: '8px',
-    backgroundImage: `linear-gradient(to right, ${colors.accent}, ${colors.primary})`,
+    backgroundColor: colors.primary,
     padding: '8px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
   };
 
   const stepIndicatorStyle: CSSProperties = {
@@ -269,7 +268,7 @@ export const WorkshopWizard = () => {
 
   const progressBarStyle: CSSProperties = {
     height: '100%',
-    backgroundImage: `linear-gradient(to right, ${colors.primary}, ${colors.secondary}, ${colors.accent})`,
+    backgroundImage: `linear-gradient(to right, ${colors.primary}, ${colors.accent})`,
     borderRadius: '9999px',
     transition: 'width 0.5s ease',
     width: `${completionPercentage}%`,

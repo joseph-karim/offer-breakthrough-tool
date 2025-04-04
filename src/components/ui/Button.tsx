@@ -11,11 +11,11 @@ type ButtonVariant =
   | 'subtle'
   | 'gradient'
   | 'glass'
-  | 'indigo'
+  | 'yellow'
+  | 'black'
   | 'purple'
-  | 'pink'
-  | 'indigoToPurple'
-  | 'purpleToPink';
+  | 'yellowToBlack'
+  | 'yellowToPurple';
 
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl' | 'icon';
 
@@ -85,8 +85,8 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
   switch (variant) {
     case 'primary':
       return {
-        backgroundColor: '#4f46e5', // indigo-600
-        color: 'white',
+        backgroundColor: '#FFDD00', // CustomerCamp Yellow
+        color: '#222222', // Black text for contrast
         border: 'none',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
       };
@@ -141,40 +141,40 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
         border: '1px solid rgba(255, 255, 255, 0.7)',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
       };
-    case 'indigo':
+    case 'yellow':
       return {
-        backgroundColor: '#4f46e5', // indigo-600
+        backgroundColor: '#FFDD00', // CustomerCamp Yellow
+        color: '#222222', // Black text for contrast
+        border: 'none',
+        boxShadow: '0 4px 6px -1px rgba(255, 221, 0, 0.4), 0 2px 4px -1px rgba(255, 221, 0, 0.06)',
+      };
+    case 'black':
+      return {
+        backgroundColor: '#222222', // CustomerCamp Black
         color: 'white',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.4), 0 2px 4px -1px rgba(79, 70, 229, 0.06)',
+        boxShadow: '0 4px 6px -1px rgba(34, 34, 34, 0.4), 0 2px 4px -1px rgba(34, 34, 34, 0.06)',
       };
     case 'purple':
       return {
-        backgroundColor: '#a855f7', // purple-600
+        backgroundColor: '#6B46C1', // CustomerCamp Purple
         color: 'white',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(168, 85, 247, 0.4), 0 2px 4px -1px rgba(168, 85, 247, 0.06)',
+        boxShadow: '0 4px 6px -1px rgba(107, 70, 193, 0.4), 0 2px 4px -1px rgba(107, 70, 193, 0.06)',
       };
-    case 'pink':
+    case 'yellowToBlack':
       return {
-        backgroundColor: '#ec4899', // pink-600
+        background: 'linear-gradient(135deg, #FFDD00 0%, #222222 100%)',
         color: 'white',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(236, 72, 153, 0.4), 0 2px 4px -1px rgba(236, 72, 153, 0.06)',
+        boxShadow: '0 4px 6px -1px rgba(255, 221, 0, 0.4), 0 2px 4px -1px rgba(255, 221, 0, 0.06)',
       };
-    case 'indigoToPurple':
+    case 'yellowToPurple':
       return {
-        background: 'linear-gradient(135deg, #4f46e5 0%, #a855f7 100%)',
+        background: 'linear-gradient(135deg, #FFDD00 0%, #6B46C1 100%)',
         color: 'white',
         border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(79, 70, 229, 0.4), 0 2px 4px -1px rgba(79, 70, 229, 0.06)',
-      };
-    case 'purpleToPink':
-      return {
-        background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
-        color: 'white',
-        border: 'none',
-        boxShadow: '0 4px 6px -1px rgba(168, 85, 247, 0.4), 0 2px 4px -1px rgba(168, 85, 247, 0.06)',
+        boxShadow: '0 4px 6px -1px rgba(255, 221, 0, 0.4), 0 2px 4px -1px rgba(255, 221, 0, 0.06)',
       };
     default:
       return {
@@ -242,8 +242,8 @@ export const Button = ({
   // Add custom class names for animation capabilities
   const isGradientVariant = 
     variant === 'gradient' || 
-    variant === 'indigoToPurple' || 
-    variant === 'purpleToPink';
+    variant === 'yellowToBlack' || 
+    variant === 'yellowToPurple';
   
   const effectiveClassName = `
     button
@@ -286,4 +286,4 @@ export const Button = ({
       </button>
     </>
   );
-}; 
+};        

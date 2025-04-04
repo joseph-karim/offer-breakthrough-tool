@@ -8,43 +8,46 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 7%;
     
-    --primary: 330 87% 55%;
-    --primary-50: 330 87% 97%;
-    --primary-100: 330 87% 92%;
-    --primary-200: 330 87% 84%;
-    --primary-300: 330 87% 75%;
-    --primary-400: 330 87% 65%;
-    --primary-500: 330 87% 55%;
-    --primary-600: 330 87% 45%;
-    --primary-700: 330 87% 35%;
-    --primary-800: 330 87% 25%;
-    --primary-900: 330 87% 15%;
+    /* CustomerCamp Yellow */
+    --primary: 50 100% 50%;
+    --primary-50: 50 100% 97%;
+    --primary-100: 50 100% 92%;
+    --primary-200: 50 100% 84%;
+    --primary-300: 50 100% 75%;
+    --primary-400: 50 100% 65%;
+    --primary-500: 50 100% 50%;
+    --primary-600: 50 100% 45%;
+    --primary-700: 50 100% 35%;
+    --primary-800: 50 100% 25%;
+    --primary-900: 50 100% 15%;
     
-    --secondary: 195 86% 54%;
-    --secondary-50: 195 86% 97%;
-    --secondary-100: 195 86% 92%;
-    --secondary-200: 195 86% 84%;
-    --secondary-300: 195 86% 75%;
-    --secondary-400: 195 86% 65%;
-    --secondary-500: 195 86% 54%;
-    --secondary-600: 195 86% 45%;
-    --secondary-700: 195 86% 35%;
-    --secondary-800: 195 86% 25%;
-    --secondary-900: 195 86% 15%;
+    /* CustomerCamp Black/Dark Gray */
+    --secondary: 0 0% 13%;
+    --secondary-50: 0 0% 97%;
+    --secondary-100: 0 0% 92%;
+    --secondary-200: 0 0% 84%;
+    --secondary-300: 0 0% 75%;
+    --secondary-400: 0 0% 65%;
+    --secondary-500: 0 0% 50%;
+    --secondary-600: 0 0% 35%;
+    --secondary-700: 0 0% 25%;
+    --secondary-800: 0 0% 15%;
+    --secondary-900: 0 0% 7%;
     
-    --accent: 264 79% 60%;
-    --accent-foreground: 210 40% 98%;
+    /* CustomerCamp Purple for accents */
+    --accent: 260 70% 50%;
+    --accent-foreground: 0 0% 100%;
     
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
     
-    --border: 214.3 31.8% 91.4%;
+    --border: 0 0% 90%;
     
     --success: 142 69% 58%;
     --info: 195 86% 54%;
-    --warning: 38 92% 50%;
+    --warning: 50 100% 50%;
     --danger: 0 91% 71%;
     
     --radius: 0.5rem;
@@ -70,12 +73,12 @@
 @layer components {
   /* Gradient background for border effect */
   .bg-gradient-padding {
-    background: linear-gradient(to right, #4f46e5, #c026d3, #e11d48);
+    background: linear-gradient(to right, #FFDD00, #222222, #6B46C1);
   }
   
   /* Glass card effect */
   .glassmorphism {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.3);
@@ -86,24 +89,24 @@
   .gradient-text {
     color: transparent;
     background-clip: text;
-    background-image: linear-gradient(to right, #4f46e5, #a855f7, #ec4899);
+    background-image: linear-gradient(to right, #FFDD00, #222222, #6B46C1);
   }
   
   /* Gradient backgrounds */
-  .bg-gradient-indigo-pink {
-    background-image: linear-gradient(to right, #4f46e5, #a855f7, #ec4899);
+  .bg-gradient-yellow-black {
+    background-image: linear-gradient(to right, #FFDD00, #222222);
   }
   
-  .bg-gradient-pink-indigo {
-    background-image: linear-gradient(to right, #ec4899, #a855f7, #4f46e5);
+  .bg-gradient-black-yellow {
+    background-image: linear-gradient(to right, #222222, #FFDD00);
   }
   
-  .bg-gradient-blue-indigo {
-    background-image: linear-gradient(to right, #3b82f6, #4f46e5);
+  .bg-gradient-yellow-purple {
+    background-image: linear-gradient(to right, #FFDD00, #6B46C1);
   }
   
-  .bg-gradient-purple-pink {
-    background-image: linear-gradient(to right, #a855f7, #ec4899);
+  .bg-gradient-purple-yellow {
+    background-image: linear-gradient(to right, #6B46C1, #FFDD00);
   }
 }
 
