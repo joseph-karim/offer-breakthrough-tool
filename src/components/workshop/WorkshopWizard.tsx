@@ -54,14 +54,9 @@ export const WorkshopWizard = () => {
   }, [currentStep, setCurrentStep, setValidationErrors]);
 
   const goToNextStep = useCallback(() => {
-    const canProceed = canProceedToNextStep();
-    if (!canProceed) {
-      setValidationErrors(true);
-      return;
-    }
     setValidationErrors(false); // Reset validation errors when successfully moving forward
     setCurrentStep(Math.min(11, currentStep + 1));
-  }, [currentStep, setCurrentStep, canProceedToNextStep, setValidationErrors]);
+  }, [currentStep, setCurrentStep, setValidationErrors]);
 
   // Don't render anything until initialization is complete
   if (!isInitialized) {
