@@ -19,16 +19,25 @@ export const Step11_Summary: React.FC = () => {
   const storeValue = useWorkshopStore(selectReflections);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 
-  // Use local state for the form
-  const [localValue, setLocalValue] = useState<Reflections>(storeValue);
+  // Use local state for the form with lazy initialization to prevent unnecessary re-renders
+  const [localValue, setLocalValue] = useState<Reflections>(() => ({
+    keyInsights: storeValue.keyInsights || '',
+    nextSteps: storeValue.nextSteps || ''
+  }));
+  
   const [isSaving, setIsSaving] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
   const savingTimerRef = useRef<number | null>(null);
 
-  // Update local state when store value changes
+  // Update local state when store value changes, but only on initial render
   useEffect(() => {
-    setLocalValue(storeValue);
-  }, [storeValue]);
+    if (storeValue) {
+      setLocalValue({
+        keyInsights: storeValue.keyInsights || '',
+        nextSteps: storeValue.nextSteps || ''
+      });
+    }
+  }, []); // Empty dependency array to run only on initial mount
 
   // Cleanup timers on unmount
   useEffect(() => {
