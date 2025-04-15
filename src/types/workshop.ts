@@ -58,6 +58,11 @@ export interface MarketEvaluation {
   [criteriaId: string]: number;
 }
 
+export interface Pricing {
+  strategy: string;
+  justification: string;
+}
+
 export interface WorkshopData {
   antiGoals: AntiGoals;
   triggerEvents: TriggerEvent[];
@@ -67,7 +72,7 @@ export interface WorkshopData {
   selectedOffer?: Offer;
   stepChats: StepChats;
   marketDemandAnalysis?: string;
-  pricing?: { strategy: string; justification: string };
+  pricing?: Pricing;
   reflections?: Reflections;
   valueProposition: ValueProposition;
   marketEvaluations?: { [marketId: string]: MarketEvaluation };

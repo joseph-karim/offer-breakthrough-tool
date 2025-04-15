@@ -20,7 +20,7 @@ export const Step10_Pricing: React.FC = () => {
     justification: false
   });
 
-  // Update local state when workshopData changes, but only on initial render or when workshopData.pricing changes
+  // Update local state when workshopData changes, but only on initial render
   useEffect(() => {
     if (workshopData.pricing) {
       setLocalPricing({
@@ -55,13 +55,13 @@ export const Step10_Pricing: React.FC = () => {
 
   // Handle input changes
   const handleChange = (field: keyof Pricing, value: string) => {
-    setLocalPricing(prev => ({
+    setLocalPricing((prev: Pricing) => ({
       ...prev,
       [field]: value
     }));
     
     // Clear error when user types
-    if (errors[field]) {
+    if (field === 'strategy' || field === 'justification') {
       setErrors(prev => ({
         ...prev,
         [field]: false
