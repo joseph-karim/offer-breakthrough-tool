@@ -130,18 +130,35 @@
   }
   
   .btn-primary {
-    @apply bg-brand-yellow text-brand-black;
-    @apply hover:bg-opacity-90;
+    background-color: #FFDD00;
+    color: #222222;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+  
+  .btn-primary:hover {
+    opacity: 0.9;
   }
   
   .btn-secondary {
-    @apply bg-brand-black text-white;
-    @apply hover:bg-opacity-90;
+    background-color: #222222;
+    color: white;
+    opacity: 1;
+    transition: opacity 0.2s;
+  }
+  
+  .btn-secondary:hover {
+    opacity: 0.9;
   }
   
   .btn-outline {
-    @apply bg-transparent border-2 border-brand-yellow text-brand-black;
-    @apply hover:bg-brand-yellow hover:bg-opacity-10;
+    background-color: transparent;
+    border: 2px solid #FFDD00;
+    color: #222222;
+  }
+  
+  .btn-outline:hover {
+    background-color: rgba(255, 221, 0, 0.1);
   }
   
   .card {
@@ -152,13 +169,15 @@
   }
   
   .card-yellow {
-    @apply bg-brand-yellow text-brand-black;
+    background-color: #FFDD00;
+    color: #222222;
     padding: 10px !important;
     border-radius: 0;
   }
   
   .card-black {
-    @apply bg-brand-black text-white;
+    background-color: #222222;
+    color: white;
     padding: 10px !important;
     border-radius: 0;
   }
@@ -464,7 +483,12 @@
   }
 
   .btn-black {
-    @apply bg-brand-black text-white hover:bg-gray-800;
+    background-color: #222222;
+    color: white;
+  }
+  
+  .btn-black:hover {
+    background-color: #333333;
   }
 
   /* Adjust card padding to reduce whitespace */
@@ -561,5 +585,42 @@ span[style*="background-color: #FFDD00"] {
 .rounded-2xl,
 .rounded-full {
   border-radius: 0 !important;
+}
+
+/* Direct brand color utility classes */
+.bg-brand-yellow {
+  background-color: #FFDD00;
+}
+
+.text-brand-yellow {
+  color: #FFDD00;
+}
+
+.border-brand-yellow {
+  border-color: #FFDD00;
+}
+
+.bg-brand-black {
+  background-color: #222222;
+}
+
+.text-brand-black {
+  color: #222222;
+}
+
+.border-brand-black {
+  border-color: #222222;
+}
+
+.bg-brand-purple {
+  background-color: #6B46C1;
+}
+
+.text-brand-purple {
+  color: #6B46C1;
+}
+
+.border-brand-purple {
+  border-color: #6B46C1;
 }
 
