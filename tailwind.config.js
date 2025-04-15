@@ -27,6 +27,16 @@ export default {
     // Highlight classes
     'highlight-yellow',
     'highlight-black',
+    // Font weights
+    'font-thin',
+    'font-extralight',
+    'font-light',
+    'font-normal',
+    'font-medium',
+    'font-semibold',
+    'font-bold',
+    'font-extrabold',
+    'font-black',
   ],
   theme: {
     container: {
@@ -37,6 +47,17 @@ export default {
       fontFamily: {
         sans: ["Mada", ...fontFamily.sans],
         display: ["Vintage Moon", ...fontFamily.sans],
+      },
+      fontWeight: {
+        thin: '100',
+        extralight: '200',
+        light: '300',
+        normal: '400',
+        medium: '500',
+        semibold: '600',
+        bold: '700',
+        extrabold: '800',
+        black: '900',
       },
       colors: {
         brand: {
