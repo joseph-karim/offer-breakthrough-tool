@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { WorkshopData, AntiGoals, TriggerEvent, Job, Market, Problem } from '../types/workshop';
+import type { WorkshopData, AntiGoals, TriggerEvent, Job, Market, Problem, Pricing } from '../types/workshop';
 import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
@@ -52,6 +52,10 @@ const initialWorkshopData: WorkshopData = {
     painPoints: '',
     benefits: '',
     differentiators: ''
+  },
+  pricing: {
+    strategy: '',
+    justification: ''
   },
 };
 
