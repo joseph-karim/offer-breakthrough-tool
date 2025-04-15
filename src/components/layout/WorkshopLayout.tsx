@@ -8,7 +8,7 @@ interface WorkshopLayoutProps {
 }
 
 export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
-  const { currentStep, setCurrentStep, canProceedToNextStep } = useWorkshopStore();
+  const { currentStep, setCurrentStep } = useWorkshopStore();
 
   const totalSteps = 10;
 

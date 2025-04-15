@@ -56,7 +56,7 @@ const initialWorkshopData: WorkshopData = {
 };
 
 // Helper function to check if a step is complete
-const isStepComplete = (step: number, data: WorkshopData): boolean => {
+const isStepComplete = (_step: number, _data: WorkshopData): boolean => {
   // Always return true to allow navigation regardless of completion status
   return true;
   

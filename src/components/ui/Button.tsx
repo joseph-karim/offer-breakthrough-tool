@@ -42,38 +42,6 @@ const getSizeProps = (size: ButtonSize): CSSProperties => {
   };
 };
 
-// Helper objects for consistent styling
-const PaddingSize = {
-  xs: '6px',
-  sm: '10px',
-  md: '12px',
-  lg: '16px',
-  xl: '20px',
-  icon: '6px',
-};
-
-const FontSize = {
-  xs: '0.75rem',
-  sm: '0.875rem',
-  md: '1rem',
-  lg: '1.125rem',
-  xl: '1.25rem',
-  icon: '1rem',
-};
-
-// Get padding based on size
-const getPaddingValue = (size: ButtonSize): string => {
-  switch (size) {
-    case 'xs': return '4px 8px';
-    case 'sm': return '4px 10px';
-    case 'md': return '6px 12px';
-    case 'lg': return '8px 16px';
-    case 'xl': return '10px 20px';
-    case 'icon': return '6px';
-    default: return '6px 12px';
-  }
-};
-
 // Get variant styles
 const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
   switch (variant) {
@@ -165,36 +133,6 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
     case 'default':
     default:
       return {};
-  }
-};
-
-// Get size styles
-const getSizeStyles = (size: ButtonSize): CSSProperties => {
-  switch (size) {
-    case 'sm':
-      return {
-        padding: '4px 12px',
-        fontSize: '0.875rem',
-        borderRadius: '4px',
-      };
-    case 'md':
-      return {
-        padding: '6px 16px',
-        fontSize: '1rem',
-        borderRadius: '4px',
-      };
-    case 'lg':
-      return {
-        padding: '8px 20px',
-        fontSize: '1.125rem',
-        borderRadius: '6px',
-      };
-    default:
-      return {
-        padding: '6px 16px',
-        fontSize: '1rem',
-        borderRadius: '4px',
-      };
   }
 };
 
