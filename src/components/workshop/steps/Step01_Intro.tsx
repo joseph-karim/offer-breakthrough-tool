@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card } from '../../ui/Card';
+// import { Card } from '../../ui/Card'; // Remove unused Card import
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { CheckCircle, Target, Lightbulb, Zap, Brain, Sparkles, Award, Rocket, ArrowRight } from 'lucide-react';
+import { Target, Lightbulb, Zap, Brain, Sparkles, Award, ArrowRight } from 'lucide-react'; // Remove unused CheckCircle and Rocket
 
 export const Step01_Intro: React.FC = () => {
   const { setCurrentStep } = useWorkshopStore();

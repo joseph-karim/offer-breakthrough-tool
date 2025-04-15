@@ -21,7 +21,6 @@ export const WorkshopWizard = () => {
     currentStep, 
     initializeSession, 
     setCurrentStep, 
-    canProceedToNextStep,
     setValidationErrors,
   } = useWorkshopStore();
   const [isInitialized, setIsInitialized] = useState(false);
