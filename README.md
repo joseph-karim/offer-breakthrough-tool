@@ -1,4 +1,4 @@
-# Offer Breakthrough Workshop Tool
+# Buyer Breakthrough Workshop Tool
 
 This project is an interactive web application designed to guide users through the process of defining a scalable and marketable offer. It utilizes a step-by-step workshop format with validation feedback and clear guidance at each step.
 

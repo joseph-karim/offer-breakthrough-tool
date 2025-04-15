@@ -993,7 +993,7 @@ export class AIService {
             Current workshop context:
             ${context}
             
-            The user has completed the Offer Breakthrough workshop. Your goal is to help them solidify a concrete action plan for the next 1-2 weeks. Answer their question in a way that guides them to prioritize, refine, and commit to specific validation activities.
+            The user has completed the Buyer Breakthrough workshop. Your goal is to help them solidify a concrete action plan for the next 1-2 weeks. Answer their question in a way that guides them to prioritize, refine, and commit to specific validation activities.
             
             User Question: "${question}"
           `;

@@ -319,7 +319,7 @@ export const WorkshopWizard = () => {
                 <span style={logoIconContainerStyle}>
                   <Sparkles style={{ width: '24px', height: '24px', color: '#222222' }} />
                 </span>
-                Offer Breakthrough
+                Buyer Breakthrough
                 <span style={{ 
                   position: 'relative', 
                   marginLeft: '8px',

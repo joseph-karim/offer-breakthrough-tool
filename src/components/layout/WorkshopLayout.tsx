@@ -30,7 +30,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>
-              Offer Breakthrough Workshop
+              Buyer Breakthrough Workshop
             </h1>
             <div style={{ fontSize: '14px', color: '#6b7280' }}>
               Step {currentStep} of {totalSteps}

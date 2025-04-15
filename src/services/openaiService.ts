@@ -33,7 +33,7 @@ export class OpenAIService {
           messages: [
             {
               role: 'system',
-              content: 'You are a helpful, expert business coach assisting with an offer breakthrough workshop.'
+              content: 'You are a helpful, expert business coach assisting with a buyer breakthrough workshop.'
             },
             {
               role: 'user',

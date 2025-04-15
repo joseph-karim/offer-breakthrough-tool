@@ -12,7 +12,7 @@ export const Step01_Intro: React.FC = () => {
       {/* Hero Section with Purple Background */}
       <div className="landing-hero">
         <h1 className="landing-title">
-          Welcome to the <span style={{ color: '#FFDD00' }}>Offer Breakthrough Workshop</span> 🚀
+          Welcome to the <span style={{ color: '#FFDD00' }}>Buyer Breakthrough Workshop</span> 🚀
         </h1>
         <p className="landing-subtitle">
           Design a scalable offer by deeply understanding your market's psychology and needs

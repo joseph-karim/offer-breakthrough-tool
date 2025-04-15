@@ -1,7 +1,7 @@
-# Offer Breakthrough Workshop Tool
+# Buyer Breakthrough Workshop Tool
 
-## Overview
-An interactive web application embodying the CustomerCamp "Why We Buy" philosophy. This tool guides service-based entrepreneurs through the "Offer Breakthrough Workshop" methodology to uncover profitable problems and design scalable offers.
+## 1. Overview
+This document outlines the plan for developing an interactive workshop tool designed to guide service-based entrepreneurs through the "Buyer Breakthrough Workshop" methodology to uncover profitable problems and design scalable offers.
 
 ## Documentation Structure
 
