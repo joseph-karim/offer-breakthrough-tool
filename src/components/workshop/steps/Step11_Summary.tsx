@@ -8,36 +8,38 @@ import { CheckCircle2, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
 
-// Separate selectors to prevent unnecessary re-renders
-const selectReflections = (state: WorkshopStore) => state.workshopData.reflections || {
+// Modified selectors to prevent creating new objects on each call
+const selectReflections = (state: WorkshopStore) => state.workshopData.reflections;
+const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+
+// Default values outside component to avoid recreation
+const defaultReflections: Reflections = {
   keyInsights: '',
   nextSteps: ''
 };
-const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 
 export const Step11_Summary: React.FC = () => {
-  const storeValue = useWorkshopStore(selectReflections);
+  // Get values from store - use the reflections if they exist, otherwise use defaults
+  const storeReflections = useWorkshopStore(selectReflections);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-
-  // Use local state for the form with lazy initialization to prevent unnecessary re-renders
-  const [localValue, setLocalValue] = useState<Reflections>(() => ({
-    keyInsights: storeValue.keyInsights || '',
-    nextSteps: storeValue.nextSteps || ''
-  }));
+  
+  // Only initialize state once with default values
+  const [localValue, setLocalValue] = useState<Reflections>(() => {
+    return storeReflections || defaultReflections;
+  });
   
   const [isSaving, setIsSaving] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
   const savingTimerRef = useRef<number | null>(null);
+  const initializedRef = useRef(false);
 
-  // Update local state when store value changes, but only on initial render
+  // Only sync from store on initial mount
   useEffect(() => {
-    if (storeValue) {
-      setLocalValue({
-        keyInsights: storeValue.keyInsights || '',
-        nextSteps: storeValue.nextSteps || ''
-      });
+    if (!initializedRef.current && storeReflections) {
+      setLocalValue(storeReflections);
+      initializedRef.current = true;
     }
-  }, []); // Empty dependency array to run only on initial mount
+  }, []);
 
   // Cleanup timers on unmount
   useEffect(() => {
@@ -52,27 +54,30 @@ export const Step11_Summary: React.FC = () => {
   }, []);
 
   const handleInputChange = useCallback((field: keyof Reflections, value: string) => {
-    const newValue = { ...localValue, [field]: value };
-    setLocalValue(newValue);
-    
-    // Show saving indicator
-    setIsSaving(true);
-    
-    // Clear any existing timers
-    if (saveTimerRef.current !== null) {
-      window.clearTimeout(saveTimerRef.current);
-    }
-    if (savingTimerRef.current !== null) {
-      window.clearTimeout(savingTimerRef.current);
-    }
-    
-    // Save to store after a short delay
-    saveTimerRef.current = window.setTimeout(() => {
-      updateWorkshopData({ reflections: newValue });
-      // Keep the saving indicator visible briefly
-      savingTimerRef.current = window.setTimeout(() => setIsSaving(false), 500);
-    }, 300);
-  }, [localValue, updateWorkshopData]);
+    setLocalValue(prev => {
+      const newValue = { ...prev, [field]: value };
+      
+      // Show saving indicator
+      setIsSaving(true);
+      
+      // Clear any existing timers
+      if (saveTimerRef.current !== null) {
+        window.clearTimeout(saveTimerRef.current);
+      }
+      if (savingTimerRef.current !== null) {
+        window.clearTimeout(savingTimerRef.current);
+      }
+      
+      // Save to store after a short delay
+      saveTimerRef.current = window.setTimeout(() => {
+        updateWorkshopData({ reflections: newValue });
+        // Keep the saving indicator visible briefly
+        savingTimerRef.current = window.setTimeout(() => setIsSaving(false), 500);
+      }, 300);
+      
+      return newValue;
+    });
+  }, [updateWorkshopData]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -126,7 +131,7 @@ export const Step11_Summary: React.FC = () => {
             <textarea
               id="key-insights"
               rows={5}
-              value={localValue.keyInsights}
+              value={localValue.keyInsights || ''}
               onChange={(e) => handleInputChange('keyInsights', e.target.value)}
               placeholder="What were your biggest realizations during this workshop? What key decisions did you make about your offer?"
               style={{
@@ -168,7 +173,7 @@ export const Step11_Summary: React.FC = () => {
             <textarea
               id="next-steps"
               rows={5}
-              value={localValue.nextSteps}
+              value={localValue.nextSteps || ''}
               onChange={(e) => handleInputChange('nextSteps', e.target.value)}
               placeholder="What specific actions will you take to implement your offer? List them in order of priority. Include deadlines if possible."
               style={{
