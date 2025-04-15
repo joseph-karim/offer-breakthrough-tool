@@ -3,17 +3,11 @@ import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Market, MarketEvaluation } from '../../../types/workshop';
 import { Users, CheckCircle2, Star, AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 
-// Separate selectors to prevent unnecessary re-renders
-const selectMarkets = (state: WorkshopStore) => state.workshopData.markets || [];
-const selectMarketEvaluations = (state: WorkshopStore) => state.workshopData.marketEvaluations || {};
-const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
-
+// Define criteria statically to avoid recreation on each render
 const CRITERIA = [
   { id: 'marketSize', label: 'Market Size', description: 'How large is this market segment?' },
   { id: 'growthPotential', label: 'Growth Potential', description: 'How fast is this market segment growing?' },
@@ -23,77 +17,27 @@ const CRITERIA = [
 ];
 
 export const Step08_MarketEvaluation: React.FC = () => {
-  const storeMarkets = useWorkshopStore(selectMarkets);
-  const storeEvaluations = useWorkshopStore(selectMarketEvaluations);
-  const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const showErrors = useWorkshopStore(selectValidationErrors);
+  // Get state directly from the store without selectors
+  const { 
+    workshopData, 
+    updateWorkshopData, 
+    validationErrors: showErrors 
+  } = useWorkshopStore();
   
-  // Local state
-  const [localMarkets, setLocalMarkets] = useState(storeMarkets);
-  const [localScores, setLocalScores] = useState<{ [marketId: string]: MarketEvaluation }>(storeEvaluations);
+  // Extract data from workshopData
+  const markets = workshopData.markets || [];
+  const marketEvaluations = workshopData.marketEvaluations || {};
+  
+  // Local state for UI feedback only
   const [isSaving, setIsSaving] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
-  
-  // Ref to track if initialization has been attempted
-  const initAttemptedRef = useRef(false);
 
-  // Update local state when store values change
-  useEffect(() => {
-    setLocalMarkets(storeMarkets);
-    setLocalScores(storeEvaluations);
-  }, [storeMarkets, storeEvaluations]);
-
-  // One-time initialization, using a layout effect to run before render
-  useEffect(() => {
-    // Skip if we've already attempted initialization
-    if (initAttemptedRef.current) {
-      return;
-    }
-    
-    // Mark that we've attempted initialization
-    initAttemptedRef.current = true;
-    
-    // Only continue if we have markets but need to initialize evaluations
-    if (storeMarkets.length === 0) {
-      return;
-    }
-    
-    // Check if any market needs initialization
-    let needsInit = false;
-    const initialEvals: { [marketId: string]: MarketEvaluation } = {};
-    
-    // Build the initialization object
-    storeMarkets.forEach(market => {
-      if (!storeEvaluations[market.id] || Object.keys(storeEvaluations[market.id]).length === 0) {
-        needsInit = true;
-        initialEvals[market.id] = {};
-      } else {
-        initialEvals[market.id] = storeEvaluations[market.id];
-      }
-    });
-    
-    // Only update if we need to
-    if (needsInit && Object.keys(initialEvals).length > 0) {
-      // Use setTimeout to avoid render-time state updates
-      setTimeout(() => {
-        updateWorkshopData({ marketEvaluations: initialEvals });
-      }, 0);
-    }
-  }, []); // Empty dependency array - run only once on mount
-
-  // Cleanup timers on unmount
-  useEffect(() => {
-    return () => {
-      if (saveTimerRef.current !== null) {
-        window.clearTimeout(saveTimerRef.current);
-      }
-    };
-  }, []);
-
-  const saveToStore = useCallback((data: { markets?: Market[], marketEvaluations?: { [marketId: string]: MarketEvaluation } }) => {
+  // Simple debounced save function
+  const debouncedSave = useCallback((data: object) => {
     setIsSaving(true);
-    if (saveTimerRef.current !== null) {
-      window.clearTimeout(saveTimerRef.current);
+    
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
     }
     
     saveTimerRef.current = window.setTimeout(() => {
@@ -102,49 +46,59 @@ export const Step08_MarketEvaluation: React.FC = () => {
     }, 500);
   }, [updateWorkshopData]);
 
-  const handleScoreChange = useCallback((marketId: string, criteriaId: string, value: number) => {
-    const updatedScores = {
-      ...localScores,
-      [marketId]: {
-        ...localScores[marketId],
-        [criteriaId]: value
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
       }
     };
-    setLocalScores(updatedScores);
-    saveToStore({ marketEvaluations: updatedScores });
-  }, [localScores, saveToStore]);
+  }, []);
 
+  // Get score safely, returning 0 if not found
+  const getScore = useCallback((marketId: string, criteriaId: string): number => {
+    return marketEvaluations[marketId]?.[criteriaId] || 0;
+  }, [marketEvaluations]);
+
+  // Calculate total score for a market
+  const getTotalScore = useCallback((marketId: string): number => {
+    return CRITERIA.reduce((sum, criteria) => sum + getScore(marketId, criteria.id), 0);
+  }, [getScore]);
+
+  // Check if market is incomplete (has zero scores)
+  const isMarketIncomplete = useCallback((marketId: string): boolean => {
+    if (!showErrors) return false;
+    return CRITERIA.some(criteria => getScore(marketId, criteria.id) === 0);
+  }, [showErrors, getScore]);
+
+  // Handle score change
+  const handleScoreChange = useCallback((marketId: string, criteriaId: string, value: number) => {
+    const updatedEvaluations = { ...marketEvaluations };
+    
+    // Initialize if needed
+    if (!updatedEvaluations[marketId]) {
+      updatedEvaluations[marketId] = {};
+    }
+    
+    // Update the score
+    updatedEvaluations[marketId] = {
+      ...updatedEvaluations[marketId],
+      [criteriaId]: value
+    };
+    
+    // Save to store
+    debouncedSave({ marketEvaluations: updatedEvaluations });
+  }, [marketEvaluations, debouncedSave]);
+
+  // Handle market selection
   const handleSelectMarket = useCallback((market: Market) => {
-    const updatedMarkets = localMarkets.map(m => ({
+    const updatedMarkets = markets.map(m => ({
       ...m,
       selected: m.id === market.id
     }));
     
-    // Batch updates together to prevent multiple renders
-    // Update local state immediately, but only trigger store update once
-    setLocalMarkets(updatedMarkets);
-    
-    // Debounced store update
-    saveToStore({ 
-      markets: updatedMarkets 
-    });
-  }, [localMarkets, saveToStore]);
-
-  const getMarketScore = useCallback((marketId: string, criteriaId: string): number => {
-    return localScores[marketId]?.[criteriaId] || 0;
-  }, [localScores]);
-
-  const isMarketIncomplete = useCallback((marketId: string): boolean => {
-    // Only compute this when errors should be shown
-    if (!showErrors) return false;
-    
-    // Check if any criteria is zero
-    return CRITERIA.some(criteria => getMarketScore(marketId, criteria.id) === 0);
-  }, [showErrors, getMarketScore]);
-
-  const getTotalScore = useCallback((marketId: string): number => {
-    return CRITERIA.reduce((sum, criteria) => sum + getMarketScore(marketId, criteria.id), 0);
-  }, [getMarketScore]);
+    debouncedSave({ markets: updatedMarkets });
+  }, [markets, debouncedSave]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -171,7 +125,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
             Rate each market segment on the criteria below. Choose the market that best aligns with your goals.
           </div>
 
-          {showErrors && !localMarkets.some(m => m.selected) && (
+          {showErrors && !markets.some(m => m.selected) && (
             <div style={{ 
               color: '#ef4444',
               fontSize: '14px',
@@ -187,7 +141,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
             </div>
           )}
 
-          {localMarkets.length === 0 ? (
+          {markets.length === 0 ? (
             <div style={{
               padding: '24px',
               textAlign: 'center',
@@ -201,7 +155,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
             </div>
           ) : (
             <div style={{ display: 'grid', gap: '32px' }}>
-              {localMarkets.map(market => (
+              {markets.map(market => (
                 <div
                   key={market.id}
                   style={{
@@ -323,11 +277,11 @@ export const Step08_MarketEvaluation: React.FC = () => {
                             type="range"
                             min="0"
                             max="10"
-                            value={getMarketScore(market.id, criteria.id)}
+                            value={getScore(market.id, criteria.id)}
                             onChange={(e) => handleScoreChange(market.id, criteria.id, parseInt(e.target.value))}
                             style={{
                               width: '100%',
-                              accentColor: showErrors && getMarketScore(market.id, criteria.id) === 0 ? '#ef4444' : '#0ea5e9'
+                              accentColor: showErrors && getScore(market.id, criteria.id) === 0 ? '#ef4444' : '#0ea5e9'
                             }}
                           />
                           <div style={{ 
@@ -337,7 +291,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
                             color: '#6b7280'
                           }}>
                             <span>Low</span>
-                            <span>Score: {getMarketScore(market.id, criteria.id)}</span>
+                            <span>Score: {getScore(market.id, criteria.id)}</span>
                             <span>High</span>
                           </div>
                         </div>
