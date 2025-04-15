@@ -47,20 +47,15 @@ export const Step09_ValueProposition: React.FC = () => {
 
   // Initialize value proposition if it doesn't exist
   useEffect(() => {
-    // If valueProposition is empty (no properties or empty strings), initialize it
-    const isEmpty = !valueProposition || Object.keys(valueProposition).length === 0 ||
-      Object.values(valueProposition).every(val => !val || val.trim() === '');
-    
-    if (isEmpty) {
-      updateWorkshopData({
-        valueProposition: {
-          uniqueValue: '',
-          painPoints: '',
-          benefits: '',
-          differentiators: ''
-        }
-      });
-    }
+    // Always initialize the value proposition to ensure there's data
+    updateWorkshopData({
+      valueProposition: {
+        uniqueValue: valueProposition?.uniqueValue || '',
+        painPoints: valueProposition?.painPoints || '',
+        benefits: valueProposition?.benefits || '',
+        differentiators: valueProposition?.differentiators || ''
+      }
+    });
   }, [valueProposition, updateWorkshopData]);
 
   const handleInputChange = useCallback((field: keyof ValuePropositionData, value: string) => {

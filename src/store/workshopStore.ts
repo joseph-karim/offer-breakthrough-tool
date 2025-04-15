@@ -57,6 +57,10 @@ const initialWorkshopData: WorkshopData = {
 
 // Helper function to check if a step is complete
 const isStepComplete = (step: number, data: WorkshopData): boolean => {
+  // Always return true to allow navigation regardless of completion status
+  return true;
+  
+  /* Original validation logic for reference:
   switch (step) {
     case 1: // Intro
       return true; // Always allow proceeding from intro
@@ -81,6 +85,7 @@ const isStepComplete = (step: number, data: WorkshopData): boolean => {
     default:
       return true;
   }
+  */
 };
 
 // Create AI service instance

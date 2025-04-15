@@ -105,7 +105,26 @@ export const Step08_MarketEvaluation: React.FC = () => {
           {markets.length === 0 ? (
             <div className="p-6 text-center text-gray-500 bg-gray-50 border border-dashed border-gray-300 rounded">
               <AlertCircle className="w-6 h-6 mx-auto mb-3" />
-              <p className="m-0">No markets to evaluate. Go back to the previous step to add some market segments.</p>
+              <p className="m-0">No markets available to evaluate.</p>
+              <div className="mt-4">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    // Create a sample market for demo purposes
+                    const newMarket = {
+                      id: `market_${Date.now()}`,
+                      description: "Sample Market Segment",
+                      source: "user" as const,
+                      selected: false
+                    };
+                    store.updateWorkshopData({ 
+                      markets: [newMarket]
+                    });
+                  }}
+                >
+                  Create Sample Market
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="grid gap-8">

@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Mada:wght@400;500;600;700&display=swap');
-/* Note: Vintage Moon would need to be imported from your assets or a custom font provider */
+/* Note: Custom fonts like Vintage Moon would need proper import from your assets */
 
 @tailwind base;
 @tailwind components;
@@ -10,9 +10,17 @@
     --background: 0 0% 100%;
     --foreground: 0 0% 13%;
     --radius: 0;
-    --purple: 262 61% 47%;
+    
+    /* Brand Colors */
     --yellow: 53 100% 50%;
-    --black: 0 0% 13%;
+    --yellow-foreground: 0 0% 13%;
+    
+    --purple: 262 59% 51%;
+    --purple-foreground: 0 0% 100%;
+    
+    /* Fonts */
+    --font-sans: 'Mada', sans-serif;
+    --font-heading: 'Mada', sans-serif;
   }
   
   * {
@@ -25,22 +33,199 @@
     @apply antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: 'Mada', sans-serif;
-    font-size: 16px;
+    margin: 0;
+    padding: 0;
   }
 
+  /* Highlight should have only ONE per section/box */
+  .highlight-yellow {
+    background-color: #FFDD00;
+    color: #222222;
+    font-weight: bold;
+    padding: 0 2px;
+  }
+  
+  .highlight-black {
+    background-color: #222222;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 0 2px;
+  }
+  
   mark, .mark {
     background-color: #FFDD00;
     color: #222222;
     font-weight: bold;
-    padding: 0 4px;
+    padding: 0 2px;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-weight: bold;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+  }
+  
+  /* Paragraph and list styles */
+  p {
+    margin-top: 0;
+    margin-bottom: 0.75em;
+  }
+  
+  p:last-child {
+    margin-bottom: 0;
+  }
+  
+  ul, ol {
+    margin: 0 0 8px 0;
+    padding-left: 16px;
+  }
+  
+  li {
+    margin-bottom: 2px;
+  }
+  
+  li:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Reduce card spacing */
+  .card {
+    margin-bottom: 16px;
+  }
+  
+  /* Reduce button padding */
+  button {
+    padding: 8px 16px;
+    border-radius: 4px;
+  }
+  
+  /* Reduce section spacing */
+  section {
+    margin-bottom: 20px;
   }
 }
 
 @layer components {
+  .btn {
+    @apply inline-flex items-center justify-center;
+    @apply font-medium;
+    @apply focus:outline-none;
+    @apply transition-colors;
+    height: auto;
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: 0;
+  }
+  
+  .btn-primary {
+    @apply bg-brand-yellow text-brand-black;
+    @apply hover:bg-opacity-90;
+  }
+  
+  .btn-secondary {
+    @apply bg-brand-black text-white;
+    @apply hover:bg-opacity-90;
+  }
+  
+  .btn-outline {
+    @apply bg-transparent border-2 border-brand-yellow text-brand-black;
+    @apply hover:bg-brand-yellow hover:bg-opacity-10;
+  }
+  
+  .card {
+    @apply bg-white;
+    @apply shadow-sm;
+    padding: 8px !important;
+    border-radius: 0;
+  }
+  
+  .card-yellow {
+    @apply bg-brand-yellow text-brand-black;
+    padding: 10px !important;
+    border-radius: 0;
+  }
+  
+  .card-black {
+    @apply bg-brand-black text-white;
+    padding: 10px !important;
+    border-radius: 0;
+  }
+  
+  .section {
+    margin-bottom: 10px !important;
+  }
+  
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 10px;
+  }
+  
+  /* Override padding and margin values to reduce white space */
+  .p-4 {
+    padding: 8px !important;
+  }
+  
+  .p-5 {
+    padding: 10px !important;
+  }
+  
+  .m-4 {
+    margin: 8px !important;
+  }
+  
+  .m-5 {
+    margin: 10px !important;
+  }
+  
+  .py-4 {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+  
+  .py-5 {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+  
+  .px-4 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  
+  .px-5 {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  
+  .gap-4 {
+    gap: 8px !important;
+  }
+  
+  .gap-5 {
+    gap: 10px !important;
+  }
+  
+  .space-y-4 > * + * {
+    margin-top: 8px !important;
+  }
+  
+  .space-y-5 > * + * {
+    margin-top: 10px !important;
+  }
+
   /* Canvas workbook styling */
   .workbook-container {
     max-width: 800px;
@@ -149,33 +334,6 @@
   }
 
   /* Main styled components based on learnwhybuy.com */
-  .highlight-yellow {
-    background-color: #FFDD00;
-    color: #222222;
-    font-weight: bold;
-    padding: 0 4px;
-    margin: 0 1px;
-    display: inline;
-  }
-  
-  .highlight-black {
-    background-color: #222222;
-    color: #FFFFFF;
-    font-weight: bold;
-    padding: 0 4px;
-    margin: 0 1px;
-    display: inline;
-  }
-  
-  .highlight-purple {
-    background-color: #6B46C1;
-    color: #FFFFFF;
-    font-weight: bold;
-    padding: 0 4px;
-    margin: 0 1px;
-    display: inline;
-  }
-  
   .accent-yellow {
     border-left: 3px solid #FFDD00;
   }
@@ -187,10 +345,11 @@
   
   /* Tabs styling */
   .tab {
-    padding: 0.5rem 1rem;
+    padding: 4px 8px;
     font-weight: 600;
     border-bottom: 3px solid transparent;
     transition: all 0.3s ease;
+    border-radius: 0;
   }
   
   .tab.active {
@@ -199,44 +358,13 @@
     color: #222222;
   }
   
-  /* Black box styling */
-  .black-box {
-    background-color: #222222;
-    color: white;
-    padding: 1rem;
-    border-radius: 0;
-  }
-  
   /* Yellow box styling */
   .yellow-box {
     background-color: #FFDD00;
     color: #222222;
-    padding: 1rem;
+    padding: 8px;
     border-radius: 0;
     font-weight: bold;
-  }
-  
-  /* Button styling to match learnwhybuy.com */
-  .button-primary {
-    background-color: #FFDD00;
-    color: #222222;
-    font-weight: bold;
-    padding: 0.75rem 1.25rem;
-    border-radius: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .button-secondary {
-    background-color: #222222;
-    color: white;
-    font-weight: bold;
-    padding: 0.75rem 1.25rem;
-    border-radius: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
   }
   
   /* Product tab styling */
@@ -244,7 +372,7 @@
     background-color: #FFDD00;
     color: #222222;
     font-weight: bold;
-    padding: 0.5rem 1rem;
+    padding: 4px 8px;
     border-radius: 0;
     display: inline-block;
   }
@@ -254,7 +382,7 @@
     background-color: transparent;
     color: #222222;
     font-weight: bold;
-    padding: 0.5rem 1rem;
+    padding: 4px 8px;
     border-radius: 0;
     display: inline-block;
   }
@@ -330,6 +458,67 @@
     text-transform: uppercase;
     display: inline-block;
   }
+
+  .btn-ghost {
+    @apply bg-transparent text-brand-black hover:bg-gray-100;
+  }
+
+  .btn-black {
+    @apply bg-brand-black text-white hover:bg-gray-800;
+  }
+
+  /* Adjust card padding to reduce whitespace */
+  .card {
+    padding: 12px !important;
+  }
+  
+  /* Reduce margins between sections */
+  section,
+  .section {
+    margin-bottom: 16px !important;
+  }
+  
+  /* Tighter heading margins */
+  h1, h2, h3 {
+    margin-bottom: 12px !important;
+  }
+  
+  /* Button styles with reduced padding */
+  .button {
+    padding: 8px 16px !important;
+    border-radius: 4px !important;
+  }
+  
+  /* List spacing adjustment */
+  ul, ol {
+    padding-left: 16px !important;
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  /* Card body reduced padding */
+  .card-body {
+    padding: 12px !important;
+  }
+  
+  /* Adjust paragraphs for tighter spacing */
+  p {
+    margin-bottom: 8px !important;
+  }
+  
+  /* Remove excess margin/padding from last children */
+  .card > *:last-child,
+  section > *:last-child,
+  .section > *:last-child,
+  p:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .card-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.35rem;
+  }
 }
 
 @layer utilities {
@@ -360,6 +549,17 @@ html, body, #root {
 span[style*="background-color: #FFDD00"] {
   color: #222222 !important;
   font-weight: bold;
-  padding: 0 4px;
+  padding: 0 2px;
+}
+
+/* Make rounded elements NOT rounded */
+.rounded,
+.rounded-sm, 
+.rounded-md,
+.rounded-lg,
+.rounded-xl,
+.rounded-2xl,
+.rounded-full {
+  border-radius: 0 !important;
 }
 

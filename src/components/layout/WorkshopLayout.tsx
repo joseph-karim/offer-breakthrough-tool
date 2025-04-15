@@ -84,19 +84,16 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
             flex: 1, 
             textAlign: 'center',
             fontSize: '14px',
-            color: !canProceedToNextStep() ? '#ef4444' : '#6b7280',
+            color: '#6b7280',
             marginLeft: '24px',
             marginRight: '24px'
           }}>
-            {!canProceedToNextStep() && currentStep < totalSteps && (
-              "Please complete this step before proceeding"
-            )}
           </div>
 
           <Button
             variant="primary"
             onClick={handleNext}
-            disabled={currentStep === totalSteps || !canProceedToNextStep()}
+            disabled={currentStep === totalSteps}
             style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
           >
             Next Step
