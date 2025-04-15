@@ -24,13 +24,15 @@
   }
   
   * {
-    @apply border-solid border-0;
+    border-style: solid;
+    border-width: 0;
   }
   
   body {
     background-color: #FFFFFF;
     color: #222222;
-    @apply antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: 'Mada', sans-serif;
     margin: 0;
@@ -119,10 +121,14 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     font-weight: 500;
-    @apply focus:outline-none;
-    @apply transition-colors;
+    outline: none;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
     height: auto;
     min-height: 36px;
     padding: 6px 12px;
@@ -162,8 +168,8 @@
   }
   
   .card {
-    @apply bg-white;
-    @apply shadow-sm;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     padding: 8px !important;
     border-radius: 0;
   }
@@ -479,7 +485,12 @@
   }
 
   .btn-ghost {
-    @apply bg-transparent text-brand-black hover:bg-gray-100;
+    background-color: transparent;
+    color: #222222;
+  }
+  
+  .btn-ghost:hover {
+    background-color: #f3f4f6;
   }
 
   .btn-black {
@@ -622,5 +633,38 @@ span[style*="background-color: #FFDD00"] {
 
 .border-brand-purple {
   border-color: #6B46C1;
+}
+
+/* Basic color utility classes */
+.bg-white {
+  background-color: white;
+}
+
+.bg-black {
+  background-color: black;
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-black {
+  color: black;
+}
+
+.border-white {
+  border-color: white;
+}
+
+.border-black {
+  border-color: black;
 }
 
