@@ -120,7 +120,7 @@
 @layer components {
   .btn {
     @apply inline-flex items-center justify-center;
-    @apply font-medium;
+    font-weight: 500;
     @apply focus:outline-none;
     @apply transition-colors;
     height: auto;

@@ -90,7 +90,7 @@ export const Step08_MarketEvaluation: React.FC = () => {
       
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div className="grid gap-6">
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 text-blue-700 flex items-center text-sm font-medium">
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 text-blue-700 flex items-center text-sm" style={{ fontWeight: 500 }}>
             <Users className="w-5 h-5 mr-2 flex-shrink-0 text-blue-500" />
             Rate each market segment on the criteria below. Choose the market that best aligns with your goals.
           </div>
@@ -178,7 +178,8 @@ export const Step08_MarketEvaluation: React.FC = () => {
                           <div className="flex items-center gap-2 mb-2">
                             <label 
                               htmlFor={`${market.id}-${criteria.id}`}
-                              className="text-sm font-medium text-gray-700 flex-1"
+                              className="text-sm text-gray-700 flex-1"
+                              style={{ fontWeight: 500 }}
                             >
                               {criteria.label}
                             </label>
