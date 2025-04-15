@@ -44,15 +44,22 @@ export const Step08_MarketEvaluation: React.FC = () => {
   useEffect(() => {
     // If we have markets but no evaluations, create empty evaluations
     if (storeMarkets.length > 0 && Object.keys(storeEvaluations).length === 0) {
+      // Check if we need to create any evaluations
+      let needsInitialization = false;
       const initialEvaluations: { [marketId: string]: MarketEvaluation } = {};
       
       // Initialize empty evaluation objects for each market
       storeMarkets.forEach(market => {
-        initialEvaluations[market.id] = {};
+        if (!storeEvaluations[market.id]) {
+          needsInitialization = true;
+          initialEvaluations[market.id] = {};
+        } else {
+          initialEvaluations[market.id] = storeEvaluations[market.id];
+        }
       });
       
-      // Only update if we actually have markets
-      if (Object.keys(initialEvaluations).length > 0) {
+      // Only update if we actually need to initialize some markets
+      if (needsInitialization) {
         updateWorkshopData({ marketEvaluations: initialEvaluations });
       }
     }
