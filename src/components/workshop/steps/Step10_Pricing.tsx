@@ -1,222 +1,156 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { StepHeader } from '../../ui/StepHeader';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../../ui/Card';
+import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import type { WorkshopStore } from '../../../store/workshopStore';
-import { DollarSign, HelpCircle, AlertCircle } from 'lucide-react';
-import { SaveIndicator } from '../../ui/SaveIndicator';
-
-// Separate selectors to prevent unnecessary re-renders
-const selectPricing = (state: WorkshopStore) => state.workshopData.pricing || { strategy: '', justification: '' };
-const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectCanProceedToNextStep = (state: WorkshopStore) => state.canProceedToNextStep;
-
-// Add the Pricing interface or use the correct type
-interface Pricing {
-  strategy: string;
-  justification: string;
-}
+import { Pricing } from '../../../types/workshop';
+import { Check, X } from 'lucide-react';
 
 export const Step10_Pricing: React.FC = () => {
-  const pricing = useWorkshopStore(selectPricing);
-  const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const canProceedToNextStep = useWorkshopStore(selectCanProceedToNextStep);
+  const { workshopData, updateWorkshopData, setCurrentStep } = useWorkshopStore();
+  
+  // Initialize local state from workshopData or with defaults
+  const [localPricing, setLocalPricing] = useState<Pricing>(() => ({
+    strategy: workshopData.pricing?.strategy || '',
+    justification: workshopData.pricing?.justification || ''
+  }));
+  
+  // Track input errors
+  const [errors, setErrors] = useState({
+    strategy: false,
+    justification: false
+  });
 
-  const [formData, setFormData] = useState(pricing);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
-  const [showErrors, setShowErrors] = useState(false);
-
+  // Update local state when workshopData changes, but only on initial render or when workshopData.pricing changes
   useEffect(() => {
-    setFormData(pricing);
-  }, [pricing]);
+    if (workshopData.pricing) {
+      setLocalPricing({
+        strategy: workshopData.pricing.strategy || '',
+        justification: workshopData.pricing.justification || ''
+      });
+    }
+  }, []);  // Empty dependency array to run only on initial mount
 
-  // Show errors when trying to proceed without completing
-  useEffect(() => {
-    const checkCompletion = () => {
-      const isComplete = canProceedToNextStep();
-      if (!isComplete) {
-        setShowErrors(true);
-      }
+  // Save data to store only when explicitly requested
+  const handleSave = () => {
+    // Validate inputs
+    const newErrors = {
+      strategy: !localPricing.strategy,
+      justification: !localPricing.justification
     };
-
-    // Only check completion when showErrors is true
-    if (showErrors) {
-      checkCompletion();
-    }
-  }, [canProceedToNextStep, showErrors]);
-
-  const handleInputChange = useCallback((field: keyof Pricing, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
     
-    if (saveTimer) {
-      clearTimeout(saveTimer);
-    }
-
-    setIsSaving(true);
-    const timer = setTimeout(() => {
+    setErrors(newErrors);
+    
+    // Only save if there are no errors
+    if (!newErrors.strategy && !newErrors.justification) {
       updateWorkshopData({
         pricing: {
-          ...pricing,
-          [field]: value
+          strategy: localPricing.strategy,
+          justification: localPricing.justification
         }
       });
-      setIsSaving(false);
-      if (value.trim() !== '') {
-        setShowErrors(false);
-      }
-    }, 500);
-    setSaveTimer(timer);
-  }, [pricing, updateWorkshopData, saveTimer]);
+      return true;
+    }
+    return false;
+  };
 
-  const isFieldEmpty = (field: 'strategy' | 'justification'): boolean => {
-    return showErrors && !formData[field].trim();
+  // Handle input changes
+  const handleChange = (field: keyof Pricing, value: string) => {
+    setLocalPricing(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    
+    // Clear error when user types
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: false
+      }));
+    }
+  };
+
+  // Navigation handlers
+  const handleNext = () => {
+    if (handleSave()) {
+      setCurrentStep(11);
+    }
+  };
+
+  const handleBack = () => {
+    handleSave();
+    setCurrentStep(9);
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <StepHeader
-        stepNumber={10}
-        title="Pricing Strategy"
-        description="Define your pricing strategy and explain how it aligns with your value proposition."
-      />
+    <div className="max-w-3xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6">Step 10: Pricing Strategy</h1>
       
-      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-        <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#f0f9ff',
-            borderLeft: '4px solid #0ea5e9',
-            borderRadius: '0 8px 8px 0',
-            color: '#0369a1',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
-            <DollarSign style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#0ea5e9' }} />
-            Consider factors like market positioning, customer value perception, and operational costs.
-          </div>
-
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
-                htmlFor="strategy"
-                style={{ 
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  color: '#374151',
-                  flex: 1
-                }}
-              >
-                Pricing Strategy
-              </label>
-              <div 
-                style={{ 
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  color: '#6b7280',
-                  fontSize: '14px'
-                }}
-              >
-                <HelpCircle size={14} />
-                What pricing model will you use?
-              </div>
-            </div>
-            <textarea
-              id="strategy"
-              rows={4}
-              value={formData.strategy}
-              onChange={(e) => handleInputChange('strategy', e.target.value)}
-              placeholder="e.g., Tiered pricing with three levels: Basic ($X/mo), Pro ($Y/mo), and Enterprise (custom pricing)"
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('strategy') ? '#ef4444' : '#d1d5db',
-                fontSize: '16px',
-                lineHeight: 1.6,
-                backgroundColor: 'white',
-              }}
-            />
-            {isFieldEmpty('strategy') && (
-              <div style={{ 
-                color: '#ef4444',
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                marginTop: '8px'
-              }}>
-                <AlertCircle size={14} />
-                Please define your pricing strategy
-              </div>
-            )}
-          </div>
-
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
-                htmlFor="justification"
-                style={{ 
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  color: '#374151',
-                  flex: 1
-                }}
-              >
-                Strategy Justification
-              </label>
-              <div 
-                style={{ 
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  color: '#6b7280',
-                  fontSize: '14px'
-                }}
-              >
-                <HelpCircle size={14} />
-                Why did you choose this pricing strategy?
-              </div>
-            </div>
-            <textarea
-              id="justification"
-              rows={4}
-              value={formData.justification}
-              onChange={(e) => handleInputChange('justification', e.target.value)}
-              placeholder="Explain why this pricing strategy makes sense for your market and offer. How does it align with your value proposition?"
-              style={{
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('justification') ? '#ef4444' : '#d1d5db',
-                fontSize: '16px',
-                lineHeight: 1.6,
-                backgroundColor: 'white',
-              }}
-            />
-            {isFieldEmpty('justification') && (
-              <div style={{ 
-                color: '#ef4444',
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                marginTop: '8px'
-              }}>
-                <AlertCircle size={14} />
-                Please explain your pricing strategy choice
-              </div>
-            )}
-          </div>
+      <Card variant="outline" padding="lg" className="mb-6">
+        <h2 className="text-xl font-bold mb-3">Pricing Strategy</h2>
+        <p className="mb-4">
+          Determine the <span className="highlight-yellow">optimal pricing strategy</span> for your offer 
+          that maximizes value perception while remaining competitive.
+        </p>
+        
+        <div className="mb-4">
+          <label className="block font-medium mb-2">Your Pricing Strategy:</label>
+          <textarea
+            className={`w-full p-3 border rounded-md ${errors.strategy ? 'border-red-500' : 'border-gray-300'}`}
+            rows={3}
+            placeholder="e.g., Premium pricing with tiered packages, Free trial with subscription model..."
+            value={localPricing.strategy}
+            onChange={(e) => handleChange('strategy', e.target.value)}
+          />
+          {errors.strategy && (
+            <p className="text-red-500 mt-1">Please enter your pricing strategy</p>
+          )}
+        </div>
+        
+        <div className="mb-4">
+          <label className="block font-medium mb-2">Justification:</label>
+          <textarea
+            className={`w-full p-3 border rounded-md ${errors.justification ? 'border-red-500' : 'border-gray-300'}`}
+            rows={4}
+            placeholder="Explain why this pricing strategy is appropriate for your offer and target audience..."
+            value={localPricing.justification}
+            onChange={(e) => handleChange('justification', e.target.value)}
+          />
+          {errors.justification && (
+            <p className="text-red-500 mt-1">Please justify your pricing strategy</p>
+          )}
         </div>
       </Card>
-
-      <SaveIndicator saving={isSaving} />
+      
+      <Card variant="muted" padding="lg" className="mb-6">
+        <h3 className="text-lg font-bold mb-3">Tips for Effective Pricing</h3>
+        <ul className="space-y-2">
+          <li className="flex items-start">
+            <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
+            <span>Consider your costs, competitor pricing, and customer willingness to pay</span>
+          </li>
+          <li className="flex items-start">
+            <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
+            <span>Test different price points with small segments before full launch</span>
+          </li>
+          <li className="flex items-start">
+            <Check className="h-5 w-5 text-green-500 mr-2 mt-0.5" />
+            <span>Price based on the value your offer provides, not just on costs</span>
+          </li>
+          <li className="flex items-start">
+            <X className="h-5 w-5 text-red-500 mr-2 mt-0.5" />
+            <span>Avoid pricing too low out of fear; underpricing can reduce perceived value</span>
+          </li>
+        </ul>
+      </Card>
+      
+      <div className="flex justify-between">
+        <Button variant="outline" onClick={handleBack}>
+          Back
+        </Button>
+        <Button variant="primary" onClick={handleNext}>
+          Next
+        </Button>
+      </div>
     </div>
   );
 }; 
