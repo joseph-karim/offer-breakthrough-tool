@@ -33,6 +33,9 @@ export const Step08_MarketEvaluation: React.FC = () => {
   const [localScores, setLocalScores] = useState<{ [marketId: string]: MarketEvaluation }>(storeEvaluations);
   const [isSaving, setIsSaving] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
+  
+  // Ref to track if initialization has been attempted
+  const initAttemptedRef = useRef(false);
 
   // Update local state when store values change
   useEffect(() => {
@@ -40,30 +43,43 @@ export const Step08_MarketEvaluation: React.FC = () => {
     setLocalScores(storeEvaluations);
   }, [storeMarkets, storeEvaluations]);
 
-  // Initialize market evaluations if they don't exist
+  // One-time initialization, using a layout effect to run before render
   useEffect(() => {
-    // If we have markets but no evaluations, create empty evaluations
-    if (storeMarkets.length > 0 && Object.keys(storeEvaluations).length === 0) {
-      // Check if we need to create any evaluations
-      let needsInitialization = false;
-      const initialEvaluations: { [marketId: string]: MarketEvaluation } = {};
-      
-      // Initialize empty evaluation objects for each market
-      storeMarkets.forEach(market => {
-        if (!storeEvaluations[market.id]) {
-          needsInitialization = true;
-          initialEvaluations[market.id] = {};
-        } else {
-          initialEvaluations[market.id] = storeEvaluations[market.id];
-        }
-      });
-      
-      // Only update if we actually need to initialize some markets
-      if (needsInitialization) {
-        updateWorkshopData({ marketEvaluations: initialEvaluations });
-      }
+    // Skip if we've already attempted initialization
+    if (initAttemptedRef.current) {
+      return;
     }
-  }, [storeMarkets, storeEvaluations, updateWorkshopData]);
+    
+    // Mark that we've attempted initialization
+    initAttemptedRef.current = true;
+    
+    // Only continue if we have markets but need to initialize evaluations
+    if (storeMarkets.length === 0) {
+      return;
+    }
+    
+    // Check if any market needs initialization
+    let needsInit = false;
+    const initialEvals: { [marketId: string]: MarketEvaluation } = {};
+    
+    // Build the initialization object
+    storeMarkets.forEach(market => {
+      if (!storeEvaluations[market.id] || Object.keys(storeEvaluations[market.id]).length === 0) {
+        needsInit = true;
+        initialEvals[market.id] = {};
+      } else {
+        initialEvals[market.id] = storeEvaluations[market.id];
+      }
+    });
+    
+    // Only update if we need to
+    if (needsInit && Object.keys(initialEvals).length > 0) {
+      // Use setTimeout to avoid render-time state updates
+      setTimeout(() => {
+        updateWorkshopData({ marketEvaluations: initialEvals });
+      }, 0);
+    }
+  }, []); // Empty dependency array - run only once on mount
 
   // Cleanup timers on unmount
   useEffect(() => {
