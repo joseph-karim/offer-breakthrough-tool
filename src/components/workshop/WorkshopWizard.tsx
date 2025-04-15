@@ -137,14 +137,14 @@ export const WorkshopWizard = () => {
     position: 'sticky',
     top: 0,
     zIndex: 20,
-    backgroundColor: '#FFFFFF', // White background
-    color: '#222222', // Black text
-    borderBottom: '1px solid #EEEEEE',
+    backgroundColor: '#6B46C1', // Purple background
+    color: '#FFFFFF', // White text
+    borderBottom: 'none',
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
-    borderBottomLeftRadius: '16px',
-    borderBottomRightRadius: '16px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     padding: '16px 24px',
     marginBottom: '32px',
   };
@@ -168,49 +168,49 @@ export const WorkshopWizard = () => {
     alignItems: 'center',
     fontWeight: 800,
     fontSize: '28px',
-    color: '#222222', // Black text on yellow header
-    textShadow: '1px 1px 2px rgba(255, 255, 255, 0.2)',
-    fontFamily: '"Poppins", sans-serif',
+    color: '#FFFFFF', // White text on purple header
+    textShadow: 'none',
+    fontFamily: '"Mada", sans-serif',
   };
 
   const logoIconContainerStyle: CSSProperties = {
     marginRight: '16px',
-    borderRadius: '50%',
-    backgroundColor: '#FFFFFF',
+    borderRadius: '0',
+    backgroundColor: '#FFDD00',
     padding: '10px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-    border: '1px solid #FFDD00',
+    boxShadow: 'none',
+    border: 'none',
   };
 
   const stepIndicatorStyle: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFDD00',
     padding: '8px 16px',
-    borderRadius: '9999px',
+    borderRadius: '0',
     fontSize: '14px',
-    fontWeight: 600,
+    fontWeight: 700,
     color: '#222222',
-    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-    border: '1px solid #FFDD00',
+    boxShadow: 'none',
+    border: 'none',
   };
 
   const progressContainerStyle: CSSProperties = {
-    height: '12px',
-    backgroundColor: '#F5F5F5',
-    borderRadius: '9999px',
+    height: '8px',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: '0',
     overflow: 'hidden',
-    boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.05)',
-    border: '1px solid #EEEEEE',
+    boxShadow: 'none',
+    border: 'none',
   };
 
   const progressBarStyle: CSSProperties = {
     height: '100%',
     backgroundColor: '#FFDD00',
-    borderRadius: '9999px',
+    borderRadius: '0',
     transition: 'width 0.5s ease',
     width: `${completionPercentage}%`,
     boxShadow: 'none',
@@ -228,14 +228,14 @@ export const WorkshopWizard = () => {
     display: 'flex',
     alignItems: 'center',
     fontWeight: 600,
-    color: '#222222', // Black text for readability
+    color: '#FFFFFF', // White text for readability
     textShadow: 'none',
   };
 
   const stepCountStyle: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
-    color: '#222222', // Black text for readability
+    color: '#FFFFFF', // White text for readability
     fontWeight: 600,
     textShadow: 'none',
   };
@@ -251,11 +251,11 @@ export const WorkshopWizard = () => {
 
   const contentCardStyle: CSSProperties = {
     backgroundColor: '#FFFFFF',
-    borderRadius: '24px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    borderRadius: '0',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)',
     border: '1px solid #EEEEEE',
     borderLeft: '3px solid #FFDD00', // Yellow accent border
-    padding: '32px',
+    padding: '0',
     marginBottom: '0',
     color: '#222222', // Black text on white background
   };
@@ -265,8 +265,8 @@ export const WorkshopWizard = () => {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '32px 0',
-    marginTop: '24px', // Add space between content and nav
+    padding: '24px 32px',
+    marginTop: '0', // Add space between content and nav
     borderTop: '1px solid #EEEEEE', // Light gray border
   };
 
@@ -310,8 +310,8 @@ export const WorkshopWizard = () => {
         {/* Header with progress */}
         <header className="customercamp-theme-header" style={{
           ...headerStyle,
-          backgroundColor: '#FFFFFF',
-          background: '#FFFFFF',
+          backgroundColor: '#6B46C1',
+          background: '#6B46C1',
           backgroundImage: 'none !important'
         }}>
           <div style={headerContentStyle}>
@@ -325,7 +325,7 @@ export const WorkshopWizard = () => {
                   position: 'relative', 
                   marginLeft: '8px',
                   fontSize: '20px',
-                  opacity: 0.9
+                  opacity: 1
                 }}>
                   Workshop
                   <span style={{ 
@@ -350,7 +350,7 @@ export const WorkshopWizard = () => {
                   marginRight: '8px',
                   color: '#222222'
                 }} />
-                ⚡ Step {currentStep} of 11
+                Step {currentStep} of 11
               </div>
             </div>
             
@@ -387,7 +387,9 @@ export const WorkshopWizard = () => {
         {/* Main content */}
         <main style={contentContainerStyle}>
           <div style={contentCardStyle}>
-            {currentStepComponent}
+            <div className="workbook-content">
+              {currentStepComponent}
+            </div>
             
             {/* Inline Navigation Buttons */}
             <div style={inlineNavStyle}>
@@ -399,18 +401,18 @@ export const WorkshopWizard = () => {
                 leftIcon={<ChevronLeft style={{ width: '20px', height: '20px', color: currentStep === 1 ? '#666666' : '#FFDD00'}} />}
                 style={currentStep === 1 ? {cursor: 'not-allowed', opacity: 0.6} : {}}
               >
-                ⬅️ Previous Step
+                Previous Step
               </Button>
               
               <Button
                 onClick={goToNextStep}
                 disabled={currentStep === 11}
-                variant={currentStep === 11 ? 'default' : 'yellowToBlack'}
+                variant={currentStep === 11 ? 'default' : 'yellow'}
                 size="lg"
-                rightIcon={currentStep === 11 ? <CheckCircle style={{ width: '20px', height: '20px', color: '#FFDD00'}} /> : <ArrowRight style={{ width: '20px', height: '20px'}} />}
+                rightIcon={currentStep === 11 ? <CheckCircle style={{ width: '20px', height: '20px', color: '#222222'}} /> : <ArrowRight style={{ width: '20px', height: '20px', color: '#222222'}} />}
                 style={currentStep === 11 ? {cursor: 'not-allowed', opacity: 0.6} : {}}
               >
-                {currentStep === 11 ? '✅ Complete Workshop' : '⚡ Next Step'}
+                {currentStep === 11 ? 'Complete Workshop ✅' : 'Next Step ⚡'}
               </Button>
             </div>
           </div>

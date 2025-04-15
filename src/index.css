@@ -10,6 +10,9 @@
     --background: 0 0% 100%;
     --foreground: 0 0% 13%;
     --radius: 0;
+    --purple: 262 61% 47%;
+    --yellow: 53 100% 50%;
+    --black: 0 0% 13%;
   }
   
   * {
@@ -38,6 +41,113 @@
 }
 
 @layer components {
+  /* Canvas workbook styling */
+  .workbook-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    border: 1px solid #EEEEEE;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .workbook-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid #EEEEEE;
+  }
+  
+  .workbook-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+  
+  .workbook-subtitle {
+    font-size: 18px;
+    color: #666666;
+    margin-bottom: 16px;
+  }
+  
+  .workbook-content {
+    padding: 24px 32px;
+  }
+  
+  .workbook-section {
+    margin-bottom: 24px;
+  }
+  
+  .workbook-question {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .workbook-instruction {
+    font-size: 16px;
+    color: #555555;
+    margin-bottom: 16px;
+  }
+  
+  .workbook-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .workbook-list-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-left: 8px;
+  }
+  
+  .workbook-list-number {
+    font-size: 20px;
+    font-weight: 700;
+    min-width: 32px;
+    color: #222222;
+  }
+  
+  .workbook-list-content {
+    flex: 1;
+  }
+
+  /* Purple info bubble styling */
+  .info-bubble {
+    background-color: #6B46C1; /* Purple */
+    color: white;
+    padding: 32px;
+    border-radius: 0;
+  }
+  
+  .info-bubble-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: white;
+  }
+  
+  .info-bubble-subtitle {
+    font-size: 18px;
+    margin-bottom: 24px;
+    color: white;
+  }
+  
+  .info-bubble-content {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .info-bubble-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 18px;
+    margin-top: 16px;
+    color: #FFDD00;
+    border-bottom: 2px solid #FFDD00;
+    padding-bottom: 4px;
+  }
+
   /* Main styled components based on learnwhybuy.com */
   .highlight-yellow {
     background-color: #FFDD00;
@@ -50,6 +160,15 @@
   
   .highlight-black {
     background-color: #222222;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 0 4px;
+    margin: 0 1px;
+    display: inline;
+  }
+  
+  .highlight-purple {
+    background-color: #6B46C1;
     color: #FFFFFF;
     font-weight: bold;
     padding: 0 4px;
@@ -137,6 +256,78 @@
     font-weight: bold;
     padding: 0.5rem 1rem;
     border-radius: 0;
+    display: inline-block;
+  }
+
+  /* Landing page specific styling */
+  .landing-hero {
+    background-color: #6B46C1;
+    color: white;
+    padding: 48px 32px;
+    text-align: center;
+  }
+  
+  .landing-title {
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 16px;
+  }
+  
+  .landing-subtitle {
+    font-size: 20px;
+    margin-bottom: 32px;
+  }
+  
+  .landing-feature {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #EEEEEE;
+  }
+  
+  .landing-feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: #FFDD00;
+    color: #222222;
+    font-size: 24px;
+    border-radius: 0;
+    flex-shrink: 0;
+  }
+  
+  .landing-feature-content {
+    flex: 1;
+  }
+  
+  .landing-feature-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  
+  .landing-feature-description {
+    font-size: 16px;
+    color: #555555;
+  }
+  
+  .landing-cta {
+    margin-top: 32px;
+    text-align: center;
+  }
+
+  /* Explosive highlight box specifically for the purple sections */
+  .explosive-highlight {
+    background-color: #FFDD00;
+    color: #222222;
+    font-weight: 900;
+    font-size: 24px;
+    padding: 4px 12px;
+    text-transform: uppercase;
     display: inline-block;
   }
 }
