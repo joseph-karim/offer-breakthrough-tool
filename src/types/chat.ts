@@ -47,4 +47,5 @@ export type AssistantType =
   'painstorming-helper' |
   'problem-up-advisor' |
   'idea-refiner' |
-  'workshop-summarizer';
+  'workshop-summarizer' |
+  'capability-analyzer';

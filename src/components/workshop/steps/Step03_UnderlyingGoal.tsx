@@ -23,16 +23,15 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
   const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
-  
+
   const [formData, setFormData] = useState<UnderlyingGoal>({
     businessGoal: underlyingGoal?.businessGoal || '',
-    constraints: underlyingGoal?.constraints || '',
-    antiGoals: underlyingGoal?.antiGoals || ''
+    constraints: underlyingGoal?.constraints || ''
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
   const [showChat, setShowChat] = useState(false);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -43,15 +42,14 @@ export const Step03_UnderlyingGoal: React.FC = () => {
     if (underlyingGoal) {
       setFormData({
         businessGoal: underlyingGoal.businessGoal || '',
-        constraints: underlyingGoal.constraints || '',
-        antiGoals: underlyingGoal.antiGoals || ''
+        constraints: underlyingGoal.constraints || ''
       });
     }
   }, [underlyingGoal]);
 
   const handleInputChange = useCallback((field: keyof UnderlyingGoal, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     if (saveTimer) {
       clearTimeout(saveTimer);
     }
@@ -79,17 +77,16 @@ export const Step03_UnderlyingGoal: React.FC = () => {
     }
     return '';
   };
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Step: Underlying Goal
-    
+
     The user is clarifying their underlying business goal and constraints.
-    
+
     Current underlying goal:
     Business Goal: ${formData.businessGoal}
     Constraints: ${formData.constraints}
-    Anti-Goals: ${formData.antiGoals}
   `;
 
   return (
@@ -99,7 +96,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
         title="Clarify Your Underlying Goal"
         description="Define what you want to achieve with your new offer and what constraints you have"
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -109,10 +106,10 @@ export const Step03_UnderlyingGoal: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={3}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[3] || []}
@@ -121,7 +118,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -138,15 +135,15 @@ export const Step03_UnderlyingGoal: React.FC = () => {
             <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#ea580c' }} />
             Clarifying your underlying goal will help you design a solution that works for both your customers AND your business.
           </div>
-          
+
           {/* Business Goal */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="business-goal"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
@@ -176,7 +173,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
               }}
             />
             {isFieldEmpty('businessGoal') && (
-              <div style={{ 
+              <div style={{
                 color: '#ef4444',
                 fontSize: '14px',
                 marginTop: '4px',
@@ -189,18 +186,18 @@ export const Step03_UnderlyingGoal: React.FC = () => {
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
+              <SaveIndicator saving={isSaving} />
             </div>
           </div>
-          
+
           {/* Constraints */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="constraints"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
@@ -230,7 +227,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
               }}
             />
             {isFieldEmpty('constraints') && (
-              <div style={{ 
+              <div style={{
                 color: '#ef4444',
                 fontSize: '14px',
                 marginTop: '4px',
@@ -243,72 +240,20 @@ export const Step03_UnderlyingGoal: React.FC = () => {
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
+              <SaveIndicator saving={isSaving} />
             </div>
           </div>
-          
-          {/* Anti-Goals */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
-                htmlFor="anti-goals"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
-                  color: '#1e293b',
-                  display: 'block'
-                }}
-              >
-                What are your anti-goals?
-              </label>
-              <Tooltip content="What do you want to avoid at all costs? What would make this offer a failure for you?">
-                <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-              </Tooltip>
-            </div>
-            <textarea
-              id="anti-goals"
-              value={formData.antiGoals}
-              onChange={(e) => handleInputChange('antiGoals', e.target.value)}
-              placeholder="e.g., I don't want to create something that requires me to be available 24/7, I don't want to compete on price"
-              style={{
-                width: '100%',
-                minHeight: '100px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('antiGoals') ? '#ef4444' : '#d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: 'white',
-              }}
-            />
-            {isFieldEmpty('antiGoals') && (
-              <div style={{ 
-                color: '#ef4444',
-                fontSize: '14px',
-                marginTop: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}>
-                <AlertCircle size={14} />
-                {getErrorMessage('antiGoals')}
-              </div>
-            )}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
-            </div>
-          </div>
-          
+
+
+
           {/* Example Goals */}
-          <div style={{ 
+          <div style={{
             padding: '16px',
             backgroundColor: '#f9fafb',
             borderRadius: '8px',
             border: '1px dashed #d1d5db'
           }}>
-            <p style={{ 
+            <p style={{
               fontSize: '14px',
               color: '#6b7280',
               fontStyle: 'italic',
@@ -316,7 +261,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
             }}>
               Example underlying goals:
             </p>
-            <ul style={{ 
+            <ul style={{
               listStyle: 'disc',
               paddingLeft: '24px',
               color: '#6b7280',

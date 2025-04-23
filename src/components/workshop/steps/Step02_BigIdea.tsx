@@ -23,7 +23,7 @@ export const Step02_BigIdea: React.FC = () => {
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
   const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
-  
+
   const [formData, setFormData] = useState<BigIdea>({
     description: bigIdea?.description || '',
     targetCustomers: bigIdea?.targetCustomers || '',
@@ -32,7 +32,7 @@ export const Step02_BigIdea: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
   const [showChat, setShowChat] = useState(false);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -51,7 +51,7 @@ export const Step02_BigIdea: React.FC = () => {
 
   const handleInputChange = useCallback((field: keyof BigIdea, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     if (saveTimer) {
       clearTimeout(saveTimer);
     }
@@ -79,13 +79,13 @@ export const Step02_BigIdea: React.FC = () => {
     }
     return '';
   };
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Step: Big Idea
-    
+
     The user is defining their initial product or service idea.
-    
+
     Current big idea:
     Description: ${formData.description}
     Target Customers: ${formData.targetCustomers}
@@ -98,7 +98,7 @@ export const Step02_BigIdea: React.FC = () => {
         title="Your Big Idea"
         description="Describe your product idea using a simple framework: [What it is] + [what will it help customers do]"
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -108,10 +108,10 @@ export const Step02_BigIdea: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={2}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[2] || []}
@@ -120,7 +120,7 @@ export const Step02_BigIdea: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -137,15 +137,15 @@ export const Step02_BigIdea: React.FC = () => {
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#0ea5e9' }} />
             This is just version 1 of your idea. You'll refine it as you go through the workshop.
           </div>
-          
+
           {/* Big Idea Description */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="big-idea-description"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
@@ -175,7 +175,7 @@ export const Step02_BigIdea: React.FC = () => {
               }}
             />
             {isFieldEmpty('description') && (
-              <div style={{ 
+              <div style={{
                 color: '#ef4444',
                 fontSize: '14px',
                 marginTop: '4px',
@@ -188,18 +188,18 @@ export const Step02_BigIdea: React.FC = () => {
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
+              <SaveIndicator saving={isSaving} />
             </div>
           </div>
-          
+
           {/* Target Customers */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="target-customers"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
@@ -229,7 +229,7 @@ export const Step02_BigIdea: React.FC = () => {
               }}
             />
             {isFieldEmpty('targetCustomers') && (
-              <div style={{ 
+              <div style={{
                 color: '#ef4444',
                 fontSize: '14px',
                 marginTop: '4px',
@@ -242,18 +242,18 @@ export const Step02_BigIdea: React.FC = () => {
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
+              <SaveIndicator saving={isSaving} />
             </div>
           </div>
-          
+
           {/* Example Ideas */}
-          <div style={{ 
+          <div style={{
             padding: '16px',
             backgroundColor: '#f9fafb',
             borderRadius: '8px',
             border: '1px dashed #d1d5db'
           }}>
-            <p style={{ 
+            <p style={{
               fontSize: '14px',
               color: '#6b7280',
               fontStyle: 'italic',
@@ -261,7 +261,7 @@ export const Step02_BigIdea: React.FC = () => {
             }}>
               Example big ideas:
             </p>
-            <ul style={{ 
+            <ul style={{
               listStyle: 'disc',
               paddingLeft: '24px',
               color: '#6b7280',

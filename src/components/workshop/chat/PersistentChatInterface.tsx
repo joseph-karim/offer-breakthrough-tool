@@ -27,7 +27,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  // Removed unused suggestions state
+  // No suggestions state needed
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Create AI service instance
@@ -73,7 +73,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       // Generate AI response
       const assistantResponse = await aiService.answerFollowUpQuestion(
         currentStep,
-        userMessage.content,
+        typeof userMessage.content === 'string' ? userMessage.content : JSON.stringify(userMessage.content),
         stepContext
       );
 

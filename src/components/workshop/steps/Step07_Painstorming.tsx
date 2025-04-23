@@ -4,7 +4,7 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Pain } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, MessageSquare, Plus, X, Fire } from 'lucide-react';
+import { AlertCircle, HelpCircle, MessageSquare, Plus, X, Flame } from 'lucide-react';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import { AIService } from '../../../services/aiService';
@@ -280,7 +280,7 @@ export const Step07_Painstorming: React.FC = () => {
                     cursor: 'pointer',
                   }}
                 >
-                  <Fire size={16} color={isFire ? '#ef4444' : '#6b7280'} fill={isFire ? '#ef4444' : 'none'} />
+                  <Flame size={16} color={isFire ? '#ef4444' : '#6b7280'} fill={isFire ? '#ef4444' : 'none'} />
                   {isFire ? 'This is a F.I.R.E. problem' : 'Mark as F.I.R.E. problem'}
                 </button>
                 <div style={{
@@ -412,7 +412,7 @@ export const Step07_Painstorming: React.FC = () => {
                         aria-label={pain.isFire ? "Remove FIRE status" : "Mark as FIRE problem"}
                         title={pain.isFire ? "Remove FIRE status" : "Mark as FIRE problem"}
                       >
-                        <Fire
+                        <Flame
                           size={20}
                           color={pain.isFire ? '#ef4444' : '#6b7280'}
                           fill={pain.isFire ? '#ef4444' : 'none'}

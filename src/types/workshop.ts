@@ -11,7 +11,6 @@ export interface BigIdea {
 export interface UnderlyingGoal {
   businessGoal: string;
   constraints: string;
-  antiGoals: string;
 }
 
 export interface TriggerEvent {
@@ -82,80 +81,40 @@ export interface Reflections {
   nextSteps: string;
 }
 
-export interface AntiGoals {
-  market: string;
-  offer: string;
-  delivery: string;
-  lifestyle: string;
-  values: string;
-}
+// All legacy interfaces have been removed
 
-export interface Market {
-  id: string;
-  title: string;
-  description: string;
-  characteristics: string[];
-  source: 'user' | 'assistant';
-  selected?: boolean;
-}
-
-export interface MarketEvaluation {
-  marketId: string;
-  problemSize: number;
-  solutionFit: number;
-  economicValue: number;
-  joy: number;
-  total: number;
-  notes: string;
-}
-
-export interface Problem {
-  id: string;
-  description: string;
-  type: 'functional' | 'emotional' | 'social';
-  severity: 'high' | 'medium' | 'low';
-  source: 'user' | 'assistant';
-}
-
-export interface ValueProposition {
-  statement: string;
-  benefits: string[];
-  differentiators: string[];
-}
-
-export interface Pricing {
-  valueMetrics: string[];
-  pricingModel: string;
-  pricePoints: {
-    tier: string;
-    price: string;
-    included: string[];
-  }[];
-  rationale: string;
-}
-
+// This interface defines the data structure for the 10-step workshop flow
 export interface WorkshopData {
+  // Step 2: Big Idea
   bigIdea?: BigIdea;
+
+  // Step 3: Underlying Goal
   underlyingGoal?: UnderlyingGoal;
+
+  // Step 4: Trigger Events
   triggerEvents: TriggerEvent[];
+
+  // Step 5: Jobs
   jobs: Job[];
+
+  // Step 6: Target Buyers
   targetBuyers: TargetBuyer[];
+
+  // Step 7: Painstorming
   pains: Pain[];
-  markets?: Market[];
-  problems?: Problem[];
-  marketEvaluations?: MarketEvaluation[];
+
+  // Step 8: Problem Up
   problemUp?: ProblemUp;
+
+  // Step 9: Refine Idea
   refinedIdea?: BigIdea;
-  valueProposition?: ValueProposition;
-  pricing?: Pricing;
-  marketDemandAnalysis?: {
-    demand: string;
-    competition: string;
-    trends: string;
-  };
   offer?: Offer;
-  stepChats: StepChats;
+
+  // Step 10: Summary
   reflections?: Reflections;
+
+  // Chat messages for each step
+  stepChats: StepChats;
 }
 
 export interface WorkshopSession {

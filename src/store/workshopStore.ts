@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { WorkshopData, TriggerEvent, Job, TargetBuyer, Pain, ProblemUp } from '../types/workshop';
+import type { WorkshopData } from '../types/workshop';
 import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
@@ -43,8 +43,7 @@ const initialWorkshopData: WorkshopData = {
   },
   underlyingGoal: {
     businessGoal: '',
-    constraints: '',
-    antiGoals: ''
+    constraints: ''
   },
   triggerEvents: [],
   jobs: [],
@@ -157,7 +156,6 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
         Underlying Goal:
         ${workshopData.underlyingGoal ? `Business Goal: ${workshopData.underlyingGoal.businessGoal}` : ''}
         ${workshopData.underlyingGoal ? `Constraints: ${workshopData.underlyingGoal.constraints}` : ''}
-        ${workshopData.underlyingGoal ? `Anti-Goals: ${workshopData.underlyingGoal.antiGoals}` : ''}
       `;
       break;
 
@@ -276,7 +274,6 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
         Underlying Goal:
         ${workshopData.underlyingGoal ? `Business Goal: ${workshopData.underlyingGoal.businessGoal}` : ''}
         ${workshopData.underlyingGoal ? `Constraints: ${workshopData.underlyingGoal.constraints}` : ''}
-        ${workshopData.underlyingGoal ? `Anti-Goals: ${workshopData.underlyingGoal.antiGoals}` : ''}
 
         Trigger Events:
         ${workshopData.triggerEvents
@@ -572,8 +569,8 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.bigIdea) {
           updateWorkshopData({
             bigIdea: {
-              description: (currentSuggestion.content.bigIdea as any).description || '',
-              targetCustomers: (currentSuggestion.content.bigIdea as any).targetCustomers || '',
+              description: typeof currentSuggestion.content === 'object' && currentSuggestion.content.bigIdea && typeof currentSuggestion.content.bigIdea === 'object' ? (currentSuggestion.content.bigIdea as any).description || '' : '',
+              targetCustomers: typeof currentSuggestion.content === 'object' && currentSuggestion.content.bigIdea && typeof currentSuggestion.content.bigIdea === 'object' ? (currentSuggestion.content.bigIdea as any).targetCustomers || '' : '',
               version: 'initial'
             }
           });
@@ -584,9 +581,8 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.underlyingGoal) {
           updateWorkshopData({
             underlyingGoal: {
-              businessGoal: (currentSuggestion.content.underlyingGoal as any).businessGoal || '',
-              constraints: (currentSuggestion.content.underlyingGoal as any).constraints || '',
-              antiGoals: (currentSuggestion.content.underlyingGoal as any).antiGoals || ''
+              businessGoal: typeof currentSuggestion.content === 'object' && currentSuggestion.content.underlyingGoal && typeof currentSuggestion.content.underlyingGoal === 'object' ? (currentSuggestion.content.underlyingGoal as any).businessGoal || '' : '',
+              constraints: typeof currentSuggestion.content === 'object' && currentSuggestion.content.underlyingGoal && typeof currentSuggestion.content.underlyingGoal === 'object' ? (currentSuggestion.content.underlyingGoal as any).constraints || '' : ''
             }
           });
         }
@@ -596,13 +592,13 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.triggerEvents) {
           // Get existing trigger events and append new ones
           const existingEvents = workshopData.triggerEvents || [];
-          const newEvents = (currentSuggestion.content.triggerEvents as TriggerEvent[]).map((event) => ({
+          const newEvents = (currentSuggestion.content.triggerEvents as any[]).map((event) => ({
             ...event,
             source: 'assistant' as const, // Mark as coming from assistant
           }));
 
           updateWorkshopData({
-            triggerEvents: [...existingEvents, ...newEvents] as TriggerEvent[],
+            triggerEvents: [...existingEvents, ...newEvents],
           });
         }
         break;
@@ -611,13 +607,13 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.jobs) {
           // Get existing jobs and append new ones
           const existingJobs = workshopData.jobs || [];
-          const newJobs = (currentSuggestion.content.jobs as Job[]).map((job) => ({
+          const newJobs = (currentSuggestion.content.jobs as any[]).map((job) => ({
             ...job,
             source: 'assistant' as const, // Mark as coming from assistant
           }));
 
           updateWorkshopData({
-            jobs: [...existingJobs, ...newJobs] as Job[],
+            jobs: [...existingJobs, ...newJobs],
           });
         }
         break;
@@ -626,13 +622,13 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.targetBuyers) {
           // Get existing target buyers and append new ones
           const existingBuyers = workshopData.targetBuyers || [];
-          const newBuyers = (currentSuggestion.content.targetBuyers as TargetBuyer[]).map((buyer) => ({
+          const newBuyers = (currentSuggestion.content.targetBuyers as any[]).map((buyer) => ({
             ...buyer,
             source: 'assistant' as const, // Mark as coming from assistant
           }));
 
           updateWorkshopData({
-            targetBuyers: [...existingBuyers, ...newBuyers] as TargetBuyer[],
+            targetBuyers: [...existingBuyers, ...newBuyers],
           });
         }
         break;
@@ -641,7 +637,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.pains) {
           // Get existing pains and append new ones
           const existingPains = workshopData.pains || [];
-          const newPains = (currentSuggestion.content.pains as Pain[]).map((pain, index: number) => ({
+          const newPains = (currentSuggestion.content.pains as any[]).map((pain, index: number) => ({
             ...pain,
             id: `ai_${Date.now()}_${index}`,
             source: 'assistant' as const,
@@ -655,7 +651,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
       case 8: // Problem Up
         if (currentSuggestion.content?.problemUp) {
-          const problemUp = currentSuggestion.content.problemUp as ProblemUp;
+          const problemUp = currentSuggestion.content.problemUp as any;
 
           updateWorkshopData({
             problemUp: {
@@ -684,15 +680,15 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.refinedIdea) {
           updateWorkshopData({
             refinedIdea: {
-              description: (currentSuggestion.content.refinedIdea as any).description || '',
-              targetCustomers: (currentSuggestion.content.refinedIdea as any).targetCustomers || '',
+              description: typeof currentSuggestion.content === 'object' && currentSuggestion.content.refinedIdea && typeof currentSuggestion.content.refinedIdea === 'object' ? (currentSuggestion.content.refinedIdea as any).description || '' : '',
+              targetCustomers: typeof currentSuggestion.content === 'object' && currentSuggestion.content.refinedIdea && typeof currentSuggestion.content.refinedIdea === 'object' ? (currentSuggestion.content.refinedIdea as any).targetCustomers || '' : '',
               version: 'refined'
             },
             offer: {
               id: `offer_${Date.now()}`,
-              name: (currentSuggestion.content.refinedIdea as any).name || 'New Offer',
-              description: (currentSuggestion.content.refinedIdea as any).description || '',
-              format: (currentSuggestion.content.refinedIdea as any).format || '',
+              name: typeof currentSuggestion.content === 'object' && currentSuggestion.content.refinedIdea && typeof currentSuggestion.content.refinedIdea === 'object' ? (currentSuggestion.content.refinedIdea as any).name || 'New Offer' : 'New Offer',
+              description: typeof currentSuggestion.content === 'object' && currentSuggestion.content.refinedIdea && typeof currentSuggestion.content.refinedIdea === 'object' ? (currentSuggestion.content.refinedIdea as any).description || '' : '',
+              format: typeof currentSuggestion.content === 'object' && currentSuggestion.content.refinedIdea && typeof currentSuggestion.content.refinedIdea === 'object' ? (currentSuggestion.content.refinedIdea as any).format || '' : '',
               targetBuyers: workshopData.problemUp?.selectedBuyers || [],
               painsSolved: workshopData.problemUp?.selectedPains || [],
               version: 'refined'
