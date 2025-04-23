@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { AIMessage, ChatSuggestion } from '../types/chat';
+import type { AIMessage } from '../types/chat';
 
 export interface ChatStore {
   // Chat state
@@ -10,7 +10,7 @@ export interface ChatStore {
   suggestions: string[];
   currentField: string;
   isInitialLoad: boolean;
-  
+
   // Actions
   addChatMessage: (message: AIMessage) => void;
   clearChatMessages: () => void;
@@ -31,50 +31,50 @@ export const useChatStore = create<ChatStore>((set) => ({
   suggestions: [],
   currentField: '',
   isInitialLoad: true,
-  
+
   // Actions
   addChatMessage: (message: AIMessage) => {
     set((state) => ({
       chatMessages: [...state.chatMessages, message],
     }));
   },
-  
+
   clearChatMessages: () => {
     set({
       chatMessages: [],
     });
   },
-  
+
   setIsProcessing: (isProcessing: boolean) => {
     set({
       isProcessing,
     });
   },
-  
+
   setCurrentInput: (input: string) => {
     set({
       currentInput: input,
     });
   },
-  
+
   setShowSuggestions: (show: boolean) => {
     set({
       showSuggestions: show,
     });
   },
-  
+
   setSuggestions: (suggestions: string[]) => {
     set({
       suggestions,
     });
   },
-  
+
   setCurrentField: (field: string) => {
     set({
       currentField: field,
     });
   },
-  
+
   setIsInitialLoad: (isInitialLoad: boolean) => {
     set({
       isInitialLoad,

@@ -27,7 +27,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestions] = useState<string[]>([]);
+  // Removed unused suggestions state
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Create AI service instance
@@ -61,7 +61,9 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       timestamp: new Date().toISOString(),
     };
 
-    addChatMessage(currentStep, userMessage);
+    if (typeof currentStep === 'number') {
+      addChatMessage(currentStep, userMessage);
+    }
     setInputValue('');
 
     try {
@@ -75,7 +77,9 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         stepContext
       );
 
-      addChatMessage(currentStep, assistantResponse);
+      if (typeof currentStep === 'number') {
+        addChatMessage(currentStep, assistantResponse);
+      }
 
       // Generate suggestions based on the conversation
       await generateSuggestions();
@@ -90,7 +94,9 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         timestamp: new Date().toISOString(),
       };
 
-      addChatMessage(currentStep, errorMessage);
+      if (typeof currentStep === 'number') {
+        addChatMessage(currentStep, errorMessage);
+      }
     } finally {
       setIsTyping(false);
     }
@@ -130,7 +136,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   }, [handleSendMessage]);
 
   // Helper function to get context for the current step
-  function getStepContext(step: number, data: any): string {
+  function getStepContext(step: number, _data: any): string {
     // This is a simplified version - in a real implementation,
     // you would extract relevant context based on the current step
     return `Workshop Progress: Step ${step}`;

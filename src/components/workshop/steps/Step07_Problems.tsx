@@ -22,7 +22,7 @@ export const Step07_Problems: React.FC = () => {
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
   const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
-  
+
   // Local state
   const [localProblems, setLocalProblems] = useState(storeProblems);
   const [newProblem, setNewProblem] = useState('');
@@ -30,7 +30,7 @@ export const Step07_Problems: React.FC = () => {
   const [showChat, setShowChat] = useState(false);
   const [selectedPath, setSelectedPath] = useState<'A' | 'B'>('A'); // A = Product-First, B = Problem-First
   const saveTimerRef = useRef<number | null>(null);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -55,7 +55,7 @@ export const Step07_Problems: React.FC = () => {
     if (saveTimerRef.current !== null) {
       window.clearTimeout(saveTimerRef.current);
     }
-    
+
     saveTimerRef.current = window.setTimeout(() => {
       updateWorkshopData({ problems });
       setIsSaving(false);
@@ -79,19 +79,19 @@ export const Step07_Problems: React.FC = () => {
   }, [newProblem, localProblems, saveToStore]);
 
   const handleDeleteProblem = useCallback((id: string) => {
-    const updatedProblems = localProblems.filter(p => p.id !== id);
+    const updatedProblems = localProblems.filter((p: Problem) => p.id !== id);
     setLocalProblems(updatedProblems);
     saveToStore(updatedProblems);
   }, [localProblems, saveToStore]);
 
   const handleMoveUp = useCallback((index: number) => {
     if (index <= 0) return;
-    
+
     const newProblems = [...localProblems];
     [newProblems[index - 1], newProblems[index]] = [newProblems[index], newProblems[index - 1]];
-    
+
     // Update rankings
-    newProblems.forEach((p, i) => {
+    newProblems.forEach((p: Problem, i: number) => {
       p.ranking = i + 1;
     });
 
@@ -101,12 +101,12 @@ export const Step07_Problems: React.FC = () => {
 
   const handleMoveDown = useCallback((index: number) => {
     if (index >= localProblems.length - 1) return;
-    
+
     const newProblems = [...localProblems];
     [newProblems[index], newProblems[index + 1]] = [newProblems[index + 1], newProblems[index]];
-    
+
     // Update rankings
-    newProblems.forEach((p, i) => {
+    newProblems.forEach((p: Problem, i: number) => {
       p.ranking = i + 1;
     });
 
@@ -115,21 +115,21 @@ export const Step07_Problems: React.FC = () => {
   }, [localProblems, saveToStore]);
 
   const handleToggleSelect = useCallback((id: string) => {
-    const updatedProblems = localProblems.map(p => 
+    const updatedProblems = localProblems.map((p: Problem) =>
       p.id === id ? { ...p, selected: !p.selected } : p
     );
     setLocalProblems(updatedProblems);
     saveToStore(updatedProblems);
   }, [localProblems, saveToStore]);
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Step: Key Problems
-    
+
     Problems are the obstacles, pain points, or frustrations that prevent customers from accomplishing their jobs to be done.
-    
+
     Current problems:
-    ${localProblems.map(problem => `- ${problem.description}`).join('\n')}
+    ${localProblems.map((problem: Problem) => `- ${problem.description}`).join('\n')}
   `;
 
   return (
@@ -139,7 +139,7 @@ export const Step07_Problems: React.FC = () => {
         title="Match Problems to Solutions"
         description="Identify your unique capabilities and match them to your customers' key problems"
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -149,10 +149,10 @@ export const Step07_Problems: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={7}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[7] || []}
@@ -161,20 +161,20 @@ export const Step07_Problems: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           {/* Path Selection */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: 0
             }}>
               Choose Your Path
             </h3>
-            
+
             <div style={{ display: 'flex', gap: '16px' }}>
               <button
                 onClick={() => setSelectedPath('A')}
@@ -192,22 +192,22 @@ export const Step07_Problems: React.FC = () => {
                   gap: '12px'
                 }}
               >
-                <span style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
-                  color: selectedPath === 'A' ? '#1e40af' : '#374151' 
+                <span style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: selectedPath === 'A' ? '#1e40af' : '#374151'
                 }}>
                   Path A: Product-First
                 </span>
-                <span style={{ 
-                  fontSize: '14px', 
+                <span style={{
+                  fontSize: '14px',
                   color: '#6b7280',
-                  textAlign: 'center' 
+                  textAlign: 'center'
                 }}>
                   You already have a clear idea of what your productized service could be
                 </span>
               </button>
-              
+
               <button
                 onClick={() => setSelectedPath('B')}
                 style={{
@@ -224,17 +224,17 @@ export const Step07_Problems: React.FC = () => {
                   gap: '12px'
                 }}
               >
-                <span style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
-                  color: selectedPath === 'B' ? '#1e40af' : '#374151' 
+                <span style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: selectedPath === 'B' ? '#1e40af' : '#374151'
                 }}>
                   Path B: Problem-First
                 </span>
-                <span style={{ 
-                  fontSize: '14px', 
+                <span style={{
+                  fontSize: '14px',
                   color: '#6b7280',
-                  textAlign: 'center' 
+                  textAlign: 'center'
                 }}>
                   You want to identify high-value problems first, then design your solution
                 </span>
@@ -244,9 +244,9 @@ export const Step07_Problems: React.FC = () => {
 
           {/* 5A: Capability Inventory */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: 0
             }}>
@@ -255,15 +255,15 @@ export const Step07_Problems: React.FC = () => {
             <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
               List your unique capabilities, systems, frameworks, and methods that set you apart:
             </p>
-            
-            <div style={{ 
-              padding: '16px', 
-              backgroundColor: '#f8fafc', 
+
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
               borderRadius: '8px',
               border: '1px solid #e2e8f0'
             }}>
               <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>Example Capabilities:</p>
-              <ul style={{ 
+              <ul style={{
                 margin: '0',
                 paddingLeft: '16px',
                 listStyleType: 'disc',
@@ -278,12 +278,12 @@ export const Step07_Problems: React.FC = () => {
               </ul>
             </div>
           </div>
-          
+
           {/* 5B: Solution-Problem Matching */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: 0
             }}>
@@ -292,19 +292,19 @@ export const Step07_Problems: React.FC = () => {
             <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
               Match your capabilities (solutions) to specific customer problems:
             </p>
-            
-            <div style={{ 
-              padding: '16px', 
-              backgroundColor: '#f0f9ff', 
+
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f0f9ff',
               borderRadius: '8px',
               border: '1px solid #bae6fd'
             }}>
-              <div style={{ 
+              <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '12px',
               }}>
-                <div style={{ 
+                <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
@@ -314,7 +314,7 @@ export const Step07_Problems: React.FC = () => {
                   border: '1px solid #e0f2fe'
                 }}>
                   <div style={{ flex: 1 }}>
-                    <p style={{ 
+                    <p style={{
                       margin: '0 0 4px 0',
                       fontWeight: 500,
                       color: '#0369a1'
@@ -327,7 +327,7 @@ export const Step07_Problems: React.FC = () => {
                   </div>
                   <CheckCircle size={24} color="#0ea5e9" />
                   <div style={{ flex: 1 }}>
-                    <p style={{ 
+                    <p style={{
                       margin: '0 0 4px 0',
                       fontWeight: 500,
                       color: '#9f1239'
@@ -339,8 +339,8 @@ export const Step07_Problems: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
-                <div style={{ 
+
+                <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
@@ -350,7 +350,7 @@ export const Step07_Problems: React.FC = () => {
                   border: '1px solid #e0f2fe'
                 }}>
                   <div style={{ flex: 1 }}>
-                    <p style={{ 
+                    <p style={{
                       margin: '0 0 4px 0',
                       fontWeight: 500,
                       color: '#0369a1'
@@ -363,7 +363,7 @@ export const Step07_Problems: React.FC = () => {
                   </div>
                   <CheckCircle size={24} color="#0ea5e9" />
                   <div style={{ flex: 1 }}>
-                    <p style={{ 
+                    <p style={{
                       margin: '0 0 4px 0',
                       fontWeight: 500,
                       color: '#9f1239'
@@ -375,8 +375,8 @@ export const Step07_Problems: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                
-                <div style={{ 
+
+                <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
@@ -386,7 +386,7 @@ export const Step07_Problems: React.FC = () => {
                   border: '1px solid #e0f2fe'
                 }}>
                   <div style={{ flex: 1 }}>
-                    <p style={{ 
+                    <p style={{
                       margin: '0 0 4px 0',
                       fontWeight: 500,
                       color: '#0369a1'
@@ -399,7 +399,7 @@ export const Step07_Problems: React.FC = () => {
                   </div>
                   <CheckCircle size={24} color="#0ea5e9" />
                   <div style={{ flex: 1 }}>
-                    <p style={{ 
+                    <p style={{
                       margin: '0 0 4px 0',
                       fontWeight: 500,
                       color: '#9f1239'
@@ -414,12 +414,12 @@ export const Step07_Problems: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {/* 5C: Identifying Strongest Matches */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: 0
             }}>
@@ -428,21 +428,21 @@ export const Step07_Problems: React.FC = () => {
             <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
               Identify which problem-solution matches offer the greatest opportunity:
             </p>
-            
-            <div style={{ 
-              padding: '16px', 
-              backgroundColor: '#ecfdf5', 
+
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#ecfdf5',
               borderRadius: '8px',
               border: '1px solid #a7f3d0'
             }}>
-              <div style={{ 
+              <div style={{
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '12px',
                 marginBottom: '16px'
               }}>
                 <Lightbulb size={24} color="#059669" style={{ flexShrink: 0, marginTop: '2px' }} />
-                <p style={{ 
+                <p style={{
                   margin: 0,
                   fontSize: '15px',
                   fontWeight: 500,
@@ -452,11 +452,11 @@ export const Step07_Problems: React.FC = () => {
                   "I'm seeing that my skills are particularly well-suited to solving problems in the 'Revenue Rollercoaster' cluster. I have frameworks and systems that directly address predictable revenue generation."
                 </p>
               </div>
-              
-              <p style={{ 
+
+              <p style={{
                 margin: '0',
                 fontSize: '14px',
-                color: '#047857' 
+                color: '#047857'
               }}>
                 When you find a strong match between your unique capabilities and your customers' most pressing problems, you've identified a high-value opportunity for your productized service.
               </p>
@@ -479,7 +479,7 @@ export const Step07_Problems: React.FC = () => {
           </div>
 
           {showErrors && localProblems.length === 0 && (
-            <div style={{ 
+            <div style={{
               color: '#ef4444',
               fontSize: '14px',
               display: 'flex',
@@ -496,8 +496,8 @@ export const Step07_Problems: React.FC = () => {
 
           {/* Add new problem */}
           <div>
-            <div style={{ 
-              display: 'flex', 
+            <div style={{
+              display: 'flex',
               gap: '8px'
             }}>
               <input
@@ -534,7 +534,7 @@ export const Step07_Problems: React.FC = () => {
 
           {/* List of problems */}
           <div style={{ display: 'grid', gap: '12px' }}>
-            {localProblems.map((problem, index) => (
+            {localProblems.map((problem: Problem, index: number) => (
               <div
                 key={problem.id}
                 style={{
@@ -548,10 +548,10 @@ export const Step07_Problems: React.FC = () => {
                   borderColor: problem.selected ? '#86efac' : '#e5e7eb',
                 }}
               >
-                <div style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  gap: '4px' 
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
                 }}>
                   <Button
                     variant="ghost"
@@ -572,15 +572,15 @@ export const Step07_Problems: React.FC = () => {
                     <ChevronDown size={16} />
                   </Button>
                 </div>
-                
+
                 <div style={{ flex: 1 }}>
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: '8px',
                     marginBottom: '4px'
                   }}>
-                    <span style={{ 
+                    <span style={{
                       fontSize: '14px',
                       fontWeight: 500,
                       color: '#6b7280'
@@ -588,7 +588,7 @@ export const Step07_Problems: React.FC = () => {
                       Problem #{problem.ranking}
                     </span>
                   </div>
-                  <p style={{ 
+                  <p style={{
                     margin: 0,
                     color: '#374151',
                     fontSize: '16px',
@@ -636,4 +636,4 @@ export const Step07_Problems: React.FC = () => {
       <SaveIndicator saving={isSaving} />
     </div>
   );
-}; 
+};

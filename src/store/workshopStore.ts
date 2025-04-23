@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { WorkshopData, BigIdea, UnderlyingGoal, TriggerEvent, Job, TargetBuyer, Pain, ProblemUp, Offer } from '../types/workshop';
+import type { WorkshopData, TriggerEvent, Job, TargetBuyer, Pain, ProblemUp } from '../types/workshop';
 import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
@@ -572,8 +572,8 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.bigIdea) {
           updateWorkshopData({
             bigIdea: {
-              description: currentSuggestion.content.bigIdea.description || '',
-              targetCustomers: currentSuggestion.content.bigIdea.targetCustomers || '',
+              description: (currentSuggestion.content.bigIdea as any).description || '',
+              targetCustomers: (currentSuggestion.content.bigIdea as any).targetCustomers || '',
               version: 'initial'
             }
           });
@@ -584,9 +584,9 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.underlyingGoal) {
           updateWorkshopData({
             underlyingGoal: {
-              businessGoal: currentSuggestion.content.underlyingGoal.businessGoal || '',
-              constraints: currentSuggestion.content.underlyingGoal.constraints || '',
-              antiGoals: currentSuggestion.content.underlyingGoal.antiGoals || ''
+              businessGoal: (currentSuggestion.content.underlyingGoal as any).businessGoal || '',
+              constraints: (currentSuggestion.content.underlyingGoal as any).constraints || '',
+              antiGoals: (currentSuggestion.content.underlyingGoal as any).antiGoals || ''
             }
           });
         }
@@ -684,15 +684,15 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.refinedIdea) {
           updateWorkshopData({
             refinedIdea: {
-              description: currentSuggestion.content.refinedIdea.description || '',
-              targetCustomers: currentSuggestion.content.refinedIdea.targetCustomers || '',
+              description: (currentSuggestion.content.refinedIdea as any).description || '',
+              targetCustomers: (currentSuggestion.content.refinedIdea as any).targetCustomers || '',
               version: 'refined'
             },
             offer: {
               id: `offer_${Date.now()}`,
-              name: currentSuggestion.content.refinedIdea.name || 'New Offer',
-              description: currentSuggestion.content.refinedIdea.description || '',
-              format: currentSuggestion.content.refinedIdea.format || '',
+              name: (currentSuggestion.content.refinedIdea as any).name || 'New Offer',
+              description: (currentSuggestion.content.refinedIdea as any).description || '',
+              format: (currentSuggestion.content.refinedIdea as any).format || '',
               targetBuyers: workshopData.problemUp?.selectedBuyers || [],
               painsSolved: workshopData.problemUp?.selectedPains || [],
               version: 'refined'

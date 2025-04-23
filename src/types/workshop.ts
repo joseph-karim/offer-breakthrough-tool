@@ -82,6 +82,58 @@ export interface Reflections {
   nextSteps: string;
 }
 
+export interface AntiGoals {
+  market: string;
+  offer: string;
+  delivery: string;
+  lifestyle: string;
+  values: string;
+}
+
+export interface Market {
+  id: string;
+  title: string;
+  description: string;
+  characteristics: string[];
+  source: 'user' | 'assistant';
+  selected?: boolean;
+}
+
+export interface MarketEvaluation {
+  marketId: string;
+  problemSize: number;
+  solutionFit: number;
+  economicValue: number;
+  joy: number;
+  total: number;
+  notes: string;
+}
+
+export interface Problem {
+  id: string;
+  description: string;
+  type: 'functional' | 'emotional' | 'social';
+  severity: 'high' | 'medium' | 'low';
+  source: 'user' | 'assistant';
+}
+
+export interface ValueProposition {
+  statement: string;
+  benefits: string[];
+  differentiators: string[];
+}
+
+export interface Pricing {
+  valueMetrics: string[];
+  pricingModel: string;
+  pricePoints: {
+    tier: string;
+    price: string;
+    included: string[];
+  }[];
+  rationale: string;
+}
+
 export interface WorkshopData {
   bigIdea?: BigIdea;
   underlyingGoal?: UnderlyingGoal;
@@ -89,8 +141,18 @@ export interface WorkshopData {
   jobs: Job[];
   targetBuyers: TargetBuyer[];
   pains: Pain[];
+  markets?: Market[];
+  problems?: Problem[];
+  marketEvaluations?: MarketEvaluation[];
   problemUp?: ProblemUp;
   refinedIdea?: BigIdea;
+  valueProposition?: ValueProposition;
+  pricing?: Pricing;
+  marketDemandAnalysis?: {
+    demand: string;
+    competition: string;
+    trends: string;
+  };
   offer?: Offer;
   stepChats: StepChats;
   reflections?: Reflections;

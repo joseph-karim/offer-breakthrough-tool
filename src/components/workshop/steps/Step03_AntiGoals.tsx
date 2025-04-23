@@ -102,12 +102,12 @@ export const Step03_AntiGoals: React.FC = () => {
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
   const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
-  
+
   const [formData, setFormData] = useState<AntiGoals>(antiGoals);
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
   const [showChat, setShowChat] = useState(false);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -119,8 +119,8 @@ export const Step03_AntiGoals: React.FC = () => {
   }, [antiGoals]);
 
   const handleInputChange = useCallback((field: keyof AntiGoals, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
+    setFormData((prev: AntiGoals) => ({ ...prev, [field]: value }));
+
     if (saveTimer) {
       clearTimeout(saveTimer);
     }
@@ -148,13 +148,13 @@ export const Step03_AntiGoals: React.FC = () => {
     }
     return '';
   };
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Step: Anti-Goals
-    
+
     Anti-goals are things you want to avoid at all costs in your business.
-    
+
     Current anti-goals:
     - Market: ${formData.market}
     - Offer: ${formData.offer}
@@ -170,7 +170,7 @@ export const Step03_AntiGoals: React.FC = () => {
         title="Define Your Anti-Goals"
         description="Clarify what you don't want in your business to make better decisions."
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -180,10 +180,10 @@ export const Step03_AntiGoals: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={3}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[3] || []}
@@ -192,7 +192,7 @@ export const Step03_AntiGoals: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -211,11 +211,11 @@ export const Step03_AntiGoals: React.FC = () => {
           </div>
 
           {antiGoalKeys.map((key) => (
-            <div key={key}>
+            <div key={String(key)}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                <label 
-                  htmlFor={`${key}-anti-goals`}
-                  style={{ 
+                <label
+                  htmlFor={`${String(key)}-anti-goals`}
+                  style={{
                     display: 'block',
                     fontWeight: 600,
                     color: '#374151'
@@ -228,7 +228,7 @@ export const Step03_AntiGoals: React.FC = () => {
                 </Tooltip>
               </div>
               <textarea
-                id={`${key}-anti-goals`}
+                id={`${String(key)}-anti-goals`}
                 value={formData[key]}
                 onChange={(e) => handleInputChange(key, e.target.value)}
                 placeholder={getPlaceholder(key)}
@@ -246,7 +246,7 @@ export const Step03_AntiGoals: React.FC = () => {
                 }}
               />
               {isFieldEmpty(key) && (
-                <div style={{ 
+                <div style={{
                   color: '#ef4444',
                   fontSize: '14px',
                   marginTop: '4px',
@@ -273,4 +273,4 @@ export const Step03_AntiGoals: React.FC = () => {
       <SaveIndicator saving={isSaving} />
     </div>
   );
-}; 
+};

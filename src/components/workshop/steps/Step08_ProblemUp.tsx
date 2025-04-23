@@ -4,7 +4,7 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { ProblemUp } from '../../../types/workshop';
-import { HelpCircle, MessageSquare, Check } from 'lucide-react';
+import { HelpCircle, MessageSquare, Check, Flame } from 'lucide-react';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import { AIService } from '../../../services/aiService';
@@ -278,7 +278,7 @@ export const Step08_ProblemUp: React.FC = () => {
                             color: '#b91c1c',
                             fontWeight: 500,
                           }}>
-                            <Fire size={12} color="#ef4444" />
+                            <Flame size={12} color="#ef4444" />
                             FIRE
                           </span>
                         )}
