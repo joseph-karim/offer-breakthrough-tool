@@ -1,9 +1,11 @@
 export interface AIMessage {
   id: string;
   content: string | Record<string, unknown>;
-  role: 'user' | 'assistant';
+  role: 'user' | 'assistant' | 'system';
   suggestions?: ChatSuggestion[];
   timestamp: string;
+  step?: number; // The step this message is associated with
+  field?: string; // The field this message is related to
 }
 
 export interface StepChat {
@@ -34,12 +36,15 @@ export interface StepQuestions {
 }
 
 // Define the specialized assistant types for the Buyer Breakthrough Toolkit
-export type AssistantType = 
-  'default' | 
-  'business-analyzer' | 
-  'anti-goal-generator' | 
-  'job-statement-refiner' | 
-  'problem-expander' | 
-  'capability-analyzer' | 
-  'market-evaluator' | 
-  'research-designer';  
+export type AssistantType =
+  'default' |
+  'business-analyzer' |
+  'big-idea-generator' |
+  'underlying-goal-advisor' |
+  'trigger-event-finder' |
+  'job-statement-refiner' |
+  'target-buyer-analyzer' |
+  'painstorming-helper' |
+  'problem-up-advisor' |
+  'idea-refiner' |
+  'workshop-summarizer';

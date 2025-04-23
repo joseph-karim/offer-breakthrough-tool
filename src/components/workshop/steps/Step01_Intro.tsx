@@ -15,22 +15,22 @@ export const Step01_Intro: React.FC = () => {
           Welcome to the <span style={{ color: '#FFDD00' }}>Buyer Breakthrough Workshop</span> 🚀
         </h1>
         <p className="landing-subtitle">
-          Design a scalable offer by deeply understanding your market's psychology and needs
+          From Burnout to Breakthrough: Clarify your digital product idea by finding profitable problems to solve
         </p>
         <div className="product-tab">
-          Step 1 of 11
+          Step 1 of 10
         </div>
       </div>
-      
+
       {/* Purple Info Section */}
       <div className="info-bubble" style={{ margin: '24px 0' }}>
         <div className="flex items-center gap-2 mb-4">
           <Sparkles style={{ height: '24px', width: '24px', color: '#FFDD00' }} />
-          <h2 className="info-bubble-title m-0">Get <span className="explosive-highlight">explosive clarity</span> about your offer</h2>
+          <h2 className="info-bubble-title m-0">Solve <span className="explosive-highlight">bigger problems</span>, earn bigger paychecks</h2>
         </div>
         <p className="info-bubble-subtitle">
-          This interactive workshop guides you through uncovering profitable problems and designing 
-          <span className="highlight-yellow">scalable offers</span> using the "Why We Buy" methodology.
+          This interactive workshop guides you through finding painful problems people will pay
+          <span className="highlight-yellow">premium prices</span> to solve using the "Problem-Up" methodology.
         </p>
         <div style={{ marginTop: '16px', padding: '16px', backgroundColor: '#FFDD00', borderRadius: '0' }}>
           <p style={{ fontSize: '16px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: '#222222' }}>
@@ -42,7 +42,7 @@ export const Step01_Intro: React.FC = () => {
 
       <div className="workbook-content">
         <h2 className="workbook-title" style={{ fontSize: '28px' }}>What You'll Achieve</h2>
-        
+
         {/* Feature List in Canvas Style */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           <div className="bg-white p-6 border border-gray-100 shadow-sm">
@@ -56,24 +56,24 @@ export const Step01_Intro: React.FC = () => {
               <li className="workbook-list-item">
                 <span className="workbook-list-number mr-3">1.</span>
                 <span className="workbook-list-content font-semibold">
-                  🔍 Identify and avoid <span className="highlight-yellow">common pitfalls</span>
+                  🔍 Understand why so many products <span className="highlight-yellow">fail</span>
                 </span>
               </li>
               <li className="workbook-list-item">
                 <span className="workbook-list-number mr-3">2.</span>
                 <span className="workbook-list-content font-semibold">
-                  ⚡ Discover trigger events that cause purchases
+                  ⚡ Identify trigger events that push people to buy
                 </span>
               </li>
               <li className="workbook-list-item">
                 <span className="workbook-list-number mr-3">3.</span>
                 <span className="workbook-list-content font-semibold">
-                  🧠 Understand jobs your customers need done
+                  🧠 Understand why people really buy (Jobs-to-be-Done)
                 </span>
               </li>
             </ul>
           </div>
-          
+
           <div className="bg-white p-6 border border-gray-100 shadow-sm">
             <div className="flex items-start gap-4 mb-4">
               <div className="landing-feature-icon">
@@ -85,32 +85,32 @@ export const Step01_Intro: React.FC = () => {
               <li className="workbook-list-item">
                 <span className="workbook-list-number mr-3">1.</span>
                 <span className="workbook-list-content font-semibold">
-                  💰 Find profitable target markets with real demand
+                  💰 Identify target buyers who will pay premium prices
                 </span>
               </li>
               <li className="workbook-list-item">
                 <span className="workbook-list-number mr-3">2.</span>
                 <span className="workbook-list-content font-semibold">
-                  ❗ Uncover high-value problems worth solving
+                  ❗ Discover painful problems you're uniquely qualified to solve
                 </span>
               </li>
               <li className="workbook-list-item">
                 <span className="workbook-list-number mr-3">3.</span>
                 <span className="workbook-list-content font-semibold">
-                  📊 Design a scalable offer that resonates and sells
+                  📊 Refine your idea into an offer that people will actually buy
                 </span>
               </li>
             </ul>
           </div>
         </div>
-        
+
         {/* How It Works Section */}
         <div className="mt-12">
           <h2 className="workbook-title" style={{ fontSize: '28px' }}>How It Works</h2>
           <div className="workbook-instruction">
-            This step-by-step process guides you to product-market fit in record time
+            This step-by-step process helps you clarify your digital product idea in just 2 hours
           </div>
-          
+
           <div className="bg-white p-6 border border-gray-100 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
@@ -134,12 +134,12 @@ export const Step01_Intro: React.FC = () => {
                   <li className="flex items-start gap-2">
                     <div style={{ backgroundColor: '#FFDD00', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>3</div>
                     <div className="flex-1">
-                      <p className="font-bold">AI-powered bots help with brainstorming 🤖</p>
+                      <p className="font-bold">AI-powered "Sparky" helps with brainstorming 🤖</p>
                     </div>
                   </li>
                 </ul>
               </div>
-              
+
               <div>
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <Award className="text-yellow-500" size={20} />
@@ -161,7 +161,7 @@ export const Step01_Intro: React.FC = () => {
                   <li className="flex items-start gap-2">
                     <div style={{ backgroundColor: '#FFDD00', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>6</div>
                     <div className="flex-1">
-                      <p className="font-bold">End with a well-defined offer concept 💡</p>
+                      <p className="font-bold">End with a refined product idea ready to test 💡</p>
                     </div>
                   </li>
                 </ul>
@@ -169,20 +169,20 @@ export const Step01_Intro: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Before You Begin Section */}
         <div className="info-bubble mt-12">
           <div className="flex items-center gap-2 mb-4">
             <Brain style={{ height: '24px', width: '24px', color: '#FFDD00' }} />
             <h2 className="info-bubble-title m-0">Before You Begin 🧠</h2>
           </div>
-          
+
           <p className="info-bubble-content mb-4">
-            Take a moment to reflect on your current business and what you hope to 
-            <span className="highlight-yellow">achieve</span>. 
-            The more thoughtful you are in each step, the better your results.
+            If you're running a service-based business and feeling trapped in the feast-or-famine cycle,
+            this workshop will help you find <span className="highlight-yellow">painful problems</span> worth solving
+            and design a more scalable offer.
           </p>
-          
+
           <div style={{ backgroundColor: '#222222', padding: '16px' }}>
             <p style={{ fontWeight: 700, color: '#FFFFFF', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px' }}>
               <Award style={{ height: '18px', width: '18px', color: '#FFDD00' }} />
@@ -191,11 +191,11 @@ export const Step01_Intro: React.FC = () => {
             <ul className="space-y-3 ml-6">
               <li className="flex items-start gap-2">
                 <div style={{ backgroundColor: '#FFDD00', width: '6px', height: '6px', borderRadius: '50%', marginTop: '8px' }}></div>
-                <span className="text-white font-bold">📝 Notes about your <span className="highlight-yellow">business challenges</span></span>
+                <span className="text-white font-bold">📝 Your current <span className="highlight-yellow">product idea</span> (if you have one)</span>
               </li>
               <li className="flex items-start gap-2">
                 <div style={{ backgroundColor: '#FFDD00', width: '6px', height: '6px', borderRadius: '50%', marginTop: '8px' }}></div>
-                <span className="text-white font-bold">🎯 Ideas or assumptions about your target market</span>
+                <span className="text-white font-bold">🎯 Thoughts about who might buy your product</span>
               </li>
               <li className="flex items-start gap-2">
                 <div style={{ backgroundColor: '#FFDD00', width: '6px', height: '6px', borderRadius: '50%', marginTop: '8px' }}></div>
@@ -222,4 +222,4 @@ export const Step01_Intro: React.FC = () => {
       </div>
     </div>
   );
-};                                                                          
+};

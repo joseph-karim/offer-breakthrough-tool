@@ -4,23 +4,23 @@ import { Zap, CheckCircle, ChevronLeft, Sparkles, Star, Layers, ArrowRight } fro
 
 // Import step components
 import { Step01_Intro } from './steps/Step01_Intro';
-import { Step02_MarketDemand } from './steps/Step02_MarketDemand';
-import { Step03_AntiGoals } from './steps/Step03_AntiGoals';
+import { Step02_BigIdea } from './steps/Step02_BigIdea';
+import { Step03_UnderlyingGoal } from './steps/Step03_UnderlyingGoal';
 import { Step04_TriggerEvents } from './steps/Step04_TriggerEvents';
 import { Step05_Jobs } from './steps/Step05_Jobs';
-import { Step06_Markets } from './steps/Step06_Markets';
-import { Step07_Problems } from './steps/Step07_Problems';
-import { Step08_MarketEvaluation } from './steps/Step08_MarketEvaluation';
-import { Step09_ValueProposition } from './steps/Step09_ValueProposition';
-import { Step10_Pricing } from './steps/Step10_Pricing';
-import { Step11_Summary } from './steps/Step11_Summary';
+import { Step06_TargetBuyers } from './steps/Step06_TargetBuyers';
+import { Step07_Painstorming } from './steps/Step07_Painstorming';
+import { Step08_ProblemUp } from './steps/Step08_ProblemUp';
+import { Step09_RefineIdea } from './steps/Step09_RefineIdea';
+import { Step10_Summary } from './steps/Step10_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
+import { PersistentChatInterface } from './chat/PersistentChatInterface';
 
 export const WorkshopWizard = () => {
-  const { 
-    currentStep, 
-    initializeSession, 
-    setCurrentStep, 
+  const {
+    currentStep,
+    initializeSession,
+    setCurrentStep,
     setValidationErrors,
   } = useWorkshopStore();
   const [isInitialized, setIsInitialized] = useState(false);
@@ -54,13 +54,13 @@ export const WorkshopWizard = () => {
 
   const goToNextStep = useCallback(() => {
     setValidationErrors(false); // Reset validation errors when successfully moving forward
-    setCurrentStep(Math.min(11, currentStep + 1));
+    setCurrentStep(Math.min(10, currentStep + 1));
   }, [currentStep, setCurrentStep, setValidationErrors]);
 
   // Don't render anything until initialization is complete
   if (!isInitialized) {
     return (
-      <div style={{ 
+      <div style={{
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
@@ -94,32 +94,30 @@ export const WorkshopWizard = () => {
       case 1:
         return <Step01_Intro key="step1" />;
       case 2:
-        return <Step02_MarketDemand key="step2" />;
+        return <Step02_BigIdea key="step2" />;
       case 3:
-        return <Step03_AntiGoals key="step3" />;
+        return <Step03_UnderlyingGoal key="step3" />;
       case 4:
         return <Step04_TriggerEvents key="step4" />;
       case 5:
         return <Step05_Jobs key="step5" />;
       case 6:
-        return <Step06_Markets key="step6" />;
+        return <Step06_TargetBuyers key="step6" />;
       case 7:
-        return <Step07_Problems key="step7" />;
+        return <Step07_Painstorming key="step7" />;
       case 8:
-        return <Step08_MarketEvaluation key="step8" />;
+        return <Step08_ProblemUp key="step8" />;
       case 9:
-        return <Step09_ValueProposition key="step9" />;
+        return <Step09_RefineIdea key="step9" />;
       case 10:
-        return <Step10_Pricing key="step10" />;
-      case 11:
-        return <Step11_Summary key="step11" />;
+        return <Step10_Summary key="step10" />;
       default:
         return <div key={`step${currentStep}`}>Step {currentStep} is under construction</div>;
     }
   })();
 
   // Calculate completion percentage
-  const completionPercentage = Math.round((currentStep / 11) * 100);
+  const completionPercentage = Math.round((currentStep / 10) * 100);
 
   // Base styles for the whole app
   const containerStyle: CSSProperties = {
@@ -276,7 +274,7 @@ export const WorkshopWizard = () => {
       50% { transform: translateY(-20px); }
       100% { transform: translateY(0px); }
     }
-    
+
     @keyframes pulse {
       0% { opacity: 0.4; }
       50% { opacity: 0.7; }
@@ -287,7 +285,7 @@ export const WorkshopWizard = () => {
   return (
     <>
       <style>{animationStyles}</style>
-      <div 
+      <div
         className="bg-white customercamp-theme-container"
         style={{
           ...containerStyle,
@@ -300,7 +298,7 @@ export const WorkshopWizard = () => {
           color: '#222222'
         }}>
         {/* Background decoration - removed for cleaner look */}
-        
+
         {/* Decorative blobs - removed completely for cleaner look */}
         {/* {decorativeBlobs.map((style, index) => (
           <div key={index} style={{...style, opacity: 0.1}}></div>
@@ -320,63 +318,63 @@ export const WorkshopWizard = () => {
                   <Sparkles style={{ width: '24px', height: '24px', color: '#222222' }} />
                 </span>
                 Buyer Breakthrough
-                <span style={{ 
-                  position: 'relative', 
+                <span style={{
+                  position: 'relative',
                   marginLeft: '8px',
                   fontSize: '20px',
                   opacity: 1
                 }}>
                   Workshop
-                  <span style={{ 
-                    position: 'absolute', 
-                    top: '-8px', 
-                    right: '-20px' 
+                  <span style={{
+                    position: 'absolute',
+                    top: '-8px',
+                    right: '-20px'
                   }}>
-                    <Star style={{ 
-                      width: '18px', 
-                      height: '18px', 
+                    <Star style={{
+                      width: '18px',
+                      height: '18px',
                       color: '#FFDD00',
-                      fill: '#FFDD00' 
+                      fill: '#FFDD00'
                     }} />
                   </span>
                 </span>
               </h1>
-              
+
               <div style={stepIndicatorStyle}>
-                <Zap style={{ 
-                  width: '20px', 
-                  height: '20px', 
+                <Zap style={{
+                  width: '20px',
+                  height: '20px',
                   marginRight: '8px',
                   color: '#222222'
                 }} />
-                Step {currentStep} of 11
+                Step {currentStep} of 10
               </div>
             </div>
-            
+
             <div>
               <div style={progressContainerStyle}>
                 <div style={progressBarStyle}></div>
               </div>
-              
+
               <div style={progressStatsStyle}>
                 <div style={progressTextStyle}>
-                  <CheckCircle style={{ 
-                    width: '18px', 
-                    height: '18px', 
+                  <CheckCircle style={{
+                    width: '18px',
+                    height: '18px',
                     marginRight: '8px',
                     color: '#FFDD00'
                   }} />
                   {completionPercentage}% Complete
                 </div>
-                
+
                 <div style={stepCountStyle}>
-                  <Layers style={{ 
-                    width: '18px', 
-                    height: '18px', 
+                  <Layers style={{
+                    width: '18px',
+                    height: '18px',
                     marginRight: '6px',
                     color: '#FFDD00'
                   }} />
-                  11 steps total
+                  10 steps total
                 </div>
               </div>
             </div>
@@ -389,7 +387,7 @@ export const WorkshopWizard = () => {
             <div className="workbook-content">
               {currentStepComponent}
             </div>
-            
+
             {/* Inline Navigation Buttons */}
             <div style={inlineNavStyle}>
               <Button
@@ -402,22 +400,23 @@ export const WorkshopWizard = () => {
               >
                 Previous Step
               </Button>
-              
+
               <Button
                 onClick={goToNextStep}
-                disabled={currentStep === 11}
-                variant={currentStep === 11 ? 'default' : 'yellow'}
+                disabled={currentStep === 10}
+                variant={currentStep === 10 ? 'default' : 'yellow'}
                 size="lg"
-                rightIcon={currentStep === 11 ? <CheckCircle style={{ width: '20px', height: '20px', color: '#222222'}} /> : <ArrowRight style={{ width: '20px', height: '20px', color: '#222222'}} />}
-                style={currentStep === 11 ? {cursor: 'not-allowed', opacity: 0.6} : {}}
+                rightIcon={currentStep === 10 ? <CheckCircle style={{ width: '20px', height: '20px', color: '#222222'}} /> : <ArrowRight style={{ width: '20px', height: '20px', color: '#222222'}} />}
+                style={currentStep === 10 ? {cursor: 'not-allowed', opacity: 0.6} : {}}
               >
-                {currentStep === 11 ? 'Complete Workshop ✅' : 'Next Step ⚡'}
+                {currentStep === 10 ? 'Complete Workshop ✅' : 'Next Step ⚡'}
               </Button>
             </div>
           </div>
         </main>
 
-        {/* Removed Fixed Navigation */}
+        {/* Persistent Chat Interface */}
+        <PersistentChatInterface />
       </div>
     </>
   );

@@ -1,11 +1,17 @@
 import type { StepChats } from './chat';
 
-export interface AntiGoals {
-  market: string;
-  offer: string;
-  delivery: string;
-  lifestyle: string;
-  values: string;
+export interface BigIdea {
+  description: string;
+  targetCustomers: string;
+  version: 'initial' | 'refined';
+  name?: string;
+  format?: string;
+}
+
+export interface UnderlyingGoal {
+  businessGoal: string;
+  constraints: string;
+  antiGoals: string;
 }
 
 export interface TriggerEvent {
@@ -18,20 +24,35 @@ export interface Job {
   id: string;
   description: string;
   source: 'user' | 'assistant';
+  selected?: boolean;
 }
 
-export interface Market {
+export interface TargetBuyer {
   id: string;
   description: string;
   source: 'user' | 'assistant';
   selected?: boolean;
+  urgency?: number;
+  willingness?: number;
+  longTermValue?: number;
+  solutionFit?: number;
+  accessibility?: number;
 }
 
-export interface Problem {
+export interface Pain {
   id: string;
   description: string;
-  ranking?: number;
-  selected: boolean;
+  buyerSegment: string;
+  type: 'functional' | 'emotional' | 'social' | 'anticipated';
+  isFire?: boolean; // Frequent, Intense, Requires action, Expensive
+  source: 'user' | 'assistant';
+}
+
+export interface ProblemUp {
+  selectedPains: string[];
+  selectedBuyers: string[];
+  targetMoment: string;
+  notes: string;
 }
 
 export interface Offer {
@@ -39,7 +60,21 @@ export interface Offer {
   name: string;
   description: string;
   format: string;
-  selected: boolean;
+  targetBuyers: string[];
+  painsSolved: string[];
+  version: 'initial' | 'refined';
+}
+
+export interface Summary {
+  initialIdea: string;
+  refinedIdea: string;
+  underlyingGoal: string;
+  triggerEvents: string[];
+  jobs: string[];
+  targetBuyers: string[];
+  pains: string[];
+  targetMoment: string;
+  reflections: Reflections;
 }
 
 export interface Reflections {
@@ -47,35 +82,18 @@ export interface Reflections {
   nextSteps: string;
 }
 
-export interface ValueProposition {
-  uniqueValue?: string;
-  painPoints?: string;
-  benefits?: string;
-  differentiators?: string;
-}
-
-export interface MarketEvaluation {
-  [criteriaId: string]: number;
-}
-
-export interface Pricing {
-  strategy: string;
-  justification: string;
-}
-
 export interface WorkshopData {
-  antiGoals: AntiGoals;
+  bigIdea?: BigIdea;
+  underlyingGoal?: UnderlyingGoal;
   triggerEvents: TriggerEvent[];
   jobs: Job[];
-  markets: Market[];
-  problems: Problem[];
-  selectedOffer?: Offer;
+  targetBuyers: TargetBuyer[];
+  pains: Pain[];
+  problemUp?: ProblemUp;
+  refinedIdea?: BigIdea;
+  offer?: Offer;
   stepChats: StepChats;
-  marketDemandAnalysis?: string;
-  pricing?: Pricing;
   reflections?: Reflections;
-  valueProposition: ValueProposition;
-  marketEvaluations?: { [marketId: string]: MarketEvaluation };
 }
 
 export interface WorkshopSession {
@@ -86,4 +104,4 @@ export interface WorkshopSession {
   updated_at: string;
   current_step: number;
   workshop_data: WorkshopData;
-} 
+}

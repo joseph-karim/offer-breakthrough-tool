@@ -3,36 +3,44 @@ import { OpenAIService } from './openaiService';
 
 // Define questions for each step
 export const STEP_QUESTIONS: Record<number, StepQuestion[]> = {
+  2: [
+    {
+      id: 'big_idea_brainstorm',
+      text: 'Can you help me brainstorm some product or service ideas?',
+      context: 'Brainstorming helps generate initial ideas that can be refined later.',
+      requirements: 'Consider your skills, interests, and market opportunities.'
+    },
+    {
+      id: 'big_idea_refine',
+      text: 'How can I refine my product idea to make it more compelling?',
+      context: 'A compelling product idea clearly communicates what it is and who it helps.',
+      requirements: 'Use the format: [What it is] + [what will it help customers do].'
+    },
+    {
+      id: 'big_idea_target',
+      text: 'Who might be interested in this product or service?',
+      context: 'Identifying potential target customers helps focus your idea.',
+      requirements: 'Consider demographics, psychographics, behaviors, and needs.'
+    }
+  ],
   3: [
     {
-      id: 'anti_goals_market',
-      text: 'What types of customers or market segments would you prefer to avoid working with?',
+      id: 'underlying_goal_business',
+      text: 'What is my underlying business goal for creating this new offer?',
+      context: 'Your underlying goal helps guide product decisions.',
+      requirements: 'Consider revenue goals, business growth, market positioning, etc.'
+    },
+    {
+      id: 'underlying_goal_constraints',
+      text: 'What constraints do I have in terms of time, resources, or skills?',
+      context: 'Constraints help define what's realistic for your business.',
+      requirements: 'Consider time availability, budget, team size, technical capabilities, etc.'
+    },
+    {
+      id: 'underlying_goal_anti_goals',
+      text: 'What do I want to avoid with this new offer?',
       context: 'Anti-goals help you define boundaries for your business.',
-      requirements: 'Consider demographics, behaviors, or attitudes that would make clients difficult to work with.'
-    },
-    {
-      id: 'anti_goals_business',
-      text: 'What business models or revenue approaches do you want to avoid?',
-      context: 'Setting anti-goals around business models helps focus your offer design.',
-      requirements: 'Consider pricing structures, delivery methods, or business approaches you dislike.'
-    },
-    {
-      id: 'anti_goals_delivery',
-      text: 'Are there specific delivery methods or service aspects you want to avoid?',
-      context: 'Delivery anti-goals define how you won\'t provide your solution.',
-      requirements: 'Think about time commitments, technology requirements, or service aspects.'
-    },
-    {
-      id: 'anti_goals_lifestyle',
-      text: 'What business lifestyle factors do you want to avoid?',
-      context: 'Your business should support your desired lifestyle, not detract from it.',
-      requirements: 'Consider work hours, travel requirements, stress levels, or team management.'
-    },
-    {
-      id: 'anti_goals_values',
-      text: 'What ethical boundaries or values are non-negotiable for you?',
-      context: 'Value-based anti-goals keep your business aligned with your principles.',
-      requirements: 'Think about industries, practices, or approaches that would conflict with your values.'
+      requirements: 'Consider business models, delivery methods, customer types, or values you want to avoid.'
     }
   ],
   4: [
@@ -180,15 +188,15 @@ export interface AIServiceConfig {
 
 export class AIService {
   private openai: OpenAIService;
-  
+
   constructor(config: AIServiceConfig) {
     this.openai = new OpenAIService(config.apiKey, config.endpoint);
   }
 
   // Get a suggestion for a specific step
   async getStepSuggestion(
-    step: number, 
-    context: string, 
+    step: number,
+    context: string,
     assistantType: AssistantType = 'default'
   ): Promise<ChatSuggestion | null> {
     try {
@@ -197,12 +205,12 @@ export class AIService {
         case 3: {
           let antiGoalsPrompt = `
             You are a CustomerCamp AI assistant specializing in buyer psychology and the 'Why We Buy' framework.
-            
+
             Based on the user's answers regarding draining customers, undesirable business models, industries to avoid, delivery methods off the table, and unacceptable price points provided in the chat history below, synthesize these into a clear, actionable list of Anti-Goals.
-            
+
             Context:
             ${context}
-            
+
             Structure the output as a valid JSON object with this structure:
             {
               "antiGoals": {
@@ -213,22 +221,22 @@ export class AIService {
                 "values": "string with values anti-goals"
               }
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           // Enhance prompt for anti-goal-generator
           if (assistantType === 'anti-goal-generator') {
             antiGoalsPrompt = `
               You are the Anti-Goal Generator, a CustomerCamp AI specialist in identifying boundaries and constraints.
-              
+
               Based on the user's answers regarding draining customers, undesirable business models, industries to avoid, delivery methods off the table, and unacceptable price points provided in the chat history below, synthesize these into a comprehensive and strategic list of Anti-Goals.
-              
+
               Go beyond the obvious boundaries to identify deeper patterns that should be avoided. Consider both explicit statements and implicit signals.
-              
+
               Context:
               ${context}
-              
+
               Structure the output as a valid JSON object with this structure:
               {
                 "antiGoals": {
@@ -239,31 +247,31 @@ export class AIService {
                   "values": "string with values-based anti-goals that protect core ethics and principles"
                 }
               }
-              
+
               Only respond with the JSON object, nothing else.
             `;
           }
-          
+
           const antiGoalsResponse = await this.openai.generateStructuredJson(antiGoalsPrompt);
-          
+
           return {
             step,
             content: antiGoalsResponse,
             rawResponse: antiGoalsResponse
           };
         }
-          
+
         case 4: {
           const triggerEventsPrompt = `
-            You are a CustomerCamp AI assistant trained in buyer psychology. 
+            You are a CustomerCamp AI assistant trained in buyer psychology.
 
-            Analyze the user's description of client situations and urgency factors provided in the context below. Generate a list of 5-10 specific, concrete Trigger Events (situations or 'final straws') that might lead someone to seek solutions related to the user's described experiences. 
-            
+            Analyze the user's description of client situations and urgency factors provided in the context below. Generate a list of 5-10 specific, concrete Trigger Events (situations or 'final straws') that might lead someone to seek solutions related to the user's described experiences.
+
             Focus on specific happenings, not general needs. These should be the moments when potential customers realize they need a solution.
-            
+
             Context:
             ${context}
-            
+
             Return a valid JSON object with this structure:
             {
               "triggerEvents": [
@@ -277,28 +285,28 @@ export class AIService {
                 ... additional events ...
               ]
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           const triggerEventsResponse = await this.openai.generateStructuredJson(triggerEventsPrompt);
-          
+
           return {
             step,
             content: triggerEventsResponse,
             rawResponse: triggerEventsResponse
           };
         }
-          
+
         case 5: {
           let jobsPrompt = `
             You are a CustomerCamp AI assistant applying JTBD principles.
-            
+
             The user identified Main Job(s) and provided initial thoughts in the context below. Generate 5-7 specific, actionable Related Jobs (tasks/outcomes needed) for each Main Job.
-            
+
             Context:
             ${context}
-            
+
             Return a valid JSON object with this structure:
             {
               "jobs": [
@@ -312,22 +320,22 @@ export class AIService {
                 ... additional jobs ...
               ]
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           // Enhance prompt for job-statement-refiner
           if (assistantType === 'job-statement-refiner') {
             jobsPrompt = `
               You are the Job Statement Refiner, a CustomerCamp AI specialist in the Jobs-to-be-Done framework.
-              
+
               The user identified preliminary Main Job(s) in the context below. Your goal is to apply the "so that" technique to progressively refine these statements to uncover deeper motivations.
-              
+
               For each job statement, generate a chain of 3-5 "so that" connections to reveal the ultimate desired outcome. Then craft 5-7 specific, actionable Related Jobs that would help achieve the refined Main Job.
-              
+
               Context:
               ${context}
-              
+
               Return a valid JSON object with this structure:
               {
                 "refinedJobs": [
@@ -353,29 +361,29 @@ export class AIService {
                   ... additional jobs ...
                 ]
               }
-              
+
               Only respond with the JSON object, nothing else.
             `;
           }
-          
+
           const jobsResponse = await this.openai.generateStructuredJson(jobsPrompt);
-          
+
           return {
             step,
             content: jobsResponse,
             rawResponse: jobsResponse
           };
         }
-          
+
         case 6: {
           let marketsPrompt = `
             You are a CustomerCamp AI assistant.
-            
+
             Based on the Related Jobs the user selected in the context below, suggest 5 additional, diverse potential market segments (specific types of businesses or individuals) who frequently need to accomplish these jobs.
-            
+
             Context:
             ${context}
-            
+
             Return a valid JSON object with this structure:
             {
               "markets": [
@@ -389,25 +397,25 @@ export class AIService {
                 ... additional markets ...
               ]
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           // Enhance prompt for market-evaluator
           if (assistantType === 'market-evaluator') {
             marketsPrompt = `
               You are the Market Evaluator, a CustomerCamp AI specialist in market intelligence and segment analysis.
-              
+
               Based on the Related Jobs the user selected in the context below, analyze potential market segments who need to accomplish these jobs. For each suggested segment, provide in-depth evaluation of:
-              
+
               1. Problem Size - How widespread and painful is the problem for this segment
               2. Solution Satisfaction - How well existing solutions meet their needs
               3. Willingness to Pay - Their budget constraints and value perception
               4. Accessibility - How reachable they are through marketing channels
-              
+
               Context:
               ${context}
-              
+
               Return a valid JSON object with this structure:
               {
                 "markets": [
@@ -441,29 +449,29 @@ export class AIService {
                   ... additional markets ...
                 ]
               }
-              
+
               Only respond with the JSON object, nothing else.
             `;
           }
-          
+
           const marketsResponse = await this.openai.generateStructuredJson(marketsPrompt);
-          
+
           return {
             step,
             content: marketsResponse,
             rawResponse: marketsResponse
           };
         }
-          
+
         case 7: {
           let problemsPrompt = `
             You are a CustomerCamp AI assistant performing Painstorming.
-            
+
             For the market and related jobs described in the context below, brainstorm a list of 10-15 specific potential problems or pains they might face. Consider functional, emotional, social, and situational aspects based on buyer psychology principles.
-            
+
             Context:
             ${context}
-            
+
             Return a valid JSON object with this structure:
             {
               "problems": [
@@ -476,29 +484,29 @@ export class AIService {
                 ... additional problems ...
               ]
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           // Enhance prompt for problem-expander
           if (assistantType === 'problem-expander') {
             problemsPrompt = `
               You are the Problem Expander, a CustomerCamp AI specialist in identifying and exploring customer pain points.
-              
+
               For the market and related jobs described in the context below, conduct an exhaustive exploration of potential problems. Go beyond obvious issues to identify hidden, underlying, and emerging pains. Consider:
-              
+
               1. Direct functional problems with current solutions
               2. Emotional frustrations and anxieties
               3. Social perception and status concerns
               4. Time and opportunity costs
               5. Risk factors (financial, operational, personal)
               6. Knowledge and skill gaps
-              
+
               Generate 15-20 specific, concrete problems across these categories.
-              
+
               Context:
               ${context}
-              
+
               Return a valid JSON object with this structure:
               {
                 "problems": [
@@ -514,23 +522,23 @@ export class AIService {
                   ... additional problems ...
                 ]
               }
-              
+
               Only respond with the JSON object, nothing else.
             `;
           }
-          
+
           // Enhance prompt for capability-analyzer
           if (assistantType === 'capability-analyzer') {
             problemsPrompt = `
               You are the Capability Analyzer, a CustomerCamp AI specialist in matching solution capabilities to customer problems.
-              
+
               For the market described in the context below, identify 10-15 specific problems or pains they might face. Then, for each problem, analyze how specific techniques, systems, frameworks, or approaches could solve it effectively.
-              
+
               Focus on connecting actual solution capabilities (methods, frameworks, systems, processes) to specific pain points.
-              
+
               Context:
               ${context}
-              
+
               Return a valid JSON object with this structure:
               {
                 "capabilityMatrix": [
@@ -555,31 +563,31 @@ export class AIService {
                   ... additional problem-capability mappings ...
                 ]
               }
-              
+
               Only respond with the JSON object, nothing else.
             `;
           }
-          
+
           const problemsResponse = await this.openai.generateStructuredJson(problemsPrompt);
-          
+
           return {
             step,
             content: problemsResponse,
             rawResponse: problemsResponse
           };
         }
-          
+
         case 8: {
           let marketEvalPrompt = `
             You are a CustomerCamp AI assistant calculating Problem-Up scores.
-            
+
             Given the user ratings for each market segment against their top problems in the context below, calculate a score for each market by summing its ratings across the four criteria: Problem Size, Solution Fit, Economic Value, and Joy to Serve.
-            
+
             Identify the market with the highest total score.
-            
+
             Context:
             ${context}
-            
+
             Return a valid JSON object with this structure:
             {
               "marketScores": [
@@ -600,25 +608,25 @@ export class AIService {
               "recommendedMarket": "Description of the recommended market",
               "rationale": "Explanation of why this market is recommended"
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           // Enhance prompt for research-designer
           if (assistantType === 'research-designer') {
             marketEvalPrompt = `
               You are the Research Designer, a CustomerCamp AI specialist in crafting validation research protocols.
-              
+
               Based on the market segments and scores described in the context below, design a comprehensive research plan to validate assumptions about the highest-scoring segments. Include:
-              
+
               1. Specific research questions to answer
               2. Methods for gathering data (interviews, surveys, tests)
               3. Questions or prompts to use when talking to prospects
               4. Success criteria for validation
-              
+
               Context:
               ${context}
-              
+
               Return a valid JSON object with this structure:
               {
                 "marketAnalysis": {
@@ -657,31 +665,31 @@ export class AIService {
                   ]
                 }
               }
-              
+
               Only respond with the JSON object, nothing else.
             `;
           }
-          
+
           const marketEvalResponse = await this.openai.generateStructuredJson(marketEvalPrompt);
-          
+
           return {
             step,
             content: marketEvalResponse,
             rawResponse: marketEvalResponse
           };
         }
-          
+
         case 9: {
           let offerPrompt = `
             You are a CustomerCamp AI assistant applying the PAINKILLER offer concept.
-            
+
             Generate 3-5 distinct offer ideas specifically designed for the target market to solve their key problems related to their jobs-to-be-done as described in the context below. Structure these offers using appropriate formats.
 
             Each offer idea should have a compelling, benefit-driven 'name' and a brief description focusing on the pain relief or transformation.
-            
+
             Context:
             ${context}
-            
+
             Return a valid JSON object with this structure:
             {
               "offers": [
@@ -695,25 +703,25 @@ export class AIService {
                 ... additional offers ...
               ]
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           // Enhance prompt for research-designer
           if (assistantType === 'research-designer') {
             offerPrompt = `
               You are the Research Designer, a CustomerCamp AI specialist in crafting validation research protocols.
-              
+
               Based on the offer concepts described in the context below, design a comprehensive research plan to test and validate these offers with the target market. Include:
-              
+
               1. Specific validation experiments for each offer
               2. Mockup or prototype recommendations
               3. Testing scripts and interview questions
               4. Success metrics and criteria
-              
+
               Context:
               ${context}
-              
+
               Return a valid JSON object with this structure:
               {
                 "offerValidationPlan": {
@@ -746,31 +754,31 @@ export class AIService {
                   "prioritization": "Which offers to test first and why"
                 }
               }
-              
+
               Only respond with the JSON object, nothing else.
             `;
           }
-          
+
           const offerResponse = await this.openai.generateStructuredJson(offerPrompt);
-          
+
           return {
             step,
             content: offerResponse,
             rawResponse: offerResponse
           };
         }
-        
+
         case 10: {
           const pricingPrompt = `
             You are a CustomerCamp AI assistant specializing in value-based pricing.
 
             Based on the selected offer, the target market, the core problems solved, and the user's input on value metric, willingness to pay, and market comparables from the context below, suggest 2-3 potential pricing strategies.
-            
+
             For each strategy, provide the model (e.g., Tiered Subscription, Usage-Based, Project Fee), example tiers if applicable, an example price point or range, and a brief justification.
-            
+
             Context:
             ${context}
-            
+
             Return a valid JSON object with this structure:
             {
               "pricingStrategy": {
@@ -792,12 +800,12 @@ export class AIService {
                 "alternativesComparison": "How this positioning compares to alternatives"
               }
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           const pricingResponse = await this.openai.generateStructuredJson(pricingPrompt);
-          
+
           return {
             step,
             content: pricingResponse,
@@ -808,18 +816,18 @@ export class AIService {
         case 11: {
           const summaryPrompt = `
             You are a CustomerCamp AI assistant providing a final reflection.
-            
+
             Based on the complete workshop data about creating a business offer in the context below, provide:
-            
+
             1. Summary: Briefly summarize the key components the user defined: Target Market, Job-to-be-Done, Top Problem(s) Solved, Core Offer Concept, Pricing Approach.
-            
+
             2. Coherence Check: Briefly analyze the overall coherence. Does the offer logically address the specific problems for the target market trying to achieve the identified job? Are there any obvious gaps or misalignments based on 'Why We Buy' principles?
-            
+
             3. Suggested Next Steps: Generate a list of 3-5 concrete, actionable next steps focused on VALIDATING this offer idea with the target market.
-            
+
             Context:
             ${context}
-            
+
             Return a valid JSON object with this structure:
             {
               "analysis": {
@@ -845,26 +853,26 @@ export class AIService {
                 ... additional next steps ...
               ]
             }
-            
+
             Only respond with the JSON object, nothing else.
           `;
-          
+
           const summaryResponse = await this.openai.generateStructuredJson(summaryPrompt);
-          
+
           return {
             step,
             content: summaryResponse,
             rawResponse: summaryResponse
           };
         }
-          
+
         default:
           console.warn(`No suggestion logic defined for step ${step}`);
           return null;
       }
     } catch (error) {
       console.error('Error getting step suggestion:', error);
-      
+
       // Fallback to mock suggestions for demo purposes
       return this.getMockSuggestion(step);
     }
@@ -872,183 +880,183 @@ export class AIService {
 
   // Answer a follow-up question based on the step context
   async answerFollowUpQuestion(
-    step: number, 
-    question: string, 
-    context: string, 
+    step: number,
+    question: string,
+    context: string,
     assistantType: AssistantType = 'default'
   ): Promise<AIMessage> {
     try {
       let prompt = '';
-      
+
       // Create base prompt based on step
       switch(step) {
         case 3: // Anti-Goals
           prompt = `
             You are a CustomerCamp AI assistant discussing Anti-Goals.
-            
+
             Current workshop context:
             ${context}
-            
+
             Answer the user's follow-up question based on the context above and general best practices for setting business boundaries. Keep responses concise, helpful, and maintain a helpful, insightful, and slightly 'geeky fun' tone, consistent with the CustomerCamp brand.
-            
+
             User Question: "${question}"
           `;
           break;
-        
+
         case 4: // Trigger Events
           prompt = `
             You are a CustomerCamp AI assistant discussing Trigger Events.
-            
+
             Current workshop context:
             ${context}
-            
+
             Answer the user's follow-up question based on the context above and principles of buyer journey initiation. Maintain a helpful, insightful, and slightly 'geeky fun' tone, consistent with the CustomerCamp brand.
-            
+
             User Question: "${question}"
           `;
           break;
-        
+
         case 5: // Jobs-to-be-Done
           prompt = `
             You are a CustomerCamp AI assistant discussing Jobs-to-be-Done.
-            
+
             Current workshop context:
             ${context}
-            
+
             Answer the user's follow-up question based on the context above and JTBD concepts. Explain how jobs connect to customer motivations and needs. Be concise, helpful, and maintain a slightly 'geeky fun' tone.
-            
+
             User Question: "${question}"
           `;
           break;
-          
+
         case 6: // Markets
           prompt = `
             You are a CustomerCamp AI assistant discussing Target Markets.
-            
+
             Current workshop context:
             ${context}
-            
+
             Answer the user's follow-up question based on the context above and concepts of market segmentation and niche selection. Provide practical insights on choosing and prioritizing markets based on the jobs they need done. Be concise and helpful.
-            
+
             User Question: "${question}"
           `;
           break;
-          
+
         case 7: // Problems
           prompt = `
             You are a CustomerCamp AI assistant discussing customer Problems (Pains).
-            
+
             Current workshop context:
             ${context}
-            
+
             Answer the user's follow-up question based on the context above and the importance of identifying 'ouchy' problems. Help the user understand how pain intensity, frequency, and financial impact affect problem selection.
-            
+
             User Question: "${question}"
           `;
           break;
-          
+
         case 8: // Market Evaluation
           prompt = `
             You are a CustomerCamp AI assistant discussing Market Evaluation (Problem-Upping).
-            
+
             Current workshop context:
             ${context}
-            
+
             Answer the user's follow-up question based on the context above and the goal of finding Problem-Market fit. Provide insights on evaluating different markets and their suitability for the user's solution.
-            
+
             User Question: "${question}"
           `;
           break;
-          
+
         case 9: // Value Proposition
           prompt = `
             You are a CustomerCamp AI assistant discussing Offer Exploration.
-            
+
             Current workshop context:
             ${context}
-            
+
             Answer the user's follow-up question based on the context above and principles of crafting compelling value propositions. Help the user understand how to connect their offer to the customer's problems and desired outcomes.
-            
+
             User Question: "${question}"
           `;
           break;
-          
+
         case 10: // Pricing
           prompt = `
             You are a CustomerCamp AI assistant discussing Pricing Strategy.
-            
+
             Current workshop context:
             ${context}
-            
+
             Answer the user's follow-up question based on the context above and principles of value-based pricing and buyer psychology related to price perception. Provide practical insights on pricing models, tiers, and positioning.
-            
+
             User Question: "${question}"
           `;
           break;
-          
+
         case 11: // Summary & Action Plan
           prompt = `
             You are an action-oriented CustomerCamp coach AI.
-            
+
             Current workshop context:
             ${context}
-            
+
             The user has completed the Buyer Breakthrough workshop. Your goal is to help them solidify a concrete action plan for the next 1-2 weeks. Answer their question in a way that guides them to prioritize, refine, and commit to specific validation activities.
-            
+
             User Question: "${question}"
           `;
           break;
-          
+
         default:
           prompt = `
             You are an AI assistant helping someone complete a business offer workshop.
-            
+
             Current workshop context:
             ${context}
-            
+
             The user is currently on Step ${step} and has asked the following question:
             "${question}"
-            
+
             Provide a helpful, actionable response that guides them through this step of the workshop.
             Focus on being practical, specific, and encouraging.
             If appropriate, give examples and suggestions to help them move forward.
             Maintain a helpful, insightful, and slightly 'geeky fun' tone, consistent with CustomerCamp's brand.
           `;
       }
-      
+
       // Customize the prompt based on selected assistant type
       switch (assistantType) {
         case 'business-analyzer':
           prompt = `${prompt}\n\nAs the Business Analyzer specialist, focus on identifying patterns, analyzing market trends, and providing data-driven insights. Highlight opportunities for efficiency, scalability, and competitive advantage.`;
           break;
-        
+
         case 'anti-goal-generator':
           prompt = `${prompt}\n\nAs the Anti-Goal Generator specialist, focus on helping the user define clear boundaries. Identify potential pitfalls, red flags, and misalignment risks based on the context. Be specific about what to avoid and why.`;
           break;
-        
+
         case 'job-statement-refiner':
           prompt = `${prompt}\n\nAs the Job Statement Refiner specialist, use the "so that" technique to help the user dig deeper into customer motivations. Guide them to craft precise, outcome-focused job statements that reveal true customer needs.`;
           break;
-        
+
         case 'problem-expander':
           prompt = `${prompt}\n\nAs the Problem Expander specialist, help the user think more broadly about potential customer pains. Suggest additional problems they might not have considered, and explore the depth and nuance of each problem area.`;
           break;
-        
+
         case 'capability-analyzer':
           prompt = `${prompt}\n\nAs the Capability Analyzer specialist, focus on helping the user map their unique skills, systems, or methodologies to specific customer problems. Highlight particularly strong matches between their capabilities and market needs.`;
           break;
-        
+
         case 'market-evaluator':
           prompt = `${prompt}\n\nAs the Market Evaluator specialist, provide substantive market intelligence to help with segment scoring. Offer data-driven insights about different markets' problem size, solution gap, willingness to pay, and accessibility.`;
           break;
-        
+
         case 'research-designer':
           prompt = `${prompt}\n\nAs the Research Designer specialist, recommend specific validation methods and questions tailored to the user's offer and target market. Provide clear, actionable research protocols they can implement immediately.`;
           break;
       }
-      
+
       const response = await this.openai.generateCompletion(prompt);
-      
+
       return {
         id: Date.now().toString(),
         content: response,
@@ -1057,7 +1065,7 @@ export class AIService {
       };
     } catch (error) {
       console.error('Error answering follow-up question:', error);
-      
+
       // Fallback response
       return {
         id: Date.now().toString(),
@@ -1086,7 +1094,7 @@ export class AIService {
           },
           rawResponse: '{"antiGoals": {...}}'
         };
-        
+
       case 4: // Trigger Events
         return {
           step,
@@ -1110,7 +1118,7 @@ export class AIService {
           },
           rawResponse: '{"triggerEvents": [...]}'
         };
-        
+
       case 5: // Jobs
         return {
           step,
@@ -1132,7 +1140,7 @@ export class AIService {
           },
           rawResponse: '{"jobs": [...]}'
         };
-        
+
       case 6: // Markets
         return {
           step,
@@ -1154,7 +1162,7 @@ export class AIService {
           },
           rawResponse: '{"markets": [...]}'
         };
-        
+
       case 7: // Problems
         return {
           step,
@@ -1176,7 +1184,7 @@ export class AIService {
           },
           rawResponse: '{"problems": [...]}'
         };
-        
+
       case 8: // Market Evaluation
         return {
           step,
@@ -1200,7 +1208,7 @@ export class AIService {
           },
           rawResponse: '{"marketScores": [...], "recommendedMarket": "Early-Stage SaaS Founders", ...}'
         };
-        
+
       case 9: // Offer Exploration
         return {
           step,
@@ -1211,12 +1219,12 @@ export class AIService {
                 description: "A 90-day program combining strategic consulting and implementation support to establish sustainable customer acquisition channels.",
                 format: "Hybrid coaching and implementation program",
                 benefits: [
-                  "Clear customer acquisition strategy", 
-                  "Optimized conversion funnel", 
+                  "Clear customer acquisition strategy",
+                  "Optimized conversion funnel",
                   "Increased MRR"
                 ],
                 problemsSolved: [
-                  "Inconsistent lead generation", 
+                  "Inconsistent lead generation",
                   "Low conversion rates"
                 ]
               }
@@ -1224,7 +1232,7 @@ export class AIService {
           },
           rawResponse: '{"offers": [...]}'
         };
-        
+
       case 10: // Pricing & Positioning
         return {
           step,
@@ -1262,7 +1270,7 @@ export class AIService {
           },
           rawResponse: '{"pricingStrategy": {...}, "positioning": {...}}'
         };
-        
+
       case 11: // Summary & Action Plan
         return {
           step,
@@ -1319,9 +1327,9 @@ export class AIService {
           },
           rawResponse: '{"analysis": {...}, "validationPlan": [...], "nextSteps": [...]}'
         };
-        
+
       default:
         return null;
     }
   }
-} 
+}
