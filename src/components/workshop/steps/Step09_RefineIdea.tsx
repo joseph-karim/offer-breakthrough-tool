@@ -31,7 +31,7 @@ export const Step09_RefineIdea: React.FC = () => {
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
   const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
-  
+
   const [formData, setFormData] = useState<BigIdea>({
     description: refinedIdea?.description || '',
     targetCustomers: refinedIdea?.targetCustomers || '',
@@ -40,7 +40,7 @@ export const Step09_RefineIdea: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
   const [showChat, setShowChat] = useState(false);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -70,7 +70,7 @@ export const Step09_RefineIdea: React.FC = () => {
 
   const handleInputChange = useCallback((field: keyof BigIdea, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     if (saveTimer) {
       clearTimeout(saveTimer);
     }
@@ -98,35 +98,35 @@ export const Step09_RefineIdea: React.FC = () => {
     }
     return '';
   };
-  
+
   // Get selected pains
-  const selectedPains = pains.filter(pain => 
+  const selectedPains = pains.filter(pain =>
     problemUp?.selectedPains?.includes(pain.id)
   );
-  
+
   // Get selected buyers
-  const selectedBuyers = targetBuyers.filter(buyer => 
+  const selectedBuyers = targetBuyers.filter(buyer =>
     problemUp?.selectedBuyers?.includes(buyer.id)
   );
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Step: Refine Your Idea
-    
+
     The user is refining their initial product idea based on the insights from the workshop.
-    
+
     Initial big idea:
     ${initialBigIdea?.description || ''}
-    
+
     Selected pains:
     ${selectedPains.map(pain => `- ${pain.description}`).join('\n')}
-    
+
     Selected buyers:
     ${selectedBuyers.map(buyer => `- ${buyer.description}`).join('\n')}
-    
+
     Target moment:
     ${problemUp?.targetMoment || ''}
-    
+
     Current refined idea:
     ${formData.description}
     ${formData.targetCustomers}
@@ -139,7 +139,7 @@ export const Step09_RefineIdea: React.FC = () => {
         title="Refine Your Idea"
         description="Revise your initial idea based on the insights from the workshop"
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -149,10 +149,10 @@ export const Step09_RefineIdea: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={9}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[9] || []}
@@ -161,7 +161,7 @@ export const Step09_RefineIdea: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -178,30 +178,30 @@ export const Step09_RefineIdea: React.FC = () => {
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#3b82f6' }} />
             Now it's time to refine your initial idea based on the insights you've gained throughout the workshop.
           </div>
-          
+
           {/* Initial Big Idea */}
-          <div style={{ 
+          <div style={{
             padding: '16px',
             backgroundColor: '#f9fafb',
             borderRadius: '8px',
             border: '1px solid #e5e7eb'
           }}>
-            <h3 style={{ 
-              fontSize: '16px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '16px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: '0 0 12px 0'
             }}>
               Your Initial Big Idea
             </h3>
-            <p style={{ 
+            <p style={{
               fontSize: '14px',
               color: '#4b5563',
               margin: '0 0 8px 0'
             }}>
               {initialBigIdea?.description || 'No initial idea defined'}
             </p>
-            <p style={{ 
+            <p style={{
               fontSize: '14px',
               color: '#6b7280',
               fontStyle: 'italic',
@@ -210,36 +210,36 @@ export const Step09_RefineIdea: React.FC = () => {
               Target customers: {initialBigIdea?.targetCustomers || 'None specified'}
             </p>
           </div>
-          
+
           {/* Workshop Insights */}
-          <div style={{ 
+          <div style={{
             padding: '16px',
             backgroundColor: '#f9fafb',
             borderRadius: '8px',
             border: '1px solid #e5e7eb'
           }}>
-            <h3 style={{ 
-              fontSize: '16px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '16px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: '0 0 12px 0'
             }}>
               Workshop Insights
             </h3>
-            
+
             <div style={{ display: 'grid', gap: '12px' }}>
               {/* Selected Pains */}
               <div>
-                <h4 style={{ 
-                  fontSize: '14px', 
-                  fontWeight: 600, 
+                <h4 style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
                   color: '#4b5563',
                   margin: '0 0 8px 0'
                 }}>
                   Selected Painful Problems:
                 </h4>
                 {selectedPains.length > 0 ? (
-                  <ul style={{ 
+                  <ul style={{
                     listStyle: 'disc',
                     paddingLeft: '24px',
                     color: '#4b5563',
@@ -251,7 +251,7 @@ export const Step09_RefineIdea: React.FC = () => {
                     ))}
                   </ul>
                 ) : (
-                  <p style={{ 
+                  <p style={{
                     fontSize: '14px',
                     color: '#6b7280',
                     fontStyle: 'italic',
@@ -261,19 +261,19 @@ export const Step09_RefineIdea: React.FC = () => {
                   </p>
                 )}
               </div>
-              
+
               {/* Selected Buyers */}
               <div>
-                <h4 style={{ 
-                  fontSize: '14px', 
-                  fontWeight: 600, 
+                <h4 style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
                   color: '#4b5563',
                   margin: '0 0 8px 0'
                 }}>
                   Selected Target Buyers:
                 </h4>
                 {selectedBuyers.length > 0 ? (
-                  <ul style={{ 
+                  <ul style={{
                     listStyle: 'disc',
                     paddingLeft: '24px',
                     color: '#4b5563',
@@ -285,7 +285,7 @@ export const Step09_RefineIdea: React.FC = () => {
                     ))}
                   </ul>
                 ) : (
-                  <p style={{ 
+                  <p style={{
                     fontSize: '14px',
                     color: '#6b7280',
                     fontStyle: 'italic',
@@ -295,18 +295,18 @@ export const Step09_RefineIdea: React.FC = () => {
                   </p>
                 )}
               </div>
-              
+
               {/* Target Moment */}
               <div>
-                <h4 style={{ 
-                  fontSize: '14px', 
-                  fontWeight: 600, 
+                <h4 style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
                   color: '#4b5563',
                   margin: '0 0 8px 0'
                 }}>
                   Target Moment:
                 </h4>
-                <p style={{ 
+                <p style={{
                   fontSize: '14px',
                   color: '#4b5563',
                   margin: '0'
@@ -316,15 +316,15 @@ export const Step09_RefineIdea: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Refined Big Idea */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="refined-idea-description"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
@@ -354,7 +354,7 @@ export const Step09_RefineIdea: React.FC = () => {
               }}
             />
             {isFieldEmpty('description') && (
-              <div style={{ 
+              <div style={{
                 color: '#ef4444',
                 fontSize: '14px',
                 marginTop: '4px',
@@ -370,15 +370,15 @@ export const Step09_RefineIdea: React.FC = () => {
               <SaveIndicator isSaving={isSaving} />
             </div>
           </div>
-          
+
           {/* Refined Target Customers */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="refined-target-customers"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
@@ -408,7 +408,7 @@ export const Step09_RefineIdea: React.FC = () => {
               }}
             />
             {isFieldEmpty('targetCustomers') && (
-              <div style={{ 
+              <div style={{
                 color: '#ef4444',
                 fontSize: '14px',
                 marginTop: '4px',
@@ -424,12 +424,12 @@ export const Step09_RefineIdea: React.FC = () => {
               <SaveIndicator isSaving={isSaving} />
             </div>
           </div>
-          
+
           {/* Next Steps */}
           <div style={{
             padding: '12px 16px',
             backgroundColor: '#fff7ed',
-            borderLeft: '4px solid '#ea580c',
+            borderLeft: '4px solid #ea580c',
             borderRadius: '0 8px 8px 0',
             color: '#9a3412',
             display: 'flex',

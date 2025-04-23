@@ -33,7 +33,7 @@ export const STEP_QUESTIONS: Record<number, StepQuestion[]> = {
     {
       id: 'underlying_goal_constraints',
       text: 'What constraints do I have in terms of time, resources, or skills?',
-      context: 'Constraints help define what's realistic for your business.',
+      context: 'Constraints help define what is realistic for your business.',
       requirements: 'Consider time availability, budget, team size, technical capabilities, etc.'
     },
     {
