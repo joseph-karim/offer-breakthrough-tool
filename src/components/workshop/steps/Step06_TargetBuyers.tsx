@@ -4,7 +4,7 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetBuyer } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, MessageSquare, Plus, X, Star } from 'lucide-react';
+import { HelpCircle, MessageSquare, Plus, X, Star } from 'lucide-react';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import { AIService } from '../../../services/aiService';
@@ -25,7 +25,7 @@ export const Step06_TargetBuyers: React.FC = () => {
   const [newBuyer, setNewBuyer] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [showChat, setShowChat] = useState(false);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -48,7 +48,7 @@ export const Step06_TargetBuyers: React.FC = () => {
         solutionFit: 0,
         accessibility: 0
       };
-      
+
       setBuyers(prev => [...prev, buyer]);
       setNewBuyer(''); // Clear input
       updateWorkshopData({ targetBuyers: [...buyers, buyer] });
@@ -67,21 +67,21 @@ export const Step06_TargetBuyers: React.FC = () => {
       handleAddBuyer();
     }
   }, [handleAddBuyer]);
-  
+
   const handleRateBuyer = useCallback((id: string, field: keyof TargetBuyer, value: number) => {
-    const updatedBuyers = buyers.map(buyer => 
+    const updatedBuyers = buyers.map(buyer =>
       buyer.id === id ? { ...buyer, [field]: value } : buyer
     );
     setBuyers(updatedBuyers);
     updateWorkshopData({ targetBuyers: updatedBuyers });
   }, [buyers, updateWorkshopData]);
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Step: Target Buyers
-    
+
     The user is identifying potential target buyers for their offer.
-    
+
     Current target buyers:
     ${buyers.map(buyer => `- ${buyer.description}`).join('\n')}
   `;
@@ -93,7 +93,7 @@ export const Step06_TargetBuyers: React.FC = () => {
         title="Identify Target Buyers"
         description="Who might have an urgent need to get the job done and will pay a premium for a solution?"
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -103,10 +103,10 @@ export const Step06_TargetBuyers: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={6}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[6] || []}
@@ -115,7 +115,7 @@ export const Step06_TargetBuyers: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -132,22 +132,24 @@ export const Step06_TargetBuyers: React.FC = () => {
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#22c55e' }} />
             Think contextually about who might need your solution. Consider life factors, business models, industries, job titles, etc.
           </div>
-          
+
           {/* Add new target buyer */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="new-buyer"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
               >
                 Add a potential target buyer
               </label>
-              <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} title="Be specific about who might need your solution" />
+              <div title="Be specific about who might need your solution">
+                <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
+              </div>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <input
@@ -176,22 +178,22 @@ export const Step06_TargetBuyers: React.FC = () => {
               </Button>
             </div>
           </div>
-          
+
           {/* List of target buyers */}
           <div>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: '0 0 16px 0'
             }}>
               Your Potential Target Buyers
             </h3>
-            
+
             {buyers.length > 0 ? (
               <div style={{ display: 'grid', gap: '16px' }}>
                 {buyers.map(buyer => (
-                  <div 
+                  <div
                     key={buyer.id}
                     style={{
                       backgroundColor: '#f9fafb',
@@ -233,7 +235,7 @@ export const Step06_TargetBuyers: React.FC = () => {
                         </span>
                         {buyer.description}
                       </div>
-                      
+
                       <button
                         onClick={() => handleDeleteBuyer(buyer.id)}
                         style={{
@@ -252,17 +254,17 @@ export const Step06_TargetBuyers: React.FC = () => {
                         <X size={16} color="#6b7280" />
                       </button>
                     </div>
-                    
+
                     <div style={{ padding: '12px 16px' }}>
-                      <h4 style={{ 
-                        fontSize: '14px', 
-                        fontWeight: 600, 
+                      <h4 style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
                         color: '#1e293b',
                         margin: '0 0 8px 0'
                       }}>
                         Rate this buyer segment (1-5):
                       </h4>
-                      
+
                       <div style={{ display: 'grid', gap: '8px' }}>
                         {[
                           { key: 'urgency' as const, label: 'Urgency to solve the problem' },
@@ -272,8 +274,8 @@ export const Step06_TargetBuyers: React.FC = () => {
                           { key: 'accessibility' as const, label: 'Your access to this market' }
                         ].map(({ key, label }) => (
                           <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ 
-                              fontSize: '14px', 
+                            <span style={{
+                              fontSize: '14px',
                               color: '#4b5563',
                               width: '180px',
                               flexShrink: 0
@@ -308,8 +310,8 @@ export const Step06_TargetBuyers: React.FC = () => {
                           </div>
                         ))}
                       </div>
-                      
-                      <div style={{ 
+
+                      <div style={{
                         marginTop: '12px',
                         display: 'flex',
                         alignItems: 'center',
@@ -319,10 +321,10 @@ export const Step06_TargetBuyers: React.FC = () => {
                       }}>
                         <Star size={16} color="#FFDD00" fill="#FFDD00" />
                         Total score: {
-                          (buyer.urgency || 0) + 
-                          (buyer.willingness || 0) + 
-                          (buyer.longTermValue || 0) + 
-                          (buyer.solutionFit || 0) + 
+                          (buyer.urgency || 0) +
+                          (buyer.willingness || 0) +
+                          (buyer.longTermValue || 0) +
+                          (buyer.solutionFit || 0) +
                           (buyer.accessibility || 0)
                         } / 25
                       </div>
@@ -331,13 +333,13 @@ export const Step06_TargetBuyers: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div style={{ 
+              <div style={{
                 padding: '16px',
                 backgroundColor: '#f9fafb',
                 borderRadius: '8px',
                 border: '1px dashed #d1d5db'
               }}>
-                <p style={{ 
+                <p style={{
                   fontSize: '14px',
                   color: '#6b7280',
                   fontStyle: 'italic',
@@ -345,7 +347,7 @@ export const Step06_TargetBuyers: React.FC = () => {
                 }}>
                   Example target buyers:
                 </p>
-                <ul style={{ 
+                <ul style={{
                   listStyle: 'disc',
                   paddingLeft: '24px',
                   color: '#6b7280',

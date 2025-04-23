@@ -3,7 +3,7 @@ import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { AlertCircle, HelpCircle, MessageSquare, Download, ExternalLink } from 'lucide-react';
+import { HelpCircle, MessageSquare, Download, ExternalLink } from 'lucide-react';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import { AIService } from '../../../services/aiService';
@@ -17,7 +17,7 @@ export const Step10_Summary: React.FC = () => {
   const workshopData = useWorkshopStore(selectWorkshopData);
   const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
   const [showChat, setShowChat] = useState(false);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -40,10 +40,10 @@ export const Step10_Summary: React.FC = () => {
       targetMoment: workshopData.problemUp?.targetMoment || 'Not defined',
       reflections: workshopData.reflections || { keyInsights: '', nextSteps: '' }
     };
-    
+
     return summary;
   }, [workshopData]);
-  
+
   // Download summary as JSON
   const downloadSummary = useCallback(() => {
     const summary = generateSummary();
@@ -57,45 +57,45 @@ export const Step10_Summary: React.FC = () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }, [generateSummary]);
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Summary
-    
+
     Initial Big Idea:
     ${workshopData.bigIdea?.description || 'Not defined'}
-    
+
     Underlying Goal:
     ${workshopData.underlyingGoal?.businessGoal || 'Not defined'}
-    
+
     Trigger Events:
     ${workshopData.triggerEvents.map(event => `- ${event.description}`).join('\n')}
-    
+
     Jobs to be Done:
     ${workshopData.jobs.map(job => `- ${job.description}`).join('\n')}
-    
+
     Target Buyers:
     ${workshopData.targetBuyers
       .filter(buyer => buyer.selected || workshopData.problemUp?.selectedBuyers.includes(buyer.id))
       .map(buyer => `- ${buyer.description}`)
       .join('\n')}
-    
+
     Key Pains:
     ${workshopData.pains
       .filter(pain => workshopData.problemUp?.selectedPains.includes(pain.id))
       .map(pain => `- ${pain.description}`)
       .join('\n')}
-    
+
     Target Moment:
     ${workshopData.problemUp?.targetMoment || 'Not defined'}
-    
+
     Refined Idea:
     ${workshopData.refinedIdea?.description || 'Not defined'}
     ${workshopData.refinedIdea?.targetCustomers ? `Target Customers: ${workshopData.refinedIdea.targetCustomers}` : ''}
-    
+
     Reflections:
     ${workshopData.reflections?.keyInsights || ''}
-    
+
     Next Steps:
     ${workshopData.reflections?.nextSteps || ''}
   `;
@@ -107,7 +107,7 @@ export const Step10_Summary: React.FC = () => {
         title="Workshop Summary"
         description="Review your journey and plan your next steps"
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -117,10 +117,10 @@ export const Step10_Summary: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={10}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[10] || []}
@@ -129,7 +129,7 @@ export const Step10_Summary: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -146,21 +146,21 @@ export const Step10_Summary: React.FC = () => {
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#22c55e' }} />
             Congratulations on completing the Buyer Breakthrough Workshop! Here's a summary of your journey.
           </div>
-          
+
           {/* Workshop Journey */}
           <div>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: '0 0 16px 0'
             }}>
               Your Workshop Journey
             </h3>
-            
+
             <div style={{ display: 'grid', gap: '16px' }}>
               {/* Initial vs Refined Idea */}
-              <div style={{ 
+              <div style={{
                 padding: '16px',
                 backgroundColor: '#f9fafb',
                 borderRadius: '8px',
@@ -168,22 +168,22 @@ export const Step10_Summary: React.FC = () => {
               }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div>
-                    <h4 style={{ 
-                      fontSize: '16px', 
-                      fontWeight: 600, 
+                    <h4 style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
                       color: '#1e293b',
                       margin: '0 0 8px 0'
                     }}>
                       Initial Big Idea
                     </h4>
-                    <p style={{ 
+                    <p style={{
                       fontSize: '14px',
                       color: '#4b5563',
                       margin: '0 0 8px 0'
                     }}>
                       {workshopData.bigIdea?.description || 'Not defined'}
                     </p>
-                    <p style={{ 
+                    <p style={{
                       fontSize: '14px',
                       color: '#6b7280',
                       fontStyle: 'italic',
@@ -192,24 +192,24 @@ export const Step10_Summary: React.FC = () => {
                       Target customers: {workshopData.bigIdea?.targetCustomers || 'None specified'}
                     </p>
                   </div>
-                  
+
                   <div>
-                    <h4 style={{ 
-                      fontSize: '16px', 
-                      fontWeight: 600, 
+                    <h4 style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
                       color: '#1e293b',
                       margin: '0 0 8px 0'
                     }}>
                       Refined Big Idea
                     </h4>
-                    <p style={{ 
+                    <p style={{
                       fontSize: '14px',
                       color: '#4b5563',
                       margin: '0 0 8px 0'
                     }}>
                       {workshopData.refinedIdea?.description || 'Not defined'}
                     </p>
-                    <p style={{ 
+                    <p style={{
                       fontSize: '14px',
                       color: '#6b7280',
                       fontStyle: 'italic',
@@ -220,35 +220,35 @@ export const Step10_Summary: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Key Insights */}
-              <div style={{ 
+              <div style={{
                 padding: '16px',
                 backgroundColor: '#f9fafb',
                 borderRadius: '8px',
                 border: '1px solid #e5e7eb'
               }}>
-                <h4 style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   margin: '0 0 12px 0'
                 }}>
                   Key Insights
                 </h4>
-                
+
                 <div style={{ display: 'grid', gap: '12px' }}>
                   {/* Underlying Goal */}
                   <div>
-                    <h5 style={{ 
-                      fontSize: '14px', 
-                      fontWeight: 600, 
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
                       Underlying Goal:
                     </h5>
-                    <p style={{ 
+                    <p style={{
                       fontSize: '14px',
                       color: '#4b5563',
                       margin: '0'
@@ -256,19 +256,19 @@ export const Step10_Summary: React.FC = () => {
                       {workshopData.underlyingGoal?.businessGoal || 'Not defined'}
                     </p>
                   </div>
-                  
+
                   {/* Trigger Events */}
                   <div>
-                    <h5 style={{ 
-                      fontSize: '14px', 
-                      fontWeight: 600, 
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
                       Key Trigger Events:
                     </h5>
                     {workshopData.triggerEvents.length > 0 ? (
-                      <ul style={{ 
+                      <ul style={{
                         listStyle: 'disc',
                         paddingLeft: '24px',
                         color: '#4b5563',
@@ -280,7 +280,7 @@ export const Step10_Summary: React.FC = () => {
                         ))}
                       </ul>
                     ) : (
-                      <p style={{ 
+                      <p style={{
                         fontSize: '14px',
                         color: '#6b7280',
                         fontStyle: 'italic',
@@ -290,19 +290,19 @@ export const Step10_Summary: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  
+
                   {/* Jobs */}
                   <div>
-                    <h5 style={{ 
-                      fontSize: '14px', 
-                      fontWeight: 600, 
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
                       Key Jobs to be Done:
                     </h5>
                     {workshopData.jobs.length > 0 ? (
-                      <ul style={{ 
+                      <ul style={{
                         listStyle: 'disc',
                         paddingLeft: '24px',
                         color: '#4b5563',
@@ -314,7 +314,7 @@ export const Step10_Summary: React.FC = () => {
                         ))}
                       </ul>
                     ) : (
-                      <p style={{ 
+                      <p style={{
                         fontSize: '14px',
                         color: '#6b7280',
                         fontStyle: 'italic',
@@ -324,21 +324,21 @@ export const Step10_Summary: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  
+
                   {/* Target Buyers */}
                   <div>
-                    <h5 style={{ 
-                      fontSize: '14px', 
-                      fontWeight: 600, 
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
                       Selected Target Buyers:
                     </h5>
-                    {workshopData.targetBuyers.filter(buyer => 
+                    {workshopData.targetBuyers.filter(buyer =>
                       buyer.selected || workshopData.problemUp?.selectedBuyers.includes(buyer.id)
                     ).length > 0 ? (
-                      <ul style={{ 
+                      <ul style={{
                         listStyle: 'disc',
                         paddingLeft: '24px',
                         color: '#4b5563',
@@ -352,7 +352,7 @@ export const Step10_Summary: React.FC = () => {
                           ))}
                       </ul>
                     ) : (
-                      <p style={{ 
+                      <p style={{
                         fontSize: '14px',
                         color: '#6b7280',
                         fontStyle: 'italic',
@@ -362,21 +362,21 @@ export const Step10_Summary: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  
+
                   {/* Key Pains */}
                   <div>
-                    <h5 style={{ 
-                      fontSize: '14px', 
-                      fontWeight: 600, 
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
                       Selected Painful Problems:
                     </h5>
-                    {workshopData.pains.filter(pain => 
+                    {workshopData.pains.filter(pain =>
                       workshopData.problemUp?.selectedPains.includes(pain.id)
                     ).length > 0 ? (
-                      <ul style={{ 
+                      <ul style={{
                         listStyle: 'disc',
                         paddingLeft: '24px',
                         color: '#4b5563',
@@ -390,7 +390,7 @@ export const Step10_Summary: React.FC = () => {
                           ))}
                       </ul>
                     ) : (
-                      <p style={{ 
+                      <p style={{
                         fontSize: '14px',
                         color: '#6b7280',
                         fontStyle: 'italic',
@@ -400,18 +400,18 @@ export const Step10_Summary: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  
+
                   {/* Target Moment */}
                   <div>
-                    <h5 style={{ 
-                      fontSize: '14px', 
-                      fontWeight: 600, 
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
                       Target Moment:
                     </h5>
-                    <p style={{ 
+                    <p style={{
                       fontSize: '14px',
                       color: '#4b5563',
                       margin: '0'
@@ -421,35 +421,35 @@ export const Step10_Summary: React.FC = () => {
                   </div>
                 </div>
               </div>
-              
+
               {/* Reflections */}
-              <div style={{ 
+              <div style={{
                 padding: '16px',
                 backgroundColor: '#f9fafb',
                 borderRadius: '8px',
                 border: '1px solid #e5e7eb'
               }}>
-                <h4 style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   margin: '0 0 12px 0'
                 }}>
                   Reflections & Next Steps
                 </h4>
-                
+
                 <div style={{ display: 'grid', gap: '12px' }}>
                   {/* Key Insights */}
                   <div>
-                    <h5 style={{ 
-                      fontSize: '14px', 
-                      fontWeight: 600, 
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
                       Key Insights:
                     </h5>
-                    <p style={{ 
+                    <p style={{
                       fontSize: '14px',
                       color: '#4b5563',
                       margin: '0',
@@ -458,18 +458,18 @@ export const Step10_Summary: React.FC = () => {
                       {workshopData.reflections?.keyInsights || 'No insights recorded'}
                     </p>
                   </div>
-                  
+
                   {/* Next Steps */}
                   <div>
-                    <h5 style={{ 
-                      fontSize: '14px', 
-                      fontWeight: 600, 
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
                       Next Steps:
                     </h5>
-                    <p style={{ 
+                    <p style={{
                       fontSize: '14px',
                       color: '#4b5563',
                       margin: '0',
@@ -482,7 +482,7 @@ export const Step10_Summary: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Download Summary */}
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
             <Button
@@ -494,7 +494,7 @@ export const Step10_Summary: React.FC = () => {
               Download Workshop Summary
             </Button>
           </div>
-          
+
           {/* Next Steps */}
           <div style={{
             padding: '16px',
@@ -502,23 +502,23 @@ export const Step10_Summary: React.FC = () => {
             borderRadius: '8px',
             border: '1px solid #fbbf24',
           }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#92400e',
               margin: '0 0 12px 0'
             }}>
               What's Next?
             </h3>
-            
-            <p style={{ 
+
+            <p style={{
               fontSize: '14px',
               color: '#92400e',
               margin: '0 0 16px 0'
             }}>
               Now that you have a refined offer idea, it's time to test it with real buyers. The best way to do this is to pre-sell your offer before building it.
             </p>
-            
+
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Button
                 variant="default"

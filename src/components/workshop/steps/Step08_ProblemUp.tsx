@@ -3,8 +3,8 @@ import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import type { Pain, TargetBuyer, ProblemUp } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, MessageSquare, Check, Fire } from 'lucide-react';
+import type { ProblemUp } from '../../../types/workshop';
+import { HelpCircle, MessageSquare, Check } from 'lucide-react';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
 import { AIService } from '../../../services/aiService';
@@ -35,7 +35,7 @@ export const Step08_ProblemUp: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
   const [showChat, setShowChat] = useState(false);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -55,7 +55,7 @@ export const Step08_ProblemUp: React.FC = () => {
 
   const handleInputChange = useCallback((field: keyof ProblemUp, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     if (saveTimer) {
       clearTimeout(saveTimer);
     }
@@ -78,16 +78,16 @@ export const Step08_ProblemUp: React.FC = () => {
       const newSelectedPains = prev.selectedPains.includes(painId)
         ? prev.selectedPains.filter(id => id !== painId)
         : [...prev.selectedPains, painId];
-      
+
       const updatedData = {
         ...prev,
         selectedPains: newSelectedPains
       };
-      
+
       updateWorkshopData({
         problemUp: updatedData
       });
-      
+
       return updatedData;
     });
   }, [updateWorkshopData]);
@@ -97,32 +97,32 @@ export const Step08_ProblemUp: React.FC = () => {
       const newSelectedBuyers = prev.selectedBuyers.includes(buyerId)
         ? prev.selectedBuyers.filter(id => id !== buyerId)
         : [...prev.selectedBuyers, buyerId];
-      
+
       const updatedData = {
         ...prev,
         selectedBuyers: newSelectedBuyers
       };
-      
+
       updateWorkshopData({
         problemUp: updatedData
       });
-      
+
       return updatedData;
     });
   }, [updateWorkshopData]);
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Step: Problem Up
-    
+
     The user is selecting specific problems and target buyers to focus on.
-    
+
     Available pains:
     ${pains.map(pain => `- ${pain.description} (${pain.type}${pain.isFire ? ', FIRE' : ''})`).join('\n')}
-    
+
     Available target buyers:
     ${targetBuyers.map(buyer => `- ${buyer.description}`).join('\n')}
-    
+
     Currently selected:
     Selected pains: ${formData.selectedPains.length}
     Selected buyers: ${formData.selectedBuyers.length}
@@ -148,7 +148,7 @@ export const Step08_ProblemUp: React.FC = () => {
         title="Problem Up"
         description="Choose specific problems and target buyers to shape your solution around"
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -158,10 +158,10 @@ export const Step08_ProblemUp: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={8}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[8] || []}
@@ -170,7 +170,7 @@ export const Step08_ProblemUp: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -187,22 +187,22 @@ export const Step08_ProblemUp: React.FC = () => {
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#22c55e' }} />
             Select the most profitable problems and target buyers to focus your solution on.
           </div>
-          
+
           {/* Select Pains */}
           <div>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: '0 0 16px 0'
             }}>
               1. Select Painful Problems to Solve
             </h3>
-            
+
             {pains.length > 0 ? (
               <div style={{ display: 'grid', gap: '12px' }}>
                 {pains.map(pain => (
-                  <div 
+                  <div
                     key={pain.id}
                     style={{
                       display: 'flex',
@@ -234,7 +234,7 @@ export const Step08_ProblemUp: React.FC = () => {
                         <Check size={16} color="#FFFFFF" />
                       )}
                     </div>
-                    
+
                     <div style={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -288,7 +288,7 @@ export const Step08_ProblemUp: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div style={{ 
+              <div style={{
                 padding: '16px',
                 backgroundColor: '#f9fafb',
                 borderRadius: '8px',
@@ -300,22 +300,22 @@ export const Step08_ProblemUp: React.FC = () => {
               </div>
             )}
           </div>
-          
+
           {/* Select Buyers */}
           <div>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: '0 0 16px 0'
             }}>
               2. Select Target Buyers to Focus On
             </h3>
-            
+
             {targetBuyers.length > 0 ? (
               <div style={{ display: 'grid', gap: '12px' }}>
                 {targetBuyers.map(buyer => (
-                  <div 
+                  <div
                     key={buyer.id}
                     style={{
                       display: 'flex',
@@ -346,7 +346,7 @@ export const Step08_ProblemUp: React.FC = () => {
                         <Check size={16} color="#FFFFFF" />
                       )}
                     </div>
-                    
+
                     <div style={{
                       fontSize: '15px',
                       fontWeight: 500,
@@ -358,7 +358,7 @@ export const Step08_ProblemUp: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div style={{ 
+              <div style={{
                 padding: '16px',
                 backgroundColor: '#f9fafb',
                 borderRadius: '8px',
@@ -370,22 +370,24 @@ export const Step08_ProblemUp: React.FC = () => {
               </div>
             )}
           </div>
-          
+
           {/* Target Moment */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="target-moment"
-                style={{ 
-                  fontSize: '18px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '18px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
               >
                 3. Define the Target Moment
               </label>
-              <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} title="When exactly would someone need your solution?" />
+              <div title="When exactly would someone need your solution?">
+                <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
+              </div>
             </div>
             <textarea
               id="target-moment"
@@ -405,25 +407,27 @@ export const Step08_ProblemUp: React.FC = () => {
               }}
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
+              <SaveIndicator saving={isSaving} />
             </div>
           </div>
-          
+
           {/* Notes */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="notes"
-                style={{ 
-                  fontSize: '18px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '18px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
               >
                 4. Notes & Insights
               </label>
-              <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} title="Any additional insights or ideas about your problem-up approach" />
+              <div title="Any additional insights or ideas about your problem-up approach">
+                <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
+              </div>
             </div>
             <textarea
               id="notes"
@@ -443,18 +447,18 @@ export const Step08_ProblemUp: React.FC = () => {
               }}
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
+              <SaveIndicator saving={isSaving} />
             </div>
           </div>
-          
+
           {/* Example */}
-          <div style={{ 
+          <div style={{
             padding: '16px',
             backgroundColor: '#f9fafb',
             borderRadius: '8px',
             border: '1px dashed #d1d5db'
           }}>
-            <p style={{ 
+            <p style={{
               fontSize: '14px',
               color: '#6b7280',
               fontStyle: 'italic',
@@ -462,7 +466,7 @@ export const Step08_ProblemUp: React.FC = () => {
             }}>
               Example problem-up approach:
             </p>
-            <ul style={{ 
+            <ul style={{
               listStyle: 'disc',
               paddingLeft: '24px',
               color: '#6b7280',

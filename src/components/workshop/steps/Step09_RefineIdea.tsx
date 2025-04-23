@@ -3,7 +3,7 @@ import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import type { BigIdea, Pain, TargetBuyer, ProblemUp } from '../../../types/workshop';
+import type { BigIdea } from '../../../types/workshop';
 import { AlertCircle, HelpCircle, MessageSquare, ArrowRight } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
@@ -367,7 +367,7 @@ export const Step09_RefineIdea: React.FC = () => {
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
+              <SaveIndicator saving={isSaving} />
             </div>
           </div>
 
@@ -421,7 +421,7 @@ export const Step09_RefineIdea: React.FC = () => {
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator isSaving={isSaving} />
+              <SaveIndicator saving={isSaving} />
             </div>
           </div>
 

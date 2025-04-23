@@ -11,49 +11,48 @@ interface PersistentChatInterfaceProps {
   onClose?: () => void;
 }
 
-export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = ({ 
-  isOpen = true, 
-  onClose 
+export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = ({
+  isOpen = true,
+  onClose
 }) => {
-  const { 
+  const {
     currentStep,
     workshopData,
     addChatMessage,
-    isAiLoading,
     currentSuggestion,
     setCurrentSuggestion,
     acceptSuggestion
   } = useWorkshopStore();
-  
+
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
   });
-  
+
   // Get all messages from all steps for a persistent chat experience
   const allMessages = Object.values(workshopData.stepChats || {})
     .flatMap(chat => chat.messages || [])
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-  
+
   // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [allMessages, isOpen]);
-  
+
   // Handle sending a message
   const handleSendMessage = useCallback(async () => {
     if (!inputValue.trim() || isTyping) return;
-    
+
     setIsTyping(true);
-    
+
     // Add user message to chat
     const userMessage: AIMessage = {
       id: Date.now().toString(),
@@ -61,28 +60,28 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       role: 'user',
       timestamp: new Date().toISOString(),
     };
-    
+
     addChatMessage(currentStep, userMessage);
     setInputValue('');
-    
+
     try {
       // Get context for the current step
       const stepContext = getStepContext(currentStep, workshopData);
-      
+
       // Generate AI response
       const assistantResponse = await aiService.answerFollowUpQuestion(
         currentStep,
         userMessage.content,
         stepContext
       );
-      
+
       addChatMessage(currentStep, assistantResponse);
-      
+
       // Generate suggestions based on the conversation
       await generateSuggestions();
     } catch (error) {
       console.error('Error in chat:', error);
-      
+
       // Add error message
       const errorMessage: AIMessage = {
         id: Date.now().toString(),
@@ -90,13 +89,13 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         role: 'assistant',
         timestamp: new Date().toISOString(),
       };
-      
+
       addChatMessage(currentStep, errorMessage);
     } finally {
       setIsTyping(false);
     }
   }, [inputValue, isTyping, currentStep, workshopData, addChatMessage, aiService]);
-  
+
   // Generate context-aware suggestions
   const generateSuggestions = useCallback(async () => {
     try {
@@ -104,7 +103,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         currentStep,
         getStepContext(currentStep, workshopData)
       );
-      
+
       if (suggestion) {
         setCurrentSuggestion(suggestion);
         setShowSuggestions(true);
@@ -113,13 +112,15 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       console.error('Error generating suggestions:', error);
     }
   }, [currentStep, workshopData, setCurrentSuggestion, aiService]);
-  
+
   // Handle selecting a suggestion
   const handleSelectSuggestion = useCallback(() => {
-    acceptSuggestion(currentStep);
-    setShowSuggestions(false);
+    if (typeof currentStep === 'number') {
+      acceptSuggestion(currentStep);
+      setShowSuggestions(false);
+    }
   }, [currentStep, acceptSuggestion]);
-  
+
   // Handle key press (Enter to send)
   const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -127,18 +128,18 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       handleSendMessage();
     }
   }, [handleSendMessage]);
-  
+
   // Helper function to get context for the current step
   function getStepContext(step: number, data: any): string {
-    // This is a simplified version - in a real implementation, 
+    // This is a simplified version - in a real implementation,
     // you would extract relevant context based on the current step
     return `Workshop Progress: Step ${step}`;
   }
-  
+
   // Render message bubbles
   const renderMessage = (message: AIMessage) => {
     const isUser = message.role === 'user';
-    
+
     return (
       <div
         key={message.id}
@@ -167,7 +168,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         >
           {isUser ? '👤' : '✨'}
         </div>
-        
+
         <div
           style={{
             padding: '12px 16px',
@@ -180,22 +181,22 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
           }}
         >
-          <div style={{ 
-            fontSize: '14px', 
-            marginBottom: '4px', 
-            color: '#222222', 
+          <div style={{
+            fontSize: '14px',
+            marginBottom: '4px',
+            color: '#222222',
             fontWeight: 600
           }}>
             {isUser ? 'You' : 'AI Assistant'}
           </div>
-          <div style={{ 
-            fontSize: '15px', 
-            lineHeight: 1.5, 
+          <div style={{
+            fontSize: '15px',
+            lineHeight: 1.5,
             color: '#333333',
             whiteSpace: 'pre-wrap'
           }}>
-            {typeof message.content === 'string' 
-              ? message.content 
+            {typeof message.content === 'string'
+              ? message.content
               : JSON.stringify(message.content, null, 2)}
           </div>
           <div style={{ fontSize: '12px', color: '#888888', marginTop: '8px', textAlign: isUser ? 'right' : 'left' }}>
@@ -205,9 +206,9 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       </div>
     );
   };
-  
+
   if (!isOpen) return null;
-  
+
   return (
     <Card
       style={{
@@ -257,7 +258,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           </button>
         )}
       </div>
-      
+
       {/* Messages Container */}
       <div
         style={{
@@ -276,17 +277,17 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         ) : (
           allMessages.map(renderMessage)
         )}
-        
+
         {isTyping && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666666' }}>
             <Loader2 className="animate-spin" size={16} />
             <span>AI is typing...</span>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
-      
+
       {/* Suggestions Panel */}
       {showSuggestions && currentSuggestion && (
         <div
@@ -323,7 +324,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           </div>
         </div>
       )}
-      
+
       {/* Input Container */}
       <div
         style={{

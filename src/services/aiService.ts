@@ -226,7 +226,7 @@ export class AIService {
           `;
 
           // Enhance prompt for anti-goal-generator
-          if (assistantType === 'anti-goal-generator') {
+          if (assistantType === 'underlying-goal-advisor') {
             antiGoalsPrompt = `
               You are the Anti-Goal Generator, a CustomerCamp AI specialist in identifying boundaries and constraints.
 
@@ -402,7 +402,7 @@ export class AIService {
           `;
 
           // Enhance prompt for market-evaluator
-          if (assistantType === 'market-evaluator') {
+          if (assistantType === 'target-buyer-analyzer') {
             marketsPrompt = `
               You are the Market Evaluator, a CustomerCamp AI specialist in market intelligence and segment analysis.
 
@@ -489,7 +489,7 @@ export class AIService {
           `;
 
           // Enhance prompt for problem-expander
-          if (assistantType === 'problem-expander') {
+          if (assistantType === 'painstorming-helper') {
             problemsPrompt = `
               You are the Problem Expander, a CustomerCamp AI specialist in identifying and exploring customer pain points.
 
@@ -528,7 +528,7 @@ export class AIService {
           }
 
           // Enhance prompt for capability-analyzer
-          if (assistantType === 'capability-analyzer') {
+          if (assistantType === 'problem-up-advisor') {
             problemsPrompt = `
               You are the Capability Analyzer, a CustomerCamp AI specialist in matching solution capabilities to customer problems.
 
@@ -613,7 +613,7 @@ export class AIService {
           `;
 
           // Enhance prompt for research-designer
-          if (assistantType === 'research-designer') {
+          if (assistantType === 'idea-refiner') {
             marketEvalPrompt = `
               You are the Research Designer, a CustomerCamp AI specialist in crafting validation research protocols.
 
@@ -708,7 +708,7 @@ export class AIService {
           `;
 
           // Enhance prompt for research-designer
-          if (assistantType === 'research-designer') {
+          if (assistantType === 'workshop-summarizer') {
             offerPrompt = `
               You are the Research Designer, a CustomerCamp AI specialist in crafting validation research protocols.
 
@@ -1030,28 +1030,32 @@ export class AIService {
           prompt = `${prompt}\n\nAs the Business Analyzer specialist, focus on identifying patterns, analyzing market trends, and providing data-driven insights. Highlight opportunities for efficiency, scalability, and competitive advantage.`;
           break;
 
-        case 'anti-goal-generator':
-          prompt = `${prompt}\n\nAs the Anti-Goal Generator specialist, focus on helping the user define clear boundaries. Identify potential pitfalls, red flags, and misalignment risks based on the context. Be specific about what to avoid and why.`;
+        case 'underlying-goal-advisor':
+          prompt = `${prompt}\n\nAs the Underlying Goal Advisor specialist, focus on helping the user define clear boundaries and goals. Identify potential pitfalls, red flags, and misalignment risks based on the context. Be specific about what to avoid and why.`;
           break;
 
         case 'job-statement-refiner':
           prompt = `${prompt}\n\nAs the Job Statement Refiner specialist, use the "so that" technique to help the user dig deeper into customer motivations. Guide them to craft precise, outcome-focused job statements that reveal true customer needs.`;
           break;
 
-        case 'problem-expander':
-          prompt = `${prompt}\n\nAs the Problem Expander specialist, help the user think more broadly about potential customer pains. Suggest additional problems they might not have considered, and explore the depth and nuance of each problem area.`;
+        case 'painstorming-helper':
+          prompt = `${prompt}\n\nAs the Painstorming Helper specialist, help the user think more broadly about potential customer pains. Suggest additional problems they might not have considered, and explore the depth and nuance of each problem area.`;
           break;
 
-        case 'capability-analyzer':
-          prompt = `${prompt}\n\nAs the Capability Analyzer specialist, focus on helping the user map their unique skills, systems, or methodologies to specific customer problems. Highlight particularly strong matches between their capabilities and market needs.`;
+        case 'problem-up-advisor':
+          prompt = `${prompt}\n\nAs the Problem Up Advisor specialist, focus on helping the user map their unique skills, systems, or methodologies to specific customer problems. Highlight particularly strong matches between their capabilities and market needs.`;
           break;
 
-        case 'market-evaluator':
-          prompt = `${prompt}\n\nAs the Market Evaluator specialist, provide substantive market intelligence to help with segment scoring. Offer data-driven insights about different markets' problem size, solution gap, willingness to pay, and accessibility.`;
+        case 'target-buyer-analyzer':
+          prompt = `${prompt}\n\nAs the Target Buyer Analyzer specialist, provide substantive market intelligence to help with segment scoring. Offer data-driven insights about different markets' problem size, solution gap, willingness to pay, and accessibility.`;
           break;
 
-        case 'research-designer':
-          prompt = `${prompt}\n\nAs the Research Designer specialist, recommend specific validation methods and questions tailored to the user's offer and target market. Provide clear, actionable research protocols they can implement immediately.`;
+        case 'idea-refiner':
+          prompt = `${prompt}\n\nAs the Idea Refiner specialist, recommend specific validation methods and questions tailored to the user's offer and target market. Provide clear, actionable research protocols they can implement immediately.`;
+          break;
+
+        case 'workshop-summarizer':
+          prompt = `${prompt}\n\nAs the Workshop Summarizer specialist, provide a comprehensive overview of the workshop progress and results. Highlight key insights, decisions, and next steps.`;
           break;
       }
 

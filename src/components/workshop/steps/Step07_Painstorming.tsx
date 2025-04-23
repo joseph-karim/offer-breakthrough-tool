@@ -3,7 +3,7 @@ import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import type { Pain, TargetBuyer } from '../../../types/workshop';
+import type { Pain } from '../../../types/workshop';
 import { AlertCircle, HelpCircle, MessageSquare, Plus, X, Fire } from 'lucide-react';
 import { ChatInterface } from '../chat/ChatInterface';
 import { STEP_QUESTIONS } from '../../../services/aiService';
@@ -30,7 +30,7 @@ export const Step07_Painstorming: React.FC = () => {
   const [isFire, setIsFire] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [showChat, setShowChat] = useState(false);
-  
+
   // Create AI service instance
   const aiService = new AIService({
     apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
@@ -58,7 +58,7 @@ export const Step07_Painstorming: React.FC = () => {
         isFire,
         source: 'user'
       };
-      
+
       setPainsList(prev => [...prev, pain]);
       setNewPain(''); // Clear input
       updateWorkshopData({ pains: [...painsList, pain] });
@@ -77,24 +77,24 @@ export const Step07_Painstorming: React.FC = () => {
       handleAddPain();
     }
   }, [handleAddPain]);
-  
+
   const toggleFireStatus = useCallback((id: string) => {
-    const updatedPains = painsList.map(pain => 
+    const updatedPains = painsList.map(pain =>
       pain.id === id ? { ...pain, isFire: !pain.isFire } : pain
     );
     setPainsList(updatedPains);
     updateWorkshopData({ pains: updatedPains });
   }, [painsList, updateWorkshopData]);
-  
+
   // Generate step context for AI
   const stepContext = `
     Workshop Step: Painstorming
-    
+
     The user is identifying painful problems their target buyers experience.
-    
+
     Target buyers:
     ${targetBuyers.map(buyer => `- ${buyer.description}`).join('\n')}
-    
+
     Current pains identified:
     ${painsList.map(pain => `- ${pain.description} (${pain.type}${pain.isFire ? ', FIRE' : ''})`).join('\n')}
   `;
@@ -128,7 +128,7 @@ export const Step07_Painstorming: React.FC = () => {
         title="Painstorming"
         description="Identify the painful problems your target buyers experience when trying to get the job done"
       />
-      
+
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
           variant="ghost"
@@ -138,10 +138,10 @@ export const Step07_Painstorming: React.FC = () => {
           {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
         </Button>
       </div>
-      
+
       {showChat && (
         <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
+          <ChatInterface
             step={7}
             stepContext={stepContext}
             questions={STEP_QUESTIONS[7] || []}
@@ -150,7 +150,7 @@ export const Step07_Painstorming: React.FC = () => {
           />
         </Card>
       )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -167,32 +167,34 @@ export const Step07_Painstorming: React.FC = () => {
             <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#e11d48' }} />
             The more urgent, painful, and expensive the problems, the more people will pay for your solution.
           </div>
-          
+
           {/* Add new pain */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label 
+              <label
                 htmlFor="new-pain"
-                style={{ 
-                  fontSize: '16px', 
-                  fontWeight: 600, 
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#1e293b',
                   display: 'block'
                 }}
               >
                 Add a painful problem
               </label>
-              <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} title="Describe a specific problem your target buyers face" />
+              <div title="Describe a specific problem your target buyers face">
+                <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
+              </div>
             </div>
-            
+
             <div style={{ display: 'grid', gap: '12px' }}>
               {/* Buyer segment selector */}
               <div>
-                <label 
+                <label
                   htmlFor="buyer-segment"
-                  style={{ 
-                    fontSize: '14px', 
-                    fontWeight: 500, 
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 500,
                     color: '#4b5563',
                     display: 'block',
                     marginBottom: '4px'
@@ -221,13 +223,13 @@ export const Step07_Painstorming: React.FC = () => {
                   ))}
                 </select>
               </div>
-              
+
               {/* Pain type selector */}
               <div>
-                <label 
-                  style={{ 
-                    fontSize: '14px', 
-                    fontWeight: 500, 
+                <label
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: 500,
                     color: '#4b5563',
                     display: 'block',
                     marginBottom: '4px'
@@ -258,7 +260,7 @@ export const Step07_Painstorming: React.FC = () => {
                   ))}
                 </div>
               </div>
-              
+
               {/* FIRE toggle */}
               <div>
                 <button
@@ -281,15 +283,15 @@ export const Step07_Painstorming: React.FC = () => {
                   <Fire size={16} color={isFire ? '#ef4444' : '#6b7280'} fill={isFire ? '#ef4444' : 'none'} />
                   {isFire ? 'This is a F.I.R.E. problem' : 'Mark as F.I.R.E. problem'}
                 </button>
-                <div style={{ 
-                  fontSize: '12px', 
+                <div style={{
+                  fontSize: '12px',
                   color: '#6b7280',
                   marginTop: '4px'
                 }}>
                   F.I.R.E. = Frequent, Intense, Requires action, Expensive
                 </div>
               </div>
-              
+
               {/* Pain description input */}
               <div style={{ display: 'flex', gap: '8px' }}>
                 <input
@@ -319,22 +321,22 @@ export const Step07_Painstorming: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {/* List of pains */}
           <div>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: '0 0 16px 0'
             }}>
               Painful Problems Identified
             </h3>
-            
+
             {painsList.length > 0 ? (
               <div style={{ display: 'grid', gap: '12px' }}>
                 {painsList.map(pain => (
-                  <div 
+                  <div
                     key={pain.id}
                     style={{
                       display: 'flex',
@@ -394,7 +396,7 @@ export const Step07_Painstorming: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    
+
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button
                         onClick={() => toggleFireStatus(pain.id)}
@@ -410,13 +412,13 @@ export const Step07_Painstorming: React.FC = () => {
                         aria-label={pain.isFire ? "Remove FIRE status" : "Mark as FIRE problem"}
                         title={pain.isFire ? "Remove FIRE status" : "Mark as FIRE problem"}
                       >
-                        <Fire 
-                          size={20} 
-                          color={pain.isFire ? '#ef4444' : '#6b7280'} 
-                          fill={pain.isFire ? '#ef4444' : 'none'} 
+                        <Fire
+                          size={20}
+                          color={pain.isFire ? '#ef4444' : '#6b7280'}
+                          fill={pain.isFire ? '#ef4444' : 'none'}
                         />
                       </button>
-                      
+
                       <button
                         onClick={() => handleDeletePain(pain.id)}
                         style={{
@@ -439,13 +441,13 @@ export const Step07_Painstorming: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div style={{ 
+              <div style={{
                 padding: '16px',
                 backgroundColor: '#f9fafb',
                 borderRadius: '8px',
                 border: '1px dashed #d1d5db'
               }}>
-                <p style={{ 
+                <p style={{
                   fontSize: '14px',
                   color: '#6b7280',
                   fontStyle: 'italic',
@@ -453,7 +455,7 @@ export const Step07_Painstorming: React.FC = () => {
                 }}>
                   Example painful problems:
                 </p>
-                <ul style={{ 
+                <ul style={{
                   listStyle: 'disc',
                   paddingLeft: '24px',
                   color: '#6b7280',
