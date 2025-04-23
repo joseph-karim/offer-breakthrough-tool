@@ -4,7 +4,7 @@ import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
 import { AIMessage } from '../../../types/chat';
 import { AIService } from '../../../services/aiService';
-import { Send, Loader2, Brain, MessageSquare, X } from 'lucide-react';
+import { Send, Loader2, X } from 'lucide-react';
 
 interface PersistentChatInterfaceProps {
   isOpen?: boolean;
@@ -172,7 +172,13 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
             flexShrink: 0
           }}
         >
-          {isUser ? '👤' : '✨'}
+          {isUser ? '👤' : (
+            <img
+              src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
+              alt="Sparky"
+              style={{ width: '24px', height: '24px', borderRadius: '50%' }}
+            />
+          )}
         </div>
 
         <div
@@ -193,7 +199,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
             color: '#222222',
             fontWeight: 600
           }}>
-            {isUser ? 'You' : 'AI Assistant'}
+            {isUser ? 'You' : 'Sparky'}
           </div>
           <div style={{
             fontSize: '15px',
@@ -219,15 +225,15 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
     <Card
       style={{
         position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        width: '400px',
-        maxHeight: '600px',
+        top: '120px',
+        left: '20px',
+        width: '350px',
+        height: 'calc(100vh - 160px)',
         display: 'flex',
         flexDirection: 'column',
         padding: 0,
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-        zIndex: 1000,
+        zIndex: 1050,
         border: '1px solid #EEEEEE',
         borderLeft: '3px solid #FFDD00'
       }}
@@ -244,8 +250,12 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Brain style={{ color: '#FFDD00', width: '20px', height: '20px' }} />
-          <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>Workshop Assistant</h3>
+          <img
+            src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
+            alt="Sparky"
+            style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+          />
+          <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>Sparky</h3>
         </div>
         {onClose && (
           <button
@@ -271,14 +281,18 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           padding: '16px',
           overflowY: 'auto',
           flexGrow: 1,
-          maxHeight: '400px',
+          height: 'calc(100% - 130px)',
           backgroundColor: '#FAFAFA'
         }}
       >
         {allMessages.length === 0 ? (
           <div style={{ textAlign: 'center', color: '#666666', padding: '20px' }}>
-            <MessageSquare style={{ width: '24px', height: '24px', margin: '0 auto 12px' }} />
-            <p>Ask me anything about the workshop or for help with the current step.</p>
+            <img
+              src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
+              alt="Sparky"
+              style={{ width: '40px', height: '40px', borderRadius: '50%', margin: '0 auto 12px', display: 'block' }}
+            />
+            <p>Hi! I'm Sparky, your workshop assistant. Ask me anything about the workshop or for help with the current step.</p>
           </div>
         ) : (
           allMessages.map(renderMessage)

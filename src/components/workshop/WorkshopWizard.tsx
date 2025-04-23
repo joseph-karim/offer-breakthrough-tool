@@ -415,8 +415,8 @@ export const WorkshopWizard = () => {
           </div>
         </main>
 
-        {/* Persistent Chat Interface */}
-        <PersistentChatInterface />
+        {/* Persistent Chat Interface - only show from step 2 onwards */}
+        {currentStep >= 2 && <PersistentChatInterface />}
       </div>
     </>
   );
