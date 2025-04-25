@@ -379,7 +379,7 @@ export class SparkyService {
         suggestions.push(
           { id: `suggestion-${Date.now()}-1`, content: 'Help me establish a professional brand identity quickly and affordably when launching my business.', type },
           { id: `suggestion-${Date.now()}-2`, content: 'Help me streamline my client onboarding process without sacrificing the personal touch.', type },
-          { id: `suggestion-${Date.now()}-3`, content: 'Help me create consistent content for my audience when I'm short on time and ideas.', type }
+          { id: `suggestion-${Date.now()}-3`, content: 'Help me create consistent content for my audience when I\'m short on time and ideas.', type }
         );
         break;
 
