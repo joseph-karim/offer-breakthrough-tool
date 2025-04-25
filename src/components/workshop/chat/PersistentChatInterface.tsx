@@ -943,29 +943,102 @@ Would you like to refine any of these statements? Type "refine overarching" or "
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Suggestion</h4>
-            <Button
-              variant="yellow"
-              size="sm"
-              onClick={handleSelectSuggestion}
-            >
-              Accept & Apply
-            </Button>
+            <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Suggestions</h4>
           </div>
           <div
             style={{
-              fontSize: '14px',
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #EEEEEE',
-              borderRadius: '8px',
-              padding: '8px 12px',
-              maxHeight: '100px',
+              maxHeight: '200px',
               overflowY: 'auto'
             }}
           >
-            {typeof currentSuggestion.content === 'string'
-              ? currentSuggestion.content
-              : JSON.stringify(currentSuggestion.content, null, 2)}
+            {typeof currentSuggestion.content === 'string' ? (
+              <div
+                style={{
+                  fontSize: '14px',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #EEEEEE',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  marginBottom: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+                }}
+                onClick={handleSelectSuggestion}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#FFFBEA';
+                  e.currentTarget.style.borderColor = '#FFDD00';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#FFFFFF';
+                  e.currentTarget.style.borderColor = '#EEEEEE';
+                }}
+              >
+                {currentSuggestion.content}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  marginTop: '10px'
+                }}>
+                  <Button
+                    variant="yellow"
+                    size="sm"
+                  >
+                    Accept & Apply
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              // Parse the content object and render each suggestion as a separate clickable item
+              Object.entries(currentSuggestion.content).map(([key, value]) => {
+                if (Array.isArray(value)) {
+                  return value.map((suggestion, index) => (
+                    <div
+                      key={`${key}-${index}`}
+                      style={{
+                        fontSize: '14px',
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid #EEEEEE',
+                        borderRadius: '8px',
+                        padding: '12px 16px',
+                        marginBottom: '12px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                        ':hover': {
+                          backgroundColor: '#FFFBEA',
+                          borderColor: '#FFDD00'
+                        }
+                      }}
+                      onClick={handleSelectSuggestion}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#FFFBEA';
+                        e.currentTarget.style.borderColor = '#FFDD00';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#FFFFFF';
+                        e.currentTarget.style.borderColor = '#EEEEEE';
+                      }}
+                    >
+                      {suggestion}
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        marginTop: '10px'
+                      }}>
+                        <Button
+                          variant="yellow"
+                          size="sm"
+                        >
+                          Accept & Apply
+                        </Button>
+                      </div>
+                    </div>
+                  ));
+                }
+                return null;
+              })
+            )}
           </div>
         </div>
       )}
