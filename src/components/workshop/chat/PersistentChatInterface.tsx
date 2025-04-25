@@ -1004,11 +1004,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
                         marginBottom: '12px',
                         cursor: 'pointer',
                         transition: 'all 0.2s',
-                        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-                        ':hover': {
-                          backgroundColor: '#FFFBEA',
-                          borderColor: '#FFDD00'
-                        }
+                        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
                       }}
                       onClick={handleSelectSuggestion}
                       onMouseEnter={(e) => {
