@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
-import { AIMessage } from '../../../types/chat';
-import { AIService } from '../../../services/aiService';
+import { AIMessage, ChatSuggestion } from '../../../types/chat';
 import { JTBDService } from '../../../services/jtbdService';
 import { OpenAIService } from '../../../services/openai';
 import { SparkyService, SparkyMessage, SuggestionOption } from '../../../services/sparkyService';
 import { JTBDSuggestionModal } from './JTBDSuggestionModal';
-import { Send, Loader2, X, Lightbulb, Sparkles } from 'lucide-react';
+import { Send, Loader2, X } from 'lucide-react';
+import { WorkshopData } from '../../../types/workshop';
 
 interface PersistentChatInterfaceProps {
   isOpen?: boolean;
@@ -33,15 +33,14 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [sparkySuggestions, setSparkySuggestions] = useState<SuggestionOption[]>([]);
+  // We need to keep this state even if it's not directly used in the render
+  // as it's used in the generateSparkySuggestions function
+  const [, setSparkySuggestions] = useState<SuggestionOption[]>([]);
   const [sparkyMessages, setSparkyMessages] = useState<SparkyMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Create AI service instances
+  // Create API key for OpenAI services
   const apiKey = import.meta.env.VITE_OPENAI_API_KEY || '';
-  const aiService = new AIService({
-    apiKey: apiKey,
-  });
 
   // Create OpenAI service for JTBD and Sparky
   const openaiService = new OpenAIService({
@@ -154,15 +153,15 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         }
         return "Now let's define the Job-to-be-Done - the progress your customers are trying to make. Would you like me to help generate some job statements based on your previous inputs? Just type 'jtbd' to start.";
       case 6:
-        const selectedJob = workshopData.jobs?.find(job => job.selected);
+        const selectedJob = workshopData.jobs?.find((job: { selected?: boolean }) => job.selected);
         if (selectedJob) {
           return `I see you've selected this job statement: "${selectedJob.description}"\n\nNow let's identify specific target buyer segments who experience this job intensely. What types of people or businesses frequently find themselves in this situation?`;
         }
         return "Now let's identify specific target buyer segments who experience your job statement intensely. What types of people or businesses frequently find themselves in this situation?";
       case 7:
-        const selectedBuyers = workshopData.targetBuyers?.filter(buyer => buyer.selected);
+        const selectedBuyers = workshopData.targetBuyers?.filter((buyer: { selected?: boolean }) => buyer.selected);
         if (selectedBuyers && selectedBuyers.length > 0) {
-          return `I see you've selected these target segments: ${selectedBuyers.map(b => `"${b.description}"`).join(", ")}\n\nNow let's identify specific pains they experience related to your job statement. What functional, emotional, or social pains do they face?`;
+          return `I see you've selected these target segments: ${selectedBuyers.map((b: { description: string }) => `"${b.description}"`).join(", ")}\n\nNow let's identify specific pains they experience related to your job statement. What functional, emotional, or social pains do they face?`;
         }
         return "Now let's identify specific pains your target segments experience. What functional, emotional, or social pains do they face when trying to get this job done?";
       case 8:
@@ -703,12 +702,12 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         setSparkySuggestions(suggestions);
 
         // Also create a suggestion for the workshop store
-        const workshopSuggestion = {
+        const workshopSuggestion: ChatSuggestion = {
           step: currentStep,
           content: {
             [suggestionType]: suggestions.map(s => s.content)
           },
-          rawResponse: suggestions
+          rawResponse: JSON.stringify(suggestions)
         };
 
         setCurrentSuggestion(workshopSuggestion);
@@ -719,22 +718,8 @@ Would you like to refine any of these statements? Type "refine overarching" or "
     }
   }, [currentStep, workshopData, setCurrentSuggestion, sparkyService]);
 
-  // Legacy suggestion generator (keeping for compatibility)
-  const generateSuggestions = useCallback(async () => {
-    try {
-      const suggestion = await aiService.getStepSuggestion(
-        currentStep,
-        getStepContext(currentStep, workshopData)
-      );
-
-      if (suggestion) {
-        setCurrentSuggestion(suggestion);
-        setShowSuggestions(true);
-      }
-    } catch (error) {
-      console.error('Error generating suggestions:', error);
-    }
-  }, [currentStep, workshopData, setCurrentSuggestion, aiService]);
+  // We've removed the legacy suggestion generator as it's no longer used
+  // Now we're using the Sparky-based suggestion generator above
 
   // Generate JTBD suggestions
   const generateJTBDSuggestions = useCallback(async (
@@ -831,12 +816,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
     }
   }, [handleSendMessage]);
 
-  // Helper function to get context for the current step
-  function getStepContext(step: number, _data: any): string {
-    // This is a simplified version - in a real implementation,
-    // you would extract relevant context based on the current step
-    return `Workshop Progress: Step ${step}`;
-  }
+  // We've removed the unused getStepContext function as it's no longer needed
 
   // Render message bubbles
   const renderMessage = (message: SparkyMessage | AIMessage) => {

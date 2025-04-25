@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
 import { Button } from '../ui/Button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';

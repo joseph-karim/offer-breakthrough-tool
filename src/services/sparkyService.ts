@@ -73,7 +73,7 @@ export class SparkyService {
       const assistantMessage: SparkyMessage = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: response.choices[0].message.content,
+        content: response.choices[0].message.content || '',
         timestamp: new Date().toISOString()
       };
 
@@ -140,7 +140,7 @@ export class SparkyService {
   /**
    * Mock response for Big Idea step
    */
-  private getMockBigIdeaResponse(message: string, workshopData: WorkshopData): string {
+  private getMockBigIdeaResponse(message: string, _workshopData: WorkshopData): string {
     const lowerMessage = message.toLowerCase();
 
     if (lowerMessage.includes('example') || lowerMessage.includes('help') || lowerMessage.includes('suggestion')) {
@@ -157,7 +157,7 @@ export class SparkyService {
   /**
    * Mock response for Underlying Goal step
    */
-  private getMockUnderlyingGoalResponse(message: string, workshopData: WorkshopData): string {
+  private getMockUnderlyingGoalResponse(message: string, _workshopData: WorkshopData): string {
     const lowerMessage = message.toLowerCase();
 
     if (lowerMessage.includes('example') || lowerMessage.includes('goal') || lowerMessage.includes('suggestion')) {
@@ -192,7 +192,7 @@ export class SparkyService {
   /**
    * Mock response for Jobs step
    */
-  private getMockJobsResponse(message: string, workshopData: WorkshopData): string {
+  private getMockJobsResponse(message: string, _workshopData: WorkshopData): string {
     const lowerMessage = message.toLowerCase();
 
     if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
@@ -345,7 +345,7 @@ export class SparkyService {
   private generateMockSuggestions(
     currentStep: number,
     type: string,
-    workshopData: WorkshopData
+    _workshopData: WorkshopData
   ): SuggestionOption[] {
     // Generate 3-5 mock suggestions based on the step and type
     const suggestions: SuggestionOption[] = [];
@@ -485,7 +485,7 @@ export class SparkyService {
   /**
    * Get the system prompt for the current step
    */
-  private getSystemPromptForStep(currentStep: number, workshopData: WorkshopData): string {
+  private getSystemPromptForStep(currentStep: number, _workshopData: WorkshopData): string {
     // Global context for all steps
     const globalContext = `You are Sparky, an AI workshop assistant for the Buyer Breakthrough Workshop.
 You help users brainstorm, refine ideas, and navigate the exercises.
@@ -659,12 +659,12 @@ Generate 3-5 distinct, specific suggestions for the user based on their workshop
   /**
    * Get suggestion prompt for Step 2: Big Idea
    */
-  private getBigIdeaSuggestionPrompt(type: string, workshopData: WorkshopData): {
+  private getBigIdeaSuggestionPrompt(_type: string, workshopData: WorkshopData): {
     system: string;
     user: string;
   } {
     // Check if we're refining an existing idea or brainstorming from scratch
-    const isRefining = workshopData.bigIdea?.description?.trim().length > 0;
+    const isRefining = workshopData.bigIdea?.description ? workshopData.bigIdea.description.trim().length > 0 : false;
 
     if (isRefining) {
       // Refining an existing idea
@@ -718,7 +718,7 @@ Provide exactly 3-5 distinct options. Format each option as follows, with no int
   /**
    * Get suggestion prompt for Step 3: Underlying Goal
    */
-  private getUnderlyingGoalSuggestionPrompt(type: string, workshopData: WorkshopData): {
+  private getUnderlyingGoalSuggestionPrompt(_type: string, workshopData: WorkshopData): {
     system: string;
     user: string;
   } {
@@ -748,7 +748,7 @@ Provide 3-5 options for Goals and 3-5 options for Constraints, clearly labeled. 
   /**
    * Get suggestion prompt for Step 4: Trigger Events
    */
-  private getTriggerEventsSuggestionPrompt(type: string, workshopData: WorkshopData): {
+  private getTriggerEventsSuggestionPrompt(_type: string, workshopData: WorkshopData): {
     system: string;
     user: string;
   } {
@@ -845,7 +845,7 @@ Provide 3-5 distinct potential Job Statement options. Do not include any additio
   /**
    * Get suggestion prompt for Step 6: Target Buyers
    */
-  private getTargetBuyersSuggestionPrompt(type: string, workshopData: WorkshopData): {
+  private getTargetBuyersSuggestionPrompt(_type: string, workshopData: WorkshopData): {
     system: string;
     user: string;
   } {
@@ -878,7 +878,7 @@ Provide 3-5 distinct potential target buyer segment options. Do not include any 
   /**
    * Get suggestion prompt for Step 7: Painstorming
    */
-  private getPainstormingSuggestionPrompt(type: string, workshopData: WorkshopData): {
+  private getPainstormingSuggestionPrompt(_type: string, workshopData: WorkshopData): {
     system: string;
     user: string;
   } {
@@ -923,7 +923,7 @@ Structure the output clearly by segment, then list overlapping pains. Do not inc
   /**
    * Get suggestion prompt for Step 8: Problem-Up
    */
-  private getProblemUpSuggestionPrompt(type: string, workshopData: WorkshopData): {
+  private getProblemUpSuggestionPrompt(_type: string, workshopData: WorkshopData): {
     system: string;
     user: string;
   } {
@@ -1054,7 +1054,7 @@ Provide 3-5 distinct options for the refined Big Idea statement (V2), following 
   /**
    * Get suggestion prompt for Step 10: Summary & Next Steps
    */
-  private getSummaryNextStepsSuggestionPrompt(type: string, workshopData: WorkshopData): {
+  private getSummaryNextStepsSuggestionPrompt(_type: string, workshopData: WorkshopData): {
     system: string;
     user: string;
   } {
