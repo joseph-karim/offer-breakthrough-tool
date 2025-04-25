@@ -4,13 +4,9 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { BigIdea } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, MessageSquare, ArrowRight } from 'lucide-react';
+import { AlertCircle, HelpCircle, ArrowRight } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
-import { ChatInterface } from '../chat/ChatInterface';
-import { STEP_QUESTIONS } from '../../../services/aiService';
-import { AIService } from '../../../services/aiService';
-import { Button } from '../../ui/Button';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
@@ -20,7 +16,6 @@ const selectPains = (state: WorkshopStore) => state.workshopData.pains;
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
-const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
 
 export const Step09_RefineIdea: React.FC = () => {
   const initialBigIdea = useWorkshopStore(selectBigIdea);
@@ -30,7 +25,6 @@ export const Step09_RefineIdea: React.FC = () => {
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
-  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
 
   const [formData, setFormData] = useState<BigIdea>({
     description: refinedIdea?.description || '',
@@ -39,12 +33,6 @@ export const Step09_RefineIdea: React.FC = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
-  const [showChat, setShowChat] = useState(false);
-
-  // Create AI service instance
-  const aiService = new AIService({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
-  });
 
   // Update local state when store value changes
   useEffect(() => {
@@ -109,29 +97,6 @@ export const Step09_RefineIdea: React.FC = () => {
     problemUp?.selectedBuyers?.includes(buyer.id)
   );
 
-  // Generate step context for AI
-  const stepContext = `
-    Workshop Step: Refine Your Idea
-
-    The user is refining their initial product idea based on the insights from the workshop.
-
-    Initial big idea:
-    ${initialBigIdea?.description || ''}
-
-    Selected pains:
-    ${selectedPains.map(pain => `- ${pain.description}`).join('\n')}
-
-    Selected buyers:
-    ${selectedBuyers.map(buyer => `- ${buyer.description}`).join('\n')}
-
-    Target moment:
-    ${problemUp?.targetMoment || ''}
-
-    Current refined idea:
-    ${formData.description}
-    ${formData.targetCustomers}
-  `;
-
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
@@ -139,28 +104,6 @@ export const Step09_RefineIdea: React.FC = () => {
         title="Refine Your Idea"
         description="Revise your initial idea based on the insights from the workshop"
       />
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <Button
-          variant="ghost"
-          onClick={() => setShowChat(!showChat)}
-          rightIcon={<MessageSquare size={16} />}
-        >
-          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
-        </Button>
-      </div>
-
-      {showChat && (
-        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface
-            step={9}
-            stepContext={stepContext}
-            questions={STEP_QUESTIONS[9] || []}
-            aiService={aiService}
-            onSuggestionAccept={() => acceptSuggestion(9)}
-          />
-        </Card>
-      )}
 
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>

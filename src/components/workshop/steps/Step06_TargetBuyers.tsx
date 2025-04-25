@@ -4,32 +4,23 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetBuyer } from '../../../types/workshop';
-import { HelpCircle, MessageSquare, Plus, X, Star } from 'lucide-react';
-import { ChatInterface } from '../chat/ChatInterface';
-import { STEP_QUESTIONS } from '../../../services/aiService';
-import { AIService } from '../../../services/aiService';
+import { HelpCircle, Plus, X, Star } from 'lucide-react';
+
 import { Button } from '../../ui/Button';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
+
 
 export const Step06_TargetBuyers: React.FC = () => {
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
 
   // Use local state for the buyers
   const [buyers, setBuyers] = useState<TargetBuyer[]>(targetBuyers || []);
   const [newBuyer, setNewBuyer] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [showChat, setShowChat] = useState(false);
-
-  // Create AI service instance
-  const aiService = new AIService({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
-  });
 
   // Update local state when store value changes
   useEffect(() => {
@@ -76,16 +67,6 @@ export const Step06_TargetBuyers: React.FC = () => {
     updateWorkshopData({ targetBuyers: updatedBuyers });
   }, [buyers, updateWorkshopData]);
 
-  // Generate step context for AI
-  const stepContext = `
-    Workshop Step: Target Buyers
-
-    The user is identifying potential target buyers for their offer.
-
-    Current target buyers:
-    ${buyers.map(buyer => `- ${buyer.description}`).join('\n')}
-  `;
-
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
@@ -93,28 +74,6 @@ export const Step06_TargetBuyers: React.FC = () => {
         title="Identify Target Buyers"
         description="Who might have an urgent need to get the job done and will pay a premium for a solution?"
       />
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <Button
-          variant="ghost"
-          onClick={() => setShowChat(!showChat)}
-          rightIcon={<MessageSquare size={16} />}
-        >
-          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
-        </Button>
-      </div>
-
-      {showChat && (
-        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface
-            step={6}
-            stepContext={stepContext}
-            questions={STEP_QUESTIONS[6] || []}
-            aiService={aiService}
-            onSuggestionAccept={() => acceptSuggestion(6)}
-          />
-        </Card>
-      )}
 
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>

@@ -4,11 +4,7 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { ProblemUp } from '../../../types/workshop';
-import { HelpCircle, MessageSquare, Check, Flame } from 'lucide-react';
-import { ChatInterface } from '../chat/ChatInterface';
-import { STEP_QUESTIONS } from '../../../services/aiService';
-import { AIService } from '../../../services/aiService';
-import { Button } from '../../ui/Button';
+import { HelpCircle, Check, Flame } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -16,14 +12,12 @@ const selectPains = (state: WorkshopStore) => state.workshopData.pains;
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectProblemUp = (state: WorkshopStore) => state.workshopData.problemUp;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
 
 export const Step08_ProblemUp: React.FC = () => {
   const pains = useWorkshopStore(selectPains);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const problemUp = useWorkshopStore(selectProblemUp);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
 
   // Use local state for the problem-up data
   const [formData, setFormData] = useState<ProblemUp>({
@@ -34,12 +28,6 @@ export const Step08_ProblemUp: React.FC = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
-  const [showChat, setShowChat] = useState(false);
-
-  // Create AI service instance
-  const aiService = new AIService({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
-  });
 
   // Update local state when store value changes
   useEffect(() => {
@@ -111,25 +99,6 @@ export const Step08_ProblemUp: React.FC = () => {
     });
   }, [updateWorkshopData]);
 
-  // Generate step context for AI
-  const stepContext = `
-    Workshop Step: Problem Up
-
-    The user is selecting specific problems and target buyers to focus on.
-
-    Available pains:
-    ${pains.map(pain => `- ${pain.description} (${pain.type}${pain.isFire ? ', FIRE' : ''})`).join('\n')}
-
-    Available target buyers:
-    ${targetBuyers.map(buyer => `- ${buyer.description}`).join('\n')}
-
-    Currently selected:
-    Selected pains: ${formData.selectedPains.length}
-    Selected buyers: ${formData.selectedBuyers.length}
-    Target moment: ${formData.targetMoment}
-    Notes: ${formData.notes}
-  `;
-
   // Get pain type color
   const getPainTypeColor = (type: string): string => {
     switch (type) {
@@ -148,28 +117,6 @@ export const Step08_ProblemUp: React.FC = () => {
         title="Problem Up"
         description="Choose specific problems and target buyers to shape your solution around"
       />
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <Button
-          variant="ghost"
-          onClick={() => setShowChat(!showChat)}
-          rightIcon={<MessageSquare size={16} />}
-        >
-          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
-        </Button>
-      </div>
-
-      {showChat && (
-        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface
-            step={8}
-            stepContext={stepContext}
-            questions={STEP_QUESTIONS[8] || []}
-            aiService={aiService}
-            onSuggestionAccept={() => acceptSuggestion(8)}
-          />
-        </Card>
-      )}
 
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>

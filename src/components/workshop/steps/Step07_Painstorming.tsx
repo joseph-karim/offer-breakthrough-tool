@@ -4,23 +4,19 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Pain } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, MessageSquare, Plus, X, Flame } from 'lucide-react';
-import { ChatInterface } from '../chat/ChatInterface';
-import { STEP_QUESTIONS } from '../../../services/aiService';
-import { AIService } from '../../../services/aiService';
+import { AlertCircle, HelpCircle, Plus, X, Flame } from 'lucide-react';
+
 import { Button } from '../../ui/Button';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectPains = (state: WorkshopStore) => state.workshopData.pains;
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
 
 export const Step07_Painstorming: React.FC = () => {
   const pains = useWorkshopStore(selectPains);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
 
   // Use local state for the pains
   const [painsList, setPainsList] = useState<Pain[]>(pains || []);
@@ -29,12 +25,6 @@ export const Step07_Painstorming: React.FC = () => {
   const [selectedPainType, setSelectedPainType] = useState<'functional' | 'emotional' | 'social' | 'anticipated'>('functional');
   const [isFire, setIsFire] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [showChat, setShowChat] = useState(false);
-
-  // Create AI service instance
-  const aiService = new AIService({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
-  });
 
   // Update local state when store value changes
   useEffect(() => {
@@ -86,19 +76,6 @@ export const Step07_Painstorming: React.FC = () => {
     updateWorkshopData({ pains: updatedPains });
   }, [painsList, updateWorkshopData]);
 
-  // Generate step context for AI
-  const stepContext = `
-    Workshop Step: Painstorming
-
-    The user is identifying painful problems their target buyers experience.
-
-    Target buyers:
-    ${targetBuyers.map(buyer => `- ${buyer.description}`).join('\n')}
-
-    Current pains identified:
-    ${painsList.map(pain => `- ${pain.description} (${pain.type}${pain.isFire ? ', FIRE' : ''})`).join('\n')}
-  `;
-
   // Get pain type label
   const getPainTypeLabel = (type: string): string => {
     switch (type) {
@@ -128,28 +105,6 @@ export const Step07_Painstorming: React.FC = () => {
         title="Painstorming"
         description="Identify the painful problems your target buyers experience when trying to get the job done"
       />
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <Button
-          variant="ghost"
-          onClick={() => setShowChat(!showChat)}
-          rightIcon={<MessageSquare size={16} />}
-        >
-          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
-        </Button>
-      </div>
-
-      {showChat && (
-        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface
-            step={7}
-            stepContext={stepContext}
-            questions={STEP_QUESTIONS[7] || []}
-            aiService={aiService}
-            onSuggestionAccept={() => acceptSuggestion(7)}
-          />
-        </Card>
-      )}
 
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>

@@ -5,31 +5,22 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Job } from '../../../types/workshop';
-import { Target, Plus, X, MessageSquare, ArrowRight } from 'lucide-react';
-import { ChatInterface } from '../chat/ChatInterface';
-import { STEP_QUESTIONS } from '../../../services/aiService';
-import { AIService } from '../../../services/aiService';
+import { Target, Plus, X, ArrowRight } from 'lucide-react';
+
 
 // Separate selectors to prevent unnecessary re-renders
 const selectJobs = (state: WorkshopStore) => state.workshopData.jobs || [];
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
+
 
 export const Step05_Jobs: React.FC = () => {
   const storeJobs = useWorkshopStore(selectJobs);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
 
   // Use local state for the jobs
   const [jobs, setJobs] = useState<Job[]>(storeJobs);
   const [newJob, setNewJob] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [showChat, setShowChat] = useState(false);
-  
-  // Create AI service instance
-  const aiService = new AIService({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
-  });
 
   // Update local state when store value changes
   useEffect(() => {
@@ -43,7 +34,7 @@ export const Step05_Jobs: React.FC = () => {
         description: newJob.trim(),
         source: 'user'
       };
-      
+
       setJobs(prev => [...prev, job]);
       setNewJob(''); // Clear input
       updateWorkshopData({ jobs: [...jobs, job] });
@@ -62,16 +53,6 @@ export const Step05_Jobs: React.FC = () => {
       handleAddJob();
     }
   }, [handleAddJob]);
-  
-  // Generate step context for AI
-  const stepContext = `
-    Workshop Step: Jobs To Be Done (JTBD)
-    
-    Jobs to be done are the tasks, goals, or objectives that customers are trying to achieve.
-    
-    Current jobs:
-    ${jobs.map(job => `- ${job.description}`).join('\n')}
-  `;
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -80,29 +61,7 @@ export const Step05_Jobs: React.FC = () => {
         title="Uncover Jobs To Be Done (JTBD)"
         description="What progress is your customer trying to make? What outcome are they hiring a product/service for?"
       />
-      
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <Button
-          variant="ghost"
-          onClick={() => setShowChat(!showChat)}
-          rightIcon={<MessageSquare size={16} />}
-        >
-          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
-        </Button>
-      </div>
-      
-      {showChat && (
-        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface 
-            step={5}
-            stepContext={stepContext}
-            questions={STEP_QUESTIONS[5] || []}
-            aiService={aiService}
-            onSuggestionAccept={() => acceptSuggestion(5)}
-          />
-        </Card>
-      )}
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -122,9 +81,9 @@ export const Step05_Jobs: React.FC = () => {
 
           {/* Job Hierarchy Framework */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: 0
             }}>
@@ -133,10 +92,10 @@ export const Step05_Jobs: React.FC = () => {
             <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
               Jobs-to-be-Done exist in a hierarchy with main functional jobs, supporting jobs, and emotional jobs:
             </p>
-            
-            <div style={{ 
-              padding: '16px', 
-              backgroundColor: '#f8fafc', 
+
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
               borderRadius: '8px',
               border: '1px solid #e2e8f0'
             }}>
@@ -154,9 +113,9 @@ export const Step05_Jobs: React.FC = () => {
                   <p style={{ margin: '4px 0 0 0' }}>"Help me generate consistent revenue from my existing audience without spending more on ads"</p>
                 </div>
               </div>
-              
+
               <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>Supporting Jobs:</p>
-              <ul style={{ 
+              <ul style={{
                 margin: '0 0 16px 0',
                 paddingLeft: '16px',
                 listStyleType: 'disc',
@@ -168,9 +127,9 @@ export const Step05_Jobs: React.FC = () => {
                 <li>"Help me re-engage people who have gone cold"</li>
                 <li>"Help me maximize the value of each subscriber"</li>
               </ul>
-              
+
               <p style={{ margin: '0 0 8px 0', fontWeight: 500 }}>Emotional Jobs:</p>
-              <ul style={{ 
+              <ul style={{
                 margin: '0',
                 paddingLeft: '16px',
                 listStyleType: 'disc',
@@ -183,12 +142,12 @@ export const Step05_Jobs: React.FC = () => {
               </ul>
             </div>
           </div>
-          
+
           {/* Job Statement Refinement */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: 0
             }}>
@@ -197,10 +156,10 @@ export const Step05_Jobs: React.FC = () => {
             <p style={{ margin: 0, lineHeight: 1.6, color: '#334155' }}>
               Use the "so that" technique to dig deeper into the true job your customers are hiring you for:
             </p>
-            
-            <div style={{ 
-              padding: '16px', 
-              backgroundColor: '#f8fafc', 
+
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
               borderRadius: '8px',
               border: '1px solid #e2e8f0'
             }}>
@@ -208,9 +167,9 @@ export const Step05_Jobs: React.FC = () => {
               <div style={{ color: '#334155', fontSize: '14px', fontStyle: 'italic' }}>
                 "I want email sequences... <span style={{ color: '#0ea5e9' }}>so that</span>... I can sell to my list... <span style={{ color: '#0ea5e9' }}>so that</span>... I can generate revenue... <span style={{ color: '#0ea5e9' }}>so that</span>... I can have predictable income without constantly chasing new leads"
               </div>
-              
-              <div style={{ 
-                marginTop: '16px', 
+
+              <div style={{
+                marginTop: '16px',
                 padding: '12px',
                 backgroundColor: '#dcfce7',
                 borderRadius: '6px',
@@ -221,7 +180,7 @@ export const Step05_Jobs: React.FC = () => {
                 Final Job Statement:<br />
                 "Help me generate predictable revenue from my existing audience without spending more on ads or constantly creating new content"
               </div>
-              
+
               <p style={{ margin: '16px 0 0 0', fontSize: '14px', color: '#475569' }}>
                 This job statement exercise shifts perspective from focusing on the craft (writing emails) to solving the actual business problem—reliable revenue generation.
               </p>
@@ -230,20 +189,20 @@ export const Step05_Jobs: React.FC = () => {
 
           {/* Your Jobs To Be Done */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '8px' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: 600, 
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
               color: '#1e293b',
               margin: 0
             }}>
               3C: Your Jobs To Be Done
             </h3>
-          
+
           {/* List of existing jobs */}
           {jobs.length > 0 && (
             <div style={{ display: 'grid', gap: '12px' }}>
               {jobs.map(job => (
-                <div 
+                <div
                   key={job.id}
                   style={{
                     display: 'flex',
@@ -281,7 +240,7 @@ export const Step05_Jobs: React.FC = () => {
 
           {/* Add new job input */}
           <div>
-            <label 
+            <label
               htmlFor="newJob"
               style={{ fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}
             >
@@ -303,7 +262,7 @@ export const Step05_Jobs: React.FC = () => {
                   backgroundColor: 'white',
                 }}
               />
-              <Button 
+              <Button
                 variant="primary"
                 onClick={handleAddJob}
                 disabled={!newJob.trim()}
@@ -317,13 +276,13 @@ export const Step05_Jobs: React.FC = () => {
 
           {/* Example jobs */}
           {jobs.length === 0 && (
-            <div style={{ 
+            <div style={{
               padding: '16px',
               backgroundColor: '#f9fafb',
               borderRadius: '8px',
               border: '1px dashed #d1d5db'
             }}>
-              <p style={{ 
+              <p style={{
                 fontSize: '14px',
                 color: '#6b7280',
                 fontStyle: 'italic',
@@ -331,7 +290,7 @@ export const Step05_Jobs: React.FC = () => {
               }}>
                 Example jobs to be done:
               </p>
-              <ul style={{ 
+              <ul style={{
                 listStyle: 'disc',
                 paddingLeft: '24px',
                 color: '#6b7280',
@@ -350,4 +309,4 @@ export const Step05_Jobs: React.FC = () => {
       </Card>
     </div>
   );
-}; 
+};

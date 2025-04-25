@@ -1,27 +1,18 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { HelpCircle, MessageSquare, Download, ExternalLink } from 'lucide-react';
-import { ChatInterface } from '../chat/ChatInterface';
-import { STEP_QUESTIONS } from '../../../services/aiService';
-import { AIService } from '../../../services/aiService';
+import { HelpCircle, Download, ExternalLink } from 'lucide-react';
+
 import { Button } from '../../ui/Button';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectWorkshopData = (state: WorkshopStore) => state.workshopData;
-const selectAcceptSuggestion = (state: WorkshopStore) => state.acceptSuggestion;
+
 
 export const Step10_Summary: React.FC = () => {
   const workshopData = useWorkshopStore(selectWorkshopData);
-  const acceptSuggestion = useWorkshopStore(selectAcceptSuggestion);
-  const [showChat, setShowChat] = useState(false);
-
-  // Create AI service instance
-  const aiService = new AIService({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
-  });
 
   // Generate workshop summary
   const generateSummary = useCallback(() => {
@@ -58,48 +49,6 @@ export const Step10_Summary: React.FC = () => {
     URL.revokeObjectURL(url);
   }, [generateSummary]);
 
-  // Generate step context for AI
-  const stepContext = `
-    Workshop Summary
-
-    Initial Big Idea:
-    ${workshopData.bigIdea?.description || 'Not defined'}
-
-    Underlying Goal:
-    ${workshopData.underlyingGoal?.businessGoal || 'Not defined'}
-
-    Trigger Events:
-    ${workshopData.triggerEvents.map(event => `- ${event.description}`).join('\n')}
-
-    Jobs to be Done:
-    ${workshopData.jobs.map(job => `- ${job.description}`).join('\n')}
-
-    Target Buyers:
-    ${workshopData.targetBuyers
-      .filter(buyer => buyer.selected || workshopData.problemUp?.selectedBuyers.includes(buyer.id))
-      .map(buyer => `- ${buyer.description}`)
-      .join('\n')}
-
-    Key Pains:
-    ${workshopData.pains
-      .filter(pain => workshopData.problemUp?.selectedPains.includes(pain.id))
-      .map(pain => `- ${pain.description}`)
-      .join('\n')}
-
-    Target Moment:
-    ${workshopData.problemUp?.targetMoment || 'Not defined'}
-
-    Refined Idea:
-    ${workshopData.refinedIdea?.description || 'Not defined'}
-    ${workshopData.refinedIdea?.targetCustomers ? `Target Customers: ${workshopData.refinedIdea.targetCustomers}` : ''}
-
-    Reflections:
-    ${workshopData.reflections?.keyInsights || ''}
-
-    Next Steps:
-    ${workshopData.reflections?.nextSteps || ''}
-  `;
-
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
@@ -107,28 +56,6 @@ export const Step10_Summary: React.FC = () => {
         title="Workshop Summary"
         description="Review your journey and plan your next steps"
       />
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <Button
-          variant="ghost"
-          onClick={() => setShowChat(!showChat)}
-          rightIcon={<MessageSquare size={16} />}
-        >
-          {showChat ? 'Hide AI Assistant' : 'Get AI Help'}
-        </Button>
-      </div>
-
-      {showChat && (
-        <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
-          <ChatInterface
-            step={10}
-            stepContext={stepContext}
-            questions={STEP_QUESTIONS[10] || []}
-            aiService={aiService}
-            onSuggestionAccept={() => acceptSuggestion(10)}
-          />
-        </Card>
-      )}
 
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
