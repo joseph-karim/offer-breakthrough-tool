@@ -28,11 +28,12 @@ export class OpenAIService {
   async generateCompletion(
     systemPrompt: string,
     userPrompt: string,
-    temperature?: number
+    temperature?: number,
+    modelOverride?: string
   ): Promise<string> {
     try {
       const response = await this.client.chat.completions.create({
-        model: this.config.model!,
+        model: modelOverride || this.config.model!,
         temperature: temperature ?? this.config.temperature!,
         max_tokens: this.config.maxTokens,
         messages: [
@@ -57,13 +58,15 @@ export class OpenAIService {
   async generateStructuredOutput<T>(
     systemPrompt: string,
     userPrompt: string,
-    temperature?: number
+    temperature?: number,
+    modelOverride?: string
   ): Promise<T> {
     try {
       const completion = await this.generateCompletion(
         systemPrompt + "\nOutput must be valid JSON.",
         userPrompt + "\nProvide your response as a JSON object.",
-        temperature
+        temperature,
+        modelOverride
       );
 
       return JSON.parse(completion) as T;
@@ -72,4 +75,25 @@ export class OpenAIService {
       throw new Error('Failed to generate structured output');
     }
   }
-} 
+
+  async chatCompletion(options: {
+    model: string;
+    messages: Array<{role: 'system' | 'user' | 'assistant'; content: string}>;
+    temperature?: number;
+    max_tokens?: number;
+  }) {
+    try {
+      const response = await this.client.chat.completions.create({
+        model: options.model,
+        messages: options.messages,
+        temperature: options.temperature ?? this.config.temperature!,
+        max_tokens: options.max_tokens ?? this.config.maxTokens
+      });
+
+      return response;
+    } catch (error) {
+      console.error('OpenAI API Error:', error);
+      throw new Error('Failed to generate chat completion');
+    }
+  }
+}

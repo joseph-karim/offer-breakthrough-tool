@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
 import { Button } from '../ui/Button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { PersistentChatInterface } from '../workshop/chat/PersistentChatInterface';
 
 interface WorkshopLayoutProps {
   children: ReactNode;
@@ -36,7 +37,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
               Step {currentStep} of {totalSteps}
             </div>
           </div>
-          <div style={{ 
+          <div style={{
             marginTop: '16px',
             height: '8px',
             width: '100%',
@@ -57,50 +58,76 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
         </div>
       </header>
 
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          {children}
-        </div>
-        
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginTop: '48px',
-          maxWidth: '800px',
-          margin: '48px auto 0'
-        }}>
-          <Button
-            variant="outline"
-            onClick={handlePrevious}
-            disabled={currentStep === 1}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-          >
-            <ChevronLeft size={20} />
-            Previous Step
-          </Button>
-
-          <div style={{ 
-            flex: 1, 
-            textAlign: 'center',
-            fontSize: '14px',
-            color: '#6b7280',
-            marginLeft: '24px',
-            marginRight: '24px'
+      <div style={{ display: 'flex', position: 'relative' }}>
+        {/* Persistent Chat - Only show from step 2 onwards */}
+        {currentStep > 1 && (
+          <div style={{
+            width: '350px',
+            position: 'fixed',
+            top: '120px',
+            left: '20px',
+            height: 'calc(100vh - 160px)',
+            zIndex: 10
           }}>
+            <PersistentChatInterface
+              isFixed={false}
+              isOpen={true}
+            />
+          </div>
+        )}
+
+        <main style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '32px 24px',
+          width: '100%',
+          marginLeft: currentStep > 1 ? '380px' : '0',
+          transition: 'margin-left 0.3s ease'
+        }}>
+          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+            {children}
           </div>
 
-          <Button
-            variant="primary"
-            onClick={handleNext}
-            disabled={currentStep === totalSteps}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-          >
-            Next Step
-            <ChevronRight size={20} />
-          </Button>
-        </div>
-      </main>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '48px',
+            maxWidth: '800px',
+            margin: '48px auto 0'
+          }}>
+            <Button
+              variant="outline"
+              onClick={handlePrevious}
+              disabled={currentStep === 1}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+            >
+              <ChevronLeft size={20} />
+              Previous Step
+            </Button>
+
+            <div style={{
+              flex: 1,
+              textAlign: 'center',
+              fontSize: '14px',
+              color: '#6b7280',
+              marginLeft: '24px',
+              marginRight: '24px'
+            }}>
+            </div>
+
+            <Button
+              variant="primary"
+              onClick={handleNext}
+              disabled={currentStep === totalSteps}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+            >
+              Next Step
+              <ChevronRight size={20} />
+            </Button>
+          </div>
+        </main>
+      </div>
     </div>
   );
-}; 
+};
