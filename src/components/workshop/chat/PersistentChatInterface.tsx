@@ -9,11 +9,13 @@ import { Send, Loader2, X } from 'lucide-react';
 interface PersistentChatInterfaceProps {
   isOpen?: boolean;
   onClose?: () => void;
+  isFixed?: boolean; // Whether the chat is fixed position or part of the layout
 }
 
 export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = ({
   isOpen = true,
-  onClose
+  onClose,
+  isFixed = true
 }) => {
   const {
     currentStep,
@@ -224,16 +226,16 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   return (
     <Card
       style={{
-        position: 'fixed',
-        top: '120px',
-        left: '20px',
-        width: '350px',
-        height: 'calc(100vh - 160px)',
+        position: isFixed ? 'fixed' : 'relative',
+        top: isFixed ? '120px' : 'auto',
+        left: isFixed ? '20px' : 'auto',
+        width: '100%',
+        height: isFixed ? 'calc(100vh - 160px)' : '100%',
         display: 'flex',
         flexDirection: 'column',
         padding: 0,
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-        zIndex: 1050,
+        zIndex: isFixed ? 1050 : 'auto',
         border: '1px solid #EEEEEE',
         borderLeft: '3px solid #FFDD00'
       }}

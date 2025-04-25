@@ -244,6 +244,19 @@ export const WorkshopWizard = () => {
     padding: '0 24px',
     position: 'relative',
     zIndex: 10,
+    display: 'flex',
+    gap: '24px',
+  };
+
+  // Chat container styles
+  const chatContainerStyle: CSSProperties = {
+    width: '350px',
+    flexShrink: 0,
+    position: 'sticky',
+    top: '100px',
+    alignSelf: 'flex-start',
+    maxHeight: 'calc(100vh - 120px)',
+    display: currentStep >= 2 ? 'block' : 'none',
   };
 
   const contentCardStyle: CSSProperties = {
@@ -255,6 +268,7 @@ export const WorkshopWizard = () => {
     padding: '0',
     marginBottom: '0',
     color: '#222222', // Black text on white background
+    flexGrow: 1, // Take up remaining space
   };
 
   // Navigation styles INLINE with content
@@ -383,6 +397,11 @@ export const WorkshopWizard = () => {
 
         {/* Main content */}
         <main style={contentContainerStyle}>
+          {/* Persistent Chat Interface - only show from step 2 onwards */}
+          <div style={chatContainerStyle}>
+            {currentStep >= 2 && <PersistentChatInterface isFixed={false} />}
+          </div>
+
           <div style={contentCardStyle}>
             <div className="workbook-content">
               {currentStepComponent}
@@ -414,9 +433,6 @@ export const WorkshopWizard = () => {
             </div>
           </div>
         </main>
-
-        {/* Persistent Chat Interface - only show from step 2 onwards */}
-        {currentStep >= 2 && <PersistentChatInterface />}
       </div>
     </>
   );
