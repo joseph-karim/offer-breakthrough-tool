@@ -852,8 +852,8 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         position: isFixed ? 'fixed' : 'relative',
         top: isFixed ? '120px' : 'auto',
         left: isFixed ? '20px' : 'auto',
-        width: '320px', // Slightly narrower width
-        height: 'calc(100vh - 140px)', // Slightly shorter height
+        width: '350px', // Original width
+        height: 'calc(100vh - 120px)', // Original height
         display: 'flex',
         flexDirection: 'column',
         padding: 0,
@@ -866,7 +866,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
       {/* Chat Header */}
       <div
         style={{
-          padding: '12px 16px',
+          padding: '16px 24px',
           borderBottom: '1px solid #EEEEEE',
           display: 'flex',
           justifyContent: 'space-between',
@@ -874,7 +874,14 @@ Would you like to refine any of these statements? Type "refine overarching" or "
           backgroundColor: '#FFFFFF'
         }}
       >
-        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>Sparky</h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <img
+            src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
+            alt="Sparky"
+            style={{ width: '42px', height: '42px', borderRadius: '50%' }}
+          />
+          <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Sparky</h3>
+        </div>
         {onClose && (
           <button
             onClick={onClose}
@@ -888,7 +895,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
               justifyContent: 'center'
             }}
           >
-            <X size={16} color="#666666" />
+            <X size={18} color="#666666" />
           </button>
         )}
       </div>
@@ -896,16 +903,21 @@ Would you like to refine any of these statements? Type "refine overarching" or "
       {/* Messages Container */}
       <div
         style={{
-          padding: '16px 12px',
+          padding: '24px',
           overflowY: 'auto',
           flexGrow: 1,
-          height: 'calc(100% - 120px)', // Adjusted for smaller header and input
+          height: 'calc(100% - 150px)', // Original height
           backgroundColor: '#FAFAFA'
         }}
       >
         {sparkyMessages.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#666666', padding: '20px 10px' }}>
-            <p style={{ fontSize: '15px', lineHeight: '1.5' }}>Ask me anything about the current step or for help with the workshop.</p>
+          <div style={{ textAlign: 'center', color: '#666666', padding: '40px 20px' }}>
+            <img
+              src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
+              alt="Sparky"
+              style={{ width: '80px', height: '80px', borderRadius: '50%', margin: '0 auto 20px', display: 'block' }}
+            />
+            <p style={{ fontSize: '16px', lineHeight: '1.6' }}>Hi! I'm Sparky, your workshop assistant. Ask me anything about the workshop or for help with the current step.</p>
           </div>
         ) : (
           sparkyMessages.map(renderMessage)
@@ -961,10 +973,10 @@ Would you like to refine any of these statements? Type "refine overarching" or "
       {/* Input Container */}
       <div
         style={{
-          padding: '12px 16px',
+          padding: '20px 24px',
           borderTop: '1px solid #EEEEEE',
           display: 'flex',
-          gap: '8px',
+          gap: '12px',
           backgroundColor: '#FFFFFF'
         }}
       >
@@ -976,24 +988,24 @@ Would you like to refine any of these statements? Type "refine overarching" or "
           style={{
             flexGrow: 1,
             border: '1px solid #EEEEEE',
-            borderRadius: '8px',
-            padding: '8px 12px',
+            borderRadius: '12px',
+            padding: '12px 16px',
             resize: 'none',
-            minHeight: '40px',
-            maxHeight: '120px',
-            fontSize: '15px',
-            lineHeight: 1.5
+            minHeight: '50px',
+            maxHeight: '150px',
+            fontSize: '16px',
+            lineHeight: 1.6
           }}
           rows={1}
         />
         <Button
           variant="yellow"
-          size="sm"
+          size="lg"
           onClick={handleSendMessage}
           disabled={!inputValue.trim() || isTyping}
-          style={{ alignSelf: 'flex-end', padding: '8px 12px' }}
+          style={{ alignSelf: 'flex-end', padding: '12px 16px' }}
         >
-          {isTyping ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+          {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
         </Button>
       </div>
 
