@@ -111,27 +111,82 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const getStepSpecificWelcomeMessage = useCallback((step: number): string => {
     switch (step) {
       case 2:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're working on your Big Idea! Need help crafting a clear statement using the '[What it is] + [What it helps customers do]' format? I can suggest some examples or help refine what you have.";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 2: Your Big Idea!\n\nIn this step, you'll define your initial product or service concept using the format: '[What it is] + [What it helps customers do]'.\n\nFor example: 'A 6-week group coaching program that helps service-based entrepreneurs create their first scalable digital product.'\n\nNeed help? Try asking me:\n• Can you suggest some examples of Big Idea statements?\n• How do I make my statement more specific?\n• What are some scalable offer formats I could consider?";
       case 3:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're defining your Underlying Goal. Need help clarifying your business objectives or identifying key constraints for your offer? I'm here to help!";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 3: Clarify Your Underlying Goal!\n\nIn this step, you'll define your business objectives and key constraints for creating this offer.\n\nThink about:\n• What specific business outcome are you aiming for? (revenue target, lifestyle change, lead generation, etc.)\n• What constraints must you work within? (time available, budget, skills, etc.)\n\nNeed help? I can suggest example goals and constraints that make sense for your Big Idea!";
       case 4:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're identifying Trigger Events - those specific moments when customers realize they need your solution. Need help brainstorming these crucial customer moments? I can suggest some examples!";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 4: Identify Trigger Events!\n\nIn this step, you'll identify specific moments when potential customers realize they need your solution.\n\nThese can be:\n• Situational triggers (external events)\n• Emotional triggers (internal feelings)\n• Social triggers (comparisons to others)\n\nNeed specific examples? Just ask me to suggest some trigger events based on your Big Idea!";
       case 5:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're defining the Job-to-be-Done. Need help crafting a clear statement using the 'Help me [VERB] my [OBJECT] [CONTEXT]' format? I can help you identify the core progress your customers are trying to make.";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 5: Define Jobs-to-be-Done!\n\nIn this step, you'll identify the core progress your customers are trying to make when they seek your solution.\n\nThe format is: 'Help me [VERB] my [OBJECT] [CONTEXT]'\n\nFor example: 'Help me establish a professional brand identity quickly and affordably when launching my business.'\n\nType 'jtbd' if you'd like me to help you generate job statements based on your previous inputs!";
       case 6:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're identifying Target Buyers who experience your Job-to-be-Done most intensely. Need help brainstorming specific segments or evaluating which ones to focus on? I'm here to help!";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 6: Identify Target Buyers!\n\nIn this step, you'll identify specific segments who experience your Job-to-be-Done most intensely.\n\nThink about:\n• Who frequently finds themselves in the context of your job statement?\n• Which segments have high urgency, willingness to pay, and accessibility?\n• Which segments are a 'Hell Yes!' for you personally?\n\nNeed help brainstorming specific segments? Just ask!";
       case 7:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're doing Painstorming for your target segments. Need help identifying functional, emotional, social, or anticipated pains they experience? I can help you find those FIRE pains (Frequent, Intense, Recurring, Expensive)!";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 7: Painstorming!\n\nIn this step, you'll identify specific pains your target segments experience related to your Job-to-be-Done.\n\nLook for:\n• Functional pains (processes breaking down)\n• Emotional pains (frustration, overwhelm)\n• Social pains (how others perceive them)\n• FIRE pains (Frequent, Intense, Recurring, Expensive)\n\nNeed help identifying specific pains for your segments? I can suggest some examples!";
       case 8:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're in the Problem-Up phase, selecting which specific problems to focus on. Need help evaluating which pains to address or refining your target market? I'm here to help!";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 8: Problem-Up!\n\nIn this step, you'll select the most promising problems to focus your offer on and refine your target market accordingly.\n\nConsider:\n• Which problems have you personally experienced or helped solve before?\n• Which problems align best with your skills and goals?\n• Are you focusing on people with specific traits or in specific trigger moments?\n\nNeed help selecting problems or refining your target market? Just ask!";
       case 9:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're refining your Big Idea based on all your insights. Need help crafting a more targeted offer concept or brainstorming specific formats that would work well? I can help!";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 9: Refine Your Big Idea!\n\nIn this step, you'll create a more targeted offer concept based on all your insights.\n\nConsider:\n• What format would best solve the focused problems? (Done-For-You, DIY, Done-With-You)\n• How can you leverage your unique skills to solve these problems?\n• What's a feasible delivery model given your constraints?\n\nNeed help crafting your refined Big Idea statement? I can suggest some options!";
       case 10:
-        return "Hi! I'm Sparky, your workshop assistant. I see you're at the Summary & Next Steps phase. Need help planning how to validate your offer concept before building it? I can suggest specific validation steps to test your assumptions!";
+        return "👋 Hi! I'm Sparky, your workshop assistant. Welcome to Step 10: Summary & Next Steps!\n\nCongratulations on completing the workshop! Now it's time to plan how to validate your offer concept before building it.\n\nConsider:\n• What's the single biggest assumption you need to test?\n• How could you quickly test if your message resonates?\n• What specific validation steps could you take in the next 1-4 weeks?\n\nNeed help planning your validation approach? I can suggest specific methods!";
       default:
         return "Hi! I'm Sparky, your AI workshop assistant. I'm here to help you brainstorm, refine your ideas, and navigate the exercises. Feel free to ask me questions anytime!";
     }
   }, []);
+
+  // Get a proactive message when user moves to a new step
+  const getProactiveStepMessage = useCallback((step: number, workshopData: WorkshopData): string => {
+    switch (step) {
+      case 2:
+        return "I see you've started Step 2! Let's craft your Big Idea statement. Would you like me to suggest some example formats based on your background or interests?";
+      case 3:
+        if (workshopData.bigIdea?.description) {
+          return `Great job defining your Big Idea: "${workshopData.bigIdea.description}"\n\nNow let's clarify your business goals for this offer. Are you looking to create a new revenue stream, replace client work, generate leads, or something else?`;
+        }
+        return "Now let's clarify your business goals for this offer. Are you looking to create a new revenue stream, replace client work, generate leads, or something else?";
+      case 4:
+        if (workshopData.underlyingGoal?.businessGoal) {
+          return `I see your business goal is: "${workshopData.underlyingGoal.businessGoal}"\n\nNow let's identify specific Trigger Events - those moments when customers realize they need your solution. What situations might prompt someone to seek your offer?`;
+        }
+        return "Now let's identify specific Trigger Events - those moments when customers realize they need your solution. What situations might prompt someone to seek your offer?";
+      case 5:
+        if (workshopData.triggerEvents && workshopData.triggerEvents.length > 0) {
+          return "Great job identifying trigger events! Now let's define the Job-to-be-Done - the progress your customers are trying to make. Would you like me to help generate some job statements based on your previous inputs? Just type 'jtbd' to start.";
+        }
+        return "Now let's define the Job-to-be-Done - the progress your customers are trying to make. Would you like me to help generate some job statements based on your previous inputs? Just type 'jtbd' to start.";
+      case 6:
+        const selectedJob = workshopData.jobs?.find(job => job.selected);
+        if (selectedJob) {
+          return `I see you've selected this job statement: "${selectedJob.description}"\n\nNow let's identify specific target buyer segments who experience this job intensely. What types of people or businesses frequently find themselves in this situation?`;
+        }
+        return "Now let's identify specific target buyer segments who experience your job statement intensely. What types of people or businesses frequently find themselves in this situation?";
+      case 7:
+        const selectedBuyers = workshopData.targetBuyers?.filter(buyer => buyer.selected);
+        if (selectedBuyers && selectedBuyers.length > 0) {
+          return `I see you've selected these target segments: ${selectedBuyers.map(b => `"${b.description}"`).join(", ")}\n\nNow let's identify specific pains they experience related to your job statement. What functional, emotional, or social pains do they face?`;
+        }
+        return "Now let's identify specific pains your target segments experience. What functional, emotional, or social pains do they face when trying to get this job done?";
+      case 8:
+        if (workshopData.pains && workshopData.pains.length > 0) {
+          return "Great job identifying pains! Now let's select which specific problems to focus your offer on. Which pains do you feel most qualified or excited to solve? Which ones align best with your skills and goals?";
+        }
+        return "Now let's select which specific problems to focus your offer on. Which pains do you feel most qualified or excited to solve? Which ones align best with your skills and goals?";
+      case 9:
+        if (workshopData.problemUp?.selectedPains && workshopData.problemUp.selectedPains.length > 0) {
+          return "Excellent! Now let's refine your Big Idea based on all these insights. Would you like me to suggest some specific offer formats that would work well for your selected problems and target market?";
+        }
+        return "Now let's refine your Big Idea based on all your insights. Would you like me to suggest some specific offer formats that would work well for your selected problems and target market?";
+      case 10:
+        if (workshopData.refinedIdea?.description) {
+          return `Congratulations on refining your offer concept: "${workshopData.refinedIdea.description}"\n\nNow let's plan how to validate this concept before building it. Would you like me to suggest some specific validation methods you could implement in the next 1-4 weeks?`;
+        }
+        return "Congratulations on completing the workshop! Now let's plan how to validate your offer concept before building it. Would you like me to suggest some specific validation methods you could implement in the next 1-4 weeks?";
+      default:
+        return "";
+    }
+  }, []);
+
+  // Track previous step to detect changes
+  const [previousStep, setPreviousStep] = useState<number>(currentStep);
 
   // Initialize Sparky with a welcome message when the component mounts
   useEffect(() => {
@@ -161,6 +216,44 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       }
     }
   }, [currentStep, sparkyMessages.length, addChatMessage, getStepSpecificWelcomeMessage]);
+
+  // Send proactive messages when user moves to a new step
+  useEffect(() => {
+    // Check if the step has changed and it's not the initial load
+    if (previousStep !== currentStep && previousStep !== 0 && currentStep > 1) {
+      // Get the proactive message for the new step
+      const proactiveMessage = getProactiveStepMessage(currentStep, workshopData);
+
+      if (proactiveMessage) {
+        // Add a small delay to make it feel more natural
+        setTimeout(() => {
+          const message: SparkyMessage = {
+            id: Date.now().toString(),
+            content: proactiveMessage,
+            role: 'assistant',
+            timestamp: new Date().toISOString(),
+          };
+
+          setSparkyMessages(prev => [...prev, message]);
+
+          // Also add to workshop store
+          const workshopMessage: AIMessage = {
+            id: message.id,
+            content: message.content,
+            role: message.role,
+            timestamp: message.timestamp,
+          };
+
+          if (typeof currentStep === 'number') {
+            addChatMessage(currentStep, workshopMessage);
+          }
+        }, 1000); // 1 second delay
+      }
+    }
+
+    // Update previous step
+    setPreviousStep(currentStep);
+  }, [currentStep, previousStep, workshopData, getProactiveStepMessage, addChatMessage]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
