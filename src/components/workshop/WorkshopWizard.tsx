@@ -251,11 +251,12 @@ export const WorkshopWizard = () => {
 
   // Chat container styles
   const chatContainerStyle: CSSProperties = {
-    width: '700px', // Doubled from 350px to 700px
+    width: '350px', // Reverted to original width
     flexShrink: 0,
     position: 'sticky',
     top: '100px',
     alignSelf: 'flex-start',
+    height: 'calc(100vh - 120px)', // Set fixed height to make it taller
     maxHeight: 'calc(100vh - 120px)',
     display: currentStep >= 2 ? 'block' : 'none',
   };

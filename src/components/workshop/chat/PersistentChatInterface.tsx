@@ -230,7 +230,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         top: isFixed ? '120px' : 'auto',
         left: isFixed ? '20px' : 'auto',
         width: '100%',
-        height: isFixed ? 'calc(100vh - 160px)' : '100%',
+        height: '100%', // Always use full height
         display: 'flex',
         flexDirection: 'column',
         padding: 0,
@@ -283,7 +283,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           padding: '24px',
           overflowY: 'auto',
           flexGrow: 1,
-          height: 'calc(100% - 150px)',
+          height: 'calc(100% - 150px)', // Maintain space for header and input
           backgroundColor: '#FAFAFA'
         }}
       >
