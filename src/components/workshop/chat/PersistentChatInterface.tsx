@@ -6,6 +6,7 @@ import { AIMessage } from '../../../types/chat';
 import { AIService } from '../../../services/aiService';
 import { JTBDService } from '../../../services/jtbdService';
 import { OpenAIService } from '../../../services/openai';
+import { SparkyService, SparkyMessage, SuggestionOption } from '../../../services/sparkyService';
 import { JTBDSuggestionModal } from './JTBDSuggestionModal';
 import { Send, Loader2, X, Lightbulb, Sparkles } from 'lucide-react';
 
@@ -32,7 +33,8 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  // No suggestions state needed
+  const [sparkySuggestions, setSparkySuggestions] = useState<SuggestionOption[]>([]);
+  const [sparkyMessages, setSparkyMessages] = useState<SparkyMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Create AI service instances
@@ -41,7 +43,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
     apiKey: apiKey,
   });
 
-  // Create OpenAI service for JTBD
+  // Create OpenAI service for JTBD and Sparky
   const openaiService = new OpenAIService({
     apiKey: apiKey
   });
@@ -50,6 +52,13 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const jtbdService = new JTBDService(
     openaiService,
     'gpt-4.1-2025-04-14'
+  );
+
+  // Create Sparky service with GPT-4.1 model and mock mode enabled
+  const sparkyService = new SparkyService(
+    openaiService,
+    'gpt-4.1-2025-04-14',
+    true // Enable mock mode to avoid API errors
   );
 
   // State for JTBD input collection
@@ -83,12 +92,82 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
     .flatMap(chat => chat.messages || [])
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
+  // Load existing messages from the workshop store when the component mounts or the step changes
+  useEffect(() => {
+    if (sparkyMessages.length === 0 && allMessages.length > 0) {
+      // Convert AIMessages to SparkyMessages
+      const convertedMessages: SparkyMessage[] = allMessages.map(msg => ({
+        id: msg.id,
+        content: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content),
+        role: msg.role,
+        timestamp: msg.timestamp
+      }));
+
+      setSparkyMessages(convertedMessages);
+    }
+  }, [allMessages, sparkyMessages.length]);
+
+  // Get a step-specific welcome message
+  const getStepSpecificWelcomeMessage = useCallback((step: number): string => {
+    switch (step) {
+      case 2:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're working on your Big Idea! Need help crafting a clear statement using the '[What it is] + [What it helps customers do]' format? I can suggest some examples or help refine what you have.";
+      case 3:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're defining your Underlying Goal. Need help clarifying your business objectives or identifying key constraints for your offer? I'm here to help!";
+      case 4:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're identifying Trigger Events - those specific moments when customers realize they need your solution. Need help brainstorming these crucial customer moments? I can suggest some examples!";
+      case 5:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're defining the Job-to-be-Done. Need help crafting a clear statement using the 'Help me [VERB] my [OBJECT] [CONTEXT]' format? I can help you identify the core progress your customers are trying to make.";
+      case 6:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're identifying Target Buyers who experience your Job-to-be-Done most intensely. Need help brainstorming specific segments or evaluating which ones to focus on? I'm here to help!";
+      case 7:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're doing Painstorming for your target segments. Need help identifying functional, emotional, social, or anticipated pains they experience? I can help you find those FIRE pains (Frequent, Intense, Recurring, Expensive)!";
+      case 8:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're in the Problem-Up phase, selecting which specific problems to focus on. Need help evaluating which pains to address or refining your target market? I'm here to help!";
+      case 9:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're refining your Big Idea based on all your insights. Need help crafting a more targeted offer concept or brainstorming specific formats that would work well? I can help!";
+      case 10:
+        return "Hi! I'm Sparky, your workshop assistant. I see you're at the Summary & Next Steps phase. Need help planning how to validate your offer concept before building it? I can suggest specific validation steps to test your assumptions!";
+      default:
+        return "Hi! I'm Sparky, your AI workshop assistant. I'm here to help you brainstorm, refine your ideas, and navigate the exercises. Feel free to ask me questions anytime!";
+    }
+  }, []);
+
+  // Initialize Sparky with a welcome message when the component mounts
+  useEffect(() => {
+    // Only add the welcome message if there are no messages yet
+    if (sparkyMessages.length === 0 && currentStep > 1) {
+      const welcomeContent = getStepSpecificWelcomeMessage(currentStep);
+
+      const welcomeMessage: SparkyMessage = {
+        id: Date.now().toString(),
+        content: welcomeContent,
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+      };
+
+      setSparkyMessages([welcomeMessage]);
+
+      // Also add to workshop store
+      const workshopWelcomeMessage: AIMessage = {
+        id: welcomeMessage.id,
+        content: welcomeMessage.content,
+        role: welcomeMessage.role,
+        timestamp: welcomeMessage.timestamp,
+      };
+
+      if (typeof currentStep === 'number') {
+        addChatMessage(currentStep, workshopWelcomeMessage);
+      }
+    }
+  }, [currentStep, sparkyMessages.length, addChatMessage, getStepSpecificWelcomeMessage]);
+
   // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [allMessages, isOpen]);
+  }, [sparkyMessages, isOpen]);
 
   // Function to open JTBD suggestion modal
   const openJTBDSuggestionModal = async (
@@ -112,17 +191,29 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
 
     setIsTyping(true);
 
-    // Add user message to chat
-    const userMessage: AIMessage = {
+    // Create a user message for Sparky
+    const userMessage: SparkyMessage = {
       id: Date.now().toString(),
       content: inputValue.trim(),
       role: 'user',
       timestamp: new Date().toISOString(),
     };
 
+    // Add to Sparky messages
+    setSparkyMessages(prev => [...prev, userMessage]);
+
+    // Also add to workshop store for persistence
+    const workshopUserMessage: AIMessage = {
+      id: userMessage.id,
+      content: userMessage.content,
+      role: userMessage.role,
+      timestamp: userMessage.timestamp,
+    };
+
     if (typeof currentStep === 'number') {
-      addChatMessage(currentStep, userMessage);
+      addChatMessage(currentStep, workshopUserMessage);
     }
+
     setInputValue('');
 
     try {
@@ -133,15 +224,25 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           setJtbdInput(prev => ({ ...prev, productService: inputValue.trim() }));
 
           // Add assistant response asking for desired outcomes
-          const outcomeQuestion: AIMessage = {
+          const outcomeQuestion: SparkyMessage = {
             id: Date.now().toString(),
             content: "Great! Now, what outcomes do your customers desire from this product or service?",
             role: 'assistant',
             timestamp: new Date().toISOString(),
           };
 
+          setSparkyMessages(prev => [...prev, outcomeQuestion]);
+
+          // Also add to workshop store
+          const workshopAssistantMessage: AIMessage = {
+            id: outcomeQuestion.id,
+            content: outcomeQuestion.content,
+            role: outcomeQuestion.role,
+            timestamp: outcomeQuestion.timestamp,
+          };
+
           if (typeof currentStep === 'number') {
-            addChatMessage(currentStep, outcomeQuestion);
+            addChatMessage(currentStep, workshopAssistantMessage);
           }
 
           // Move to next collection step
@@ -153,15 +254,25 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           setJtbdInput(prev => ({ ...prev, desiredOutcomes: inputValue.trim() }));
 
           // Add assistant response asking for trigger events
-          const triggerQuestion: AIMessage = {
+          const triggerQuestion: SparkyMessage = {
             id: Date.now().toString(),
             content: "Thanks! Finally, what events or situations trigger customers to look for your solution?",
             role: 'assistant',
             timestamp: new Date().toISOString(),
           };
 
+          setSparkyMessages(prev => [...prev, triggerQuestion]);
+
+          // Also add to workshop store
+          const workshopAssistantMessage: AIMessage = {
+            id: triggerQuestion.id,
+            content: triggerQuestion.content,
+            role: triggerQuestion.role,
+            timestamp: triggerQuestion.timestamp,
+          };
+
           if (typeof currentStep === 'number') {
-            addChatMessage(currentStep, triggerQuestion);
+            addChatMessage(currentStep, workshopAssistantMessage);
           }
 
           // Move to next collection step
@@ -173,15 +284,25 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           setJtbdInput(prev => ({ ...prev, triggerEvents: inputValue.trim() }));
 
           // Add assistant response indicating processing
-          const processingMessage: AIMessage = {
+          const processingMessage: SparkyMessage = {
             id: Date.now().toString(),
             content: "Thank you for providing all the information! I'm now generating your Jobs-to-be-Done statements...",
             role: 'assistant',
             timestamp: new Date().toISOString(),
           };
 
+          setSparkyMessages(prev => [...prev, processingMessage]);
+
+          // Also add to workshop store
+          const workshopAssistantMessage: AIMessage = {
+            id: processingMessage.id,
+            content: processingMessage.content,
+            role: processingMessage.role,
+            timestamp: processingMessage.timestamp,
+          };
+
           if (typeof currentStep === 'number') {
-            addChatMessage(currentStep, processingMessage);
+            addChatMessage(currentStep, workshopAssistantMessage);
           }
 
           // Generate JTBD statements
@@ -206,15 +327,25 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             `;
 
             // Add the result to the chat
-            const resultMessage: AIMessage = {
+            const resultMessage: SparkyMessage = {
               id: Date.now().toString(),
               content: formattedResult,
               role: 'assistant',
               timestamp: new Date().toISOString(),
             };
 
+            setSparkyMessages(prev => [...prev, resultMessage]);
+
+            // Also add to workshop store
+            const workshopResultMessage: AIMessage = {
+              id: resultMessage.id,
+              content: resultMessage.content,
+              role: resultMessage.role,
+              timestamp: resultMessage.timestamp,
+            };
+
             if (typeof currentStep === 'number') {
-              addChatMessage(currentStep, resultMessage);
+              addChatMessage(currentStep, workshopResultMessage);
             }
 
             // Exit collection mode
@@ -223,15 +354,25 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             console.error('Error generating JTBD statements:', error);
 
             // Add error message
-            const errorMessage: AIMessage = {
+            const errorMessage: SparkyMessage = {
               id: Date.now().toString(),
               content: "I'm sorry, I encountered an error generating your JTBD statements. Please try again.",
               role: 'assistant',
               timestamp: new Date().toISOString(),
             };
 
+            setSparkyMessages(prev => [...prev, errorMessage]);
+
+            // Also add to workshop store
+            const workshopErrorMessage: AIMessage = {
+              id: errorMessage.id,
+              content: errorMessage.content,
+              role: errorMessage.role,
+              timestamp: errorMessage.timestamp,
+            };
+
             if (typeof currentStep === 'number') {
-              addChatMessage(currentStep, errorMessage);
+              addChatMessage(currentStep, workshopErrorMessage);
             }
 
             // Exit collection mode
@@ -249,15 +390,25 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
       if (refineOverarchingRegex.test(inputValue) && jtbdOutput) {
         // User wants to refine the overarching job statement
-        const message: AIMessage = {
+        const message: SparkyMessage = {
           id: Date.now().toString(),
           content: "I'll help you refine your Overarching Job Statement. Let me generate some alternative suggestions...",
           role: 'assistant',
           timestamp: new Date().toISOString(),
         };
 
+        setSparkyMessages(prev => [...prev, message]);
+
+        // Also add to workshop store
+        const workshopMessage: AIMessage = {
+          id: message.id,
+          content: message.content,
+          role: message.role,
+          timestamp: message.timestamp,
+        };
+
         if (typeof currentStep === 'number') {
-          addChatMessage(currentStep, message);
+          addChatMessage(currentStep, workshopMessage);
         }
 
         // Open the suggestion modal for the overarching job statement
@@ -268,15 +419,25 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
       if (refineSupportingRegex.test(inputValue) && jtbdOutput) {
         // User wants to refine supporting job statements
-        const message: AIMessage = {
+        const message: SparkyMessage = {
           id: Date.now().toString(),
           content: "I'll help you refine your Supporting Job Statements. Let me generate some alternative suggestions...",
           role: 'assistant',
           timestamp: new Date().toISOString(),
         };
 
+        setSparkyMessages(prev => [...prev, message]);
+
+        // Also add to workshop store
+        const workshopMessage: AIMessage = {
+          id: message.id,
+          content: message.content,
+          role: message.role,
+          timestamp: message.timestamp,
+        };
+
         if (typeof currentStep === 'number') {
-          addChatMessage(currentStep, message);
+          addChatMessage(currentStep, workshopMessage);
         }
 
         // For simplicity, we'll just use the first supporting statement
@@ -284,15 +445,25 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         if (jtbdOutput.supportingJobStatements.length > 0) {
           openJTBDSuggestionModal('supporting', jtbdOutput.supportingJobStatements[0]);
         } else {
-          const errorMessage: AIMessage = {
+          const errorMessage: SparkyMessage = {
             id: Date.now().toString(),
             content: "I don't see any supporting job statements to refine. Let's create some first.",
             role: 'assistant',
             timestamp: new Date().toISOString(),
           };
 
+          setSparkyMessages(prev => [...prev, errorMessage]);
+
+          // Also add to workshop store
+          const workshopErrorMessage: AIMessage = {
+            id: errorMessage.id,
+            content: errorMessage.content,
+            role: errorMessage.role,
+            timestamp: errorMessage.timestamp,
+          };
+
           if (typeof currentStep === 'number') {
-            addChatMessage(currentStep, errorMessage);
+            addChatMessage(currentStep, workshopErrorMessage);
           }
         }
         setIsTyping(false);
@@ -307,15 +478,25 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
       if (isJTBDRequest) {
         // Start JTBD collection process
-        const jtbdIntroMessage: AIMessage = {
+        const jtbdIntroMessage: SparkyMessage = {
           id: Date.now().toString(),
           content: "I'd be happy to help you create Jobs-to-be-Done statements! Let's collect the necessary information. First, please describe your product or service:",
           role: 'assistant',
           timestamp: new Date().toISOString(),
         };
 
+        setSparkyMessages(prev => [...prev, jtbdIntroMessage]);
+
+        // Also add to workshop store
+        const workshopIntroMessage: AIMessage = {
+          id: jtbdIntroMessage.id,
+          content: jtbdIntroMessage.content,
+          role: jtbdIntroMessage.role,
+          timestamp: jtbdIntroMessage.timestamp,
+        };
+
         if (typeof currentStep === 'number') {
-          addChatMessage(currentStep, jtbdIntroMessage);
+          addChatMessage(currentStep, workshopIntroMessage);
         }
 
         // Set collection mode to product
@@ -324,43 +505,128 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         return;
       }
 
-      // Regular chat flow for non-JTBD requests
-      // Get context for the current step
-      const stepContext = getStepContext(currentStep, workshopData);
-
-      // Generate AI response
-      const assistantResponse = await aiService.answerFollowUpQuestion(
+      // Regular chat flow for non-JTBD requests using Sparky
+      // Generate response using Sparky service
+      const sparkyResponse = await sparkyService.generateResponse(
+        userMessage.content,
         currentStep,
-        typeof userMessage.content === 'string' ? userMessage.content : JSON.stringify(userMessage.content),
-        stepContext
+        workshopData,
+        sparkyMessages
       );
 
+      // Add Sparky's response to the messages
+      setSparkyMessages(prev => [...prev, sparkyResponse]);
+
+      // Also add to workshop store for persistence
+      const workshopSparkyResponse: AIMessage = {
+        id: sparkyResponse.id,
+        content: sparkyResponse.content,
+        role: sparkyResponse.role,
+        timestamp: sparkyResponse.timestamp,
+      };
+
       if (typeof currentStep === 'number') {
-        addChatMessage(currentStep, assistantResponse);
+        addChatMessage(currentStep, workshopSparkyResponse);
       }
 
       // Generate suggestions based on the conversation
-      await generateSuggestions();
+      await generateSparkySuggestions();
     } catch (error) {
       console.error('Error in chat:', error);
 
       // Add error message
-      const errorMessage: AIMessage = {
+      const errorMessage: SparkyMessage = {
         id: Date.now().toString(),
         content: "I'm sorry, I encountered an error. Please try again.",
         role: 'assistant',
         timestamp: new Date().toISOString(),
       };
 
+      setSparkyMessages(prev => [...prev, errorMessage]);
+
+      // Also add to workshop store
+      const workshopErrorMessage: AIMessage = {
+        id: errorMessage.id,
+        content: errorMessage.content,
+        role: errorMessage.role,
+        timestamp: errorMessage.timestamp,
+      };
+
       if (typeof currentStep === 'number') {
-        addChatMessage(currentStep, errorMessage);
+        addChatMessage(currentStep, workshopErrorMessage);
       }
     } finally {
       setIsTyping(false);
     }
-  }, [inputValue, isTyping, currentStep, workshopData, addChatMessage, aiService, collectingJTBD, jtbdInput, jtbdService, jtbdOutput]);
+  }, [inputValue, isTyping, currentStep, workshopData, addChatMessage, sparkyService, sparkyMessages, collectingJTBD, jtbdInput, jtbdService, jtbdOutput]);
 
-  // Generate context-aware suggestions
+  // Generate context-aware suggestions using Sparky
+  const generateSparkySuggestions = useCallback(async () => {
+    try {
+      // Determine the suggestion type based on the current step
+      let suggestionType = 'general';
+
+      switch (currentStep) {
+        case 2:
+          suggestionType = 'big-idea';
+          break;
+        case 3:
+          suggestionType = 'underlying-goal';
+          break;
+        case 4:
+          suggestionType = 'trigger-events';
+          break;
+        case 5:
+          suggestionType = 'jobs';
+          break;
+        case 6:
+          suggestionType = 'target-buyers';
+          break;
+        case 7:
+          suggestionType = 'pains';
+          break;
+        case 8:
+          suggestionType = 'problem-up';
+          break;
+        case 9:
+          suggestionType = 'offer-concepts';
+          break;
+        case 10:
+          suggestionType = 'next-steps';
+          break;
+        default:
+          suggestionType = 'general';
+      }
+
+      // Generate suggestions using Sparky
+      const suggestions = await sparkyService.generateSuggestions(
+        currentStep,
+        workshopData,
+        suggestionType
+      );
+
+      if (suggestions && suggestions.length > 0) {
+        // Store the suggestions
+        setSparkySuggestions(suggestions);
+
+        // Also create a suggestion for the workshop store
+        const workshopSuggestion = {
+          step: currentStep,
+          content: {
+            [suggestionType]: suggestions.map(s => s.content)
+          },
+          rawResponse: suggestions
+        };
+
+        setCurrentSuggestion(workshopSuggestion);
+        setShowSuggestions(true);
+      }
+    } catch (error) {
+      console.error('Error generating Sparky suggestions:', error);
+    }
+  }, [currentStep, workshopData, setCurrentSuggestion, sparkyService]);
+
+  // Legacy suggestion generator (keeping for compatibility)
   const generateSuggestions = useCallback(async () => {
     try {
       const suggestion = await aiService.getStepSuggestion(
@@ -480,7 +746,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
   }
 
   // Render message bubbles
-  const renderMessage = (message: AIMessage) => {
+  const renderMessage = (message: SparkyMessage | AIMessage) => {
     const isUser = message.role === 'user';
 
     return (
@@ -564,8 +830,8 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         position: isFixed ? 'fixed' : 'relative',
         top: isFixed ? '120px' : 'auto',
         left: isFixed ? '20px' : 'auto',
-        width: '100%',
-        height: '100%', // Always use full height
+        width: '350px', // Fixed width to match the container
+        height: 'calc(100vh - 120px)', // Fixed height
         display: 'flex',
         flexDirection: 'column',
         padding: 0,
@@ -622,7 +888,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
           backgroundColor: '#FAFAFA'
         }}
       >
-        {allMessages.length === 0 ? (
+        {sparkyMessages.length === 0 ? (
           <div style={{ textAlign: 'center', color: '#666666', padding: '40px 20px' }}>
             <img
               src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
@@ -632,13 +898,13 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             <p style={{ fontSize: '18px', lineHeight: '1.6' }}>Hi! I'm Sparky, your workshop assistant. Ask me anything about the workshop or for help with the current step.</p>
           </div>
         ) : (
-          allMessages.map(renderMessage)
+          sparkyMessages.map(renderMessage)
         )}
 
         {isTyping && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666666' }}>
             <Loader2 className="animate-spin" size={16} />
-            <span>AI is typing...</span>
+            <span>Sparky is typing...</span>
           </div>
         )}
 
