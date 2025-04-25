@@ -110,7 +110,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const getStepSpecificWelcomeMessage = useCallback((step: number): string => {
     switch (step) {
       case 2:
-        return "Define your product/service using '[What it is] + [What it helps customers do]'. Need examples? Just ask.";
+        return "👋 Welcome to Step 2: Your Big Idea!\n\nIn this step, you'll define your initial product or service concept using the format: '[What it is] + [What it helps customers do]'.\n\nFor example: 'A 6-week group coaching program that helps service-based entrepreneurs create their first scalable digital product.'\n\nThis is just version 1 of your idea - we'll refine it throughout the workshop. Need help? Try asking me:\n• Can you suggest some examples of Big Idea statements?\n• How do I make my statement more specific?\n• What are some scalable offer formats I could consider?";
       case 3:
         return "What business goals and constraints do you have for this offer? I can help with examples.";
       case 4:
