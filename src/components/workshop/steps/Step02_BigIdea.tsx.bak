@@ -7,7 +7,7 @@ import type { BigIdea } from '../../../types/workshop';
 import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
-
+import { EmptyAIButton } from '../chat/EmptyAIButton';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
@@ -71,6 +71,17 @@ export const Step02_BigIdea: React.FC = () => {
     return '';
   };
 
+  // Generate step context for AI
+  const stepContext = `
+    Workshop Step: Big Idea
+
+    The user is defining their initial product or service idea.
+
+    Current big idea:
+    Description: ${formData.description}
+    Target Customers: ${formData.targetCustomers}
+  `;
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <StepHeader
@@ -78,6 +89,8 @@ export const Step02_BigIdea: React.FC = () => {
         title="Your Big Idea"
         description="Describe your product idea using a simple framework: [What it is] + [what will it help customers do]"
       />
+
+      <EmptyAIButton />
 
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>

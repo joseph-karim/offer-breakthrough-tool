@@ -154,9 +154,9 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         style={{
           display: 'flex',
           flexDirection: isUser ? 'row-reverse' : 'row',
-          marginBottom: '12px',
+          marginBottom: '24px',
           alignItems: 'flex-start',
-          gap: '8px'
+          gap: '16px'
         }}
       >
         <div
@@ -164,8 +164,8 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            height: '36px',
-            width: '36px',
+            height: '48px',
+            width: '48px',
             borderRadius: '50%',
             backgroundColor: isUser ? '#F5F5F5' : '#FFDD00',
             color: '#222222',
@@ -178,34 +178,34 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
             <img
               src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
               alt="Sparky"
-              style={{ width: '24px', height: '24px', borderRadius: '50%' }}
+              style={{ width: '36px', height: '36px', borderRadius: '50%' }}
             />
           )}
         </div>
 
         <div
           style={{
-            padding: '12px 16px',
-            maxWidth: '70%',
+            padding: '16px 24px',
+            maxWidth: '75%',
             backgroundColor: isUser ? '#F5F5F5' : '#FFFFFF',
             borderColor: isUser ? '#EEEEEE' : '#FFDD00',
             borderWidth: '1px',
             borderLeftWidth: isUser ? '1px' : '3px',
-            borderRadius: '12px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+            borderRadius: '16px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
           }}
         >
           <div style={{
-            fontSize: '14px',
-            marginBottom: '4px',
+            fontSize: '18px',
+            marginBottom: '6px',
             color: '#222222',
             fontWeight: 600
           }}>
             {isUser ? 'You' : 'Sparky'}
           </div>
           <div style={{
-            fontSize: '15px',
-            lineHeight: 1.5,
+            fontSize: '17px',
+            lineHeight: 1.6,
             color: '#333333',
             whiteSpace: 'pre-wrap'
           }}>
@@ -213,7 +213,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
               ? message.content
               : JSON.stringify(message.content, null, 2)}
           </div>
-          <div style={{ fontSize: '12px', color: '#888888', marginTop: '8px', textAlign: isUser ? 'right' : 'left' }}>
+          <div style={{ fontSize: '14px', color: '#888888', marginTop: '10px', textAlign: isUser ? 'right' : 'left' }}>
             {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </div>
         </div>
@@ -243,7 +243,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       {/* Chat Header */}
       <div
         style={{
-          padding: '12px 16px',
+          padding: '16px 24px',
           borderBottom: '1px solid #EEEEEE',
           display: 'flex',
           justifyContent: 'space-between',
@@ -251,13 +251,13 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           backgroundColor: '#FFFFFF'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <img
             src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
             alt="Sparky"
-            style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+            style={{ width: '42px', height: '42px', borderRadius: '50%' }}
           />
-          <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>Sparky</h3>
+          <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Sparky</h3>
         </div>
         {onClose && (
           <button
@@ -280,21 +280,21 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       {/* Messages Container */}
       <div
         style={{
-          padding: '16px',
+          padding: '24px',
           overflowY: 'auto',
           flexGrow: 1,
-          height: 'calc(100% - 130px)',
+          height: 'calc(100% - 150px)',
           backgroundColor: '#FAFAFA'
         }}
       >
         {allMessages.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#666666', padding: '20px' }}>
+          <div style={{ textAlign: 'center', color: '#666666', padding: '40px 20px' }}>
             <img
               src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
               alt="Sparky"
-              style={{ width: '40px', height: '40px', borderRadius: '50%', margin: '0 auto 12px', display: 'block' }}
+              style={{ width: '80px', height: '80px', borderRadius: '50%', margin: '0 auto 20px', display: 'block' }}
             />
-            <p>Hi! I'm Sparky, your workshop assistant. Ask me anything about the workshop or for help with the current step.</p>
+            <p style={{ fontSize: '18px', lineHeight: '1.6' }}>Hi! I'm Sparky, your workshop assistant. Ask me anything about the workshop or for help with the current step.</p>
           </div>
         ) : (
           allMessages.map(renderMessage)
@@ -350,10 +350,10 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       {/* Input Container */}
       <div
         style={{
-          padding: '12px 16px',
+          padding: '20px 24px',
           borderTop: '1px solid #EEEEEE',
           display: 'flex',
-          gap: '8px',
+          gap: '12px',
           backgroundColor: '#FFFFFF'
         }}
       >
@@ -365,24 +365,24 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
           style={{
             flexGrow: 1,
             border: '1px solid #EEEEEE',
-            borderRadius: '8px',
-            padding: '8px 12px',
+            borderRadius: '12px',
+            padding: '12px 16px',
             resize: 'none',
-            minHeight: '40px',
-            maxHeight: '120px',
-            fontSize: '14px',
-            lineHeight: 1.5
+            minHeight: '50px',
+            maxHeight: '150px',
+            fontSize: '16px',
+            lineHeight: 1.6
           }}
           rows={1}
         />
         <Button
           variant="yellow"
-          size="sm"
+          size="lg"
           onClick={handleSendMessage}
           disabled={!inputValue.trim() || isTyping}
-          style={{ alignSelf: 'flex-end' }}
+          style={{ alignSelf: 'flex-end', padding: '12px 16px' }}
         >
-          {isTyping ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+          {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
         </Button>
       </div>
     </Card>

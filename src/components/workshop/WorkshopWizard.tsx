@@ -16,6 +16,7 @@ import { Step10_Summary } from './steps/Step10_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
 import { PersistentChatInterface } from './chat/PersistentChatInterface';
 
+
 export const WorkshopWizard = () => {
   const {
     currentStep,
@@ -250,7 +251,7 @@ export const WorkshopWizard = () => {
 
   // Chat container styles
   const chatContainerStyle: CSSProperties = {
-    width: '350px',
+    width: '700px', // Doubled from 350px to 700px
     flexShrink: 0,
     position: 'sticky',
     top: '100px',
