@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, CSSProperties } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
@@ -11,6 +11,15 @@ import { MessagesContainer } from './MessagesContainer';
 import { SuggestionBubble } from './SuggestionBubble';
 import { ExpandedChatModal } from './ExpandedChatModal';
 import { Send, Loader2, X, Maximize2, Minimize2 } from 'lucide-react';
+
+// Custom type for position styles
+type PositionStyles = {
+  position: 'fixed' | 'relative' | 'absolute' | 'static' | 'sticky';
+  top?: string;
+  left?: string;
+  bottom?: string;
+  right?: string;
+};
 import { WorkshopData } from '../../../types/workshop';
 
 interface PersistentChatInterfaceProps {
@@ -1086,7 +1095,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
   }, []);
 
   // Determine position based on screen size
-  const getChatPosition = () => {
+  const getChatPosition = (): PositionStyles => {
     if (!isFixed) {
       return {
         position: 'relative',
@@ -1130,7 +1139,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
   };
 
   // Get responsive dimensions
-  const getChatDimensions = () => {
+  const getChatDimensions = (): CSSProperties => {
     // For very small screens (e.g., small laptops)
     if (windowWidth < 600) {
       return {
@@ -1196,7 +1205,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         // Full chat interface
         <Card
           style={{
-            ...getChatPosition(),
+            ...(getChatPosition() as CSSProperties),
             ...getChatDimensions(),
             display: 'flex',
             flexDirection: 'column',
@@ -1210,7 +1219,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             maxWidth: '500px', // Maximum width when resizing
             maxHeight: '800px', // Maximum height when resizing
             transition: 'all 0.3s ease' // Smooth transitions
-          }}
+          } as React.CSSProperties}
         >
           {/* Chat Header */}
           <div
