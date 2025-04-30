@@ -4,7 +4,8 @@ import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Pain } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, Plus, X, Flame } from 'lucide-react';
+import { AlertCircle, HelpCircle, Plus, X, Flame, MessageSquare } from 'lucide-react';
+import { PainstormingModal } from '../chat/PainstormingModal';
 
 import { Button } from '../../ui/Button';
 
@@ -12,11 +13,21 @@ import { Button } from '../../ui/Button';
 const selectPains = (state: WorkshopStore) => state.workshopData.pains;
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectIsPainstormingModalOpen = (state: WorkshopStore) => state.isPainstormingModalOpen;
+const selectPainstormingOutput = (state: WorkshopStore) => state.painstormingOutput;
+const selectClosePainstormingModal = (state: WorkshopStore) => state.closePainstormingModal;
+const selectSetFocusedProblems = (state: WorkshopStore) => state.setFocusedProblems;
+const selectGeneratePainstormingSuggestions = (state: WorkshopStore) => state.generatePainstormingSuggestions;
 
 export const Step07_Painstorming: React.FC = () => {
   const pains = useWorkshopStore(selectPains);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const isPainstormingModalOpen = useWorkshopStore(selectIsPainstormingModalOpen);
+  const painstormingOutput = useWorkshopStore(selectPainstormingOutput);
+  const closePainstormingModal = useWorkshopStore(selectClosePainstormingModal);
+  const setFocusedProblems = useWorkshopStore(selectSetFocusedProblems);
+  const generatePainstormingSuggestions = useWorkshopStore(selectGeneratePainstormingSuggestions);
 
   // Use local state for the pains
   const [painsList, setPainsList] = useState<Pain[]>(pains || []);
@@ -76,6 +87,26 @@ export const Step07_Painstorming: React.FC = () => {
     updateWorkshopData({ pains: updatedPains });
   }, [painsList, updateWorkshopData]);
 
+  const handleConfirmSelection = useCallback((selectedProblems: string[]) => {
+    // Add the selected problems as pains
+    const newPains = selectedProblems.map(problem => ({
+      id: `ai-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      description: problem,
+      buyerSegment: targetBuyers.length > 0 ? targetBuyers[0].description : '', // Default to first buyer segment
+      type: 'functional' as const, // Default to functional, can be updated later
+      isFire: true, // Mark as FIRE since these are the key problems
+      source: 'assistant' as const
+    }));
+
+    // Update the store with the new pains
+    const updatedPains = [...painsList, ...newPains];
+    setPainsList(updatedPains);
+    updateWorkshopData({ pains: updatedPains });
+
+    // Save the selected problems for reference in the Problem Up step
+    setFocusedProblems(selectedProblems);
+  }, [painsList, targetBuyers, updateWorkshopData, setFocusedProblems]);
+
   // Get pain type label
   const getPainTypeLabel = (type: string): string => {
     switch (type) {
@@ -105,6 +136,16 @@ export const Step07_Painstorming: React.FC = () => {
         title="Painstorming"
         description="Identify the painful problems your target buyers experience when trying to get the job done"
       />
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <Button
+          variant="yellow"
+          onClick={generatePainstormingSuggestions}
+          rightIcon={<MessageSquare size={16} />}
+        >
+          Generate Painstorming Analysis
+        </Button>
+      </div>
 
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
@@ -427,6 +468,14 @@ export const Step07_Painstorming: React.FC = () => {
           </div>
         </div>
       </Card>
+
+      {/* Painstorming Modal */}
+      <PainstormingModal
+        isOpen={isPainstormingModalOpen}
+        onClose={closePainstormingModal}
+        markdownContent={painstormingOutput}
+        onConfirmSelection={handleConfirmSelection}
+      />
     </div>
   );
 };

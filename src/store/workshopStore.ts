@@ -17,6 +17,11 @@ export interface WorkshopStore {
   workshopData: WorkshopData;
   currentSuggestion: ChatSuggestion | null;
 
+  // Painstorming modal state
+  isPainstormingModalOpen: boolean;
+  painstormingOutput: string | null;
+  focusedProblems: string[];
+
   // Actions
   initializeSession: () => Promise<void>;
   loadSession: (sessionId: string) => Promise<void>;
@@ -33,6 +38,12 @@ export interface WorkshopStore {
   generateStepSuggestion: (step: number) => Promise<void>;
   acceptSuggestion: (step: number) => void;
   answerFollowUpQuestion: (step: number, question: string) => Promise<void>;
+
+  // Painstorming modal actions
+  openPainstormingModal: (output: string) => void;
+  closePainstormingModal: () => void;
+  setFocusedProblems: (problems: string[]) => void;
+  generatePainstormingSuggestions: () => Promise<void>;
 }
 
 const initialWorkshopData: WorkshopData = {
@@ -329,6 +340,11 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   // Workshop data
   workshopData: initialWorkshopData,
   currentSuggestion: null,
+
+  // Painstorming modal state
+  isPainstormingModalOpen: false,
+  painstormingOutput: null,
+  focusedProblems: [],
 
   // Actions
   initializeSession: async () => {
@@ -759,6 +775,109 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
       };
 
       addChatMessage(step, errorMessage);
+    } finally {
+      set({ isAiLoading: false });
+    }
+  },
+
+  // Painstorming modal actions
+  openPainstormingModal: (output: string) => set({
+    painstormingOutput: output,
+    isPainstormingModalOpen: true
+  }),
+
+  closePainstormingModal: () => set({
+    isPainstormingModalOpen: false,
+    painstormingOutput: null
+  }),
+
+  setFocusedProblems: (problems: string[]) => {
+    set(state => {
+      // Create a new problemUp object with the existing values plus the new notes
+      const updatedProblemUp = {
+        selectedPains: state.workshopData.problemUp?.selectedPains || [],
+        selectedBuyers: state.workshopData.problemUp?.selectedBuyers || [],
+        targetMoment: state.workshopData.problemUp?.targetMoment || '',
+        notes: `Selected problems from Painstorming analysis:\n${problems.map(p => `- ${p}`).join('\n')}`
+      };
+
+      return {
+        focusedProblems: problems,
+        workshopData: {
+          ...state.workshopData,
+          problemUp: updatedProblemUp
+        }
+      };
+    });
+  },
+
+  generatePainstormingSuggestions: async () => {
+    const { workshopData, openPainstormingModal, addChatMessage } = get();
+
+    // Find the selected job statement
+    const selectedJob = workshopData.jobs.find(job => job.selected);
+    const chosenJobStatement = selectedJob ? selectedJob.description : '';
+
+    // Get top 3 buyer segments
+    const topBuyerSegments = workshopData.targetBuyers
+      .slice(0, 3)
+      .map(buyer => buyer.description);
+
+    // Get big idea statement
+    const bigIdeaStatement = workshopData.bigIdea?.description || '';
+
+    // Basic validation
+    if (!chosenJobStatement || topBuyerSegments.length === 0 || !bigIdeaStatement) {
+      console.error("Missing context for Painstorming");
+      addChatMessage(6, {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: "I need your Job Statement and Target Buyer Segments first! Please make sure you've completed the previous steps.",
+        timestamp: new Date().toISOString(),
+        step: 6
+      });
+      return;
+    }
+
+    set({ isAiLoading: true });
+    addChatMessage(6, {
+      id: Date.now().toString(),
+      role: 'assistant',
+      content: "Okay, analyzing pains for your job and target segments... This might take a moment.",
+      timestamp: new Date().toISOString(),
+      step: 6
+    });
+
+    try {
+      const painstormingMarkdown = await aiService.getPainstormingAnalysis(
+        chosenJobStatement,
+        topBuyerSegments,
+        bigIdeaStatement
+      );
+
+      if (painstormingMarkdown) {
+        openPainstormingModal(painstormingMarkdown);
+
+        // Add a chat message indicating the modal is open
+        addChatMessage(6, {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: "I've generated a detailed Painstorming analysis. Please review it in the detailed view that just opened and select the key problems you want to focus on.",
+          timestamp: new Date().toISOString(),
+          step: 6
+        });
+      } else {
+        throw new Error("Received empty response from AI service.");
+      }
+    } catch (error) {
+      console.error("Error generating Painstorming suggestions:", error);
+      addChatMessage(6, {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: "Sorry, I encountered an error while generating the Painstorming analysis. Please try again.",
+        timestamp: new Date().toISOString(),
+        step: 6
+      });
     } finally {
       set({ isAiLoading: false });
     }

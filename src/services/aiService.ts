@@ -179,6 +179,97 @@ export class AIService {
     this.openai = new OpenAIService(config.apiKey, config.endpoint);
   }
 
+  // Get detailed painstorming analysis
+  async getPainstormingAnalysis(
+    jobStatement: string,
+    topBuyerSegments: string[],
+    bigIdea: string
+  ): Promise<string | null> {
+    const painstormingPrompt = `
+You are an expert consumer behavior and market research assistant specializing in rapid "Painstorming" sessions based on Jobs-to-be-Done (JTBD) principles. Your task is to analyze the user's defined Job Statement and their top 3 potential target buyer segments to brainstorm the specific problems and pain points these buyers face when trying to get the job done.
+
+# Objective
+Generate a detailed painstorming analysis for the user's specified Job Statement and target buyer segments. This analysis will help the user identify problems worth solving for their new product/service idea.
+
+# Input Context
+You will receive the following information from the user:
+1.  **Chosen Job Statement:** The core progress the customer is trying to make (e.g., "Help me [VERB] my [OBJECT] [CONTEXT]").
+2.  **Top 3 Target Buyer Segments:** Specific descriptions of the potential customer groups identified in the previous step.
+3.  **Big Idea (for context):** The user's initial product/service concept.
+
+# Methodology (5-Step Process)
+1.  **Analyze Inputs:** Deeply understand the nuances of the Job Statement and the specific context, motivations, and likely circumstances of each of the 3 target buyer segments.
+2.  **Dig into Buyer Psyche:** For each segment, thoroughly brainstorm problems they encounter when trying to achieve the Job Statement. Consider their specific context. *Simulate* detailed online research (reading plausible online reviews, forum discussions, social media complaints related to the job/segment) to generate realistic and insightful problems.
+3.  **Identify & Categorize Problems:** Generate a comprehensive list of 8-25 specific problems *for each segment*. Categorize *every* problem using *only* one of these four types:
+    * **(Functional):** Issues with current solutions/processes, inefficiencies, things not working as intended, specific task challenges, usability problems with alternatives.
+    * **(Emotional):** Psychological challenges like frustration, fear, anxiety, overwhelm, lack of confidence, imposter syndrome, decision paralysis related to achieving the job.
+    * **(Social):** Issues related to perception by others (peers, clients, superiors), status concerns, relationship dynamics, team collaboration issues, communication challenges related to the job.
+    * **(Perceived Risk):** Potential negative outcomes, fears of failure (financial, reputational), wasting resources, making the wrong choice, legal exposure, security concerns related to the job or potential solutions.
+4.  **Identify FIRE Problems:** Within each segment's list, carefully evaluate and identify problems that seem likely to be **FIRE** (Frequent, Intense, Requires Fast Action, Expensive). Mark these clearly with **(FIRE?)**.
+5.  **Find Overlapping Problems:** Analyze the problems generated across all 3 segments. Identify the top 4-8 problems that appear to impact multiple segments significantly. Prioritize any overlapping FIRE problems identified in Step 4. Present these overlapping problems in the detailed format specified below.
+
+# Output Format
+Structure your response precisely as follows. **Do not include any introductory text, greetings, offers for further assistance, or any commentary outside of the specified structure.**
+
+**Painstorming Analysis for Job: "[User's Chosen Job Statement]"**
+
+**Pain Points for [Target Buyer Segment 1 Name/Description]:**
+* [Problem 1 Description - specific and detailed] (Type: Functional/Emotional/Social/Perceived Risk) [Optional: **(FIRE?)**]
+* [Problem 2 Description - specific and detailed] (Type: ...) [Optional: **(FIRE?)**]
+* ... (List 8-25 specific problems for this segment)
+* **Potential FIRE Problems Summary for this Segment:** [List the problems marked as FIRE above, e.g., "Problem 2, Problem 7, Problem 15"]
+
+**Pain Points for [Target Buyer Segment 2 Name/Description]:**
+* [Problem 1 Description - specific and detailed] (Type: Functional/Emotional/Social/Perceived Risk) [Optional: **(FIRE?)**]
+* [Problem 2 Description - specific and detailed] (Type: ...) [Optional: **(FIRE?)**]
+* ... (List 8-25 specific problems for this segment)
+* **Potential FIRE Problems Summary for this Segment:** [List the problems marked as FIRE above]
+
+**Pain Points for [Target Buyer Segment 3 Name/Description]:**
+* [Problem 1 Description - specific and detailed] (Type: Functional/Emotional/Social/Perceived Risk) [Optional: **(FIRE?)**]
+* [Problem 2 Description - specific and detailed] (Type: ...) [Optional: **(FIRE?)**]
+* ... (List 8-25 specific problems for this segment)
+* **Potential FIRE Problems Summary for this Segment:** [List the problems marked as FIRE above]
+
+---
+
+**Top 4-8 Overlapping Problems Across Segments:**
+
+1.  **[Mark as FIRE Problem if applicable, otherwise just Problem]:** "[Phrase the problem concisely as if said by the customer, e.g., 'I don't know what to build that people will actually pay for.']"
+    * **Pain Type(s):** [List relevant types, e.g., Emotional + Perceived Risk]
+    * **Why it's painful:** [Explain the specific struggle/negative feeling/consequence related to this problem, e.g., Wasting time and energy building something that flops is demoralizing and expensive. They fear building the wrong thing and damaging their reputation.]
+    * **Why it's expensive:** [Explain the cost (time, money, opportunity, resources), e.g., Months spent creating a course, program, or tool that doesn't sell = lost revenue, opportunity cost, and brand confusion.]
+
+2.  **[Mark as FIRE Problem if applicable, otherwise just Problem]:** "[Customer phrase]"
+    * **Pain Type(s):** [...]
+    * **Why it's painful:** [...]
+    * **Why it's expensive:** [...]
+
+... (List 4-8 overlapping problems, prioritizing FIRE ones, following the exact detailed format above)
+
+# Final Instruction
+Provide *only* the formatted Painstorming Analysis as described above. Your response should begin directly with "**Painstorming Analysis for Job:...**". Do not include any other text before or after this structured output.
+
+Here's the context for painstorming:
+
+* **Chosen Job Statement:** ${jobStatement}
+* **Top 3 Target Buyer Segments:**
+    1. ${topBuyerSegments[0] || 'N/A'}
+    2. ${topBuyerSegments[1] || 'N/A'}
+    3. ${topBuyerSegments[2] || 'N/A'}
+* **Big Idea (for context):** ${bigIdea}
+    `;
+
+    try {
+      // Use the OpenAI API to generate the painstorming analysis
+      const rawMarkdownResponse = await this.openai.generateCompletion(painstormingPrompt);
+      return rawMarkdownResponse || null;
+    } catch (error) {
+      console.error("Error getting Painstorming analysis:", error);
+      return null;
+    }
+  }
+
   // Get a suggestion for a specific step
   async getStepSuggestion(
     step: number,
