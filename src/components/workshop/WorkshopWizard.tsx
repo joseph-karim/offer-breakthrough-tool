@@ -14,7 +14,7 @@ import { Step08_ProblemUp } from './steps/Step08_ProblemUp';
 import { Step09_RefineIdea } from './steps/Step09_RefineIdea';
 import { Step10_Summary } from './steps/Step10_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
-import { PersistentChatInterface } from './chat/PersistentChatInterface';
+import { WorkshopChatWrapper } from './chat/WorkshopChatWrapper';
 
 
 export const WorkshopWizard = () => {
@@ -134,7 +134,7 @@ export const WorkshopWizard = () => {
   const headerStyle: CSSProperties = {
     position: 'sticky',
     top: 0,
-    zIndex: 20,
+    zIndex: 10, // Lower z-index to avoid conflicts with modals
     backgroundColor: '#6B46C1', // Purple background
     color: '#FFFFFF', // White text
     borderBottom: 'none',
@@ -244,7 +244,7 @@ export const WorkshopWizard = () => {
     margin: '0 auto',
     padding: '0 24px',
     position: 'relative',
-    zIndex: 10,
+    zIndex: 5, // Lower z-index to avoid conflicts with modals
     display: 'flex',
     gap: '24px',
   };
@@ -401,7 +401,7 @@ export const WorkshopWizard = () => {
         <main style={contentContainerStyle}>
           {/* Persistent Chat Interface - only show from step 2 onwards */}
           <div style={chatContainerStyle}>
-            {currentStep >= 2 && <PersistentChatInterface isFixed={false} />}
+            <WorkshopChatWrapper />
           </div>
 
           <div style={contentCardStyle}>

@@ -10,24 +10,24 @@
     --background: 0 0% 100%;
     --foreground: 0 0% 13%;
     --radius: 0;
-    
+
     /* Brand Colors */
     --yellow: 53 100% 50%;
     --yellow-foreground: 0 0% 13%;
-    
+
     --purple: 262 59% 51%;
     --purple-foreground: 0 0% 100%;
-    
+
     /* Fonts */
     --font-sans: 'Mada', sans-serif;
     --font-heading: 'Mada', sans-serif;
   }
-  
+
   * {
     border-style: solid;
     border-width: 0;
   }
-  
+
   body {
     background-color: #FFFFFF;
     color: #222222;
@@ -46,73 +46,73 @@
     font-weight: bold;
     padding: 0 2px;
   }
-  
+
   .highlight-black {
     background-color: #222222;
     color: #FFFFFF;
     font-weight: bold;
     padding: 0 2px;
   }
-  
+
   mark, .mark {
     background-color: #FFDD00;
     color: #222222;
     font-weight: bold;
     padding: 0 2px;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     margin-top: 0;
     margin-bottom: 0.5em;
   }
-  
+
   h1 {
     font-size: 2.5rem;
   }
-  
+
   h2 {
     font-size: 2rem;
   }
-  
+
   h3 {
     font-size: 1.5rem;
   }
-  
+
   /* Paragraph and list styles */
   p {
     margin-top: 0;
     margin-bottom: 0.75em;
   }
-  
+
   p:last-child {
     margin-bottom: 0;
   }
-  
+
   ul, ol {
     margin: 0 0 8px 0;
     padding-left: 16px;
   }
-  
+
   li {
     margin-bottom: 2px;
   }
-  
+
   li:last-child {
     margin-bottom: 0;
   }
-  
+
   /* Reduce card spacing */
   .card {
     margin-bottom: 16px;
   }
-  
+
   /* Reduce button padding */
   button {
     padding: 8px 16px;
     border-radius: 4px;
   }
-  
+
   /* Reduce section spacing */
   section {
     margin-bottom: 20px;
@@ -134,119 +134,119 @@
     padding: 6px 12px;
     border-radius: 0;
   }
-  
+
   .btn-primary {
     background-color: #FFDD00;
     color: #222222;
     opacity: 1;
     transition: opacity 0.2s;
   }
-  
+
   .btn-primary:hover {
     opacity: 0.9;
   }
-  
+
   .btn-secondary {
     background-color: #222222;
     color: white;
     opacity: 1;
     transition: opacity 0.2s;
   }
-  
+
   .btn-secondary:hover {
     opacity: 0.9;
   }
-  
+
   .btn-outline {
     background-color: transparent;
     border: 2px solid #FFDD00;
     color: #222222;
   }
-  
+
   .btn-outline:hover {
     background-color: rgba(255, 221, 0, 0.1);
   }
-  
+
   .card {
     background-color: white;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     padding: 8px !important;
     border-radius: 0;
   }
-  
+
   .card-yellow {
     background-color: #FFDD00;
     color: #222222;
     padding: 10px !important;
     border-radius: 0;
   }
-  
+
   .card-black {
     background-color: #222222;
     color: white;
     padding: 10px !important;
     border-radius: 0;
   }
-  
+
   .section {
     margin-bottom: 10px !important;
   }
-  
+
   .container {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0 10px;
   }
-  
+
   /* Override padding and margin values to reduce white space */
   .p-4 {
     padding: 8px !important;
   }
-  
+
   .p-5 {
     padding: 10px !important;
   }
-  
+
   .m-4 {
     margin: 8px !important;
   }
-  
+
   .m-5 {
     margin: 10px !important;
   }
-  
+
   .py-4 {
     padding-top: 8px !important;
     padding-bottom: 8px !important;
   }
-  
+
   .py-5 {
     padding-top: 10px !important;
     padding-bottom: 10px !important;
   }
-  
+
   .px-4 {
     padding-left: 8px !important;
     padding-right: 8px !important;
   }
-  
+
   .px-5 {
     padding-left: 10px !important;
     padding-right: 10px !important;
   }
-  
+
   .gap-4 {
     gap: 8px !important;
   }
-  
+
   .gap-5 {
     gap: 10px !important;
   }
-  
+
   .space-y-4 > * + * {
     margin-top: 8px !important;
   }
-  
+
   .space-y-5 > * + * {
     margin-top: 10px !important;
   }
@@ -259,63 +259,63 @@
     border: 1px solid #EEEEEE;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
   }
-  
+
   .workbook-header {
     padding: 24px 32px;
     border-bottom: 1px solid #EEEEEE;
   }
-  
+
   .workbook-title {
     font-size: 36px;
     font-weight: 800;
     margin-bottom: 12px;
   }
-  
+
   .workbook-subtitle {
     font-size: 18px;
     color: #666666;
     margin-bottom: 16px;
   }
-  
+
   .workbook-content {
     padding: 24px 32px;
   }
-  
+
   .workbook-section {
     margin-bottom: 24px;
   }
-  
+
   .workbook-question {
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 8px;
   }
-  
+
   .workbook-instruction {
     font-size: 16px;
     color: #555555;
     margin-bottom: 16px;
   }
-  
+
   .workbook-list {
     list-style-type: none;
     padding: 0;
   }
-  
+
   .workbook-list-item {
     display: flex;
     align-items: flex-start;
     margin-bottom: 16px;
     padding-left: 8px;
   }
-  
+
   .workbook-list-number {
     font-size: 20px;
     font-weight: 700;
     min-width: 32px;
     color: #222222;
   }
-  
+
   .workbook-list-content {
     flex: 1;
   }
@@ -327,25 +327,25 @@
     padding: 32px;
     border-radius: 0;
   }
-  
+
   .info-bubble-title {
     font-size: 24px;
     font-weight: 800;
     margin-bottom: 16px;
     color: white;
   }
-  
+
   .info-bubble-subtitle {
     font-size: 18px;
     margin-bottom: 24px;
     color: white;
   }
-  
+
   .info-bubble-content {
     font-size: 16px;
     line-height: 1.5;
   }
-  
+
   .info-bubble-cta {
     display: inline-flex;
     align-items: center;
@@ -362,12 +362,12 @@
   .accent-yellow {
     border-left: 3px solid #FFDD00;
   }
-  
+
   /* Text highlight styles */
   .text-highlight {
     font-weight: bold;
   }
-  
+
   /* Tabs styling */
   .tab {
     padding: 4px 8px;
@@ -376,13 +376,13 @@
     transition: all 0.3s ease;
     border-radius: 0;
   }
-  
+
   .tab.active {
     border-bottom-color: transparent;
     background-color: #FFDD00;
     color: #222222;
   }
-  
+
   /* Yellow box styling */
   .yellow-box {
     background-color: #FFDD00;
@@ -391,7 +391,7 @@
     border-radius: 0;
     font-weight: bold;
   }
-  
+
   /* Product tab styling */
   .product-tab {
     background-color: #FFDD00;
@@ -401,7 +401,7 @@
     border-radius: 0;
     display: inline-block;
   }
-  
+
   /* Product tab inactive */
   .product-tab-inactive {
     background-color: transparent;
@@ -419,18 +419,18 @@
     padding: 48px 32px;
     text-align: center;
   }
-  
+
   .landing-title {
     font-size: 42px;
     font-weight: 800;
     margin-bottom: 16px;
   }
-  
+
   .landing-subtitle {
     font-size: 20px;
     margin-bottom: 32px;
   }
-  
+
   .landing-feature {
     display: flex;
     align-items: center;
@@ -439,7 +439,7 @@
     margin-bottom: 16px;
     border-bottom: 1px solid #EEEEEE;
   }
-  
+
   .landing-feature-icon {
     display: flex;
     align-items: center;
@@ -452,22 +452,22 @@
     border-radius: 0;
     flex-shrink: 0;
   }
-  
+
   .landing-feature-content {
     flex: 1;
   }
-  
+
   .landing-feature-title {
     font-size: 18px;
     font-weight: 700;
     margin-bottom: 4px;
   }
-  
+
   .landing-feature-description {
     font-size: 16px;
     color: #555555;
   }
-  
+
   .landing-cta {
     margin-top: 32px;
     text-align: center;
@@ -488,7 +488,7 @@
     background-color: transparent;
     color: #222222;
   }
-  
+
   .btn-ghost:hover {
     background-color: #f3f4f6;
   }
@@ -497,7 +497,7 @@
     background-color: #222222;
     color: white;
   }
-  
+
   .btn-black:hover {
     background-color: #333333;
   }
@@ -506,41 +506,41 @@
   .card {
     padding: 12px !important;
   }
-  
+
   /* Reduce margins between sections */
   section,
   .section {
     margin-bottom: 16px !important;
   }
-  
+
   /* Tighter heading margins */
   h1, h2, h3 {
     margin-bottom: 12px !important;
   }
-  
+
   /* Button styles with reduced padding */
   .button {
     padding: 8px 16px !important;
     border-radius: 4px !important;
   }
-  
+
   /* List spacing adjustment */
   ul, ol {
     padding-left: 16px !important;
     margin-top: 8px !important;
     margin-bottom: 8px !important;
   }
-  
+
   /* Card body reduced padding */
   .card-body {
     padding: 12px !important;
   }
-  
+
   /* Adjust paragraphs for tighter spacing */
   p {
     margin-bottom: 8px !important;
   }
-  
+
   /* Remove excess margin/padding from last children */
   .card > *:last-child,
   section > *:last-child,
@@ -561,15 +561,15 @@
   .hover-lift {
     transition: transform 0.3s ease;
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-0.25rem);
   }
-  
+
   .hover-grow {
     transition: transform 0.3s ease;
   }
-  
+
   .hover-grow:hover {
     transform: scale(1.05);
   }
@@ -589,13 +589,29 @@ span[style*="background-color: #FFDD00"] {
 
 /* Make rounded elements NOT rounded */
 .rounded,
-.rounded-sm, 
+.rounded-sm,
 .rounded-md,
 .rounded-lg,
 .rounded-xl,
 .rounded-2xl,
 .rounded-full {
   border-radius: 0 !important;
+}
+
+/* Global modal styles to ensure modals appear on top of everything */
+.modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 9999999 !important;
+}
+
+/* Force all other elements to be behind the modal */
+body.modal-open > *:not(.modal-backdrop) {
+  z-index: auto !important;
+  position: relative !important;
 }
 
 /* Direct brand color utility classes */

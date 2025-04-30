@@ -1,0 +1,56 @@
+/* Global modal styles */
+.modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 2147483647 !important; /* Maximum possible z-index value */
+  isolation: isolate !important;
+  transform: translateZ(9999px) !important; /* Force to front layer */
+  will-change: transform !important; /* Optimize for animations */
+}
+
+/* Force all other elements to be behind the modal */
+body.modal-open > *:not(.modal-backdrop) {
+  z-index: auto !important;
+  position: relative !important;
+}
+
+/* Ensure modal content is also on top */
+.modal-content {
+  position: relative !important;
+  z-index: 2147483647 !important; /* Maximum possible z-index value */
+}
+
+/* Override any other z-index in the application */
+body.modal-open .customercamp-theme-header,
+body.modal-open header,
+body.modal-open nav,
+body.modal-open .persistent-chat,
+body.modal-open [style*="z-index"] {
+  z-index: auto !important;
+}
+
+/* Direct targeting of specific elements that might be causing issues */
+.customercamp-theme-header,
+header[style*="z-index"],
+div[style*="z-index"],
+nav[style*="z-index"],
+.persistent-chat,
+[style*="position: sticky"],
+[style*="position:sticky"],
+[style*="position: fixed"],
+[style*="position:fixed"] {
+  z-index: 1 !important;
+}
+
+/* When modal is open, force everything else to have a lower z-index */
+body.modal-open * {
+  z-index: auto !important;
+}
+
+body.modal-open .modal-backdrop,
+body.modal-open .modal-backdrop * {
+  z-index: 2147483647 !important;
+}

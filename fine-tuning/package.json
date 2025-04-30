@@ -1,0 +1,16 @@
+{
+  "name": "jtbd-fine-tuning",
+  "version": "1.0.0",
+  "description": "Fine-tuning OpenAI models for JTBD job statements",
+  "main": "index.js",
+  "scripts": {
+    "prepare-data": "node scripts/prepare-data.js",
+    "create-fine-tune": "node scripts/create-fine-tune.js",
+    "check-status": "node scripts/check-fine-tune-status.js",
+    "test-model": "node scripts/test-model.js"
+  },
+  "dependencies": {
+    "openai": "^4.28.0",
+    "dotenv": "^16.0.3"
+  }
+}

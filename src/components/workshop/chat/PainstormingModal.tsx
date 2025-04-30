@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { X, Check } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
+import { Modal } from '../../ui/Modal';
 
 interface PainstormingModalProps {
   isOpen: boolean;
@@ -26,28 +27,30 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
   const [mainContent, setMainContent] = useState<string>('');
   const [overlappingContent, setOverlappingContent] = useState<string>('');
 
+  // No need for modal-open class handling anymore as it's handled by the Modal component
+
   useEffect(() => {
     if (markdownContent) {
       // Find where the overlapping problems start
       const sectionMatch = markdownContent.match(overlappingSectionRegex);
-      
+
       if (sectionMatch) {
         // Split the content into main analysis and overlapping problems
         setMainContent(markdownContent.substring(0, sectionMatch.index));
         setOverlappingContent(sectionMatch[0]);
-        
+
         // Extract the individual problems from the overlapping section
         const sectionText = sectionMatch[1];
         const problems: string[] = [];
         let match;
-        
+
         // Reset the regex lastIndex to ensure we start from the beginning
         problemRegex.lastIndex = 0;
-        
+
         while ((match = problemRegex.exec(sectionText)) !== null) {
           problems.push(match[1]); // Capture the text within quotes
         }
-        
+
         setOverlappingProblemsList(problems);
       } else {
         // If no overlapping section is found, use the entire content
@@ -55,7 +58,7 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
         setOverlappingContent('');
         setOverlappingProblemsList([]);
       }
-      
+
       // Reset selection when content changes
       setSelectedProblems([]);
     } else {
@@ -83,30 +86,21 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
 
   if (!isOpen || !markdownContent) return null;
 
+  // No need for modal styles anymore as they're handled by the Modal component
+
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1100,
-      padding: '20px'
-    }}>
-      <Card style={{
-        width: '90%',
-        maxWidth: '1000px',
-        maxHeight: '90vh',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: 0,
-        overflow: 'hidden',
-        backgroundColor: 'white'
-      }}>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <Card
+        style={{
+          width: '90%',
+          maxWidth: '1000px',
+          maxHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          overflow: 'hidden',
+          backgroundColor: 'white'
+        }}>
         {/* Modal Header */}
         <div style={{
           padding: '16px 24px',
@@ -144,7 +138,7 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
             borderBottom: '1px solid #EEEEEE'
           }}>
             <ReactMarkdown>{mainContent}</ReactMarkdown>
-            
+
             {overlappingContent && (
               <div style={{
                 marginTop: '20px',
@@ -167,7 +161,7 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
               borderTop: '1px solid #EEEEEE'
             }}>
               <h3 style={{ marginTop: 0, marginBottom: '16px' }}>Select Key Problems to Focus On</h3>
-              
+
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))',
@@ -176,7 +170,7 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
                 overflowY: 'auto'
               }}>
                 {overlappingProblemsList.map((problem, index) => (
-                  <div 
+                  <div
                     key={index}
                     style={{
                       display: 'flex',
@@ -238,6 +232,6 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
           </div>
         </div>
       </Card>
-    </div>
+    </Modal>
   );
 };

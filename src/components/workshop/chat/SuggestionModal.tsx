@@ -3,23 +3,23 @@ import { X, ThumbsUp, ThumbsDown, Check } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { Modal } from '../../ui/Modal';
 
-interface JTBDSuggestion {
+interface Suggestion {
   id: string;
   content: string;
   type: 'overarching' | 'supporting';
 }
 
-interface JTBDSuggestionModalProps {
+interface SuggestionModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   description: string;
   currentInput: string;
-  suggestions: JTBDSuggestion[];
-  onSelectSuggestion: (suggestion: JTBDSuggestion) => void;
+  suggestions: Suggestion[];
+  onSelectSuggestion: (suggestion: Suggestion) => void;
 }
 
-export const JTBDSuggestionModal: React.FC<JTBDSuggestionModalProps> = ({
+export const SuggestionModal: React.FC<SuggestionModalProps> = ({
   isOpen,
   onClose,
   title,
@@ -28,10 +28,8 @@ export const JTBDSuggestionModal: React.FC<JTBDSuggestionModalProps> = ({
   suggestions,
   onSelectSuggestion
 }) => {
-  const [selectedSuggestion, setSelectedSuggestion] = useState<JTBDSuggestion | null>(null);
+  const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
   const [ratings, setRatings] = useState<Record<string, 'up' | 'down' | null>>({});
-
-  if (!isOpen) return null;
 
   const handleRating = (suggestionId: string, rating: 'up' | 'down') => {
     setRatings(prev => ({
@@ -40,7 +38,7 @@ export const JTBDSuggestionModal: React.FC<JTBDSuggestionModalProps> = ({
     }));
   };
 
-  const handleSelect = (suggestion: JTBDSuggestion) => {
+  const handleSelect = (suggestion: Suggestion) => {
     setSelectedSuggestion(suggestion);
   };
 
@@ -104,7 +102,7 @@ export const JTBDSuggestionModal: React.FC<JTBDSuggestionModalProps> = ({
           backgroundColor: '#f0f9ff',
           borderLeft: '4px solid #0ea5e9'
         }}>
-          <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: 600 }}>Your Current Statement:</h3>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: 600 }}>Your Current Input:</h3>
           <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6 }}>{currentInput}</p>
         </div>
 

@@ -1179,7 +1179,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             position: 'fixed',
             bottom: windowWidth < 600 ? '10px' : '20px',
             right: windowWidth < 600 ? '10px' : '20px',
-            zIndex: 1050,
+            zIndex: 5,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -1211,7 +1211,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             flexDirection: 'column',
             padding: 0,
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            zIndex: isFixed ? 1000 : 'auto', // Lower z-index to avoid overlapping with modals
+            zIndex: isFixed ? 5 : 'auto', // Much lower z-index to avoid overlapping with modals
             border: '1px solid #EEEEEE',
             borderLeft: '3px solid #FFDD00',
             overflowY: 'auto', // Allow scrolling if content is too large

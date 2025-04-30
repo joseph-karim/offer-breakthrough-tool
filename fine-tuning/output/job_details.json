@@ -1,0 +1,35 @@
+{
+  "object": "fine_tuning.job",
+  "id": "ftjob-GWEJTYGTJMKwkhjF2hv6ji5q",
+  "model": "gpt-4.1-2025-04-14",
+  "created_at": 1745598264,
+  "finished_at": null,
+  "fine_tuned_model": null,
+  "organization_id": "org-ZtUkdYDD0JuzoG2IWHZG6E3c",
+  "result_files": [],
+  "status": "validating_files",
+  "validation_file": "file-VCCsB1gSyxeZt8GQnDU9hX",
+  "training_file": "file-J6YXWW6B6PgyAqm7sQ4P4i",
+  "hyperparameters": {
+    "n_epochs": "auto",
+    "batch_size": "auto",
+    "learning_rate_multiplier": "auto"
+  },
+  "trained_tokens": null,
+  "error": {},
+  "user_provided_suffix": "jtbd-bot",
+  "seed": 1750514674,
+  "estimated_finish": null,
+  "integrations": [],
+  "metadata": null,
+  "method": {
+    "type": "supervised",
+    "supervised": {
+      "hyperparameters": {
+        "batch_size": "auto",
+        "learning_rate_multiplier": "auto",
+        "n_epochs": "auto"
+      }
+    }
+  }
+}

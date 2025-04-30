@@ -67,7 +67,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
             top: '120px',
             left: '20px',
             height: 'calc(100vh - 160px)',
-            zIndex: 10
+            zIndex: 5
           }}>
             <PersistentChatInterface
               isFixed={false}
