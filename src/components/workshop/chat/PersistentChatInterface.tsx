@@ -1087,7 +1087,15 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
   // Determine position based on screen size
   const getChatPosition = () => {
-    if (!isFixed) return 'relative';
+    if (!isFixed) {
+      return {
+        position: 'relative',
+        top: 'auto',
+        left: 'auto',
+        bottom: 'auto',
+        right: 'auto',
+      };
+    }
 
     // For very small screens (e.g., small laptops)
     if (windowWidth < 600) {
