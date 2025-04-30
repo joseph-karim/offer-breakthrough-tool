@@ -110,11 +110,13 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
     @keyframes modalFadeIn {
       0% {
         opacity: 0;
-        transform: scale(0.9) translateY(20px);
+        transform: scale(0.95) translateY(10px);
+        backdrop-filter: blur(0px);
       }
       100% {
         opacity: 1;
         transform: scale(1) translateY(0);
+        backdrop-filter: blur(5px);
       }
     }
 
@@ -131,6 +133,19 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
       100% {
         transform: scale(1);
         box-shadow: 0 0 0 0 rgba(255, 221, 0, 0);
+      }
+    }
+
+    /* Add a glow effect to the modal */
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 10px rgba(255, 221, 0, 0.5);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(255, 221, 0, 0.8);
+      }
+      100% {
+        box-shadow: 0 0 10px rgba(255, 221, 0, 0.5);
       }
     }
   `;
@@ -151,17 +166,21 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 2147483647, // Maximum possible z-index value
-        backdropFilter: 'blur(3px)', // Add blur effect to background
+        backdropFilter: 'blur(5px)', // Add stronger blur effect to background
+        animation: 'modalFadeIn 0.3s ease-out', // Add animation for the backdrop
         pointerEvents: 'auto', // Ensure it captures all mouse events
         isolation: 'isolate', // Create a new stacking context
         transform: 'translateZ(9999px)', // Force to front layer
         willChange: 'transform', // Optimize for animations
-        overflow: 'hidden' // Prevent content from overflowing
+        overflow: 'hidden', // Prevent content from overflowing
+        inset: 0, // Ensure it covers the entire viewport
+        margin: 0, // Remove any margin
+        padding: 0 // Remove any padding
       }}>
       <div
         style={{
@@ -170,20 +189,20 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
           left: isDragging ? `${position.x}px` : 'auto',
           backgroundColor: 'white',
           borderRadius: '16px',
-          width: windowWidth < 600 ? '90%' : '75%',
-          maxWidth: '850px',
-          height: windowHeight < 600 ? '80vh' : '65vh',
-          maxHeight: windowHeight < 600 ? '80vh' : '65vh',
+          width: '95%', // Almost full width
+          maxWidth: '1200px', // Much larger max width
+          height: '90vh', // Almost full height
+          maxHeight: '90vh', // Almost full height
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.6)',
           overflow: 'hidden',
-          margin: '80px auto', // Further increased margin to prevent overlap with top elements
+          margin: '20px auto', // Reduced margin to make it more full screen
           resize: 'both', // Allow user resizing
           cursor: isDragging ? 'grabbing' : 'default',
           transition: 'all 0.3s ease', // Smooth transitions
           zIndex: 2147483647, // Maximum possible z-index
-          animation: 'modalFadeIn 0.3s ease-out', // Add animation for better UX
+          animation: 'modalFadeIn 0.3s ease-out, glow 2s infinite ease-in-out', // Add animations for better UX
           transform: 'translateZ(9999px)', // Force to front layer
           willChange: 'transform', // Optimize for animations
           isolation: 'isolate' // Create a new stacking context
