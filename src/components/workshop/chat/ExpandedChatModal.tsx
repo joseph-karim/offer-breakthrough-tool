@@ -85,18 +85,36 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Define animation keyframes
+  const animationStyles = `
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  `;
+
   return (
+    <>
+      <style>{animationStyles}</style>
     <div style={{
       position: 'fixed',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      zIndex: 1100
+      zIndex: 99999, // Extremely high z-index to ensure it's above everything
+      backdropFilter: 'blur(3px)', // Add blur effect to background
+      pointerEvents: 'auto' // Ensure it captures all mouse events
     }}>
       <div
         style={{
@@ -104,20 +122,21 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
           top: isDragging ? `${position.y}px` : 'auto',
           left: isDragging ? `${position.x}px` : 'auto',
           backgroundColor: 'white',
-          borderRadius: '12px',
-          width: windowWidth < 600 ? '98%' : '95%',
-          maxWidth: '800px',
-          height: windowHeight < 600 ? '98vh' : '90vh',
-          maxHeight: windowHeight < 600 ? '98vh' : '90vh',
+          borderRadius: '16px',
+          width: windowWidth < 600 ? '95%' : '80%',
+          maxWidth: '900px',
+          height: windowHeight < 600 ? '90vh' : '75vh',
+          maxHeight: windowHeight < 600 ? '90vh' : '75vh',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
           overflow: 'hidden',
-          margin: windowWidth < 768 ? '5px' : 'auto',
+          margin: '40px auto', // Increased margin to prevent overlap with top elements
           resize: 'both', // Allow user resizing
           cursor: isDragging ? 'grabbing' : 'default',
           transition: 'all 0.3s ease', // Smooth transitions
-          zIndex: 1200 // Higher z-index to appear above other elements
+          zIndex: 100000, // Extremely high z-index to appear above all other elements
+          animation: 'modalFadeIn 0.3s ease-out' // Add animation for better UX
         }}
         onMouseDown={handleMouseDown}
       >
@@ -130,9 +149,11 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: '#FFDD00', // Yellow background to match branding
             cursor: isDragging ? 'grabbing' : 'grab', // Indicate draggable
-            userSelect: 'none' // Prevent text selection during drag
+            userSelect: 'none', // Prevent text selection during drag
+            borderTopLeftRadius: '16px',
+            borderTopRightRadius: '16px'
           }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <img
@@ -140,20 +161,31 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
               alt="Sparky"
               style={{ width: '42px', height: '42px', borderRadius: '50%' }}
             />
-            <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Sparky</h3>
+            <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#222222' }}>Sparky</h3>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               onClick={onClose}
               title="Minimize"
+              aria-label="Minimize chat"
               style={{
-                background: 'none',
-                border: 'none',
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: '1px solid rgba(0, 0, 0, 0.1)',
+                borderRadius: '4px',
                 cursor: 'pointer',
-                padding: '4px',
+                padding: '6px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
               <Minimize2 size={18} color="#666666" />
@@ -161,14 +193,27 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
             <button
               onClick={onClose}
               title="Close"
+              aria-label="Close chat"
               style={{
-                background: 'none',
-                border: 'none',
+                background: 'rgba(255, 255, 255, 0.7)',
+                border: '1px solid rgba(0, 0, 0, 0.1)',
+                borderRadius: '4px',
                 cursor: 'pointer',
-                padding: '4px',
+                padding: '6px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(255, 0, 0, 0.3)';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.1)';
+                e.currentTarget.style.transform = 'scale(1)';
               }}
             >
               <X size={18} color="#666666" />
@@ -188,5 +233,6 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
         {inputContainer}
       </div>
     </div>
+    </>
   );
 };
