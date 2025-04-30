@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Minimize2, X } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Minimize2, X, Send, Loader2 } from 'lucide-react';
 import { SparkyMessage } from '../../../services/sparkyService';
 import { MessagesContainer } from './MessagesContainer';
-import { Modal } from '../../ui/Modal';
+import { createPortal } from 'react-dom';
+import { Button } from '../../ui/Button';
 
 interface ExpandedChatModalProps {
   isOpen: boolean;
@@ -11,7 +12,8 @@ interface ExpandedChatModalProps {
   isTyping: boolean;
   currentStep: number;
   renderMessage: (message: SparkyMessage) => React.ReactNode;
-  inputContainer: React.ReactNode;
+  handleSendMessage: (message: string) => void; // Function to send a message
+  suggestionsPanel?: React.ReactNode; // Optional suggestions panel
 }
 
 export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
@@ -21,13 +23,26 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
   isTyping,
   currentStep,
   renderMessage,
-  inputContainer
+  handleSendMessage,
+  suggestionsPanel
 }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [inputValue, setInputValue] = useState('');
+
+  // Handle key press (Enter to send)
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (inputValue.trim() && !isTyping) {
+        handleSendMessage(inputValue);
+        setInputValue('');
+      }
+    }
+  }, [inputValue, isTyping, handleSendMessage]);
 
   // Update window dimensions when resized
   useEffect(() => {
@@ -84,6 +99,56 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
     }
   }, [isOpen, isDragging, dragStart]);
 
+  // Create a div for the modal root if it doesn't exist
+  const getOrCreateModalRoot = () => {
+    let modalRoot = document.getElementById('modal-root');
+    if (!modalRoot) {
+      modalRoot = document.createElement('div');
+      modalRoot.id = 'modal-root';
+      document.body.appendChild(modalRoot);
+    }
+    return modalRoot;
+  };
+
+  // Create a div for this specific modal instance
+  const [modalElement] = useState(() => document.createElement('div'));
+
+  // Add styles to ensure modal is on top
+  useEffect(() => {
+    if (isOpen) {
+      const modalRoot = getOrCreateModalRoot();
+
+      // Apply styles to the modal element
+      modalElement.style.position = 'fixed';
+      modalElement.style.top = '0';
+      modalElement.style.left = '0';
+      modalElement.style.right = '0';
+      modalElement.style.bottom = '0';
+      modalElement.style.zIndex = '2147483647'; // Max possible z-index
+      modalElement.style.display = 'flex';
+      modalElement.style.justifyContent = 'center';
+      modalElement.style.alignItems = 'center';
+
+      // Prevent scrolling on the body
+      document.body.style.overflow = 'hidden';
+
+      // Append the element to the modal root
+      modalRoot.appendChild(modalElement);
+
+      // Add a class to the body to help with styling
+      document.body.classList.add('modal-open');
+
+      return () => {
+        // Clean up when the component unmounts or when isOpen changes to false
+        modalRoot.removeChild(modalElement);
+        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
+      };
+    }
+  }, [isOpen, modalElement]);
+
+  if (!isOpen) return null;
+
   // Define animation keyframes
   const animationStyles = `
     @keyframes modalFadeIn {
@@ -111,10 +176,29 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
     }
   `;
 
-  return (
+  return createPortal(
     <>
       <style>{animationStyles}</style>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 2147483647
+        }}
+        onClick={(e) => {
+          // Close the modal when clicking on the backdrop
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
+      >
         <div
           style={{
             position: isDragging ? 'absolute' : 'relative',
@@ -233,10 +317,56 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
             renderMessage={renderMessage}
           />
 
+          {/* Suggestions Panel */}
+          {suggestionsPanel}
+
           {/* Input Container */}
-          {inputContainer}
+          <div
+            style={{
+              padding: '20px 24px',
+              borderTop: '1px solid #EEEEEE',
+              display: 'flex',
+              gap: '12px',
+              backgroundColor: '#FFFFFF'
+            }}
+          >
+            <textarea
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Type your message..."
+              style={{
+                flexGrow: 1,
+                border: '1px solid #EEEEEE',
+                borderRadius: '12px',
+                padding: '12px 16px',
+                resize: 'vertical',
+                minHeight: '50px',
+                maxHeight: '200px',
+                fontSize: '16px',
+                lineHeight: 1.6,
+                overflowY: 'auto'
+              }}
+              rows={2}
+            />
+            <Button
+              variant="yellow"
+              size="lg"
+              onClick={() => {
+                if (inputValue.trim() && !isTyping) {
+                  handleSendMessage(inputValue);
+                  setInputValue('');
+                }
+              }}
+              disabled={!inputValue.trim() || isTyping}
+              style={{ alignSelf: 'flex-end', padding: '12px 16px' }}
+            >
+              {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+            </Button>
+          </div>
         </div>
-      </Modal>
-    </>
+      </div>
+    </>,
+    modalElement
   );
 };

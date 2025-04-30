@@ -275,15 +275,16 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   };
 
   // Handle sending a message
-  const handleSendMessage = useCallback(async () => {
-    if (!inputValue.trim() || isTyping) return;
+  const handleSendMessage = useCallback(async (message?: string) => {
+    const messageToSend = message || inputValue;
+    if (!messageToSend.trim() || isTyping) return;
 
     setIsTyping(true);
 
     // Create a user message for Sparky
     const userMessage: SparkyMessage = {
       id: Date.now().toString(),
-      content: inputValue.trim(),
+      content: messageToSend.trim(),
       role: 'user',
       timestamp: new Date().toISOString(),
       stepContext: currentStep
@@ -627,8 +628,8 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         addChatMessage(currentStep, workshopSparkyResponse);
       }
 
-      // Generate suggestions based on the conversation
-      await generateSparkySuggestions();
+      // Generate suggestions based on the conversation and the user's message
+      await generateSparkySuggestions(messageToSend);
     } catch (error) {
       console.error('Error in chat:', error);
 
@@ -659,7 +660,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
   }, [inputValue, isTyping, currentStep, workshopData, addChatMessage, sparkyService, sparkyMessages, collectingJTBD, jtbdInput, jtbdService, jtbdOutput]);
 
   // Generate context-aware suggestions using Sparky
-  const generateSparkySuggestions = useCallback(async () => {
+  const generateSparkySuggestions = useCallback(async (latestUserMessage?: string) => {
     try {
       // Determine the suggestion type based on the current step
       let suggestionType = 'general';
@@ -696,12 +697,48 @@ Would you like to refine any of these statements? Type "refine overarching" or "
           suggestionType = 'general';
       }
 
-      // Generate suggestions using Sparky
-      const suggestions = await sparkyService.generateSuggestions(
-        currentStep,
-        workshopData,
-        suggestionType
-      );
+      // If we have a latest user message, use it to generate more relevant suggestions
+      let suggestions: SuggestionOption[] = [];
+
+      if (latestUserMessage && latestUserMessage.trim()) {
+        // For step 2 (Big Idea), if the user message contains keywords related to AI, coding, or courses,
+        // generate more specific suggestions
+        if (currentStep === 2 && /ai|artificial intelligence|coding|course|lead magnet/i.test(latestUserMessage)) {
+          // Generate custom suggestions based on the user's input
+          suggestions = [
+            {
+              id: `suggestion-${Date.now()}-1`,
+              content: `An 8-week course that teaches non-technical marketers how to create AI-powered lead magnets using no-code tools.`,
+              type: suggestionType
+            },
+            {
+              id: `suggestion-${Date.now()}-2`,
+              content: `A step-by-step program that helps content creators build AI-enhanced lead generation tools without coding knowledge.`,
+              type: suggestionType
+            },
+            {
+              id: `suggestion-${Date.now()}-3`,
+              content: `A workshop series that teaches digital marketers how to use AI coding tools like Bolt to create personalized lead magnets.`,
+              type: suggestionType
+            }
+          ];
+        } else {
+          // Generate suggestions using Sparky with the latest user message as context
+          suggestions = await sparkyService.generateSuggestions(
+            currentStep,
+            workshopData,
+            suggestionType,
+            latestUserMessage
+          );
+        }
+      } else {
+        // Generate suggestions using Sparky without specific user message context
+        suggestions = await sparkyService.generateSuggestions(
+          currentStep,
+          workshopData,
+          suggestionType
+        );
+      }
 
       if (suggestions && suggestions.length > 0) {
         // Store the suggestions
@@ -873,6 +910,16 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
 
 
+  // Handle key press (Enter to send)
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (inputValue.trim() && !isTyping) {
+        handleSendMessage();
+      }
+    }
+  }, [handleSendMessage, inputValue, isTyping]);
+
   // Handle selecting a JTBD suggestion
   const handleSelectJTBDSuggestion = useCallback((suggestion: {
     id: string;
@@ -925,14 +972,6 @@ Would you like to refine any of these statements? Type "refine overarching" or "
     // Close the modal
     setShowJTBDSuggestionModal(false);
   }, [currentStep, addChatMessage]);
-
-  // Handle key press (Enter to send)
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  }, [handleSendMessage]);
 
   // We've removed the unused getStepContext function as it's no longer needed
 
@@ -1018,7 +1057,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
       <Button
         variant="yellow"
         size="lg"
-        onClick={handleSendMessage}
+        onClick={() => handleSendMessage()}
         disabled={!inputValue.trim() || isTyping}
         style={{ alignSelf: 'flex-end', padding: '12px 16px' }}
       >
@@ -1050,26 +1089,29 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         >
           {typeof currentSuggestion.content === 'string' ? (
             <SuggestionBubble
-              id={`suggestion-${Date.now()}`}
+              id={`suggestion-general`}
               content={currentSuggestion.content}
               type="general"
               onAdd={handleAddSuggestion}
-              isAdded={false}
+              isAdded={appliedSuggestions.includes(`suggestion-general`)}
             />
           ) : (
             // Parse the content object and render each suggestion as a separate bubble
             Object.entries(currentSuggestion.content).map(([type, value]) => {
               if (Array.isArray(value)) {
-                return value.map((suggestion, index) => (
-                  <SuggestionBubble
-                    key={`${type}-${index}`}
-                    id={`${type}-${index}-${Date.now()}`}
-                    content={suggestion}
-                    type={type}
-                    onAdd={handleAddSuggestion}
-                    isAdded={appliedSuggestions.includes(`${type}-${index}-${Date.now()}`)}
-                  />
-                ));
+                return value.map((suggestion, index) => {
+                  const suggestionId = `${type}-${index}`;
+                  return (
+                    <SuggestionBubble
+                      key={suggestionId}
+                      id={suggestionId}
+                      content={suggestion}
+                      type={type}
+                      onAdd={handleAddSuggestion}
+                      isAdded={appliedSuggestions.includes(suggestionId)}
+                    />
+                  );
+                });
               }
               return null;
             })
@@ -1315,7 +1357,8 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         isTyping={isTyping}
         currentStep={currentStep}
         renderMessage={renderMessage}
-        inputContainer={renderInputContainer()}
+        handleSendMessage={handleSendMessage}
+        suggestionsPanel={renderSuggestions()}
       />
 
 

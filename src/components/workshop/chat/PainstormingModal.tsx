@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { X, Check } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { Card } from '../../ui/Card';
-import { Modal } from '../../ui/Modal';
+import { createPortal } from 'react-dom';
 
 interface PainstormingModalProps {
   isOpen: boolean;
@@ -27,7 +27,53 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
   const [mainContent, setMainContent] = useState<string>('');
   const [overlappingContent, setOverlappingContent] = useState<string>('');
 
-  // No need for modal-open class handling anymore as it's handled by the Modal component
+  // Create a div for the modal root if it doesn't exist
+  const getOrCreateModalRoot = () => {
+    let modalRoot = document.getElementById('modal-root');
+    if (!modalRoot) {
+      modalRoot = document.createElement('div');
+      modalRoot.id = 'modal-root';
+      document.body.appendChild(modalRoot);
+    }
+    return modalRoot;
+  };
+
+  // Create a div for this specific modal instance
+  const [modalElement] = useState(() => document.createElement('div'));
+
+  // Add styles to ensure modal is on top
+  useEffect(() => {
+    if (isOpen) {
+      const modalRoot = getOrCreateModalRoot();
+
+      // Apply styles to the modal element
+      modalElement.style.position = 'fixed';
+      modalElement.style.top = '0';
+      modalElement.style.left = '0';
+      modalElement.style.right = '0';
+      modalElement.style.bottom = '0';
+      modalElement.style.zIndex = '2147483647'; // Max possible z-index
+      modalElement.style.display = 'flex';
+      modalElement.style.justifyContent = 'center';
+      modalElement.style.alignItems = 'center';
+
+      // Prevent scrolling on the body
+      document.body.style.overflow = 'hidden';
+
+      // Append the element to the modal root
+      modalRoot.appendChild(modalElement);
+
+      // Add a class to the body to help with styling
+      document.body.classList.add('modal-open');
+
+      return () => {
+        // Clean up when the component unmounts or when isOpen changes to false
+        modalRoot.removeChild(modalElement);
+        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
+      };
+    }
+  }, [isOpen, modalElement]);
 
   useEffect(() => {
     if (markdownContent) {
@@ -86,10 +132,28 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
 
   if (!isOpen || !markdownContent) return null;
 
-  // No need for modal styles anymore as they're handled by the Modal component
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+  return createPortal(
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 2147483647,
+        padding: '20px'
+      }}
+      onClick={(e) => {
+        // Close the modal when clicking on the backdrop
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
       <Card
         style={{
           width: '90%',
@@ -232,6 +296,7 @@ export const PainstormingModal: React.FC<PainstormingModalProps> = ({
           </div>
         </div>
       </Card>
-    </Modal>
+    </div>,
+    modalElement
   );
 };

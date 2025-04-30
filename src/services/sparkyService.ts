@@ -311,21 +311,28 @@ export class SparkyService {
   async generateSuggestions(
     currentStep: number,
     workshopData: WorkshopData,
-    type: string
+    type: string,
+    userMessage?: string
   ): Promise<SuggestionOption[]> {
     try {
       // If using mock responses, generate mock suggestions
       if (this.useMockResponses) {
-        return this.generateMockSuggestions(currentStep, type, workshopData);
+        return this.generateMockSuggestions(currentStep, type, workshopData, userMessage);
       }
 
       // Get the appropriate suggestion prompt for the current step and type
       const suggestionPrompt = this.getSuggestionPromptForStep(currentStep, type, workshopData);
 
+      // If we have a user message, add it to the prompt
+      let userPrompt = suggestionPrompt.user;
+      if (userMessage && userMessage.trim()) {
+        userPrompt += `\n\nPlease consider the user's latest message when generating suggestions: "${userMessage}"`;
+      }
+
       // Generate the suggestions using the OpenAI service
       const response = await this.openai.generateCompletion(
         suggestionPrompt.system,
-        suggestionPrompt.user,
+        userPrompt,
         0.7,
         this.model
       );
@@ -336,7 +343,7 @@ export class SparkyService {
       console.error('Error generating suggestions:', error);
 
       // Fall back to mock suggestions if API fails
-      return this.generateMockSuggestions(currentStep, type, workshopData);
+      return this.generateMockSuggestions(currentStep, type, workshopData, userMessage);
     }
   }
 
@@ -346,10 +353,33 @@ export class SparkyService {
   private generateMockSuggestions(
     currentStep: number,
     type: string,
-    _workshopData: WorkshopData
+    _workshopData: WorkshopData,
+    userMessage?: string
   ): SuggestionOption[] {
     // Generate 3-5 mock suggestions based on the step and type
     const suggestions: SuggestionOption[] = [];
+
+    // If we have a user message for step 2 (Big Idea) that mentions AI, coding, or courses,
+    // generate custom suggestions
+    if (currentStep === 2 && userMessage && /ai|artificial intelligence|coding|course|lead magnet/i.test(userMessage)) {
+      return [
+        {
+          id: `suggestion-${Date.now()}-1`,
+          content: `An 8-week course that teaches non-technical marketers how to create AI-powered lead magnets using no-code tools.`,
+          type
+        },
+        {
+          id: `suggestion-${Date.now()}-2`,
+          content: `A step-by-step program that helps content creators build AI-enhanced lead generation tools without coding knowledge.`,
+          type
+        },
+        {
+          id: `suggestion-${Date.now()}-3`,
+          content: `A workshop series that teaches digital marketers how to use AI coding tools like Bolt to create personalized lead magnets.`,
+          type
+        }
+      ];
+    }
 
     switch (currentStep) {
       case 2: // Big Idea
