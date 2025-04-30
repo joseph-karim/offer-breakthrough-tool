@@ -10,7 +10,7 @@ import { JTBDSuggestionModal } from './JTBDSuggestionModal';
 import { MessagesContainer } from './MessagesContainer';
 import { SuggestionBubble } from './SuggestionBubble';
 import { ExpandedChatModal } from './ExpandedChatModal';
-import { Send, Loader2, X, Maximize2 } from 'lucide-react';
+import { Send, Loader2, X, Maximize2, Minimize2 } from 'lucide-react';
 import { WorkshopData } from '../../../types/workshop';
 
 interface PersistentChatInterfaceProps {
@@ -38,6 +38,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [appliedSuggestions, setAppliedSuggestions] = useState<string[]>([]);
   // We need to keep this state even if it's not directly used in the render
   // as it's used in the generateSparkySuggestions function
@@ -1071,62 +1072,161 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
   if (!isOpen) return null;
 
+  // Create a responsive style object based on screen size
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // Update window width when resized
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Determine position based on screen size
+  const getChatPosition = () => {
+    if (!isFixed) return 'relative';
+
+    // For very small screens (e.g., small laptops)
+    if (windowWidth < 600) {
+      return {
+        position: 'fixed',
+        bottom: '10px',
+        right: '10px',
+        top: 'auto',
+        left: 'auto',
+      };
+    }
+
+    // For medium screens (tablets, small laptops)
+    if (windowWidth < 1024) {
+      return {
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        top: 'auto',
+        left: 'auto',
+      };
+    }
+
+    // For larger screens, position on the left with more space for content
+    return {
+      position: 'fixed',
+      top: '120px',
+      left: '20px',
+      bottom: 'auto',
+      right: 'auto',
+    };
+  };
+
+  // Get responsive dimensions
+  const getChatDimensions = () => {
+    // For very small screens (e.g., small laptops)
+    if (windowWidth < 600) {
+      return {
+        width: '280px',
+        maxWidth: 'calc(100vw - 20px)',
+        height: '400px',
+        maxHeight: 'calc(100vh - 160px)',
+      };
+    }
+
+    // For medium screens (tablets, small laptops)
+    if (windowWidth < 1024) {
+      return {
+        width: '300px',
+        maxWidth: 'calc(100vw - 40px)',
+        height: '450px',
+        maxHeight: 'calc(100vh - 180px)',
+      };
+    }
+
+    // For larger screens
+    return {
+      width: '320px',
+      maxWidth: 'calc(100vw - 60px)',
+      height: 'calc(100vh - 200px)',
+      maxHeight: '600px',
+    };
+  };
+
   // Render the expanded chat modal
   return (
     <>
-      <Card
-        style={{
-          position: isFixed ? 'fixed' : 'relative',
-          top: isFixed ? '120px' : 'auto',
-          left: isFixed ? '20px' : 'auto',
-          width: '350px',
-          height: 'calc(100vh - 140px)',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: 0,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          zIndex: isFixed ? 1050 : 'auto',
-          border: '1px solid #EEEEEE',
-          borderLeft: '3px solid #FFDD00'
-        }}
-      >
-        {/* Chat Header */}
+      {isMinimized ? (
+        // Minimized chat button
         <div
           style={{
-            padding: '16px 24px',
-            borderBottom: '1px solid #EEEEEE',
+            position: 'fixed',
+            bottom: windowWidth < 600 ? '10px' : '20px',
+            right: windowWidth < 600 ? '10px' : '20px',
+            zIndex: 1050,
+            cursor: 'pointer',
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
-            backgroundColor: '#FFFFFF'
+            gap: '8px',
+            backgroundColor: '#FFDD00',
+            padding: windowWidth < 600 ? '8px 12px' : '12px 16px',
+            borderRadius: '50px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            transition: 'all 0.2s ease'
+          }}
+          onClick={() => setIsMinimized(false)}
+        >
+          <img
+            src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
+            alt="Sparky"
+            style={{ width: '32px', height: '32px', borderRadius: '50%' }}
+          />
+          {windowWidth >= 480 && (
+            <span style={{ fontWeight: 600, color: '#333333' }}>Chat with Sparky</span>
+          )}
+        </div>
+      ) : (
+        // Full chat interface
+        <Card
+          style={{
+            ...getChatPosition(),
+            ...getChatDimensions(),
+            display: 'flex',
+            flexDirection: 'column',
+            padding: 0,
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            zIndex: isFixed ? 1000 : 'auto', // Lower z-index to avoid overlapping with modals
+            border: '1px solid #EEEEEE',
+            borderLeft: '3px solid #FFDD00',
+            overflowY: 'auto', // Allow scrolling if content is too large
+            resize: 'both', // Allow user resizing
+            maxWidth: '500px', // Maximum width when resizing
+            maxHeight: '800px', // Maximum height when resizing
+            transition: 'all 0.3s ease' // Smooth transitions
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <img
-              src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
-              alt="Sparky"
-              style={{ width: '42px', height: '42px', borderRadius: '50%' }}
-            />
-            <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Sparky</h3>
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              onClick={() => setIsExpanded(true)}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '4px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <Maximize2 size={18} color="#666666" />
-            </button>
-            {onClose && (
+          {/* Chat Header */}
+          <div
+            style={{
+              padding: '16px 24px',
+              borderBottom: '1px solid #EEEEEE',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: '#FFFFFF'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <img
+                src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
+                alt="Sparky"
+                style={{ width: '42px', height: '42px', borderRadius: '50%' }}
+              />
+              <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Sparky</h3>
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
               <button
-                onClick={onClose}
+                onClick={() => setIsExpanded(true)}
+                title="Expand"
                 style={{
                   background: 'none',
                   border: 'none',
@@ -1137,26 +1237,58 @@ Would you like to refine any of these statements? Type "refine overarching" or "
                   justifyContent: 'center'
                 }}
               >
-                <X size={18} color="#666666" />
+                <Maximize2 size={18} color="#666666" />
               </button>
-            )}
+              <button
+                onClick={() => setIsMinimized(true)}
+                title="Minimize"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <Minimize2 size={18} color="#666666" />
+              </button>
+              {onClose && (
+                <button
+                  onClick={onClose}
+                  title="Close"
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <X size={18} color="#666666" />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Messages Container */}
-        <MessagesContainer
-          messages={sparkyMessages}
-          isTyping={isTyping}
-          currentStep={currentStep}
-          renderMessage={renderMessage}
-        />
+          {/* Messages Container */}
+          <MessagesContainer
+            messages={sparkyMessages}
+            isTyping={isTyping}
+            currentStep={currentStep}
+            renderMessage={renderMessage}
+          />
 
-        {/* Suggestions Panel */}
-        {renderSuggestions()}
+          {/* Suggestions Panel */}
+          {renderSuggestions()}
 
-        {/* Input Container */}
-        {renderInputContainer()}
-      </Card>
+          {/* Input Container */}
+          {renderInputContainer()}
+        </Card>
+      )}
 
       {/* Expanded Chat Modal */}
       <ExpandedChatModal

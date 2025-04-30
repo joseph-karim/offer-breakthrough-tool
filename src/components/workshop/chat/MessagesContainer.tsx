@@ -18,10 +18,21 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
 }) => {
   const [showAllMessages, setShowAllMessages] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // Update window width when resized
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Filter messages based on the current step
-  const filteredMessages = showAllMessages 
-    ? messages 
+  const filteredMessages = showAllMessages
+    ? messages
     : messages.filter(msg => !msg.stepContext || msg.stepContext === currentStep);
 
   // Scroll to bottom when messages change
@@ -49,18 +60,23 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
   return (
     <div
       style={{
-        padding: '24px',
+        padding: windowWidth < 600 ? '8px' : windowWidth < 768 ? '12px' : '24px',
         overflowY: 'auto',
         flexGrow: 1,
         height: 'calc(100% - 150px)',
-        backgroundColor: '#FAFAFA'
+        backgroundColor: '#FAFAFA',
+        WebkitOverflowScrolling: 'touch', // Improve scrolling on mobile devices
+        fontSize: windowWidth < 600 ? '13px' : windowWidth < 768 ? '14px' : '16px', // Responsive font size
+        wordBreak: 'break-word', // Prevent text overflow
+        scrollbarWidth: 'thin', // Thinner scrollbars for Firefox
+        msOverflowStyle: 'none' // Hide scrollbars for IE/Edge
       }}
     >
       {/* Toggle button for showing all messages or just current step */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        marginBottom: '16px' 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginBottom: windowWidth < 600 ? '8px' : '16px'
       }}>
         <Button
           variant="ghost"
@@ -70,19 +86,20 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
-            fontSize: '14px',
-            color: '#666666'
+            fontSize: windowWidth < 600 ? '12px' : '14px',
+            color: '#666666',
+            padding: windowWidth < 600 ? '4px 8px' : '8px 12px'
           }}
         >
           {showAllMessages ? (
             <>
-              <ChevronUp size={16} />
-              Show Current Step Only
+              <ChevronUp size={windowWidth < 600 ? 14 : 16} />
+              {windowWidth < 480 ? 'Current Step' : 'Show Current Step Only'}
             </>
           ) : (
             <>
-              <ChevronDown size={16} />
-              Show Full History
+              <ChevronDown size={windowWidth < 600 ? 14 : 16} />
+              {windowWidth < 480 ? 'All History' : 'Show Full History'}
             </>
           )}
         </Button>
@@ -117,7 +134,7 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
                 {step === 0 ? 'General Messages' : `Step ${step} Messages`}
               </div>
             )}
-            
+
             {/* Messages for this step */}
             {groupedMessages[step].map(message => renderMessage(message))}
           </div>
