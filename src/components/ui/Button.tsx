@@ -2,7 +2,7 @@ import React, { CSSProperties, ButtonHTMLAttributes } from 'react';
 import { Loader2 } from 'lucide-react';
 
 // Type definitions
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'yellow' | 'black' | 'white' | 'default' | 'gradient' | 'yellowToBlack' | 'yellowToPurple' | 'destructive';
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'link' | 'yellow' | 'black' | 'white' | 'default' | 'gradient' | 'yellowToBlack' | 'yellowToPurple' | 'destructive' | 'success';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'icon';
 
 type ButtonProps = {
@@ -130,6 +130,13 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
         border: 'none',
         fontWeight: 'bold',
       };
+    case 'success':
+      return {
+        backgroundColor: '#10B981',
+        color: '#FFFFFF',
+        border: 'none',
+        fontWeight: 'bold',
+      };
     case 'default':
     default:
       return {};
@@ -152,7 +159,7 @@ export const Button = ({
   // Get the base styles
   const sizeProps = getSizeProps(size);
   const variantStyles = getVariantStyles(variant);
-  
+
   // Combine all styles
   const buttonStyle: CSSProperties = {
     position: 'relative',
@@ -169,7 +176,7 @@ export const Button = ({
     ...(disabled || isLoading ? { opacity: 0.6, cursor: 'not-allowed', boxShadow: 'none' } : {}),
     ...style,
   };
-  
+
   // Special case for icon size
   if (size === 'icon') {
     buttonStyle.padding = '6px';
@@ -185,23 +192,23 @@ export const Button = ({
       {...props}
     >
       {isLoading && (
-        <span style={{ 
-          marginRight: children ? '8px' : '0', 
+        <span style={{
+          marginRight: children ? '8px' : '0',
           animation: 'spin 2s linear infinite',
           display: 'inline-flex',
         }}>
           <Loader2 size={size === 'sm' ? 14 : size === 'lg' ? 20 : size === 'xl' ? 24 : 16} />
         </span>
       )}
-      
+
       {!isLoading && leftIcon && (
         <span style={{ marginRight: children ? '8px' : '0', display: 'inline-flex' }}>
           {leftIcon}
         </span>
       )}
-      
+
       {children}
-      
+
       {!isLoading && rightIcon && (
         <span style={{ marginLeft: children ? '8px' : '0', display: 'inline-flex' }}>
           {rightIcon}
@@ -209,4 +216,4 @@ export const Button = ({
       )}
     </button>
   );
-};                          
+};

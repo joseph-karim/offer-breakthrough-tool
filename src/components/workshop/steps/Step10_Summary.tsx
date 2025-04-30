@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { StepHeader } from '../../ui/StepHeader';
 import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { HelpCircle, Download, ExternalLink } from 'lucide-react';
-
+import { HelpCircle, ExternalLink, FileText } from 'lucide-react';
+import { exportWorkshopToPdf } from '../../../utils/pdfExporter';
 import { Button } from '../../ui/Button';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -13,41 +13,19 @@ const selectWorkshopData = (state: WorkshopStore) => state.workshopData;
 
 export const Step10_Summary: React.FC = () => {
   const workshopData = useWorkshopStore(selectWorkshopData);
+  const [isExporting, setIsExporting] = useState(false);
 
-  // Generate workshop summary
-  const generateSummary = useCallback(() => {
-    const summary = {
-      initialIdea: workshopData.bigIdea?.description || 'Not defined',
-      refinedIdea: workshopData.refinedIdea?.description || 'Not defined',
-      underlyingGoal: workshopData.underlyingGoal?.businessGoal || 'Not defined',
-      triggerEvents: workshopData.triggerEvents.map(event => event.description),
-      jobs: workshopData.jobs.map(job => job.description),
-      targetBuyers: workshopData.targetBuyers
-        .filter(buyer => buyer.selected || workshopData.problemUp?.selectedBuyers.includes(buyer.id))
-        .map(buyer => buyer.description),
-      pains: workshopData.pains
-        .filter(pain => workshopData.problemUp?.selectedPains.includes(pain.id))
-        .map(pain => pain.description),
-      targetMoment: workshopData.problemUp?.targetMoment || 'Not defined',
-      reflections: workshopData.reflections || { keyInsights: '', nextSteps: '' }
-    };
-
-    return summary;
+  // Download summary as PDF
+  const downloadPdfSummary = useCallback(async () => {
+    setIsExporting(true);
+    try {
+      await exportWorkshopToPdf(workshopData);
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
   }, [workshopData]);
-
-  // Download summary as JSON
-  const downloadSummary = useCallback(() => {
-    const summary = generateSummary();
-    const blob = new Blob([JSON.stringify(summary, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'buyer-breakthrough-workshop-summary.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, [generateSummary]);
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -413,12 +391,13 @@ export const Step10_Summary: React.FC = () => {
           {/* Download Summary */}
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
             <Button
-              onClick={downloadSummary}
+              onClick={downloadPdfSummary}
               variant="yellow"
               size="lg"
-              rightIcon={<Download size={16} />}
+              rightIcon={<FileText size={16} />}
+              disabled={isExporting}
             >
-              Download Workshop Summary
+              {isExporting ? 'Generating PDF...' : 'Download Workshop Summary (PDF)'}
             </Button>
           </div>
 

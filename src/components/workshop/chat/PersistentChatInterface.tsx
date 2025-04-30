@@ -7,7 +7,10 @@ import { JTBDService } from '../../../services/jtbdService';
 import { OpenAIService } from '../../../services/openai';
 import { SparkyService, SparkyMessage, SuggestionOption } from '../../../services/sparkyService';
 import { JTBDSuggestionModal } from './JTBDSuggestionModal';
-import { Send, Loader2, X } from 'lucide-react';
+import { MessagesContainer } from './MessagesContainer';
+import { SuggestionBubble } from './SuggestionBubble';
+import { ExpandedChatModal } from './ExpandedChatModal';
+import { Send, Loader2, X, Maximize2 } from 'lucide-react';
 import { WorkshopData } from '../../../types/workshop';
 
 interface PersistentChatInterfaceProps {
@@ -27,12 +30,15 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
     addChatMessage,
     currentSuggestion,
     setCurrentSuggestion,
-    acceptSuggestion
+    acceptSuggestion,
+    updateWorkshopData
   } = useWorkshopStore();
 
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [appliedSuggestions, setAppliedSuggestions] = useState<string[]>([]);
   // We need to keep this state even if it's not directly used in the render
   // as it's used in the generateSparkySuggestions function
   const [, setSparkySuggestions] = useState<SuggestionOption[]>([]);
@@ -175,6 +181,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         content: welcomeContent,
         role: 'assistant',
         timestamp: new Date().toISOString(),
+        stepContext: currentStep
       };
 
       setSparkyMessages([welcomeMessage]);
@@ -185,6 +192,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         content: welcomeMessage.content,
         role: welcomeMessage.role,
         timestamp: welcomeMessage.timestamp,
+        step: currentStep
       };
 
       if (typeof currentStep === 'number') {
@@ -208,6 +216,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
             content: proactiveMessage,
             role: 'assistant',
             timestamp: new Date().toISOString(),
+            stepContext: currentStep
           };
 
           setSparkyMessages(prev => [...prev, message]);
@@ -218,6 +227,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
             content: message.content,
             role: message.role,
             timestamp: message.timestamp,
+            step: currentStep
           };
 
           if (typeof currentStep === 'number') {
@@ -266,6 +276,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       content: inputValue.trim(),
       role: 'user',
       timestamp: new Date().toISOString(),
+      stepContext: currentStep
     };
 
     // Add to Sparky messages
@@ -277,6 +288,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       content: userMessage.content,
       role: userMessage.role,
       timestamp: userMessage.timestamp,
+      step: currentStep
     };
 
     if (typeof currentStep === 'number') {
@@ -583,15 +595,22 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         sparkyMessages
       );
 
+      // Make sure the response includes the step context
+      const responseWithContext = {
+        ...sparkyResponse,
+        stepContext: currentStep
+      };
+
       // Add Sparky's response to the messages
-      setSparkyMessages(prev => [...prev, sparkyResponse]);
+      setSparkyMessages(prev => [...prev, responseWithContext]);
 
       // Also add to workshop store for persistence
       const workshopSparkyResponse: AIMessage = {
-        id: sparkyResponse.id,
-        content: sparkyResponse.content,
-        role: sparkyResponse.role,
-        timestamp: sparkyResponse.timestamp,
+        id: responseWithContext.id,
+        content: responseWithContext.content,
+        role: responseWithContext.role,
+        timestamp: responseWithContext.timestamp,
+        step: currentStep
       };
 
       if (typeof currentStep === 'number') {
@@ -722,13 +741,125 @@ Would you like to refine any of these statements? Type "refine overarching" or "
     }
   }, [jtbdInput, jtbdService]);
 
-  // Handle selecting a suggestion
-  const handleSelectSuggestion = useCallback(() => {
-    if (typeof currentStep === 'number') {
-      acceptSuggestion(currentStep);
-      setShowSuggestions(false);
+
+
+  // Handle adding a specific suggestion to the workshop
+  const handleAddSuggestion = useCallback((id: string, content: string, type: string) => {
+    // Mark this suggestion as applied
+    setAppliedSuggestions(prev => [...prev, id]);
+
+    // Add a confirmation message to the chat
+    const confirmationMessage: SparkyMessage = {
+      id: Date.now().toString(),
+      content: `✅ I've added "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}" to your workshop.`,
+      role: 'assistant',
+      timestamp: new Date().toISOString(),
+      stepContext: currentStep
+    };
+
+    setSparkyMessages(prev => [...prev, confirmationMessage]);
+
+    // Also add to workshop store
+    const workshopConfirmationMessage: AIMessage = {
+      id: confirmationMessage.id,
+      content: confirmationMessage.content,
+      role: confirmationMessage.role,
+      timestamp: confirmationMessage.timestamp,
+      step: currentStep
+    };
+
+    addChatMessage(currentStep, workshopConfirmationMessage);
+
+    // Add the suggestion to the appropriate part of the workshop data
+    // based on the current step and suggestion type
+    switch (type) {
+      case 'big-idea':
+        if (currentStep === 2) {
+          updateWorkshopData({
+            bigIdea: {
+              ...workshopData.bigIdea,
+              description: content,
+              targetCustomers: workshopData.bigIdea?.targetCustomers || '',
+              version: 'initial'
+            }
+          });
+        } else if (currentStep === 9) {
+          updateWorkshopData({
+            refinedIdea: {
+              ...workshopData.refinedIdea,
+              description: content,
+              targetCustomers: workshopData.refinedIdea?.targetCustomers || '',
+              version: 'refined'
+            }
+          });
+        }
+        break;
+      case 'underlying-goal':
+        updateWorkshopData({
+          underlyingGoal: {
+            ...workshopData.underlyingGoal,
+            businessGoal: content,
+            constraints: workshopData.underlyingGoal?.constraints || ''
+          }
+        });
+        break;
+      case 'trigger-events':
+        updateWorkshopData({
+          triggerEvents: [
+            ...workshopData.triggerEvents,
+            {
+              id: id,
+              description: content,
+              source: 'assistant'
+            }
+          ]
+        });
+        break;
+      case 'jobs':
+        updateWorkshopData({
+          jobs: [
+            ...workshopData.jobs,
+            {
+              id: id,
+              description: content,
+              source: 'assistant'
+            }
+          ]
+        });
+        break;
+      case 'target-buyers':
+        updateWorkshopData({
+          targetBuyers: [
+            ...workshopData.targetBuyers,
+            {
+              id: id,
+              description: content,
+              source: 'assistant'
+            }
+          ]
+        });
+        break;
+      case 'pains':
+        updateWorkshopData({
+          pains: [
+            ...workshopData.pains,
+            {
+              id: id,
+              description: content,
+              buyerSegment: '',
+              type: 'functional',
+              source: 'assistant'
+            }
+          ]
+        });
+        break;
+      default:
+        // For other types, we'll just use the generic acceptSuggestion
+        if (typeof currentStep === 'number') {
+          acceptSuggestion(currentStep);
+        }
     }
-  }, [currentStep, acceptSuggestion]);
+  }, [currentStep, workshopData, updateWorkshopData, addChatMessage, acceptSuggestion]);
 
 
 
@@ -844,239 +975,200 @@ Would you like to refine any of these statements? Type "refine overarching" or "
     );
   };
 
-  if (!isOpen) return null;
-
-  return (
-    <Card
+  // Create the input container component to be reused in both views
+  const renderInputContainer = () => (
+    <div
       style={{
-        position: isFixed ? 'fixed' : 'relative',
-        top: isFixed ? '120px' : 'auto',
-        left: isFixed ? '20px' : 'auto',
-        width: '350px', // Original width
-        height: 'calc(100vh - 120px)', // Original height
+        padding: '20px 24px',
+        borderTop: '1px solid #EEEEEE',
         display: 'flex',
-        flexDirection: 'column',
-        padding: 0,
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-        zIndex: isFixed ? 1050 : 'auto',
-        border: '1px solid #EEEEEE',
-        borderLeft: '3px solid #FFDD00'
+        gap: '12px',
+        backgroundColor: '#FFFFFF'
       }}
     >
-      {/* Chat Header */}
-      <div
+      <textarea
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleKeyPress}
+        placeholder="Type your message..."
         style={{
-          padding: '16px 24px',
-          borderBottom: '1px solid #EEEEEE',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          backgroundColor: '#FFFFFF'
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img
-            src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
-            alt="Sparky"
-            style={{ width: '42px', height: '42px', borderRadius: '50%' }}
-          />
-          <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Sparky</h3>
-        </div>
-        {onClose && (
-          <button
-            onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <X size={18} color="#666666" />
-          </button>
-        )}
-      </div>
-
-      {/* Messages Container */}
-      <div
-        style={{
-          padding: '24px',
-          overflowY: 'auto',
           flexGrow: 1,
-          height: 'calc(100% - 150px)', // Original height
-          backgroundColor: '#FAFAFA'
+          border: '1px solid #EEEEEE',
+          borderRadius: '12px',
+          padding: '12px 16px',
+          resize: 'vertical',
+          minHeight: '50px',
+          maxHeight: '200px',
+          fontSize: '16px',
+          lineHeight: 1.6,
+          overflowY: 'auto'
+        }}
+        rows={2}
+      />
+      <Button
+        variant="yellow"
+        size="lg"
+        onClick={handleSendMessage}
+        disabled={!inputValue.trim() || isTyping}
+        style={{ alignSelf: 'flex-end', padding: '12px 16px' }}
+      >
+        {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+      </Button>
+    </div>
+  );
+
+  // Render suggestions as individual bubbles
+  const renderSuggestions = () => {
+    if (!showSuggestions || !currentSuggestion) return null;
+
+    return (
+      <div
+        style={{
+          padding: '12px 16px',
+          borderTop: '1px solid #EEEEEE',
+          backgroundColor: '#FFFDF5'
         }}
       >
-        {sparkyMessages.length === 0 ? (
-          <div style={{ textAlign: 'center', color: '#666666', padding: '40px 20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Suggestions</h4>
+        </div>
+        <div
+          style={{
+            maxHeight: '200px',
+            overflowY: 'auto'
+          }}
+        >
+          {typeof currentSuggestion.content === 'string' ? (
+            <SuggestionBubble
+              id={`suggestion-${Date.now()}`}
+              content={currentSuggestion.content}
+              type="general"
+              onAdd={handleAddSuggestion}
+              isAdded={false}
+            />
+          ) : (
+            // Parse the content object and render each suggestion as a separate bubble
+            Object.entries(currentSuggestion.content).map(([type, value]) => {
+              if (Array.isArray(value)) {
+                return value.map((suggestion, index) => (
+                  <SuggestionBubble
+                    key={`${type}-${index}`}
+                    id={`${type}-${index}-${Date.now()}`}
+                    content={suggestion}
+                    type={type}
+                    onAdd={handleAddSuggestion}
+                    isAdded={appliedSuggestions.includes(`${type}-${index}-${Date.now()}`)}
+                  />
+                ));
+              }
+              return null;
+            })
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  if (!isOpen) return null;
+
+  // Render the expanded chat modal
+  return (
+    <>
+      <Card
+        style={{
+          position: isFixed ? 'fixed' : 'relative',
+          top: isFixed ? '120px' : 'auto',
+          left: isFixed ? '20px' : 'auto',
+          width: '350px',
+          height: 'calc(100vh - 140px)',
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 0,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          zIndex: isFixed ? 1050 : 'auto',
+          border: '1px solid #EEEEEE',
+          borderLeft: '3px solid #FFDD00'
+        }}
+      >
+        {/* Chat Header */}
+        <div
+          style={{
+            padding: '16px 24px',
+            borderBottom: '1px solid #EEEEEE',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: '#FFFFFF'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <img
               src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
               alt="Sparky"
-              style={{ width: '80px', height: '80px', borderRadius: '50%', margin: '0 auto 20px', display: 'block' }}
+              style={{ width: '42px', height: '42px', borderRadius: '50%' }}
             />
-            <p style={{ fontSize: '16px', lineHeight: '1.6' }}>Hi! I'm Sparky, your workshop assistant. Ask me anything about the workshop or for help with the current step.</p>
+            <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Sparky</h3>
           </div>
-        ) : (
-          sparkyMessages.map(renderMessage)
-        )}
-
-        {isTyping && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#666666' }}>
-            <Loader2 className="animate-spin" size={16} />
-            <span>Sparky is typing...</span>
-          </div>
-        )}
-
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Suggestions Panel */}
-      {showSuggestions && currentSuggestion && (
-        <div
-          style={{
-            padding: '12px 16px',
-            borderTop: '1px solid #EEEEEE',
-            backgroundColor: '#FFFDF5'
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Suggestions</h4>
-          </div>
-          <div
-            style={{
-              maxHeight: '200px',
-              overflowY: 'auto'
-            }}
-          >
-            {typeof currentSuggestion.content === 'string' ? (
-              <div
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={() => setIsExpanded(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Maximize2 size={18} color="#666666" />
+            </button>
+            {onClose && (
+              <button
+                onClick={onClose}
                 style={{
-                  fontSize: '14px',
-                  backgroundColor: '#FFFFFF',
-                  border: '1px solid #EEEEEE',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  marginBottom: '12px',
+                  background: 'none',
+                  border: 'none',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
-                }}
-                onClick={handleSelectSuggestion}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#FFFBEA';
-                  e.currentTarget.style.borderColor = '#FFDD00';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#FFFFFF';
-                  e.currentTarget.style.borderColor = '#EEEEEE';
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                {currentSuggestion.content}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  marginTop: '10px'
-                }}>
-                  <Button
-                    variant="yellow"
-                    size="sm"
-                  >
-                    Accept & Apply
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              // Parse the content object and render each suggestion as a separate clickable item
-              Object.entries(currentSuggestion.content).map(([key, value]) => {
-                if (Array.isArray(value)) {
-                  return value.map((suggestion, index) => (
-                    <div
-                      key={`${key}-${index}`}
-                      style={{
-                        fontSize: '14px',
-                        backgroundColor: '#FFFFFF',
-                        border: '1px solid #EEEEEE',
-                        borderRadius: '8px',
-                        padding: '12px 16px',
-                        marginBottom: '12px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
-                      }}
-                      onClick={handleSelectSuggestion}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#FFFBEA';
-                        e.currentTarget.style.borderColor = '#FFDD00';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#FFFFFF';
-                        e.currentTarget.style.borderColor = '#EEEEEE';
-                      }}
-                    >
-                      {suggestion}
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        marginTop: '10px'
-                      }}>
-                        <Button
-                          variant="yellow"
-                          size="sm"
-                        >
-                          Accept & Apply
-                        </Button>
-                      </div>
-                    </div>
-                  ));
-                }
-                return null;
-              })
+                <X size={18} color="#666666" />
+              </button>
             )}
           </div>
         </div>
-      )}
 
-      {/* Input Container */}
-      <div
-        style={{
-          padding: '20px 24px',
-          borderTop: '1px solid #EEEEEE',
-          display: 'flex',
-          gap: '12px',
-          backgroundColor: '#FFFFFF'
-        }}
-      >
-        <textarea
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyPress}
-          placeholder="Type your message..."
-          style={{
-            flexGrow: 1,
-            border: '1px solid #EEEEEE',
-            borderRadius: '12px',
-            padding: '12px 16px',
-            resize: 'none',
-            minHeight: '50px',
-            maxHeight: '150px',
-            fontSize: '16px',
-            lineHeight: 1.6
-          }}
-          rows={1}
+        {/* Messages Container */}
+        <MessagesContainer
+          messages={sparkyMessages}
+          isTyping={isTyping}
+          currentStep={currentStep}
+          renderMessage={renderMessage}
         />
-        <Button
-          variant="yellow"
-          size="lg"
-          onClick={handleSendMessage}
-          disabled={!inputValue.trim() || isTyping}
-          style={{ alignSelf: 'flex-end', padding: '12px 16px' }}
-        >
-          {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
-        </Button>
-      </div>
+
+        {/* Suggestions Panel */}
+        {renderSuggestions()}
+
+        {/* Input Container */}
+        {renderInputContainer()}
+      </Card>
+
+      {/* Expanded Chat Modal */}
+      <ExpandedChatModal
+        isOpen={isExpanded}
+        onClose={() => setIsExpanded(false)}
+        messages={sparkyMessages}
+        isTyping={isTyping}
+        currentStep={currentStep}
+        renderMessage={renderMessage}
+        inputContainer={renderInputContainer()}
+      />
+
 
       {/* JTBD Suggestion Modal */}
       <JTBDSuggestionModal
@@ -1092,6 +1184,6 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         suggestions={jtbdSuggestions}
         onSelectSuggestion={handleSelectJTBDSuggestion}
       />
-    </Card>
+    </>
   );
 };

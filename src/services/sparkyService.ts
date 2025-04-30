@@ -9,6 +9,7 @@ export interface SparkyMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: string;
+  stepContext?: number; // The step this message is associated with
 }
 
 export interface SuggestionOption {
