@@ -30,7 +30,7 @@ export const Step01_Intro: React.FC = () => {
           position: 'relative'
         }}>
           <img
-            src="/assets/BB_main_image.png"
+            src="/assets/BB_Main_image.png"
             alt="Buyer Breakthrough"
             style={{
               width: '100%',

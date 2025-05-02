@@ -1,6 +1,6 @@
 import { useEffect, CSSProperties, useState, useCallback } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { Zap, CheckCircle, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 // Import step components
 import { Step01_Intro } from './steps/Step01_Intro';
@@ -14,7 +14,6 @@ import { Step08_ProblemUp } from './steps/Step08_ProblemUp';
 import { Step09_RefineIdea } from './steps/Step09_RefineIdea';
 import { Step10_Summary } from './steps/Step10_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
-import { WorkshopChatWrapper } from './chat/WorkshopChatWrapper';
 
 
 export const WorkshopWizard = () => {
@@ -117,8 +116,7 @@ export const WorkshopWizard = () => {
     }
   })();
 
-  // Calculate completion percentage
-  const completionPercentage = Math.round((currentStep / 10) * 100);
+  // Completion percentage calculation removed as it's now in WorkshopLayout
 
   // Base styles for the whole app
   const containerStyle: CSSProperties = {
@@ -131,138 +129,30 @@ export const WorkshopWizard = () => {
     color: '#FFFFFF', // White text for dark background
   };
 
-  const headerStyle: CSSProperties = {
-    position: 'relative',
-    zIndex: 10, // Lower z-index to avoid conflicts with modals
-    backgroundColor: '#1E1E1E', // Dark background to match the body
-    color: '#FFFFFF', // White text
-    borderBottom: 'none',
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-    padding: '16px 24px',
-    marginBottom: '32px',
-  };
-
-  const headerContentStyle: CSSProperties = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    display: 'flex',
-    flexDirection: 'column',
-  };
-
-  const logoContainerStyle: CSSProperties = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '16px',
-  };
-
-  const logoStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    fontWeight: 800,
-    fontSize: '28px',
-    color: '#FFFFFF', // White text on purple header
-    textShadow: 'none',
-    fontFamily: '"Mada", sans-serif',
-  };
-
-  const logoIconContainerStyle: CSSProperties = {
-    marginRight: '16px',
-    borderRadius: '0',
-    backgroundColor: '#FFDD00',
-    padding: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: 'none',
-    border: 'none',
-  };
-
-  const stepIndicatorStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    backgroundColor: '#FFDD00',
-    padding: '8px 16px',
-    borderRadius: '0',
-    fontSize: '14px',
-    fontWeight: 700,
-    color: '#222222',
-    boxShadow: 'none',
-    border: 'none',
-  };
-
-  const progressContainerStyle: CSSProperties = {
-    height: '8px',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: '0',
-    overflow: 'hidden',
-    boxShadow: 'none',
-    border: 'none',
-  };
-
-  const progressBarStyle: CSSProperties = {
-    height: '100%',
-    backgroundColor: '#FFDD00',
-    borderRadius: '0',
-    transition: 'width 0.5s ease',
-    width: `${completionPercentage}%`,
-    boxShadow: 'none',
-    border: 'none',
-  };
-
-  const progressStatsStyle: CSSProperties = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    fontSize: '14px',
-    marginTop: '8px',
-  };
-
-  const progressTextStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    fontWeight: 600,
-    color: '#FFFFFF', // White text for readability
-    textShadow: 'none',
-  };
+  // Header styles removed as they're now in WorkshopLayout
 
 
 
   // Content container styles
   const contentContainerStyle: CSSProperties = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '0 24px',
-    position: 'relative',
-    zIndex: 5, // Lower z-index to avoid conflicts with modals
     display: 'flex',
-    gap: '24px',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+    padding: '0',
   };
 
-  // Chat container styles
-  const chatContainerStyle: CSSProperties = {
-    width: '350px', // Reverted to original width
-    flexShrink: 0,
-    position: 'sticky',
-    top: '100px',
-    alignSelf: 'flex-start',
-    height: 'calc(100vh - 120px)', // Set fixed height to make it taller
-    maxHeight: 'calc(100vh - 120px)',
-    display: currentStep >= 2 ? 'block' : 'none',
-  };
+  // Chat container styles are no longer needed here as they're handled in WorkshopLayout
 
   const contentCardStyle: CSSProperties = {
     backgroundColor: '#222222',
-    borderRadius: '0',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
     border: '1px solid #333333',
     padding: '0',
-    marginBottom: '0',
-    color: '#FFFFFF', // White text on dark background
-    flexGrow: 1, // Take up remaining space
+    color: '#FFFFFF',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    overflow: 'auto',
   };
 
   // Navigation styles INLINE with content
@@ -304,7 +194,9 @@ export const WorkshopWizard = () => {
           backgroundSize: '0 !important',
           backgroundRepeat: 'no-repeat !important',
           backgroundPosition: 'center !important',
-          color: '#FFFFFF'
+          color: '#FFFFFF',
+          width: '100%',
+          maxWidth: '100%'
         }}>
         {/* Background decoration - removed for cleaner look */}
 
@@ -313,80 +205,17 @@ export const WorkshopWizard = () => {
           <div key={index} style={{...style, opacity: 0.1}}></div>
         ))} */}
 
-        {/* Header with progress */}
-        <header className="customercamp-theme-header" style={{
-          ...headerStyle,
-          backgroundColor: '#1E1E1E',
-          background: '#1E1E1E',
-          backgroundImage: 'none !important'
-        }}>
-          <div style={headerContentStyle}>
-            <div style={logoContainerStyle}>
-              <h1 style={logoStyle}>
-                <span style={logoIconContainerStyle}>
-                  <img
-                    src="/assets/Group 157.png"
-                    alt="Bomb icon"
-                    style={{
-                      width: '24px',
-                      height: '24px'
-                    }}
-                  />
-                </span>
-                Buyer Breakthrough
-                <span style={{
-                  position: 'relative',
-                  marginLeft: '8px',
-                  fontSize: '20px',
-                  opacity: 1
-                }}>
-                  Workshop
-
-                </span>
-              </h1>
-
-              <div style={stepIndicatorStyle}>
-                <Zap style={{
-                  width: '20px',
-                  height: '20px',
-                  marginRight: '8px',
-                  color: '#222222'
-                }} />
-                Step {currentStep} of 10
-              </div>
-            </div>
-
-            <div>
-              <div style={progressContainerStyle}>
-                <div style={progressBarStyle}></div>
-              </div>
-
-              <div style={progressStatsStyle}>
-                <div style={progressTextStyle}>
-                  <CheckCircle style={{
-                    width: '18px',
-                    height: '18px',
-                    marginRight: '8px',
-                    color: '#FFDD00'
-                  }} />
-                  {completionPercentage}% Complete
-                </div>
-
-
-              </div>
-            </div>
-          </div>
-        </header>
+        {/* Header removed as it's now in WorkshopLayout */}
 
         {/* Main content */}
         <main style={contentContainerStyle}>
-          {/* Persistent Chat Interface - only show from step 2 onwards */}
-          <div style={chatContainerStyle}>
-            <WorkshopChatWrapper />
-          </div>
-
           <div style={contentCardStyle}>
-            <div className="workbook-content">
+            <div className="workbook-content" style={{
+              padding: '24px',
+              flexGrow: 1,
+              overflow: 'auto',
+              minHeight: '300px'
+            }}>
               {currentStepComponent}
             </div>
 

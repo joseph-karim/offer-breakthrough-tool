@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { PersistentChatInterface } from '../workshop/chat/PersistentChatInterface';
+import { WorkshopChatWrapper } from '../workshop/chat/WorkshopChatWrapper';
 
 interface WorkshopLayoutProps {
   children: ReactNode;
@@ -12,92 +12,110 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
   const totalSteps = 10;
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#1E1E1E', color: 'white' }}>
-      <header style={{ borderBottom: '1px solid #333333', position: 'relative' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{
-                backgroundColor: '#FFDD00',
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: '15px'
-              }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2 17L12 22L22 17" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M2 12L12 17L22 12" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'white' }}>
-                Buyer Breakthrough Workshop
-              </h1>
-            </div>
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#1E1E1E',
+      color: 'white',
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%'
+    }}>
+      <header style={{
+        borderBottom: '1px solid #333333',
+        position: 'relative',
+        padding: '12px 16px'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{
-              fontSize: '14px',
-              color: 'black',
               backgroundColor: '#FFDD00',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              fontWeight: 'bold'
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: '12px',
+              padding: '6px'
             }}>
-              Step {currentStep} of {totalSteps}
+              <img
+                src="/assets/bomb-icon.png"
+                alt="Bomb icon"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain'
+                }}
+              />
             </div>
+            <h1 style={{ fontSize: '18px', fontWeight: 700, color: 'white', margin: 0 }}>
+              Buyer Breakthrough Workshop
+            </h1>
           </div>
           <div style={{
-            marginTop: '16px',
-            height: '8px',
-            width: '100%',
-            backgroundColor: '#333333',
-            borderRadius: '9999px',
-            overflow: 'hidden'
+            fontSize: '12px',
+            color: 'black',
+            backgroundColor: '#FFDD00',
+            padding: '4px 12px',
+            borderRadius: '20px',
+            fontWeight: 'bold'
           }}>
-            <div
-              style={{
-                height: '100%',
-                width: `${(currentStep / totalSteps) * 100}%`,
-                backgroundColor: '#FFDD00',
-                borderRadius: '9999px',
-                transition: 'width 0.3s ease'
-              }}
-            />
+            Step {currentStep} of {totalSteps}
           </div>
+        </div>
+        <div style={{
+          marginTop: '12px',
+          height: '4px',
+          width: '100%',
+          backgroundColor: '#333333',
+          borderRadius: '9999px',
+          overflow: 'hidden'
+        }}>
+          <div
+            style={{
+              height: '100%',
+              width: `${(currentStep / totalSteps) * 100}%`,
+              backgroundColor: '#FFDD00',
+              borderRadius: '9999px',
+              transition: 'width 0.3s ease'
+            }}
+          />
         </div>
       </header>
 
-      <div style={{ display: 'flex', position: 'relative' }}>
+      <div style={{
+        display: 'flex',
+        flexGrow: 1,
+        height: 'calc(100vh - 65px)', // Header height + border
+        overflow: 'hidden',
+        width: '100%'
+      }}>
         {/* Persistent Chat - Only show from step 2 onwards */}
         {currentStep > 1 && (
           <div style={{
-            width: '350px',
-            position: 'absolute', // Changed from fixed to absolute so it scrolls with the page
-            top: '20px',
-            left: '20px',
-            height: 'calc(100vh - 160px)',
-            zIndex: 5
+            width: '40%',
+            minWidth: '400px',
+            maxWidth: '600px',
+            borderRight: '1px solid #333333',
+            height: '100%',
+            overflow: 'hidden'
           }}>
-            <PersistentChatInterface
-              isFixed={false}
-              isOpen={true}
-            />
+            <WorkshopChatWrapper />
           </div>
         )}
 
         <main style={{
-          maxWidth: '1200px',
-          margin: '0 auto',
-          padding: '32px 24px',
-          width: '100%',
-          marginLeft: currentStep > 1 ? '380px' : '0',
-          transition: 'margin-left 0.3s ease'
+          flexGrow: 1,
+          height: '100%',
+          overflow: 'auto',
+          padding: 0,
+          width: currentStep > 1 ? '60%' : '100%'
         }}>
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            {children}
-          </div>
+          {children}
         </main>
       </div>
     </div>

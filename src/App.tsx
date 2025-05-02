@@ -1,13 +1,13 @@
 import { WorkshopWizard } from './components/workshop/WorkshopWizard';
-import Layout from './components/ui/Layout';
+import { WorkshopLayout } from './components/layout/WorkshopLayout';
 import './index.css';
 
 function App() {
   return (
     <div className="customercamp-theme">
-      <Layout>
+      <WorkshopLayout>
         <WorkshopWizard />
-      </Layout>
+      </WorkshopLayout>
     </div>
   );
 }

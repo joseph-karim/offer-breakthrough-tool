@@ -60,16 +60,18 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
   return (
     <div
       style={{
-        padding: windowWidth < 600 ? '8px' : windowWidth < 768 ? '12px' : '24px',
+        padding: windowWidth < 600 ? '8px' : windowWidth < 768 ? '12px' : '16px',
         overflowY: 'auto',
         flexGrow: 1,
-        height: 'calc(100% - 150px)',
+        height: 'calc(100% - 70px)', // Subtract header height
         backgroundColor: '#FFFFFF',
         WebkitOverflowScrolling: 'touch', // Improve scrolling on mobile devices
-        fontSize: windowWidth < 600 ? '13px' : windowWidth < 768 ? '14px' : '16px', // Responsive font size
+        fontSize: windowWidth < 600 ? '13px' : windowWidth < 768 ? '14px' : '15px', // Responsive font size
         wordBreak: 'break-word', // Prevent text overflow
         scrollbarWidth: 'thin', // Thinner scrollbars for Firefox
-        msOverflowStyle: 'none' // Hide scrollbars for IE/Edge
+        msOverflowStyle: 'none', // Hide scrollbars for IE/Edge
+        display: 'flex',
+        flexDirection: 'column'
       }}
     >
       {/* Toggle button for showing all messages or just current step */}

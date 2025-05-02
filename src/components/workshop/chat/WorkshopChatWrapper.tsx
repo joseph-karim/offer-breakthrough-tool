@@ -4,6 +4,7 @@ import { PersistentChatInterface } from './PersistentChatInterface';
 
 /**
  * WorkshopChatWrapper - Renders the persistent chat interface only on steps 2-10
+ * This component is used in the WorkshopLayout to render the chat in the sidebar
  */
 export const WorkshopChatWrapper: React.FC = () => {
   const { currentStep } = useWorkshopStore();
@@ -16,6 +17,16 @@ export const WorkshopChatWrapper: React.FC = () => {
   }
 
   // We're using isFixed={false} because the container is already positioned correctly
-  // in the WorkshopWizard component with the chatContainerStyle
-  return <PersistentChatInterface isFixed={false} />;
+  // in the WorkshopLayout component
+  return (
+    <div style={{
+      height: '100%',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden'
+    }}>
+      <PersistentChatInterface isFixed={false} isOpen={true} />
+    </div>
+  );
 };

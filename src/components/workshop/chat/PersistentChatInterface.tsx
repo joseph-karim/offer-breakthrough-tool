@@ -1028,10 +1028,10 @@ Would you like to refine any of these statements? Type "refine overarching" or "
   const renderInputContainer = () => (
     <div
       style={{
-        padding: '20px 24px',
+        padding: '12px 16px',
         borderTop: '1px solid #EEEEEE',
         display: 'flex',
-        gap: '12px',
+        gap: '8px',
         backgroundColor: '#FFFFFF'
       }}
     >
@@ -1043,34 +1043,34 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         style={{
           flexGrow: 1,
           border: '1px solid #EEEEEE',
-          borderRadius: '15px',
-          padding: '12px 16px',
-          resize: 'vertical',
-          minHeight: '50px',
-          maxHeight: '200px',
-          fontSize: '16px',
-          lineHeight: 1.6,
+          borderRadius: '12px',
+          padding: '8px 12px',
+          resize: 'none',
+          minHeight: '40px',
+          maxHeight: '100px',
+          fontSize: '14px',
+          lineHeight: 1.5,
           overflowY: 'auto',
           backgroundColor: '#F5F5F5',
           color: '#333333'
         }}
-        rows={2}
+        rows={1}
       />
       <Button
         variant="outline"
-        size="lg"
+        size="sm"
         onClick={() => handleSendMessage()}
         disabled={!inputValue.trim() || isTyping}
         style={{
           alignSelf: 'flex-end',
-          padding: '12px 16px',
+          padding: '8px 12px',
           backgroundColor: '#F5F5F5',
           color: '#333333',
-          borderRadius: '15px',
+          borderRadius: '12px',
           border: '1px solid #DDDDDD'
         }}
       >
-        {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+        {isTyping ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
       </Button>
     </div>
   );
@@ -1145,7 +1145,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Determine position based on screen size
+  // Determine position based on screen size and fixed status
   const getChatPosition = (): PositionStyles => {
     if (!isFixed) {
       return {
@@ -1191,6 +1191,18 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
   // Get responsive dimensions
   const getChatDimensions = (): CSSProperties => {
+    if (!isFixed) {
+      // When embedded in the layout, use full height and width
+      return {
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        borderRadius: 0,
+        margin: 0,
+      };
+    }
+
     // For very small screens (e.g., small laptops)
     if (windowWidth < 600) {
       return {
@@ -1262,38 +1274,38 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             display: 'flex',
             flexDirection: 'column',
             padding: 0,
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            zIndex: isFixed ? 5 : 'auto', // Much lower z-index to avoid overlapping with modals
-            border: '1px solid #EEEEEE',
-            overflowY: 'auto', // Allow scrolling if content is too large
-            resize: 'both', // Allow user resizing
-            maxWidth: '500px', // Maximum width when resizing
-            maxHeight: '800px', // Maximum height when resizing
+            boxShadow: isFixed ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none',
+            zIndex: isFixed ? 5 : 'auto',
+            border: isFixed ? '1px solid #EEEEEE' : 'none',
+            overflowY: 'hidden', // Don't allow scrolling on the container itself
+            resize: isFixed ? 'both' : 'none', // Only allow resizing when fixed
+            maxWidth: isFixed ? '500px' : '100%', // Maximum width when resizing
+            maxHeight: isFixed ? '800px' : '100%', // Maximum height when resizing
             transition: 'all 0.3s ease', // Smooth transitions
             backgroundColor: '#FFFFFF',
-            borderRadius: '15px'
+            borderRadius: isFixed ? '15px' : '0'
           } as React.CSSProperties}
         >
           {/* Chat Header */}
           <div
             style={{
-              padding: '16px 24px',
+              padding: '12px 16px',
               borderBottom: '1px solid #EEEEEE',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               backgroundColor: '#FFFFFF',
-              borderTopLeftRadius: '15px',
-              borderTopRightRadius: '15px'
+              borderTopLeftRadius: isFixed ? '15px' : '0',
+              borderTopRightRadius: isFixed ? '15px' : '0'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <img
                 src="https://cdn.lugc.link/45a7bdbd-0b00-4092-86c6-4225026f322f/-/preview/88x88/-/format/auto/"
                 alt="Sparky"
-                style={{ width: '42px', height: '42px', borderRadius: '50%' }}
+                style={{ width: '32px', height: '32px', borderRadius: '50%' }}
               />
-              <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600, color: '#333333' }}>Sparky</h3>
+              <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: '#333333' }}>Sparky</h3>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
