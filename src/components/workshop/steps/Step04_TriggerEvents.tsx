@@ -176,7 +176,6 @@ export const Step04_TriggerEvents: React.FC = () => {
             </ul>
           </div>
         )}
-        </div>
       </div>
     </div>
   );
