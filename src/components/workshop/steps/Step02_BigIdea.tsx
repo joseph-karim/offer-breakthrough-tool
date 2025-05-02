@@ -19,7 +19,6 @@ export const Step02_BigIdea: React.FC = () => {
 
   const [formData, setFormData] = useState<BigIdea>({
     description: bigIdea?.description || '',
-    targetCustomers: bigIdea?.targetCustomers || '',
     version: 'initial'
   });
   const [isSaving, setIsSaving] = useState(false);
@@ -30,7 +29,6 @@ export const Step02_BigIdea: React.FC = () => {
     if (bigIdea) {
       setFormData({
         description: bigIdea.description || '',
-        targetCustomers: bigIdea.targetCustomers || '',
         version: 'initial'
       });
     }
@@ -165,56 +163,7 @@ export const Step02_BigIdea: React.FC = () => {
           </div>
         </div>
 
-        {/* Target Customers */}
-        <div style={{ marginBottom: '30px' }}>
-          <label
-            htmlFor="target-customers"
-            style={{
-              fontSize: '16px',
-              fontWeight: 600,
-              color: '#333333',
-              display: 'block',
-              marginBottom: '10px'
-            }}
-          >
-            Who do you think your target customers are?
-          </label>
-          <textarea
-            id="target-customers"
-            value={formData.targetCustomers}
-            onChange={(e) => handleInputChange('targetCustomers', e.target.value)}
-            placeholder="e.g., Freelance marketers who want to stop trading time for money"
-            style={{
-              width: '100%',
-              minHeight: '100px',
-              padding: '12px',
-              borderRadius: '15px',
-              border: '1px solid',
-              borderColor: isFieldEmpty('targetCustomers') ? '#ef4444' : '#DDDDDD',
-              fontSize: '14px',
-              lineHeight: '1.5',
-              resize: 'vertical',
-              backgroundColor: '#F2F2F2',
-              color: '#333333',
-            }}
-          />
-          {isFieldEmpty('targetCustomers') && (
-            <div style={{
-              color: '#ef4444',
-              fontSize: '14px',
-              marginTop: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}>
-              <AlertCircle size={14} />
-              {getErrorMessage('targetCustomers')}
-            </div>
-          )}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-            <SaveIndicator saving={isSaving} />
-          </div>
-        </div>
+
 
         {/* Example Ideas */}
         <div style={{

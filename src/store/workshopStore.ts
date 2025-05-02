@@ -49,7 +49,6 @@ export interface WorkshopStore {
 const initialWorkshopData: WorkshopData = {
   bigIdea: {
     description: '',
-    targetCustomers: '',
     version: 'initial'
   },
   underlyingGoal: {
@@ -97,7 +96,7 @@ const isStepComplete = (_step: number, _data: WorkshopData): boolean => {
     case 1: // Intro
       return true; // Always allow proceeding from intro
     case 2: // Big Idea
-      return data.bigIdea?.description.trim().length > 0 && data.bigIdea?.targetCustomers.trim().length > 0;
+      return data.bigIdea?.description.trim().length > 0; // Target customers field removed from Step 2
     case 3: // Underlying Goal
       return data.underlyingGoal?.businessGoal.trim().length > 0;
     case 4: // Trigger Events
@@ -586,7 +585,6 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
           updateWorkshopData({
             bigIdea: {
               description: typeof currentSuggestion.content === 'object' && currentSuggestion.content.bigIdea && typeof currentSuggestion.content.bigIdea === 'object' ? (currentSuggestion.content.bigIdea as any).description || '' : '',
-              targetCustomers: typeof currentSuggestion.content === 'object' && currentSuggestion.content.bigIdea && typeof currentSuggestion.content.bigIdea === 'object' ? (currentSuggestion.content.bigIdea as any).targetCustomers || '' : '',
               version: 'initial'
             }
           });

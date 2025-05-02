@@ -2,7 +2,7 @@ import type { StepChats } from './chat';
 
 export interface BigIdea {
   description: string;
-  targetCustomers: string;
+  targetCustomers?: string; // Made optional since it's not used in Step 2 anymore
   version: 'initial' | 'refined';
   name?: string;
   format?: string;
