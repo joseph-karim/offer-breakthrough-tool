@@ -1,11 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { StepHeader } from '../../ui/StepHeader';
-import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { ProblemUp } from '../../../types/workshop';
 import { HelpCircle, Check, Flame } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
+import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectPains = (state: WorkshopStore) => state.workshopData.pains;
@@ -111,26 +110,28 @@ export const Step08_ProblemUp: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <StepHeader
-        stepNumber={8}
-        title="Problem Up"
-        description="Choose specific problems and target buyers to shape your solution around"
-      />
+    <div style={styles.stepContainerStyle}>
+      {/* Step indicator */}
+      <div style={styles.stepHeaderContainerStyle}>
+        <div style={styles.stepNumberStyle}>
+          08
+        </div>
+        <h2 style={styles.stepTitleStyle}>
+          Problem Up
+        </h2>
+      </div>
 
-      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+      {/* Description */}
+      <div style={styles.stepDescriptionStyle}>
+        <p>Choose specific problems and target buyers to shape your solution around</p>
+      </div>
+
+      {/* Main content area */}
+      <div style={styles.contentContainerStyle}>
+
+
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#f0fdf4',
-            borderLeft: '4px solid #22c55e',
-            borderRadius: '0 8px 8px 0',
-            color: '#166534',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
+          <div style={styles.infoBoxStyle}>
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#22c55e' }} />
             Select the most profitable problems and target buyers to focus your solution on.
           </div>
@@ -399,26 +400,11 @@ export const Step08_ProblemUp: React.FC = () => {
           </div>
 
           {/* Example */}
-          <div style={{
-            padding: '16px',
-            backgroundColor: '#f9fafb',
-            borderRadius: '8px',
-            border: '1px dashed #d1d5db'
-          }}>
-            <p style={{
-              fontSize: '14px',
-              color: '#6b7280',
-              fontStyle: 'italic',
-              marginBottom: '12px'
-            }}>
-              Example problem-up approach:
-            </p>
-            <ul style={{
-              listStyle: 'disc',
-              paddingLeft: '24px',
-              color: '#6b7280',
-              fontSize: '14px'
-            }}>
+          <div style={styles.examplesContainerStyle}>
+              <div style={styles.examplesLabelStyle}>
+                EXAMPLES
+              </div>
+            <ul style={styles.examplesListStyle}>
               <li><strong>Selected Problems:</strong> "Can't scale their business without working more hours", "Struggles to find time to create content consistently"</li>
               <li><strong>Selected Buyers:</strong> "Marketing consultants with 3+ years experience"</li>
               <li><strong>Target Moment:</strong> "When a marketing consultant realizes they've hit a revenue ceiling and can't take on more clients without working more hours"</li>
@@ -426,7 +412,7 @@ export const Step08_ProblemUp: React.FC = () => {
             </ul>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

@@ -1,11 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { StepHeader } from '../../ui/StepHeader';
-import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import { HelpCircle, ExternalLink, FileText } from 'lucide-react';
 import { exportWorkshopToPdf } from '../../../utils/pdfExporter';
 import { Button } from '../../ui/Button';
+import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectWorkshopData = (state: WorkshopStore) => state.workshopData;
@@ -28,26 +27,28 @@ export const Step10_Summary: React.FC = () => {
   }, [workshopData]);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <StepHeader
-        stepNumber={10}
-        title="Workshop Summary"
-        description="Review your journey and plan your next steps"
-      />
+    <div style={styles.stepContainerStyle}>
+      {/* Step indicator */}
+      <div style={styles.stepHeaderContainerStyle}>
+        <div style={styles.stepNumberStyle}>
+          10
+        </div>
+        <h2 style={styles.stepTitleStyle}>
+          Workshop Summary
+        </h2>
+      </div>
 
-      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+      {/* Description */}
+      <div style={styles.stepDescriptionStyle}>
+        <p>Review your journey and plan your next steps</p>
+      </div>
+
+      {/* Main content area */}
+      <div style={styles.contentContainerStyle}>
+
+
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#f0fdf4',
-            borderLeft: '4px solid #22c55e',
-            borderRadius: '0 8px 8px 0',
-            color: '#166534',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
+          <div style={styles.infoBoxStyle}>
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#22c55e' }} />
             Congratulations on completing the Buyer Breakthrough Workshop! Here's a summary of your journey.
           </div>
@@ -437,7 +438,7 @@ export const Step10_Summary: React.FC = () => {
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

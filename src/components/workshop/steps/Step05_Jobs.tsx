@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { StepHeader } from '../../ui/StepHeader';
-import { Card } from '../../ui/Card';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Job } from '../../../types/workshop';
 import { Target, Plus, X, ArrowRight } from 'lucide-react';
+import * as styles from '../../../styles/stepStyles';
 
 
 // Separate selectors to prevent unnecessary re-renders
@@ -55,26 +54,28 @@ export const Step05_Jobs: React.FC = () => {
   }, [handleAddJob]);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <StepHeader
-        stepNumber={5}
-        title="Uncover Jobs To Be Done (JTBD)"
-        description="What progress is your customer trying to make? What outcome are they hiring a product/service for?"
-      />
+    <div style={styles.stepContainerStyle}>
+      {/* Step indicator */}
+      <div style={styles.stepHeaderContainerStyle}>
+        <div style={styles.stepNumberStyle}>
+          05
+        </div>
+        <h2 style={styles.stepTitleStyle}>
+          Uncover Jobs To Be Done (JTBD)
+        </h2>
+      </div>
 
-      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+      {/* Description */}
+      <div style={styles.stepDescriptionStyle}>
+        <p>What progress is your customer trying to make? What outcome are they hiring a product/service for?</p>
+      </div>
+
+      {/* Main content area */}
+      <div style={styles.contentContainerStyle}>
+
+
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#f0f9ff',
-            borderLeft: '4px solid #0ea5e9',
-            borderRadius: '0 8px 8px 0',
-            color: '#0369a1',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
+          <div style={styles.infoBoxStyle}>
             <Target style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#0ea5e9' }} />
             Think beyond features. Focus on the underlying need or goal. Why are they really looking for a solution?
           </div>
@@ -242,7 +243,7 @@ export const Step05_Jobs: React.FC = () => {
           <div>
             <label
               htmlFor="newJob"
-              style={{ fontWeight: 600, color: '#374151', display: 'block', marginBottom: '8px' }}
+              style={styles.labelStyle}
             >
               Add Job To Be Done:
             </label>
@@ -253,14 +254,7 @@ export const Step05_Jobs: React.FC = () => {
                 onChange={(e) => setNewJob(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="e.g., Help my clients generate predictable revenue from their existing audience"
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: '1px solid #d1d5db',
-                  fontSize: '16px',
-                  backgroundColor: 'white',
-                }}
+                style={styles.inputStyle}
               />
               <Button
                 variant="primary"
@@ -276,12 +270,7 @@ export const Step05_Jobs: React.FC = () => {
 
           {/* Example jobs */}
           {jobs.length === 0 && (
-            <div style={{
-              padding: '16px',
-              backgroundColor: '#f9fafb',
-              borderRadius: '8px',
-              border: '1px dashed #d1d5db'
-            }}>
+            <div style={styles.examplesContainerStyle}>
               <p style={{
                 fontSize: '14px',
                 color: '#6b7280',
@@ -306,7 +295,7 @@ export const Step05_Jobs: React.FC = () => {
           )}
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

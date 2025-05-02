@@ -1,13 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { StepHeader } from '../../ui/StepHeader';
-import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Pain } from '../../../types/workshop';
 import { AlertCircle, HelpCircle, Plus, X, Flame, MessageSquare } from 'lucide-react';
 import { PainstormingModal } from '../chat/PainstormingModal';
-
 import { Button } from '../../ui/Button';
+import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectPains = (state: WorkshopStore) => state.workshopData.pains;
@@ -130,12 +128,24 @@ export const Step07_Painstorming: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <StepHeader
-        stepNumber={7}
-        title="Painstorming"
-        description="Identify the painful problems your target buyers experience when trying to get the job done"
-      />
+    <div style={styles.stepContainerStyle}>
+      {/* Step indicator */}
+      <div style={styles.stepHeaderContainerStyle}>
+        <div style={styles.stepNumberStyle}>
+          07
+        </div>
+        <h2 style={styles.stepTitleStyle}>
+          Painstorming
+        </h2>
+      </div>
+
+      {/* Description */}
+      <div style={styles.stepDescriptionStyle}>
+        <p>Identify the painful problems your target buyers experience when trying to get the job done</p>
+      </div>
+
+      {/* Main content area */}
+      <div style={styles.contentContainerStyle}>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
         <Button
@@ -147,19 +157,9 @@ export const Step07_Painstorming: React.FC = () => {
         </Button>
       </div>
 
-      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#fff1f2',
-            borderLeft: '4px solid #e11d48',
-            borderRadius: '0 8px 8px 0',
-            color: '#9f1239',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
+          <div style={styles.infoBoxStyle}>
             <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#e11d48' }} />
             The more urgent, painful, and expensive the problems, the more people will pay for your solution.
           </div>
@@ -437,37 +437,37 @@ export const Step07_Painstorming: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div style={{
-                padding: '16px',
-                backgroundColor: '#f9fafb',
-                borderRadius: '8px',
-                border: '1px dashed #d1d5db'
-              }}>
-                <p style={{
-                  fontSize: '14px',
-                  color: '#6b7280',
-                  fontStyle: 'italic',
-                  marginBottom: '12px'
-                }}>
-                  Example painful problems:
-                </p>
-                <ul style={{
-                  listStyle: 'disc',
-                  paddingLeft: '24px',
-                  color: '#6b7280',
-                  fontSize: '14px'
-                }}>
-                  <li>Struggles to find time to create content consistently (Functional)</li>
-                  <li>Feels overwhelmed by the constant pressure to stay visible online (Emotional)</li>
-                  <li>Worries about being perceived as irrelevant by peers and clients (Social)</li>
-                  <li>Fears their service business will be disrupted by AI (Anticipated)</li>
-                  <li>Can't scale their business without working more hours (Functional, FIRE)</li>
+              <div style={styles.examplesContainerStyle}>
+              <div style={styles.examplesLabelStyle}>
+                EXAMPLES
+              </div>
+                <ul style={styles.examplesListStyle}>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Struggles to find time to create content consistently (Functional)
+              </li>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Feels overwhelmed by the constant pressure to stay visible online (Emotional)
+              </li>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Worries about being perceived as irrelevant by peers and clients (Social)
+              </li>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Fears their service business will be disrupted by AI (Anticipated)
+              </li>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Can't scale their business without working more hours (Functional, FIRE)
+              </li>
                 </ul>
               </div>
             )}
           </div>
         </div>
-      </Card>
+      </div>
 
       {/* Painstorming Modal */}
       <PainstormingModal

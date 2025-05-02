@@ -1,12 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { StepHeader } from '../../ui/StepHeader';
-import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { BigIdea } from '../../../types/workshop';
 import { AlertCircle, HelpCircle, ArrowRight } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Tooltip } from '../../ui/Tooltip';
+import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
@@ -98,26 +97,28 @@ export const Step09_RefineIdea: React.FC = () => {
   );
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <StepHeader
-        stepNumber={9}
-        title="Refine Your Idea"
-        description="Revise your initial idea based on the insights from the workshop"
-      />
+    <div style={styles.stepContainerStyle}>
+      {/* Step indicator */}
+      <div style={styles.stepHeaderContainerStyle}>
+        <div style={styles.stepNumberStyle}>
+          09
+        </div>
+        <h2 style={styles.stepTitleStyle}>
+          Refine Your Idea
+        </h2>
+      </div>
 
-      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+      {/* Description */}
+      <div style={styles.stepDescriptionStyle}>
+        <p>Revise your initial idea based on the insights from the workshop</p>
+      </div>
+
+      {/* Main content area */}
+      <div style={styles.contentContainerStyle}>
+
+
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#eff6ff',
-            borderLeft: '4px solid #3b82f6',
-            borderRadius: '0 8px 8px 0',
-            color: '#1e40af',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
+          <div style={styles.infoBoxStyle}>
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#3b82f6' }} />
             Now it's time to refine your initial idea based on the insights you've gained throughout the workshop.
           </div>
@@ -283,18 +284,7 @@ export const Step09_RefineIdea: React.FC = () => {
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="e.g., A 6-week group coaching program that helps marketing consultants create systems to scale their business without working more hours"
-              style={{
-                width: '100%',
-                minHeight: '100px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('description') ? '#ef4444' : '#d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: 'white',
-              }}
+              style={isFieldEmpty('description') ? styles.errorTextareaStyle : styles.textareaStyle}
             />
             {isFieldEmpty('description') && (
               <div style={{
@@ -337,18 +327,7 @@ export const Step09_RefineIdea: React.FC = () => {
               value={formData.targetCustomers}
               onChange={(e) => handleInputChange('targetCustomers', e.target.value)}
               placeholder="e.g., Marketing consultants with 3+ years experience who have hit a revenue ceiling and can't take on more clients without working more hours"
-              style={{
-                width: '100%',
-                minHeight: '100px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid',
-                borderColor: isFieldEmpty('targetCustomers') ? '#ef4444' : '#d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: 'white',
-              }}
+              style={isFieldEmpty('targetCustomers') ? styles.errorTextareaStyle : styles.textareaStyle}
             />
             {isFieldEmpty('targetCustomers') && (
               <div style={{
@@ -369,22 +348,12 @@ export const Step09_RefineIdea: React.FC = () => {
           </div>
 
           {/* Next Steps */}
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#fff7ed',
-            borderLeft: '4px solid #ea580c',
-            borderRadius: '0 8px 8px 0',
-            color: '#9a3412',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
+          <div style={styles.infoBoxStyle}>
             <ArrowRight style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#ea580c' }} />
             In the next step, you'll review your workshop journey and plan your next actions.
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

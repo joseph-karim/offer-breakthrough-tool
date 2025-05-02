@@ -1,12 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { StepHeader } from '../../ui/StepHeader';
-import { Card } from '../../ui/Card';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetBuyer } from '../../../types/workshop';
 import { HelpCircle, Plus, X, Star } from 'lucide-react';
-
 import { Button } from '../../ui/Button';
+import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
@@ -68,26 +66,28 @@ export const Step06_TargetBuyers: React.FC = () => {
   }, [buyers, updateWorkshopData]);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <StepHeader
-        stepNumber={6}
-        title="Identify Target Buyers"
-        description="Who might have an urgent need to get the job done and will pay a premium for a solution?"
-      />
+    <div style={styles.stepContainerStyle}>
+      {/* Step indicator */}
+      <div style={styles.stepHeaderContainerStyle}>
+        <div style={styles.stepNumberStyle}>
+          06
+        </div>
+        <h2 style={styles.stepTitleStyle}>
+          Identify Target Buyers
+        </h2>
+      </div>
 
-      <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
+      {/* Description */}
+      <div style={styles.stepDescriptionStyle}>
+        <p>Who might have an urgent need to get the job done and will pay a premium for a solution?</p>
+      </div>
+
+      {/* Main content area */}
+      <div style={styles.contentContainerStyle}>
+
+
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={{
-            padding: '12px 16px',
-            backgroundColor: '#f0fdf4',
-            borderLeft: '4px solid #22c55e',
-            borderRadius: '0 8px 8px 0',
-            color: '#166534',
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px',
-            fontWeight: 500,
-          }}>
+          <div style={styles.infoBoxStyle}>
             <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#22c55e' }} />
             Think contextually about who might need your solution. Consider life factors, business models, industries, job titles, etc.
           </div>
@@ -97,12 +97,7 @@ export const Step06_TargetBuyers: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <label
                 htmlFor="new-buyer"
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: '#1e293b',
-                  display: 'block'
-                }}
+                style={styles.labelStyle}
               >
                 Add a potential target buyer
               </label>
@@ -118,21 +113,15 @@ export const Step06_TargetBuyers: React.FC = () => {
                 onChange={(e) => setNewBuyer(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="e.g., Burnt out marketing consultants with 3+ years experience"
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: '1px solid #d1d5db',
-                  fontSize: '14px',
-                  backgroundColor: 'white',
-                }}
+                style={styles.inputStyle}
               />
               <Button
                 onClick={handleAddBuyer}
                 disabled={!newBuyer.trim()}
-                variant="yellow"
-                rightIcon={<Plus size={16} />}
+                variant="primary"
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFDD00', color: '#222222' }}
               >
+                <Plus size={16} />
                 Add
               </Button>
             </div>
@@ -155,9 +144,9 @@ export const Step06_TargetBuyers: React.FC = () => {
                   <div
                     key={buyer.id}
                     style={{
-                      backgroundColor: '#f9fafb',
-                      borderRadius: '8px',
-                      border: '1px solid #e5e7eb',
+                    backgroundColor: '#F0F9FF',
+                    borderRadius: '15px',
+                    border: '1px solid #DDDDDD',
                       overflow: 'hidden',
                     }}
                     onMouseEnter={() => setHoveredId(buyer.id)}
@@ -232,7 +221,7 @@ export const Step06_TargetBuyers: React.FC = () => {
                           { key: 'solutionFit' as const, label: 'Your ability to serve them' },
                           { key: 'accessibility' as const, label: 'Your access to this market' }
                         ].map(({ key, label }) => (
-                          <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFDD00', color: '#222222' }}>
                             <span style={{
                               fontSize: '14px',
                               color: '#4b5563',
@@ -292,37 +281,37 @@ export const Step06_TargetBuyers: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <div style={{
-                padding: '16px',
-                backgroundColor: '#f9fafb',
-                borderRadius: '8px',
-                border: '1px dashed #d1d5db'
-              }}>
-                <p style={{
-                  fontSize: '14px',
-                  color: '#6b7280',
-                  fontStyle: 'italic',
-                  marginBottom: '12px'
-                }}>
-                  Example target buyers:
-                </p>
-                <ul style={{
-                  listStyle: 'disc',
-                  paddingLeft: '24px',
-                  color: '#6b7280',
-                  fontSize: '14px'
-                }}>
-                  <li>Burnt out marketing consultants with 3+ years experience</li>
-                  <li>E-commerce store owners with 50-200 products and $500K+ annual revenue</li>
-                  <li>SaaS founders who recently raised seed funding</li>
-                  <li>Freelance copywriters who want to stop trading time for money</li>
-                  <li>Marketing agencies with 5-15 employees struggling with client retention</li>
+              <div style={styles.examplesContainerStyle}>
+              <div style={styles.examplesLabelStyle}>
+                EXAMPLES
+              </div>
+                <ul style={styles.examplesListStyle}>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Burnt out marketing consultants with 3+ years experience
+              </li>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                E-commerce store owners with 50-200 products and $500K+ annual revenue
+              </li>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                SaaS founders who recently raised seed funding
+              </li>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Freelance copywriters who want to stop trading time for money
+              </li>
+                  <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Marketing agencies with 5-15 employees struggling with client retention
+              </li>
                 </ul>
               </div>
             )}
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };
