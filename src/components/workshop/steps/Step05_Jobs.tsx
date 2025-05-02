@@ -271,25 +271,30 @@ export const Step05_Jobs: React.FC = () => {
           {/* Example jobs */}
           {jobs.length === 0 && (
             <div style={styles.examplesContainerStyle}>
-              <p style={{
-                fontSize: '14px',
-                color: '#6b7280',
-                fontStyle: 'italic',
-                marginBottom: '12px'
-              }}>
-                Example jobs to be done:
-              </p>
-              <ul style={{
-                listStyle: 'disc',
-                paddingLeft: '24px',
-                color: '#6b7280',
-                fontSize: '14px'
-              }}>
-                <li>Help me generate predictable revenue from my existing audience</li>
-                <li>Help me stay top-of-mind with my audience between launches</li>
-                <li>Help me convert more subscribers into paying customers</li>
-                <li>Help me feel confident my marketing systems are working</li>
-                <li>Help me maximize the value of each email subscriber</li>
+              <div style={styles.examplesLabelStyle}>
+                EXAMPLES
+              </div>
+              <ul style={styles.examplesListStyle}>
+                <li style={styles.exampleItemStyle}>
+                  <span style={styles.exampleBulletStyle}>•</span>
+                  Help me generate predictable revenue from my existing audience
+                </li>
+                <li style={styles.exampleItemStyle}>
+                  <span style={styles.exampleBulletStyle}>•</span>
+                  Help me stay top-of-mind with my audience between launches
+                </li>
+                <li style={styles.exampleItemStyle}>
+                  <span style={styles.exampleBulletStyle}>•</span>
+                  Help me convert more subscribers into paying customers
+                </li>
+                <li style={styles.exampleItemStyle}>
+                  <span style={styles.exampleBulletStyle}>•</span>
+                  Help me feel confident my marketing systems are working
+                </li>
+                <li style={styles.exampleItemStyle}>
+                  <span style={styles.exampleBulletStyle}>•</span>
+                  Help me maximize the value of each email subscriber
+                </li>
               </ul>
             </div>
           )}
