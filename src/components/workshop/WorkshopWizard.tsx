@@ -1,6 +1,6 @@
 import { useEffect, CSSProperties, useState, useCallback } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { Zap, CheckCircle, ChevronLeft, Sparkles, Layers, ArrowRight } from 'lucide-react';
+import { Zap, CheckCircle, ChevronLeft, ChevronRight, Sparkles, Layers, ArrowRight } from 'lucide-react';
 
 // Import step components
 import { Step01_Intro } from './steps/Step01_Intro';
@@ -265,7 +265,6 @@ export const WorkshopWizard = () => {
     borderRadius: '0',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
     border: '1px solid #333333',
-    borderLeft: '3px solid #FFDD00', // Yellow accent border
     padding: '0',
     marginBottom: '0',
     color: '#FFFFFF', // White text on dark background
@@ -279,8 +278,7 @@ export const WorkshopWizard = () => {
     alignItems: 'center',
     padding: '24px 32px',
     marginTop: '0', // Add space between content and nav
-    borderTop: '1px solid #333333', // Dark gray border
-    backgroundColor: '#222222', // Dark background
+    backgroundColor: '#1E1E1E', // Match the dark background of the page
     color: '#FFFFFF', // White text
   };
 
@@ -411,23 +409,45 @@ export const WorkshopWizard = () => {
               <Button
                 onClick={goToPreviousStep}
                 disabled={currentStep === 1}
-                variant={currentStep === 1 ? 'default' : 'outline'}
+                variant="outline"
                 size="lg"
-                leftIcon={<ChevronLeft style={{ width: '20px', height: '20px', color: currentStep === 1 ? '#666666' : '#FFDD00'}} />}
-                style={currentStep === 1 ? {cursor: 'not-allowed', opacity: 0.6} : {}}
+                leftIcon={<ChevronLeft style={{ width: '20px', height: '20px' }} />}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: 'transparent',
+                  color: '#FFDD00',
+                  border: '2px solid #FFDD00',
+                  borderRadius: '8px',
+                  padding: '10px 20px',
+                  opacity: currentStep === 1 ? 0.6 : 1,
+                  cursor: currentStep === 1 ? 'not-allowed' : 'pointer'
+                }}
               >
-                Previous Step
+                Back
               </Button>
 
               <Button
                 onClick={goToNextStep}
                 disabled={currentStep === 10}
-                variant={currentStep === 10 ? 'default' : 'yellow'}
+                variant="yellow"
                 size="lg"
-                rightIcon={currentStep === 10 ? <CheckCircle style={{ width: '20px', height: '20px', color: '#222222'}} /> : <ArrowRight style={{ width: '20px', height: '20px', color: '#222222'}} />}
-                style={currentStep === 10 ? {cursor: 'not-allowed', opacity: 0.6} : {}}
+                rightIcon={<ChevronRight style={{ width: '20px', height: '20px', color: '#222222' }} />}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#FFDD00',
+                  color: 'black',
+                  borderRadius: '8px',
+                  fontWeight: 'bold',
+                  padding: '10px 20px',
+                  opacity: currentStep === 10 ? 0.6 : 1,
+                  cursor: currentStep === 10 ? 'not-allowed' : 'pointer'
+                }}
               >
-                {currentStep === 10 ? 'Complete Workshop ✅' : 'Next Step ⚡'}
+                {currentStep === 10 ? 'Complete Workshop' : 'Next Step'}
               </Button>
             </div>
           </div>
