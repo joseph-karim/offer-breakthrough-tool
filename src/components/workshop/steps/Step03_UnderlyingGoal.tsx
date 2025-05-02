@@ -17,8 +17,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   const showErrors = useWorkshopStore(selectValidationErrors);
 
   const [formData, setFormData] = useState<UnderlyingGoal>({
-    businessGoal: underlyingGoal?.businessGoal || '',
-    constraints: underlyingGoal?.constraints || ''
+    businessGoal: underlyingGoal?.businessGoal || ''
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
@@ -27,8 +26,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   useEffect(() => {
     if (underlyingGoal) {
       setFormData({
-        businessGoal: underlyingGoal.businessGoal || '',
-        constraints: underlyingGoal.constraints || ''
+        businessGoal: underlyingGoal.businessGoal || ''
       });
     }
   }, [underlyingGoal]);
@@ -121,36 +119,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
           </div>
         </div>
 
-        {/* Constraints */}
-        <div style={styles.formGroupStyle}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <label
-              htmlFor="constraints"
-              style={styles.labelStyle}
-            >
-              What constraints do you have?
-            </label>
-            <Tooltip content="What limitations do you have in terms of time, resources, skills, etc.?">
-              <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-            </Tooltip>
-          </div>
-          <textarea
-            id="constraints"
-            value={formData.constraints}
-            onChange={(e) => handleInputChange('constraints', e.target.value)}
-            placeholder="e.g., I can only dedicate 5 hours per week to this new offer, I have a limited budget for marketing"
-            style={isFieldEmpty('constraints') ? styles.errorTextareaStyle : styles.textareaStyle}
-          />
-          {isFieldEmpty('constraints') && (
-            <div style={styles.errorMessageStyle}>
-              <AlertCircle size={14} />
-              {getErrorMessage('constraints')}
-            </div>
-          )}
-          <div style={styles.saveIndicatorContainerStyle}>
-            <SaveIndicator saving={isSaving} />
-          </div>
-        </div>
+
 
         {/* Example Goals */}
         <div style={styles.examplesContainerStyle}>

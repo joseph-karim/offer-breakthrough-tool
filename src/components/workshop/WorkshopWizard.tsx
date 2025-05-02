@@ -1,6 +1,6 @@
 import { useEffect, CSSProperties, useState, useCallback } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { Zap, CheckCircle, ChevronLeft, ChevronRight, Sparkles, Layers } from 'lucide-react';
+import { Zap, CheckCircle, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 // Import step components
 import { Step01_Intro } from './steps/Step01_Intro';
@@ -229,13 +229,7 @@ export const WorkshopWizard = () => {
     textShadow: 'none',
   };
 
-  const stepCountStyle: CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    color: '#FFFFFF', // White text for readability
-    fontWeight: 600,
-    textShadow: 'none',
-  };
+
 
   // Content container styles
   const contentContainerStyle: CSSProperties = {
@@ -378,15 +372,7 @@ export const WorkshopWizard = () => {
                   {completionPercentage}% Complete
                 </div>
 
-                <div style={stepCountStyle}>
-                  <Layers style={{
-                    width: '18px',
-                    height: '18px',
-                    marginRight: '6px',
-                    color: '#FFDD00'
-                  }} />
-                  10 steps total
-                </div>
+
               </div>
             </div>
           </div>

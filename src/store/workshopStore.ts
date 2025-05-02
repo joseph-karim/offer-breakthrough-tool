@@ -52,8 +52,7 @@ const initialWorkshopData: WorkshopData = {
     version: 'initial'
   },
   underlyingGoal: {
-    businessGoal: '',
-    constraints: ''
+    businessGoal: ''
   },
   triggerEvents: [],
   jobs: [],
@@ -98,7 +97,7 @@ const isStepComplete = (_step: number, _data: WorkshopData): boolean => {
     case 2: // Big Idea
       return data.bigIdea?.description.trim().length > 0; // Target customers field removed from Step 2
     case 3: // Underlying Goal
-      return data.underlyingGoal?.businessGoal.trim().length > 0;
+      return data.underlyingGoal?.businessGoal.trim().length > 0; // Constraints field removed
     case 4: // Trigger Events
       return (data.triggerEvents ?? []).length > 0;
     case 5: // Jobs
@@ -165,7 +164,6 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
 
         Underlying Goal:
         ${workshopData.underlyingGoal ? `Business Goal: ${workshopData.underlyingGoal.businessGoal}` : ''}
-        ${workshopData.underlyingGoal ? `Constraints: ${workshopData.underlyingGoal.constraints}` : ''}
       `;
       break;
 
@@ -283,7 +281,6 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
 
         Underlying Goal:
         ${workshopData.underlyingGoal ? `Business Goal: ${workshopData.underlyingGoal.businessGoal}` : ''}
-        ${workshopData.underlyingGoal ? `Constraints: ${workshopData.underlyingGoal.constraints}` : ''}
 
         Trigger Events:
         ${workshopData.triggerEvents
@@ -595,8 +592,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         if (currentSuggestion.content?.underlyingGoal) {
           updateWorkshopData({
             underlyingGoal: {
-              businessGoal: typeof currentSuggestion.content === 'object' && currentSuggestion.content.underlyingGoal && typeof currentSuggestion.content.underlyingGoal === 'object' ? (currentSuggestion.content.underlyingGoal as any).businessGoal || '' : '',
-              constraints: typeof currentSuggestion.content === 'object' && currentSuggestion.content.underlyingGoal && typeof currentSuggestion.content.underlyingGoal === 'object' ? (currentSuggestion.content.underlyingGoal as any).constraints || '' : ''
+              businessGoal: typeof currentSuggestion.content === 'object' && currentSuggestion.content.underlyingGoal && typeof currentSuggestion.content.underlyingGoal === 'object' ? (currentSuggestion.content.underlyingGoal as any).businessGoal || '' : ''
             }
           });
         }

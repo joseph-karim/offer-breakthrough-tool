@@ -10,7 +10,7 @@ export interface BigIdea {
 
 export interface UnderlyingGoal {
   businessGoal: string;
-  constraints: string;
+  constraints?: string; // Made optional since it's not used anymore
 }
 
 export interface TriggerEvent {
