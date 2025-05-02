@@ -161,19 +161,6 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
         transform: scale(1) translateY(0);
       }
     }
-
-    /* Add a glow effect to the modal */
-    @keyframes glow {
-      0% {
-        box-shadow: 0 0 10px rgba(255, 221, 0, 0.5);
-      }
-      50% {
-        box-shadow: 0 0 20px rgba(255, 221, 0, 0.8);
-      }
-      100% {
-        box-shadow: 0 0 10px rgba(255, 221, 0, 0.5);
-      }
-    }
   `;
 
   return createPortal(
@@ -218,7 +205,7 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
             resize: 'both',
             cursor: isDragging ? 'grabbing' : 'default',
             transition: 'all 0.3s ease',
-            animation: 'modalFadeIn 0.3s ease-out, glow 2s infinite ease-in-out',
+            animation: 'modalFadeIn 0.3s ease-out',
           }}
           onMouseDown={handleMouseDown}
         >
@@ -227,11 +214,11 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
             className="modal-header"
             style={{
               padding: '16px 24px',
-              borderBottom: '1px solid #444444',
+              borderBottom: '1px solid #EEEEEE',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              backgroundColor: '#FFDD00',
+              backgroundColor: '#FFFFFF',
               cursor: isDragging ? 'grabbing' : 'grab',
               userSelect: 'none',
               borderTopLeftRadius: '16px',
@@ -346,13 +333,13 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
                 fontSize: '16px',
                 lineHeight: 1.6,
                 overflowY: 'auto',
-                backgroundColor: '#FFFFFF',
+                backgroundColor: '#F5F5F5',
                 color: '#333333'
               }}
               rows={2}
             />
             <Button
-              variant="yellow"
+              variant="outline"
               size="lg"
               onClick={() => {
                 if (inputValue.trim() && !isTyping) {
@@ -364,9 +351,10 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
               style={{
                 alignSelf: 'flex-end',
                 padding: '12px 16px',
-                backgroundColor: '#FFDD00',
-                color: 'black',
-                borderRadius: '15px'
+                backgroundColor: '#F5F5F5',
+                color: '#333333',
+                borderRadius: '15px',
+                border: '1px solid #DDDDDD'
               }}
             >
               {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}

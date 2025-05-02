@@ -4,22 +4,18 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { BigIdea } from '../../../types/workshop';
 import { AlertCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { Button } from '../../ui/Button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
-const selectCurrentStep = (state: WorkshopStore) => state.currentStep;
-const selectSetCurrentStep = (state: WorkshopStore) => state.setCurrentStep;
+
 
 export const Step02_BigIdea: React.FC = () => {
   const bigIdea = useWorkshopStore(selectBigIdea);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
-  const currentStep = useWorkshopStore(selectCurrentStep);
-  const setCurrentStep = useWorkshopStore(selectSetCurrentStep);
+
 
   const [formData, setFormData] = useState<BigIdea>({
     description: bigIdea?.description || '',
@@ -71,20 +67,10 @@ export const Step02_BigIdea: React.FC = () => {
     return '';
   };
 
-  const handleNext = () => {
-    if (currentStep < 10) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
 
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: '#FFFFFF', color: '#333333', padding: '30px', borderRadius: '20px' }}>
       {/* Step indicator */}
       <div style={{
         display: 'flex',
@@ -108,7 +94,7 @@ export const Step02_BigIdea: React.FC = () => {
         <h2 style={{
           fontSize: '24px',
           fontWeight: 'bold',
-          color: 'white',
+          color: '#333333',
           margin: 0
         }}>
           Your Big Idea
@@ -118,19 +104,15 @@ export const Step02_BigIdea: React.FC = () => {
       {/* Description */}
       <div style={{
         marginBottom: '30px',
-        color: '#CCCCCC'
+        color: '#555555'
       }}>
-        <p>Describe your product idea using a simple framework: <span style={{ color: '#FFDD00' }}>[What it is]</span> + <span style={{ color: '#FFDD00' }}>[what will it help customers do]</span></p>
+        <p>Describe your product idea using a simple framework: <span style={{ color: '#FFDD00', backgroundColor: '#333333', padding: '0 4px' }}>[What it is]</span> + <span style={{ color: '#FFDD00', backgroundColor: '#333333', padding: '0 4px' }}>[what will it help customers do]</span></p>
         <p>This is just version 1 of your idea. You'll refine it as you go through the workshop.</p>
       </div>
 
-      {/* Main content area with white background */}
+      {/* Main content area */}
       <div style={{
-        backgroundColor: '#FFFFFF',
-        borderRadius: '20px',
-        padding: '30px',
-        marginBottom: '40px',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+        marginBottom: '40px'
       }}>
         {/* Big Idea Description */}
         <div style={{ marginBottom: '30px' }}>
@@ -283,48 +265,7 @@ export const Step02_BigIdea: React.FC = () => {
         </div>
       </div>
 
-      {/* Navigation buttons */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: '30px'
-      }}>
-        <Button
-          onClick={handlePrevious}
-          disabled={currentStep === 1}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            backgroundColor: 'transparent',
-            color: 'white',
-            border: '2px solid #FFDD00',
-            borderRadius: '20px',
-            padding: '10px 20px'
-          }}
-        >
-          <ChevronLeft size={20} />
-          Back
-        </Button>
 
-        <Button
-          onClick={handleNext}
-          disabled={currentStep === 10}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            backgroundColor: '#FFDD00',
-            color: 'black',
-            borderRadius: '20px',
-            fontWeight: 'bold',
-            padding: '10px 20px'
-          }}
-        >
-          Next Step
-          <ChevronRight size={20} />
-        </Button>
-      </div>
     </div>
   );
 };

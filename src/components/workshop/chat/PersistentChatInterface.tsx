@@ -1051,22 +1051,23 @@ Would you like to refine any of these statements? Type "refine overarching" or "
           fontSize: '16px',
           lineHeight: 1.6,
           overflowY: 'auto',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: '#F5F5F5',
           color: '#333333'
         }}
         rows={2}
       />
       <Button
-        variant="yellow"
+        variant="outline"
         size="lg"
         onClick={() => handleSendMessage()}
         disabled={!inputValue.trim() || isTyping}
         style={{
           alignSelf: 'flex-end',
           padding: '12px 16px',
-          backgroundColor: '#FFDD00',
-          color: 'black',
-          borderRadius: '15px'
+          backgroundColor: '#F5F5F5',
+          color: '#333333',
+          borderRadius: '15px',
+          border: '1px solid #DDDDDD'
         }}
       >
         {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
@@ -1083,7 +1084,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         style={{
           padding: '12px 16px',
           borderTop: '1px solid #EEEEEE',
-          backgroundColor: '#FFFDF5'
+          backgroundColor: '#F9F9F9'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -1234,11 +1235,12 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            backgroundColor: '#FFDD00',
+            backgroundColor: '#FFFFFF',
             padding: windowWidth < 600 ? '8px 12px' : '12px 16px',
             borderRadius: '50px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            transition: 'all 0.2s ease'
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+            transition: 'all 0.2s ease',
+            border: '1px solid #EEEEEE'
           }}
           onClick={() => setIsMinimized(false)}
         >
@@ -1260,10 +1262,9 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             display: 'flex',
             flexDirection: 'column',
             padding: 0,
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
             zIndex: isFixed ? 5 : 'auto', // Much lower z-index to avoid overlapping with modals
-            border: '1px solid #444444',
-            borderLeft: '3px solid #FFDD00',
+            border: '1px solid #EEEEEE',
             overflowY: 'auto', // Allow scrolling if content is too large
             resize: 'both', // Allow user resizing
             maxWidth: '500px', // Maximum width when resizing

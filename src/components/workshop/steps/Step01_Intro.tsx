@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { Target, Lightbulb, Zap, ArrowRight } from 'lucide-react';
+import { Target, Zap, ArrowRight } from 'lucide-react';
 
 export const Step01_Intro: React.FC = () => {
   const { setCurrentStep } = useWorkshopStore();

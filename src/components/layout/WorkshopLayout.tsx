@@ -1,7 +1,5 @@
 import { ReactNode } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { Button } from '../ui/Button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { PersistentChatInterface } from '../workshop/chat/PersistentChatInterface';
 
 interface WorkshopLayoutProps {
@@ -9,21 +7,9 @@ interface WorkshopLayoutProps {
 }
 
 export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
-  const { currentStep, setCurrentStep } = useWorkshopStore();
+  const { currentStep } = useWorkshopStore();
 
   const totalSteps = 10;
-
-  const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#1E1E1E', color: 'white' }}>
