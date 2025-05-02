@@ -20,24 +20,24 @@ export const SuggestionBubble: React.FC<SuggestionBubbleProps> = ({
   return (
     <div
       style={{
-        backgroundColor: isAdded ? '#F0FFF4' : '#FFFFFF',
-        border: `1px solid ${isAdded ? '#10B981' : '#EEEEEE'}`,
-        borderRadius: '12px',
+        backgroundColor: isAdded ? '#1E3A2F' : '#333333',
+        border: `1px solid ${isAdded ? '#10B981' : '#444444'}`,
+        borderRadius: '15px',
         padding: '12px 16px',
         marginBottom: '12px',
-        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.2)',
         transition: 'all 0.2s ease'
       }}
     >
       <div style={{
         fontSize: '15px',
         lineHeight: 1.5,
-        color: '#333333',
+        color: '#FFFFFF',
         marginBottom: '12px'
       }}>
         {content}
       </div>
-      
+
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -45,12 +45,12 @@ export const SuggestionBubble: React.FC<SuggestionBubbleProps> = ({
       }}>
         <div style={{
           fontSize: '13px',
-          color: '#666666',
+          color: '#AAAAAA',
           fontStyle: 'italic'
         }}>
           {getTypeLabel(type)}
         </div>
-        
+
         <Button
           variant={isAdded ? "success" : "yellow"}
           size="sm"
@@ -59,7 +59,10 @@ export const SuggestionBubble: React.FC<SuggestionBubbleProps> = ({
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '4px'
+            gap: '4px',
+            borderRadius: '20px',
+            backgroundColor: isAdded ? '#10B981' : '#FFDD00',
+            color: isAdded ? 'white' : 'black'
           }}
         >
           {isAdded ? (

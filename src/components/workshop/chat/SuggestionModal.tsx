@@ -122,25 +122,25 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
     >
       <div
         style={{
-          backgroundColor: 'white',
-          borderRadius: '12px',
+          backgroundColor: '#222222',
+          borderRadius: '20px',
           width: '90%',
           maxWidth: '800px',
           maxHeight: '90vh',
           display: 'flex',
           flexDirection: 'column',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
           overflow: 'hidden'
         }}>
         {/* Header */}
         <div style={{
           padding: '20px 24px',
-          borderBottom: '1px solid #e5e7eb',
+          borderBottom: '1px solid #333333',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600 }}>{title}</h2>
+          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 600, color: '#FFFFFF' }}>{title}</h2>
           <button
             onClick={onClose}
             style={{
@@ -151,28 +151,28 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
               padding: '4px'
             }}
           >
-            <X size={20} color="#666666" />
+            <X size={20} color="#AAAAAA" />
           </button>
         </div>
 
         {/* Description */}
         <div style={{
           padding: '16px 24px',
-          borderBottom: '1px solid #e5e7eb',
-          backgroundColor: '#f9fafb'
+          borderBottom: '1px solid #333333',
+          backgroundColor: '#333333'
         }}>
-          <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.6 }}>{description}</p>
+          <p style={{ margin: 0, fontSize: '15px', lineHeight: 1.6, color: '#CCCCCC' }}>{description}</p>
         </div>
 
         {/* Context Panel */}
         <div style={{
           padding: '16px 24px',
-          borderBottom: '1px solid #e5e7eb',
-          backgroundColor: '#f0f9ff',
-          borderLeft: '4px solid #0ea5e9'
+          borderBottom: '1px solid #333333',
+          backgroundColor: '#444444',
+          borderLeft: '4px solid #FFDD00'
         }}>
-          <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: 600 }}>Your Current Input:</h3>
-          <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6 }}>{currentInput}</p>
+          <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: 600, color: '#FFFFFF' }}>Your Current Input:</h3>
+          <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.6, color: '#CCCCCC' }}>{currentInput}</p>
         </div>
 
         {/* Suggestions Grid */}
@@ -191,9 +191,9 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
                 key={suggestion.id}
                 style={{
                   padding: '16px',
-                  borderRadius: '8px',
-                  border: `2px solid ${selectedSuggestion?.id === suggestion.id ? '#0ea5e9' : '#e5e7eb'}`,
-                  backgroundColor: selectedSuggestion?.id === suggestion.id ? '#f0f9ff' : 'white',
+                  borderRadius: '15px',
+                  border: `2px solid ${selectedSuggestion?.id === suggestion.id ? '#FFDD00' : '#444444'}`,
+                  backgroundColor: selectedSuggestion?.id === suggestion.id ? '#444444' : '#333333',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                   display: 'flex',
@@ -202,7 +202,7 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
                 }}
                 onClick={() => handleSelect(suggestion)}
               >
-                <div style={{ fontSize: '15px', lineHeight: 1.6 }}>
+                <div style={{ fontSize: '15px', lineHeight: 1.6, color: '#FFFFFF' }}>
                   {suggestion.content}
                 </div>
                 <div style={{
@@ -222,7 +222,7 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
                         border: 'none',
                         cursor: 'pointer',
                         padding: '4px',
-                        color: ratings[suggestion.id] === 'up' ? '#16a34a' : '#6b7280'
+                        color: ratings[suggestion.id] === 'up' ? '#10B981' : '#AAAAAA'
                       }}
                     >
                       <ThumbsUp size={16} />
@@ -237,7 +237,7 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
                         border: 'none',
                         cursor: 'pointer',
                         padding: '4px',
-                        color: ratings[suggestion.id] === 'down' ? '#dc2626' : '#6b7280'
+                        color: ratings[suggestion.id] === 'down' ? '#ef4444' : '#AAAAAA'
                       }}
                     >
                       <ThumbsDown size={16} />
@@ -245,8 +245,8 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
                   </div>
                   {selectedSuggestion?.id === suggestion.id && (
                     <div style={{
-                      backgroundColor: '#0ea5e9',
-                      color: 'white',
+                      backgroundColor: '#FFDD00',
+                      color: 'black',
                       borderRadius: '9999px',
                       padding: '2px 6px',
                       fontSize: '12px',
@@ -267,7 +267,7 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
         {/* Actions */}
         <div style={{
           padding: '16px 24px',
-          borderTop: '1px solid #e5e7eb',
+          borderTop: '1px solid #333333',
           display: 'flex',
           justifyContent: 'flex-end',
           gap: '12px'
@@ -275,6 +275,12 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
           <Button
             variant="outline"
             onClick={onClose}
+            style={{
+              backgroundColor: 'transparent',
+              color: 'white',
+              border: '2px solid #FFDD00',
+              borderRadius: '20px'
+            }}
           >
             Cancel
           </Button>
@@ -282,6 +288,12 @@ export const SuggestionModal: React.FC<SuggestionModalProps> = ({
             variant="primary"
             onClick={handleConfirm}
             disabled={!selectedSuggestion}
+            style={{
+              backgroundColor: '#FFDD00',
+              color: 'black',
+              borderRadius: '20px',
+              fontWeight: 'bold'
+            }}
           >
             Use Selected
           </Button>

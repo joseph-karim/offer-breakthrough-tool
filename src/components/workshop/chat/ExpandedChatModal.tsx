@@ -186,7 +186,7 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -204,7 +204,7 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
             position: isDragging ? 'absolute' : 'relative',
             top: isDragging ? `${position.y}px` : 'auto',
             left: isDragging ? `${position.x}px` : 'auto',
-            backgroundColor: 'white',
+            backgroundColor: '#FFFFFF',
             borderRadius: '16px',
             width: '95%',
             maxWidth: '1200px',
@@ -227,7 +227,7 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
             className="modal-header"
             style={{
               padding: '16px 24px',
-              borderBottom: '1px solid #EEEEEE',
+              borderBottom: '1px solid #444444',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -338,14 +338,16 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
               style={{
                 flexGrow: 1,
                 border: '1px solid #EEEEEE',
-                borderRadius: '12px',
+                borderRadius: '15px',
                 padding: '12px 16px',
                 resize: 'vertical',
                 minHeight: '50px',
                 maxHeight: '200px',
                 fontSize: '16px',
                 lineHeight: 1.6,
-                overflowY: 'auto'
+                overflowY: 'auto',
+                backgroundColor: '#FFFFFF',
+                color: '#333333'
               }}
               rows={2}
             />
@@ -359,7 +361,13 @@ export const ExpandedChatModal: React.FC<ExpandedChatModalProps> = ({
                 }
               }}
               disabled={!inputValue.trim() || isTyping}
-              style={{ alignSelf: 'flex-end', padding: '12px 16px' }}
+              style={{
+                alignSelf: 'flex-end',
+                padding: '12px 16px',
+                backgroundColor: '#FFDD00',
+                color: 'black',
+                borderRadius: '15px'
+              }}
             >
               {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
             </Button>

@@ -64,7 +64,7 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
         overflowY: 'auto',
         flexGrow: 1,
         height: 'calc(100% - 150px)',
-        backgroundColor: '#FAFAFA',
+        backgroundColor: '#FFFFFF',
         WebkitOverflowScrolling: 'touch', // Improve scrolling on mobile devices
         fontSize: windowWidth < 600 ? '13px' : windowWidth < 768 ? '14px' : '16px', // Responsive font size
         wordBreak: 'break-word', // Prevent text overflow
@@ -88,7 +88,9 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
             gap: '4px',
             fontSize: windowWidth < 600 ? '12px' : '14px',
             color: '#666666',
-            padding: windowWidth < 600 ? '4px 8px' : '8px 12px'
+            padding: windowWidth < 600 ? '4px 8px' : '8px 12px',
+            backgroundColor: '#F5F5F5',
+            borderRadius: '15px'
           }}
         >
           {showAllMessages ? (
@@ -124,8 +126,8 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
               <div style={{
                 margin: '20px 0',
                 padding: '8px 12px',
-                backgroundColor: '#F0F0F0',
-                borderRadius: '8px',
+                backgroundColor: '#F5F5F5',
+                borderRadius: '15px',
                 fontSize: '14px',
                 fontWeight: 500,
                 color: '#666666',

@@ -1,13 +1,13 @@
 import React, { CSSProperties } from 'react';
 
-type CardVariant = 
-  | 'default' 
-  | 'outline' 
-  | 'muted' 
-  | 'gradient' 
-  | 'yellow' 
-  | 'black' 
-  | 'purple' 
+type CardVariant =
+  | 'default'
+  | 'outline'
+  | 'muted'
+  | 'gradient'
+  | 'yellow'
+  | 'black'
+  | 'purple'
   | 'glass'
   | 'yellowToBlack'
   | 'blackToYellow'
@@ -46,14 +46,14 @@ const getPaddingValue = (size: PaddingSize): string => {
 
 const getBorderRadiusValue = (size: BorderRadiusSize): string => {
   switch (size) {
-    case 'sm': return '0';
-    case 'md': return '0';
-    case 'lg': return '0';
-    case 'xl': return '0';
-    case '2xl': return '0';
+    case 'sm': return '10px';
+    case 'md': return '15px';
+    case 'lg': return '20px';
+    case 'xl': return '25px';
+    case '2xl': return '30px';
     case 'full': return '9999px';
     case 'none': return '0';
-    default: return '0';
+    default: return '15px';
   }
 };
 
@@ -75,21 +75,21 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
   switch (variant) {
     case 'outline':
       return {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#333333',
         border: '2px solid #FFDD00',
-        color: '#222222',
+        color: '#FFFFFF',
       };
     case 'muted':
       return {
-        backgroundColor: '#F5F5F5',
-        border: '1px solid #EEEEEE',
-        color: '#222222',
+        backgroundColor: '#333333',
+        border: '1px solid #444444',
+        color: '#FFFFFF',
       };
     case 'gradient':
       return {
-        backgroundColor: '#FFFFFF',
-        border: '1px solid #EEEEEE',
-        color: '#222222',
+        backgroundColor: '#333333',
+        border: '1px solid #444444',
+        color: '#FFFFFF',
       };
     case 'yellow':
       return {
@@ -111,10 +111,10 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       };
     case 'glass':
       return {
-        backgroundColor: '#FFFFFF',
-        border: '1px solid #EEEEEE',
+        backgroundColor: '#333333',
+        border: '1px solid #444444',
         borderLeft: '3px solid #FFDD00',
-        color: '#222222',
+        color: '#FFFFFF',
       };
     case 'yellowToBlack':
       return {
@@ -136,7 +136,7 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       };
     case 'purpleToYellow':
       return {
-        backgroundColor: '#6B46C1', 
+        backgroundColor: '#6B46C1',
         color: '#FFFFFF',
         border: 'none',
       };
@@ -148,9 +148,9 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       };
     default:
       return {
-        backgroundColor: '#FFFFFF',
-        color: '#222222',
-        border: '1px solid #EEEEEE',
+        backgroundColor: '#333333',
+        color: '#FFFFFF',
+        border: '1px solid #444444',
       };
   }
 };
@@ -342,4 +342,4 @@ export const Card = ({
       </div>
     </>
   );
-};                          
+};

@@ -26,14 +26,39 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
-      <header style={{ borderBottom: '1px solid #e5e7eb' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#1E1E1E', color: 'white' }}>
+      <header style={{ borderBottom: '1px solid #333333', position: 'relative' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#111827' }}>
-              Buyer Breakthrough Workshop
-            </h1>
-            <div style={{ fontSize: '14px', color: '#6b7280' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{
+                backgroundColor: '#FFDD00',
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '15px'
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 17L12 22L22 17" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M2 12L12 17L22 12" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'white' }}>
+                Buyer Breakthrough Workshop
+              </h1>
+            </div>
+            <div style={{
+              fontSize: '14px',
+              color: 'black',
+              backgroundColor: '#FFDD00',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              fontWeight: 'bold'
+            }}>
               Step {currentStep} of {totalSteps}
             </div>
           </div>
@@ -41,7 +66,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
             marginTop: '16px',
             height: '8px',
             width: '100%',
-            backgroundColor: '#e5e7eb',
+            backgroundColor: '#333333',
             borderRadius: '9999px',
             overflow: 'hidden'
           }}>
@@ -49,7 +74,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
               style={{
                 height: '100%',
                 width: `${(currentStep / totalSteps) * 100}%`,
-                backgroundColor: '#4f46e5',
+                backgroundColor: '#FFDD00',
                 borderRadius: '9999px',
                 transition: 'width 0.3s ease'
               }}
@@ -63,8 +88,8 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
         {currentStep > 1 && (
           <div style={{
             width: '350px',
-            position: 'fixed',
-            top: '120px',
+            position: 'absolute', // Changed from fixed to absolute so it scrolls with the page
+            top: '20px',
             left: '20px',
             height: 'calc(100vh - 160px)',
             zIndex: 5
@@ -86,45 +111,6 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
         }}>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             {children}
-          </div>
-
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: '48px',
-            maxWidth: '800px',
-            margin: '48px auto 0'
-          }}>
-            <Button
-              variant="outline"
-              onClick={handlePrevious}
-              disabled={currentStep === 1}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-            >
-              <ChevronLeft size={20} />
-              Previous Step
-            </Button>
-
-            <div style={{
-              flex: 1,
-              textAlign: 'center',
-              fontSize: '14px',
-              color: '#6b7280',
-              marginLeft: '24px',
-              marginRight: '24px'
-            }}>
-            </div>
-
-            <Button
-              variant="primary"
-              onClick={handleNext}
-              disabled={currentStep === totalSteps}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-            >
-              Next Step
-              <ChevronRight size={20} />
-            </Button>
           </div>
         </main>
       </div>

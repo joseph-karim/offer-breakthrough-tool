@@ -997,7 +997,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             borderColor: isUser ? '#EEEEEE' : '#FFDD00',
             borderWidth: '1px',
             borderLeftWidth: isUser ? '1px' : '3px',
-            borderRadius: '12px',
+            borderRadius: '15px',
             boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
           }}
         >
@@ -1043,14 +1043,16 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         style={{
           flexGrow: 1,
           border: '1px solid #EEEEEE',
-          borderRadius: '12px',
+          borderRadius: '15px',
           padding: '12px 16px',
           resize: 'vertical',
           minHeight: '50px',
           maxHeight: '200px',
           fontSize: '16px',
           lineHeight: 1.6,
-          overflowY: 'auto'
+          overflowY: 'auto',
+          backgroundColor: '#FFFFFF',
+          color: '#333333'
         }}
         rows={2}
       />
@@ -1059,7 +1061,13 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         size="lg"
         onClick={() => handleSendMessage()}
         disabled={!inputValue.trim() || isTyping}
-        style={{ alignSelf: 'flex-end', padding: '12px 16px' }}
+        style={{
+          alignSelf: 'flex-end',
+          padding: '12px 16px',
+          backgroundColor: '#FFDD00',
+          color: 'black',
+          borderRadius: '15px'
+        }}
       >
         {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
       </Button>
@@ -1252,15 +1260,17 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             display: 'flex',
             flexDirection: 'column',
             padding: 0,
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
             zIndex: isFixed ? 5 : 'auto', // Much lower z-index to avoid overlapping with modals
-            border: '1px solid #EEEEEE',
+            border: '1px solid #444444',
             borderLeft: '3px solid #FFDD00',
             overflowY: 'auto', // Allow scrolling if content is too large
             resize: 'both', // Allow user resizing
             maxWidth: '500px', // Maximum width when resizing
             maxHeight: '800px', // Maximum height when resizing
-            transition: 'all 0.3s ease' // Smooth transitions
+            transition: 'all 0.3s ease', // Smooth transitions
+            backgroundColor: '#FFFFFF',
+            borderRadius: '15px'
           } as React.CSSProperties}
         >
           {/* Chat Header */}
@@ -1271,7 +1281,9 @@ Would you like to refine any of these statements? Type "refine overarching" or "
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              backgroundColor: '#FFFFFF'
+              backgroundColor: '#FFFFFF',
+              borderTopLeftRadius: '15px',
+              borderTopRightRadius: '15px'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -1280,7 +1292,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
                 alt="Sparky"
                 style={{ width: '42px', height: '42px', borderRadius: '50%' }}
               />
-              <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600 }}>Sparky</h3>
+              <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 600, color: '#333333' }}>Sparky</h3>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
@@ -1296,7 +1308,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
                   justifyContent: 'center'
                 }}
               >
-                <Maximize2 size={18} color="#666666" />
+                <Maximize2 size={18} color="#AAAAAA" />
               </button>
               <button
                 onClick={() => setIsMinimized(true)}
@@ -1311,7 +1323,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
                   justifyContent: 'center'
                 }}
               >
-                <Minimize2 size={18} color="#666666" />
+                <Minimize2 size={18} color="#AAAAAA" />
               </button>
               {onClose && (
                 <button
@@ -1327,7 +1339,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
                     justifyContent: 'center'
                   }}
                 >
-                  <X size={18} color="#666666" />
+                  <X size={18} color="#AAAAAA" />
                 </button>
               )}
             </div>

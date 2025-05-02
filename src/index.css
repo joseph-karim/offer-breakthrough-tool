@@ -7,9 +7,9 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 13%;
-    --radius: 0;
+    --background: 0 0% 12%;
+    --foreground: 0 0% 100%;
+    --radius: 20px;
 
     /* Brand Colors */
     --yellow: 53 100% 50%;
@@ -29,8 +29,8 @@
   }
 
   body {
-    background-color: #FFFFFF;
-    color: #222222;
+    background-color: #1E1E1E;
+    color: #FFFFFF;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -132,7 +132,7 @@
     height: auto;
     min-height: 36px;
     padding: 6px 12px;
-    border-radius: 0;
+    border-radius: 20px;
   }
 
   .btn-primary {
@@ -147,7 +147,7 @@
   }
 
   .btn-secondary {
-    background-color: #222222;
+    background-color: #333333;
     color: white;
     opacity: 1;
     transition: opacity 0.2s;
@@ -160,7 +160,7 @@
   .btn-outline {
     background-color: transparent;
     border: 2px solid #FFDD00;
-    color: #222222;
+    color: white;
   }
 
   .btn-outline:hover {
@@ -255,9 +255,10 @@
   .workbook-container {
     max-width: 800px;
     margin: 0 auto;
-    background-color: white;
-    border: 1px solid #EEEEEE;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    background-color: #222222;
+    border: 1px solid #333333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: white;
   }
 
   .workbook-header {
@@ -279,6 +280,8 @@
 
   .workbook-content {
     padding: 24px 32px;
+    background-color: #222222;
+    color: white;
   }
 
   .workbook-section {
@@ -587,15 +590,27 @@ span[style*="background-color: #FFDD00"] {
   padding: 0 2px;
 }
 
-/* Make rounded elements NOT rounded */
-.rounded,
-.rounded-sm,
-.rounded-md,
-.rounded-lg,
-.rounded-xl,
-.rounded-2xl,
+/* Make elements rounded */
+.rounded {
+  border-radius: 15px !important;
+}
+.rounded-sm {
+  border-radius: 10px !important;
+}
+.rounded-md {
+  border-radius: 15px !important;
+}
+.rounded-lg {
+  border-radius: 20px !important;
+}
+.rounded-xl {
+  border-radius: 25px !important;
+}
+.rounded-2xl {
+  border-radius: 30px !important;
+}
 .rounded-full {
-  border-radius: 0 !important;
+  border-radius: 9999px !important;
 }
 
 /* Global modal styles to ensure modals appear on top of everything */

@@ -123,19 +123,18 @@ export const WorkshopWizard = () => {
   // Base styles for the whole app
   const containerStyle: CSSProperties = {
     minHeight: '100vh',
-    backgroundColor: '#FFFFFF', // White background
+    backgroundColor: '#1E1E1E', // Dark background
     backgroundImage: 'none',
     backgroundRepeat: 'repeat',
     paddingBottom: '64px',
     position: 'relative',
-    color: '#222222', // Black text for light background
+    color: '#FFFFFF', // White text for dark background
   };
 
   const headerStyle: CSSProperties = {
-    position: 'sticky',
-    top: 0,
+    position: 'relative',
     zIndex: 10, // Lower z-index to avoid conflicts with modals
-    backgroundColor: '#6B46C1', // Purple background
+    backgroundColor: '#1E1E1E', // Dark background to match the body
     color: '#FFFFFF', // White text
     borderBottom: 'none',
     borderTopLeftRadius: 0,
@@ -262,14 +261,14 @@ export const WorkshopWizard = () => {
   };
 
   const contentCardStyle: CSSProperties = {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#222222',
     borderRadius: '0',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)',
-    border: '1px solid #EEEEEE',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+    border: '1px solid #333333',
     borderLeft: '3px solid #FFDD00', // Yellow accent border
     padding: '0',
     marginBottom: '0',
-    color: '#222222', // Black text on white background
+    color: '#FFFFFF', // White text on dark background
     flexGrow: 1, // Take up remaining space
   };
 
@@ -280,7 +279,9 @@ export const WorkshopWizard = () => {
     alignItems: 'center',
     padding: '24px 32px',
     marginTop: '0', // Add space between content and nav
-    borderTop: '1px solid #EEEEEE', // Light gray border
+    borderTop: '1px solid #333333', // Dark gray border
+    backgroundColor: '#222222', // Dark background
+    color: '#FFFFFF', // White text
   };
 
   // Create animations
@@ -302,16 +303,16 @@ export const WorkshopWizard = () => {
     <>
       <style>{animationStyles}</style>
       <div
-        className="bg-white customercamp-theme-container"
+        className="bg-black customercamp-theme-container"
         style={{
           ...containerStyle,
-          backgroundColor: '#FFFFFF',
+          backgroundColor: '#1E1E1E',
           backgroundImage: 'none !important',
-          background: '#FFFFFF !important',
+          background: '#1E1E1E !important',
           backgroundSize: '0 !important',
           backgroundRepeat: 'no-repeat !important',
           backgroundPosition: 'center !important',
-          color: '#222222'
+          color: '#FFFFFF'
         }}>
         {/* Background decoration - removed for cleaner look */}
 
@@ -323,8 +324,8 @@ export const WorkshopWizard = () => {
         {/* Header with progress */}
         <header className="customercamp-theme-header" style={{
           ...headerStyle,
-          backgroundColor: '#6B46C1',
-          background: '#6B46C1',
+          backgroundColor: '#1E1E1E',
+          background: '#1E1E1E',
           backgroundImage: 'none !important'
         }}>
           <div style={headerContentStyle}>
