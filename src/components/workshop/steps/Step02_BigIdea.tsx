@@ -143,7 +143,7 @@ export const Step02_BigIdea: React.FC = () => {
               fontSize: '14px',
               lineHeight: '1.5',
               resize: 'vertical',
-              backgroundColor: '#F0F9FF',
+              backgroundColor: '#F2F2F2',
               color: '#333333',
             }}
           />
@@ -194,7 +194,7 @@ export const Step02_BigIdea: React.FC = () => {
               fontSize: '14px',
               lineHeight: '1.5',
               resize: 'vertical',
-              backgroundColor: '#F0F9FF',
+              backgroundColor: '#F2F2F2',
               color: '#333333',
             }}
           />

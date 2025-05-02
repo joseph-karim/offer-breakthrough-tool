@@ -62,7 +62,7 @@ export const textareaStyle: CSSProperties = {
   fontSize: '14px',
   lineHeight: '1.5',
   resize: 'vertical',
-  backgroundColor: '#F0F9FF',
+  backgroundColor: '#F2F2F2',
   color: '#333333',
 };
 
@@ -146,7 +146,7 @@ export const inputStyle: CSSProperties = {
   borderRadius: '15px',
   border: '1px solid #DDDDDD',
   fontSize: '14px',
-  backgroundColor: '#F0F9FF',
+  backgroundColor: '#F2F2F2',
   color: '#333333',
 };
 

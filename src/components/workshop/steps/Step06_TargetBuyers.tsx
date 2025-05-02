@@ -144,7 +144,7 @@ export const Step06_TargetBuyers: React.FC = () => {
                   <div
                     key={buyer.id}
                     style={{
-                    backgroundColor: '#F0F9FF',
+                    backgroundColor: '#F2F2F2',
                     borderRadius: '15px',
                     border: '1px solid #DDDDDD',
                       overflow: 'hidden',

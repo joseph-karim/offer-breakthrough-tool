@@ -88,7 +88,7 @@ export const Step04_TriggerEvents: React.FC = () => {
                   alignItems: 'center',
                   gap: '12px',
                   padding: '12px 16px',
-                  backgroundColor: '#F0F9FF',
+                  backgroundColor: '#F2F2F2',
                   borderRadius: '15px',
                   border: '1px solid #DDDDDD',
                 }}
