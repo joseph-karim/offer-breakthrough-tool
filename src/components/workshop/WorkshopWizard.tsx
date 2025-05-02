@@ -1,6 +1,6 @@
 import { useEffect, CSSProperties, useState, useCallback } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { Zap, CheckCircle, ChevronLeft, ChevronRight, Sparkles, Layers, ArrowRight } from 'lucide-react';
+import { Zap, CheckCircle, ChevronLeft, ChevronRight, Sparkles, Layers } from 'lucide-react';
 
 // Import step components
 import { Step01_Intro } from './steps/Step01_Intro';
@@ -331,7 +331,7 @@ export const WorkshopWizard = () => {
               <h1 style={logoStyle}>
                 <span style={logoIconContainerStyle}>
                   <img
-                    src="/src/assets/Group 157.png"
+                    src="/assets/Group 157.png"
                     alt="Bomb icon"
                     style={{
                       width: '24px',
