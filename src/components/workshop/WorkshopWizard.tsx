@@ -332,7 +332,14 @@ export const WorkshopWizard = () => {
             <div style={logoContainerStyle}>
               <h1 style={logoStyle}>
                 <span style={logoIconContainerStyle}>
-                  <Sparkles style={{ width: '24px', height: '24px', color: '#222222' }} />
+                  <img
+                    src="/src/assets/Group 157.png"
+                    alt="Bomb icon"
+                    style={{
+                      width: '24px',
+                      height: '24px'
+                    }}
+                  />
                 </span>
                 Buyer Breakthrough
                 <span style={{
@@ -342,20 +349,7 @@ export const WorkshopWizard = () => {
                   opacity: 1
                 }}>
                   Workshop
-                  <span style={{
-                    position: 'absolute',
-                    top: '-8px',
-                    right: '-20px'
-                  }}>
-                    <img
-                      src="/src/assets/Group 157.png"
-                      alt="Bomb icon"
-                      style={{
-                        width: '18px',
-                        height: '18px'
-                      }}
-                    />
-                  </span>
+
                 </span>
               </h1>
 
