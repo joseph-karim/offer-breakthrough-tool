@@ -2,12 +2,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 import { SparkyMessage } from '../../../services/sparkyService';
 import { Button } from '../../ui/Button';
+import { AIMessage } from '../../../types/chat';
 
 interface MessagesContainerProps {
-  messages: SparkyMessage[];
+  messages: (SparkyMessage | AIMessage)[];
   isTyping: boolean;
   currentStep: number;
-  renderMessage: (message: SparkyMessage) => React.ReactNode;
+  renderMessage: (message: SparkyMessage | AIMessage) => React.ReactNode;
 }
 
 export const MessagesContainer: React.FC<MessagesContainerProps> = ({
@@ -33,7 +34,15 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
   // Filter messages based on the current step
   const filteredMessages = showAllMessages
     ? messages
-    : messages.filter(msg => !msg.stepContext || msg.stepContext === currentStep);
+    : messages.filter(msg => {
+        // Handle both SparkyMessage and AIMessage types
+        if ('stepContext' in msg) {
+          return !msg.stepContext || msg.stepContext === currentStep;
+        } else if ('step' in msg) {
+          return !msg.step || msg.step === currentStep;
+        }
+        return true;
+      });
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -43,8 +52,10 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
   }, [filteredMessages, isTyping]);
 
   // Group messages by step for better visual separation
-  const groupedMessages = filteredMessages.reduce<{[key: number]: SparkyMessage[]}>((groups, message) => {
-    const step = message.stepContext || 0;
+  const groupedMessages = filteredMessages.reduce<{[key: number]: (SparkyMessage | AIMessage)[]}>((groups, message) => {
+    // Get the step from either SparkyMessage or AIMessage
+    const step = 'stepContext' in message ? message.stepContext || 0 : 'step' in message ? message.step || 0 : 0;
+
     if (!groups[step]) {
       groups[step] = [];
     }

@@ -211,10 +211,44 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
     }
   }, [currentStep, sparkyMessages.length, addChatMessage, getStepSpecificWelcomeMessage]);
 
-  // Send proactive messages when user moves to a new step
+  // Send proactive messages when user moves to a new step and clear suggestions
   useEffect(() => {
     // Check if the step has changed and it's not the initial load
     if (previousStep !== currentStep && previousStep !== 0 && currentStep > 1) {
+      // Store current suggestions in chat history before clearing them
+      if (showSuggestions && currentSuggestion) {
+        // Create a message containing the suggestions
+        const suggestionsMessage: SparkyMessage = {
+          id: Date.now().toString(),
+          content: "Here were my suggestions for this step:",
+          role: 'assistant',
+          timestamp: new Date().toISOString(),
+          stepContext: previousStep
+        };
+
+        setSparkyMessages(prev => [...prev, suggestionsMessage]);
+
+        // Also add to workshop store with the suggestions attached
+        const workshopSuggestionsMessage: AIMessage = {
+          id: suggestionsMessage.id,
+          content: suggestionsMessage.content,
+          role: suggestionsMessage.role,
+          timestamp: suggestionsMessage.timestamp,
+          step: previousStep,
+          suggestions: [currentSuggestion]
+        };
+
+        if (typeof previousStep === 'number') {
+          addChatMessage(previousStep, workshopSuggestionsMessage);
+        }
+      }
+
+      // Clear suggestions when moving to a new step
+      setShowSuggestions(false);
+      setSparkySuggestions([]);
+      setCurrentSuggestion(null);
+      setAppliedSuggestions([]);
+
       // Get the proactive message for the new step
       const proactiveMessage = getProactiveStepMessage(currentStep, workshopData);
 
@@ -249,7 +283,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
 
     // Update previous step
     setPreviousStep(currentStep);
-  }, [currentStep, previousStep, workshopData, getProactiveStepMessage, addChatMessage]);
+  }, [currentStep, previousStep, workshopData, getProactiveStepMessage, addChatMessage, setCurrentSuggestion, showSuggestions, currentSuggestion]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -978,6 +1012,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
   // Render message bubbles
   const renderMessage = (message: SparkyMessage | AIMessage) => {
     const isUser = message.role === 'user';
+    const hasSuggestions = 'suggestions' in message && message.suggestions && message.suggestions.length > 0;
 
     return (
       <div
@@ -1010,6 +1045,45 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             {typeof message.content === 'string'
               ? message.content
               : JSON.stringify(message.content, null, 2)}
+
+            {/* Render previous suggestions if they exist */}
+            {hasSuggestions && (
+              <div style={{ marginTop: '12px', opacity: 0.8 }}>
+                {message.suggestions.map((suggestion: ChatSuggestion) => {
+                  if (typeof suggestion.content === 'string') {
+                    return (
+                      <div key={`history-${suggestion.step}-${Date.now()}`} style={{
+                        padding: '8px 12px',
+                        backgroundColor: '#F5F5F5',
+                        borderRadius: '8px',
+                        marginTop: '8px',
+                        fontSize: '14px'
+                      }}>
+                        {suggestion.content}
+                      </div>
+                    );
+                  } else {
+                    // Handle object content (most common case)
+                    return Object.entries(suggestion.content).map(([type, value]) => {
+                      if (Array.isArray(value)) {
+                        return value.map((item, index) => (
+                          <div key={`history-${type}-${index}`} style={{
+                            padding: '8px 12px',
+                            backgroundColor: '#F5F5F5',
+                            borderRadius: '8px',
+                            marginTop: '8px',
+                            fontSize: '14px'
+                          }}>
+                            {item}
+                          </div>
+                        ));
+                      }
+                      return null;
+                    });
+                  }
+                })}
+              </div>
+            )}
           </div>
           <div style={{
             fontSize: '12px',
