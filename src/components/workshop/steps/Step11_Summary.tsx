@@ -6,7 +6,7 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Reflections } from '../../../types/workshop';
 import { CheckCircle2, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { Tooltip } from '../../ui/Tooltip';
+import { ResponsiveTooltip } from '../../ui/ResponsiveTooltip';
 
 // Modified selectors to prevent creating new objects on each call
 const selectReflections = (state: WorkshopStore) => state.workshopData.reflections;
@@ -22,12 +22,12 @@ export const Step11_Summary: React.FC = () => {
   // Get values from store - use the reflections if they exist, otherwise use defaults
   const storeReflections = useWorkshopStore(selectReflections);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  
+
   // Only initialize state once with default values
   const [localValue, setLocalValue] = useState<Reflections>(() => {
     return storeReflections || defaultReflections;
   });
-  
+
   const [isSaving, setIsSaving] = useState(false);
   const saveTimerRef = useRef<number | null>(null);
   const savingTimerRef = useRef<number | null>(null);
@@ -56,10 +56,10 @@ export const Step11_Summary: React.FC = () => {
   const handleInputChange = useCallback((field: keyof Reflections, value: string) => {
     setLocalValue(prev => {
       const newValue = { ...prev, [field]: value };
-      
+
       // Show saving indicator
       setIsSaving(true);
-      
+
       // Clear any existing timers
       if (saveTimerRef.current !== null) {
         window.clearTimeout(saveTimerRef.current);
@@ -67,14 +67,14 @@ export const Step11_Summary: React.FC = () => {
       if (savingTimerRef.current !== null) {
         window.clearTimeout(savingTimerRef.current);
       }
-      
+
       // Save to store after a short delay
       saveTimerRef.current = window.setTimeout(() => {
         updateWorkshopData({ reflections: newValue });
         // Keep the saving indicator visible briefly
         savingTimerRef.current = window.setTimeout(() => setIsSaving(false), 500);
       }, 300);
-      
+
       return newValue;
     });
   }, [updateWorkshopData]);
@@ -86,7 +86,7 @@ export const Step11_Summary: React.FC = () => {
         title="Workshop Summary & Next Steps"
         description="Review your key insights and plan your path forward."
       />
-      
+
       <Card variant="default" padding="lg" shadow="md" style={{ marginBottom: '32px' }}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={{
@@ -106,27 +106,27 @@ export const Step11_Summary: React.FC = () => {
 
           {/* Key Insights */}
           <div>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
               gap: '8px',
               marginBottom: '8px'
             }}>
-              <label 
+              <label
                 htmlFor="key-insights"
                 style={{ fontWeight: 600, color: '#374151' }}
               >
                 Key Insights:
               </label>
-              <Tooltip content="Summarize the most important discoveries and decisions from the workshop" position="right">
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  cursor: 'help' 
+              <ResponsiveTooltip content="Summarize the most important discoveries and decisions from the workshop" position="right">
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'help'
                 }}>
                   <HelpCircle size={16} style={{ color: '#9ca3af' }} />
                 </div>
-              </Tooltip>
+              </ResponsiveTooltip>
             </div>
             <textarea
               id="key-insights"
@@ -148,27 +148,27 @@ export const Step11_Summary: React.FC = () => {
 
           {/* Next Steps */}
           <div>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
               gap: '8px',
               marginBottom: '8px'
             }}>
-              <label 
+              <label
                 htmlFor="next-steps"
                 style={{ fontWeight: 600, color: '#374151' }}
               >
                 Action Plan:
               </label>
-              <Tooltip content="List specific actions you'll take to implement your offer" position="right">
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  cursor: 'help' 
+              <ResponsiveTooltip content="List specific actions you'll take to implement your offer" position="right">
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'help'
                 }}>
                   <HelpCircle size={16} style={{ color: '#9ca3af' }} />
                 </div>
-              </Tooltip>
+              </ResponsiveTooltip>
             </div>
             <textarea
               id="next-steps"
@@ -193,4 +193,4 @@ export const Step11_Summary: React.FC = () => {
       <SaveIndicator saving={isSaving} />
     </div>
   );
-}; 
+};

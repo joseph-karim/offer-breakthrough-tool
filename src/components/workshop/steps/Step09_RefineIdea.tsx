@@ -4,7 +4,7 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { BigIdea } from '../../../types/workshop';
 import { AlertCircle, HelpCircle, ArrowRight } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { Tooltip } from '../../ui/Tooltip';
+import { ResponsiveTooltip } from '../../ui/ResponsiveTooltip';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -275,9 +275,9 @@ export const Step09_RefineIdea: React.FC = () => {
               >
                 Your Refined Big Idea
               </label>
-              <Tooltip content="Describe your refined product or service idea based on the insights from the workshop">
+              <ResponsiveTooltip content="Describe your refined product or service idea based on the insights from the workshop">
                 <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-              </Tooltip>
+              </ResponsiveTooltip>
             </div>
             <textarea
               id="refined-idea-description"
@@ -318,9 +318,9 @@ export const Step09_RefineIdea: React.FC = () => {
               >
                 Refined Target Customers
               </label>
-              <Tooltip content="Describe your refined target customers based on the insights from the workshop">
+              <ResponsiveTooltip content="Describe your refined target customers based on the insights from the workshop">
                 <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-              </Tooltip>
+              </ResponsiveTooltip>
             </div>
             <textarea
               id="refined-target-customers"

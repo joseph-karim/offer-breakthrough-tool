@@ -4,7 +4,7 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { UnderlyingGoal } from '../../../types/workshop';
 import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { Tooltip } from '../../ui/Tooltip';
+import { ResponsiveTooltip } from '../../ui/ResponsiveTooltip';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -97,9 +97,9 @@ export const Step03_UnderlyingGoal: React.FC = () => {
             >
               What is your underlying business goal?
             </label>
-            <Tooltip content="What do you hope to achieve with this new offer? How will it fit into your broader business strategy?">
+            <ResponsiveTooltip content="What do you hope to achieve with this new offer? How will it fit into your broader business strategy?">
               <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-            </Tooltip>
+            </ResponsiveTooltip>
           </div>
           <textarea
             id="business-goal"
