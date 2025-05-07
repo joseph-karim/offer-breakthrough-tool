@@ -1,5 +1,6 @@
 // Netlify function to fetch and summarize URL content using Perplexity API
-const fetch = require('node-fetch');
+// Using native https module instead of node-fetch for maximum compatibility
+const https = require('https');
 
 exports.handler = async function(event, context) {
   // Only allow POST requests
@@ -54,7 +55,7 @@ exports.handler = async function(event, context) {
 
     // Prepare the API request payload
     const payload = {
-      model: 'sonar-medium-online', // Using medium model for balance of cost/capability
+      model: 'sonar', // Using the correct model name from the documentation
       messages: [
         {
           role: 'system',
@@ -99,34 +100,69 @@ exports.handler = async function(event, context) {
         bodyLength: requestOptions.body.length
       });
 
-      // Call Perplexity API to analyze the URL
-      const response = await fetch('https://api.perplexity.ai/chat/completions', requestOptions);
+      // Make the request using the native https module
+      const perplexityResponse = await new Promise((resolve, reject) => {
+        const requestBody = JSON.stringify(payload);
 
-      console.log('Perplexity API response status:', response.status);
-      console.log('Perplexity API response headers:', Object.fromEntries([...response.headers.entries()]));
+        const options = {
+          hostname: 'api.perplexity.ai',
+          path: '/chat/completions',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Length': Buffer.byteLength(requestBody)
+          }
+        };
 
-      if (!response.ok) {
-        let errorData;
-        try {
-          errorData = await response.json();
-        } catch (e) {
-          errorData = { error: 'Could not parse error response', message: await response.text() };
-        }
+        const req = https.request(options, (res) => {
+          let data = '';
 
-        console.error('Perplexity API error:', errorData);
+          // Log response status
+          console.log('Perplexity API response status:', res.statusCode);
+          console.log('Perplexity API response headers:', res.headers);
+
+          res.on('data', (chunk) => {
+            data += chunk;
+          });
+
+          res.on('end', () => {
+            try {
+              const parsedData = JSON.parse(data);
+              resolve({ statusCode: res.statusCode, body: parsedData });
+            } catch (e) {
+              console.error('Error parsing response:', e);
+              resolve({ statusCode: res.statusCode, body: data, error: e });
+            }
+          });
+        });
+
+        req.on('error', (error) => {
+          console.error('Error making request:', error);
+          reject(error);
+        });
+
+        req.write(requestBody);
+        req.end();
+      });
+
+      console.log('Perplexity API response received');
+
+      // Check if the response was successful
+      if (perplexityResponse.statusCode !== 200) {
+        console.error('Perplexity API error:', perplexityResponse.body);
         return {
-          statusCode: response.status,
+          statusCode: perplexityResponse.statusCode,
           body: JSON.stringify({
             error: 'Error fetching content from Perplexity API',
-            details: errorData,
-            status: response.status,
-            statusText: response.statusText
+            details: perplexityResponse.body,
+            status: perplexityResponse.statusCode
           })
         };
       }
 
       // Process successful response
-      const data = await response.json();
+      const data = perplexityResponse.body;
       console.log('Perplexity API response data structure:', Object.keys(data));
 
       if (data.choices && data.choices.length > 0 && data.choices[0].message) {
