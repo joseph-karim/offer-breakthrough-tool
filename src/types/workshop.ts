@@ -64,6 +64,7 @@ export interface Pain {
 export interface ProblemUp {
   selectedPains: string[];
   selectedBuyers: string[];
+  relevantTriggerIds: string[]; // IDs of triggers linked to the target moment
   targetMoment: string;
   notes: string;
 }
@@ -93,6 +94,7 @@ export interface Summary {
 export interface Reflections {
   keyInsights: string;
   nextSteps: string;
+  personalReflection?: string;
 }
 
 // All legacy interfaces have been removed

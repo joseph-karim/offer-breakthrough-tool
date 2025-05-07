@@ -72,6 +72,7 @@ const initialWorkshopData: WorkshopData = {
   problemUp: {
     selectedPains: [],
     selectedBuyers: [],
+    relevantTriggerIds: [],
     targetMoment: '',
     notes: ''
   },
@@ -92,7 +93,8 @@ const initialWorkshopData: WorkshopData = {
   stepChats: {},
   reflections: {
     keyInsights: '',
-    nextSteps: ''
+    nextSteps: '',
+    personalReflection: ''
   }
 };
 
@@ -696,6 +698,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
             problemUp: {
               selectedPains: problemUp.selectedPains || [],
               selectedBuyers: problemUp.selectedBuyers || [],
+              relevantTriggerIds: problemUp.relevantTriggerIds || [],
               targetMoment: problemUp.targetMoment || '',
               notes: problemUp.notes || ''
             }
@@ -820,6 +823,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
       const updatedProblemUp = {
         selectedPains: state.workshopData.problemUp?.selectedPains || [],
         selectedBuyers: state.workshopData.problemUp?.selectedBuyers || [],
+        relevantTriggerIds: state.workshopData.problemUp?.relevantTriggerIds || [],
         targetMoment: state.workshopData.problemUp?.targetMoment || '',
         notes: `Selected problems from Painstorming analysis:\n${problems.map(p => `- ${p}`).join('\n')}`
       };

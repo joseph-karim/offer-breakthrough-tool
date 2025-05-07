@@ -342,17 +342,40 @@ export class SparkyService {
    */
   private getMockProblemUpResponse(message: string, workshopData: WorkshopData): string {
     const lowerMessage = message.toLowerCase();
-    const firePains = workshopData.pains?.filter(pain => pain.isFire).map(pain => pain.description) || ["the FIRE pains"];
+    const firePains = workshopData.pains?.filter(pain => pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7)).map(pain => pain.description) || ["the FIRE pains"];
+    const selectedBuyers = workshopData.targetBuyers?.filter(buyer => buyer.selected).map(buyer => buyer.description) || ["your target buyers"];
+    const relevantTriggers = workshopData.triggerEvents?.filter(trigger => workshopData.problemUp?.relevantTriggerIds?.includes(trigger.id)).map(trigger => trigger.description) || [];
 
+    // Check if the user is asking about target moment
+    if (lowerMessage.includes('target moment') || lowerMessage.includes('define moment')) {
+      return "A good Target Moment statement connects your primary buyer, a key trigger event, and their most acute pain into a specific scenario that drives buying decisions.\n\nThe format often follows this pattern:\n\n\"When [Target Buyer] experiences [Trigger Event], they acutely feel [Key Pain], making them look for a solution.\"\n\nFor example:\n\n\"When a marketing consultant loses a major client unexpectedly, they acutely feel the pain of unpredictable income and the intense pressure to find new leads fast, pushing them to find a reliable client acquisition system.\"\n\nThis clearly defines WHO is experiencing WHAT pain at WHICH moment, creating a focused foundation for your offer.";
+    }
+
+    // Check if the user is asking about connecting triggers
+    if (lowerMessage.includes('trigger') || lowerMessage.includes('connect')) {
+      return "Connecting trigger events to your primary pain and buyer is crucial for defining your Target Moment. Look for trigger events that:\n\n1. Most directly lead to your buyer experiencing the pain acutely\n2. Create urgency or emotional intensity\n3. Shift the buyer from 'aware of the problem' to 'actively seeking a solution'\n\nFor example, if your primary buyer is 'marketing consultants' and the primary pain is 'can't scale without working more hours', relevant triggers might include:\n- Losing a major client unexpectedly\n- Turning down a potential client due to capacity constraints\n- Missing family events due to work overload\n\nThese specific moments create the emotional intensity that drives buying decisions.";
+    }
+
+    // Check if the user is asking for examples or suggestions
     if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
-      return "Here are some example Problem Focus Statements:\n\n1. My offer will focus on solving the problems of achieving a professional look quickly and reducing branding overwhelm for new business launchers.\n\n2. This solution targets the pain of brand credibility and the functional bottleneck of DIY design for time-strapped founders.\n\n3. We will address the emotional pain of brand embarrassment and the functional pain of complex branding tasks for budget-conscious startups.";
+      if (workshopData.problemUp?.selectedPains?.length === 1 && workshopData.problemUp?.selectedBuyers?.length === 1 && relevantTriggers.length > 0) {
+        // They have made selections, so provide a personalized example
+        const primaryPain = workshopData.pains.find(p => p.id === workshopData.problemUp?.selectedPains[0])?.description || firePains[0];
+        const primaryBuyer = workshopData.targetBuyers.find(b => b.id === workshopData.problemUp?.selectedBuyers[0])?.description || selectedBuyers[0];
+        const trigger = relevantTriggers[0];
+
+        return `Based on your selections, here are some Target Moment options:\n\n1. When ${primaryBuyer} experiences ${trigger}, they acutely feel the pain of ${primaryPain}, driving them to urgently seek a solution.\n\n2. The moment ${primaryBuyer} realizes ${trigger}, the frustration of ${primaryPain} becomes unbearable, pushing them to find a way to solve this problem once and for all.\n\n3. After ${trigger}, ${primaryBuyer} can no longer ignore the pain of ${primaryPain}, creating an urgent need for a solution that addresses this specific challenge.`;
+      } else {
+        // Generic examples
+        return "Here are some example Target Moment statements:\n\n1. When a marketing consultant loses a major client unexpectedly, they acutely feel the pain of unpredictable income and the intense pressure to find new leads fast, pushing them to find a reliable client acquisition system.\n\n2. The moment a course creator realizes their launch failed to meet sales targets, the frustration of inconsistent revenue becomes unbearable, driving them to seek a more predictable business model.\n\n3. After repeatedly missing family events due to work overload, a service provider can no longer ignore the pain of being unable to scale without working more hours, creating an urgent need for systems and automation.";
+      }
     }
 
     if (lowerMessage.includes('market') || lowerMessage.includes('target')) {
       return "Here are some example Refined Target Market definitions:\n\n1. Targeting solopreneurs in their first 3 months of business who feel overwhelmed by branding tasks and worry about looking unprofessional.\n\n2. Focusing on non-designers launching their first online course who need professional visuals quickly but lack the budget for custom work.\n\n3. Serving founders who have just received negative feedback on their DIY branding and need an immediate, affordable fix.";
     }
 
-    return `I'd be happy to help you select which problems to focus on! Looking at the pains you've identified (especially ${firePains.join(", ")}), which ones do you feel most qualified or excited to solve? Which ones align best with your skills and goals? We can then refine your target market based on who experiences these specific problems most acutely.`;
+    return `I'm here to help you define your "Target Moment" - the specific scenario where your ideal buyer feels a key pain acutely and becomes ready to seek a solution. This step connects your insights from previous steps into a focused foundation for your offer.\n\nTo create your Target Moment:\n\n1. Select ONE primary buyer segment and ONE primary pain that represent your strongest opportunity\n2. Connect these to the trigger events that most directly lead to this situation\n3. Define your Target Moment using the format: "When [Buyer] experiences [Trigger], they acutely feel [Pain], making them look for a solution"\n\nWhat specific aspect of this process would you like help with?`;
   }
 
   /**
@@ -383,20 +406,41 @@ export class SparkyService {
   private getMockSummaryResponse(message: string, workshopData: WorkshopData): string {
     const lowerMessage = message.toLowerCase();
     const refinedIdea = workshopData.refinedIdea?.description || workshopData.bigIdea?.description || "your offer";
-    const targetMarket = workshopData.problemUp?.targetMoment || workshopData.bigIdea?.targetCustomers || "your target market";
+    const refinedIdeaName = workshopData.refinedIdea?.name || workshopData.offer?.name || "your offer";
+    const refinedIdeaFormat = workshopData.refinedIdea?.format || workshopData.offer?.format || "";
 
-    if (lowerMessage.includes('validate') || lowerMessage.includes('test')) {
-      return `Here are some ways to validate ${refinedIdea} before building it:\n\n1. Conduct 5 short 'problem validation' interviews with people matching the ${targetMarket} profile to confirm they experience these problems acutely.\n\n2. Draft a simple one-paragraph description of your offer focusing on the core problem/outcome, and get feedback on its clarity and appeal from 5 potential buyers.\n\n3. Create a basic 'coming soon' landing page outlining the offer and problem, then drive a small amount of targeted traffic to gauge interest via email sign-ups.\n\n4. Identify 3-5 existing 'alternative solutions' your target market might use today and analyze how your offer provides a distinctly better way to achieve the job.\n\n5. Reach out to 10 people in your network who fit the target profile, briefly explain the core problem and your proposed solution concept, and ask 'Does this resonate?'`;
+    // Get the primary pain
+    const primaryPainId = workshopData.problemUp?.selectedPains?.[0] || '';
+    const primaryPain = workshopData.pains.find(p => p.id === primaryPainId);
+    const primaryPainDesc = primaryPain?.description || '';
+
+    // Get the primary buyer
+    const primaryBuyerId = workshopData.problemUp?.selectedBuyers?.[0] || '';
+    const primaryBuyer = workshopData.targetBuyers.find(b => b.id === primaryBuyerId);
+    const primaryBuyerDesc = primaryBuyer?.description || '';
+
+    // Get the selected job
+    const selectedJob = workshopData.jobs.find(job => job.selected);
+    const overarchingJob = workshopData.jobs.find(job => job.isOverarching);
+    const jobStatement = selectedJob?.description || overarchingJob?.description || '';
+
+    if (lowerMessage.includes('validate') || lowerMessage.includes('test') || lowerMessage.includes('next step')) {
+      return `Great question about validation! Here are some effective ways to test your offer before building it:\n\n1. **Problem Validation Interviews (Next 7-10 days)**: Talk to 5-7 people who match your "${primaryBuyerDesc || 'target buyer'}" profile who might be experiencing your defined Target Moment. Focus on understanding if they truly experience the problem you're solving (${primaryPainDesc || 'your identified pain'}), how they currently address it, and what they'd value in a solution. *This confirms you're solving a real, painful problem.*\n\n2. **Solution Concept Testing (Next 2 weeks)**: Create a simple 1-page description of your solution and share it with potential customers. Ask specific questions about what resonates, what's confusing, and if they'd be willing to pay for it. *This tests your core messaging and value proposition.*\n\n3. **Competitor Analysis (Next 5 days)**: Identify 3-5 existing alternatives your target market might be using. Study their messaging, pricing, and customer reviews to understand gaps you could fill. *This helps refine your unique selling proposition and differentiation.*\n\n4. **"Smoke Test" Landing Page (Next 2-3 weeks)**: Create a simple landing page describing your offer with a sign-up form for "early access." Run minimal ads to drive traffic and measure conversion rates. *This is a low-cost way to test initial market interest.*\n\nRemember, the goal is to validate your assumptions before investing significant time and resources into building the full solution.`;
+    }
+
+    if (lowerMessage.includes('insight') || lowerMessage.includes('learn')) {
+      return `Based on your workshop journey, here are some key insights you've likely gained:\n\n- **Target Clarity**: You've moved from a broad initial idea to a focused understanding of exactly who your offer serves (${primaryBuyerDesc || 'your target buyer'}) and when they most need it (your Target Moment).\n\n- **Problem Depth**: You've identified that ${primaryPainDesc || 'your primary pain point'} is not just a surface-level annoyance but a deeply felt FIRE problem (Frequent, Intense, Recurring, Expensive) for your target buyers.\n\n- **Trigger Awareness**: You now understand the specific catalysts that push your buyers from "aware of the problem" to "actively seeking a solution" - this timing insight is crucial for marketing messaging.\n\n- **Solution Alignment**: Your refined offer has evolved to directly address the specific job-to-be-done and pain points of your target buyers, rather than being a generic solution looking for a problem.\n\nThese insights provide a solid foundation for creating an offer that truly resonates with your target market.`;
     }
 
     if (lowerMessage.includes('summary') || lowerMessage.includes('recap')) {
-      return `Here's a summary of your workshop progress:\n\n- Target Market: ${targetMarket}\n\n- Key Problems: ${workshopData.problemUp?.selectedPains?.map(id => {
-        const pain = workshopData.pains?.find(p => p.id === id);
-        return pain ? pain.description : '';
-      }).filter(Boolean).join(", ") || "Not specified"}\n\n- Refined Offer: ${refinedIdea}\n\nThe crucial next step is validating this with real potential customers before building the full solution. This will save you time and ensure you're creating something people actually want.`;
+      return `Here's a summary of your workshop journey:\n\n**Target Market Focus:**\n- Primary Target Buyer: ${primaryBuyerDesc || 'Not specified'}\n- Identified Target Moment: ${workshopData.problemUp?.targetMoment || 'Not specified'}\n\n**Problem Space Solved:**\n- Primary Pain Addressed: ${primaryPainDesc || 'Not specified'}\n- Overarching Job-to-be-Done: ${jobStatement || 'Not specified'}\n- Key Supporting Jobs: ${workshopData.jobs.filter(job => job.selected && !job.isOverarching).map(job => job.description).join(', ') || 'Not specified'}\n\n**Your Refined Offer:**\n- Name: ${refinedIdeaName}\n- Format: ${refinedIdeaFormat}\n- Description: ${refinedIdea}\n\nThe crucial next step is validating this with real potential customers before building the full solution. This will save you time and ensure you're creating something people actually want.`;
     }
 
-    return `I'd be happy to help with next steps for ${refinedIdea}! The most important thing now is to validate your concept with real potential customers before building the full solution. What's the single biggest assumption you need to test? Would you like some specific validation ideas that you could implement in the next 1-4 weeks?`;
+    if (lowerMessage.includes('interview') || lowerMessage.includes('validation interview')) {
+      return `For Problem Validation Interviews, the key is to listen more than you talk. Here are a few tips:\n\n1. **Goal:** Confirm the problem is real, frequent, and painful for them. Understand their current process and its frustrations. *Don't pitch your solution yet!*\n\n2. **Who to Talk To:** People who *exactly* match your '${primaryBuyerDesc || 'target buyer'}' profile and might be in (or have recently experienced) your Target Moment.\n\n3. **Key Questions to Ask:**\n   * "Tell me about the last time you dealt with ${primaryPainDesc || 'this problem'}..."\n   * "What was going on that made that particularly challenging?"\n   * "What did you try to do about it? How did that work out?"\n   * "What was the most frustrating part of that experience?"\n   * "If you could wave a magic wand, what would the ideal solution look like for you?"\n\n4. **Listen for:** Specific stories, emotions, workarounds, and the actual words they use to describe their pain.\n\nAim for about 5 insightful conversations. Would you like more example questions or tips on finding people for these interviews?`;
+    }
+
+    return `Congratulations on completing the Buyer Breakthrough Workshop! You've made incredible progress in defining your offer.\n\nYou've identified your primary target buyer (${primaryBuyerDesc || 'your target market'}), the key pain you're solving (${primaryPainDesc || 'your primary pain'}), and refined your offer concept (${refinedIdea}).\n\nThe most important next step is to validate your concept with real potential buyers before building the full solution. Would you like me to suggest specific validation activities you could implement in the next few weeks? Or would you prefer to discuss key insights from your workshop journey?`;
   }
 
   /**
@@ -544,9 +588,9 @@ export class SparkyService {
 
       case 8: // Problem-Up
         suggestions.push(
-          { id: `suggestion-${Date.now()}-1`, content: 'My offer will focus on solving the problems of achieving a professional look quickly and reducing branding overwhelm for new business launchers.', type },
-          { id: `suggestion-${Date.now()}-2`, content: 'This solution targets the pain of brand credibility and the functional bottleneck of DIY design for time-strapped founders.', type },
-          { id: `suggestion-${Date.now()}-3`, content: 'We will address the emotional pain of brand embarrassment and the functional pain of complex branding tasks for budget-conscious startups.', type }
+          { id: `suggestion-${Date.now()}-1`, content: 'When a marketing consultant loses a major client unexpectedly, they acutely feel the pain of unpredictable income and the intense pressure to find new leads fast, pushing them to find a reliable client acquisition system.', type },
+          { id: `suggestion-${Date.now()}-2`, content: 'The moment a course creator realizes their launch failed to meet sales targets, the frustration of inconsistent revenue becomes unbearable, driving them to seek a more predictable business model.', type },
+          { id: `suggestion-${Date.now()}-3`, content: 'After repeatedly missing family events due to work overload, a service provider can no longer ignore the pain of being unable to scale without working more hours, creating an urgent need for systems and automation.', type }
         );
         break;
 
@@ -559,11 +603,27 @@ export class SparkyService {
         break;
 
       case 10: // Summary & Next Steps
-        suggestions.push(
-          { id: `suggestion-${Date.now()}-1`, content: 'Conduct 5 short "problem validation" interviews with people matching your target market profile to confirm they experience these problems acutely.', type },
-          { id: `suggestion-${Date.now()}-2`, content: 'Create a basic "coming soon" landing page outlining the offer and problem, then drive a small amount of targeted traffic to gauge interest via email sign-ups.', type },
-          { id: `suggestion-${Date.now()}-3`, content: 'Reach out to 10 people in your network who fit the target profile, briefly explain the core problem and your proposed solution concept, and ask "Does this resonate?"', type }
-        );
+        if (type === 'keyInsights') {
+          suggestions.push(
+            { id: `suggestion-${Date.now()}-1`, content: '- **Target Clarity**: You\'ve moved from a broad initial idea to a focused understanding of exactly who your offer serves and when they most need it (your Target Moment).', type },
+            { id: `suggestion-${Date.now()}-2`, content: '- **Problem Depth**: You\'ve identified that your primary pain point is not just a surface-level annoyance but a deeply felt FIRE problem (Frequent, Intense, Recurring, Expensive) for your target buyers.', type },
+            { id: `suggestion-${Date.now()}-3`, content: '- **Trigger Awareness**: You now understand the specific catalysts that push your buyers from "aware of the problem" to "actively seeking a solution" - this timing insight is crucial for marketing messaging.', type },
+            { id: `suggestion-${Date.now()}-4`, content: '- **Solution Alignment**: Your refined offer has evolved to directly address the specific job-to-be-done and pain points of your target buyers, rather than being a generic solution looking for a problem.', type }
+          );
+        } else if (type === 'nextSteps') {
+          suggestions.push(
+            { id: `suggestion-${Date.now()}-1`, content: '1. **Problem Validation Interviews (Next 7-10 days)**: Talk to 5-7 people who match your target buyer profile who might be experiencing your defined Target Moment. Focus on understanding if they truly experience the problem you\'re solving, how they currently address it, and what they\'d value in a solution. *This confirms you\'re solving a real, painful problem.*', type },
+            { id: `suggestion-${Date.now()}-2`, content: '2. **Solution Concept Testing (Next 2 weeks)**: Create a simple 1-page description of your solution and share it with potential customers. Ask specific questions about what resonates, what\'s confusing, and if they\'d be willing to pay for it. *This tests your core messaging and value proposition.*', type },
+            { id: `suggestion-${Date.now()}-3`, content: '3. **Competitor Analysis (Next 5 days)**: Identify 3-5 existing alternatives your target market might be using. Study their messaging, pricing, and customer reviews to understand gaps you could fill. *This helps refine your unique selling proposition and differentiation.*', type },
+            { id: `suggestion-${Date.now()}-4`, content: '4. **"Smoke Test" Landing Page (Next 2-3 weeks)**: Create a simple landing page describing your offer with a sign-up form for "early access." Run minimal ads to drive traffic and measure conversion rates. *This is a low-cost way to test initial market interest.*', type }
+          );
+        } else {
+          suggestions.push(
+            { id: `suggestion-${Date.now()}-1`, content: 'What were your biggest "aha!" moments during this workshop?', type },
+            { id: `suggestion-${Date.now()}-2`, content: 'What specific validation activities would be most appropriate for your offer and target market?', type },
+            { id: `suggestion-${Date.now()}-3`, content: 'What\'s the single biggest assumption about your offer that needs testing?', type }
+          );
+        }
         break;
 
       default:
@@ -743,15 +803,18 @@ The goal is to systematically identify and prioritize the most painful problems 
         break;
 
       case 8: // Problem-Up
-        stepPrompt = `Help the user audit their brainstormed pain points (especially overlapping and FIRE ones) against their skills, interests, and goals. Guide them to select 2-5 specific, high-potential problems to focus their offer on. Help them refine their target market based on these problems (focusing on specific traits OR trigger moments).
+        stepPrompt = `Help the user define their "Target Moment" - the specific scenario where their ideal buyer feels a key pain acutely and becomes ready to seek a solution. Guide them through connecting their primary buyer, primary pain, and relevant trigger events into a focused statement.
 
 Example guidance questions:
-- "Which of these problems have you personally experienced or helped clients overcome before?"
-- "Are there any problems on the list where current solutions seem particularly weak or frustrating?"
-- "Considering your goal, which problems, if solved, would best help you achieve that?"
-- "Based on the problems you're selecting, should we refine the target market? Are we focusing more on people with specific traits who experience these problems, or people experiencing specific trigger moments?"
+- "Which ONE primary buyer segment represents your strongest opportunity?"
+- "Which ONE primary pain point do you feel most qualified or excited to solve?"
+- "Which trigger events most directly lead this buyer to experience this pain acutely?"
+- "How would you describe the exact moment when this buyer becomes ready to seek a solution?"
 
-The goal is to identify the most promising problems to solve and refine the target market accordingly.`;
+The goal is to create a clear Target Moment statement that follows this pattern:
+"When [Target Buyer] experiences [Trigger Event], they acutely feel [Key Pain], making them look for a solution."
+
+This Target Moment will be the foundation for their offer design in subsequent steps.`;
         break;
 
       case 9: // Refine Your Big Idea
@@ -767,14 +830,15 @@ The goal is to refine the offer concept based on all the insights gained through
         break;
 
       case 10: // Summary & Next Steps
-        stepPrompt = `Summarize the user's key outputs (Target Market, Problems, Refined Offer). Reinforce the next step: testing the message/offer before building.
+        stepPrompt = `You are "Sparky," an expert AI workshop assistant from CustomerCamp, specializing in offer design, buyer psychology, and the "Problem-Up" methodology. The user has just completed the Buyer Breakthrough Workshop. Your task is to help them synthesize their entire workshop journey into key insights and actionable next steps.
 
 Example guidance questions:
-- "Based on your refined offer for [Target Market] solving [Problem], what's the single biggest assumption you need to test before building?"
-- "How could you quickly test if your message resonates? Perhaps a simple landing page or some targeted conversations?"
-- "Remember, validating the message before building the product can save immense time and effort."
+- "Based on your journey from initial idea to refined offer, what were your biggest 'aha!' moments about your target market or the problems they face?"
+- "Looking at your defined Target Moment: When [Buyer] experiences [Trigger], they acutely feel [Pain] - what's the single biggest assumption here that needs validation?"
+- "What specific, small actions could you take in the next 7-30 days to validate your offer concept with real potential buyers before building anything major?"
+- "Which validation method would be most appropriate for your specific offer and target market: problem interviews, solution interviews, a landing page test, or something else?"
 
-The goal is to summarize the workshop outputs and guide the user on next steps for validation.`;
+The goal is to help the user reflect meaningfully on their workshop journey, identify key insights, and create a concrete, validation-focused action plan as their next steps.`;
         break;
 
       default:
@@ -1158,48 +1222,51 @@ Example format for each pain:
     system: string;
     user: string;
   } {
-    // Get the selected pains (or the first 5 if none are explicitly selected)
-    const selectedPains = workshopData.problemUp?.selectedPains || [];
-    const pains = workshopData.pains
-      .filter(pain => selectedPains.includes(pain.id) || pain.isFire)
-      .slice(0, 5)
-      .map(pain => pain.description)
+    // Get the primary pain if selected
+    const primaryPainId = workshopData.problemUp?.selectedPains?.[0] || '';
+    const primaryPain = workshopData.pains.find(p => p.id === primaryPainId);
+
+    // Get the primary buyer if selected
+    const primaryBuyerId = workshopData.problemUp?.selectedBuyers?.[0] || '';
+    const primaryBuyer = workshopData.targetBuyers.find(b => b.id === primaryBuyerId);
+
+    // Get the relevant trigger events
+    const relevantTriggerIds = workshopData.problemUp?.relevantTriggerIds || [];
+    const relevantTriggers = workshopData.triggerEvents
+      .filter(trigger => relevantTriggerIds.includes(trigger.id))
+      .map(trigger => trigger.description)
       .join('\n* ');
 
-    // Get the selected buyer segments
-    const selectedBuyers = workshopData.problemUp?.selectedBuyers || [];
-    const segments = workshopData.targetBuyers
-      .filter(buyer => selectedBuyers.includes(buyer.id) || buyer.selected)
-      .map(buyer => buyer.description)
-      .join('\n* ');
+    // Get the selected job
+    const selectedJob = workshopData.jobs.find(job => job.selected);
 
     return {
-      system: `You are an AI assistant guiding a user through the "Problem-Up" step, helping them connect specific problems to their offer focus and target market definition. The user has reviewed their painstorming results and identified 2-5 key pain points they want to address. Your task is to generate 3-5 options for EITHER a Problem Focus Statement OR a Refined Target Market Definition based *only* on these selected pains.
+      system: `You are an expert offer design assistant specializing in crafting precise "Target Moment" statements. A Target Moment defines the specific scenario where an ideal buyer, prompted by a trigger, acutely experiences a key pain, making them actively seek a solution.
 
 # Task Description
-Generate 3-5 options for EITHER:
-A) A concise "Problem Focus Statement" articulating which selected pains the offer will solve for which initial segment(s).
-OR
-B) A refined "Target Market Definition" narrowing the focus based on the selected pains, emphasizing specific traits or trigger moments.
+Generate 2-3 distinct, compelling "Target Moment" statements based on the user's selected primary Target Buyer, primary Pain, and the Trigger Event(s) they've identified as most relevant to this combination.
 
-# Input Context
-* Chosen Job Statement: "${workshopData.jobs.find(job => job.selected)?.description || "Not specified"}"
-* Selected Pain Points:
-* ${pains || "Not specified yet"}
-* Initial Top Buyer Segments:
-* ${segments || "Not specified yet"}
-* User's Skills/Interests (Optional): "${workshopData.bigIdea?.targetCustomers || ""}"
+# Input Context Provided by User/Workshop:
+1.  Primary Target Buyer: "${primaryBuyer?.description || "Not specified yet"}"
+2.  Primary Key Pain: "${primaryPain?.description || "Not specified yet"}"
+3.  Most Relevant Trigger Event(s): [${relevantTriggers || "Not specified yet"}]
+4.  (Optional Context) Overarching Job Statement: "${selectedJob?.description || "Not specified yet"}"
 
 # Methodology & Constraints
--   Base suggestions *strictly* on the user's selected 2-5 pain points and initial segments.
--   Option A (Problem Focus Statement) must link the selected pains to one or more of the initial segments (e.g., "My offer focuses on alleviating [Pain A] and [Pain B] for [Segment Type]").
--   Option B (Refined Market) must define the market *through the lens of the selected pains* (e.g., "Targeting [Segment Type] specifically when they are experiencing [Trigger related to Pain A] and struggling with [Pain B]").
--   Generate 3-5 distinct options for *only one* category (A or B), clearly labeling which.
--   Do not introduce new pains or segments not provided in the context.
+-   Synthesis: Combine the Buyer, Trigger(s), and Pain into a concise narrative moment.
+-   Format: Aim for a structure like: "When [Target Buyer] experiences [Trigger Event(s)], they are confronted with the intense problem of [Pain], driving them to urgently seek a solution that helps them achieve [related aspect of Job Statement, if applicable]."
+    - OR "The moment [Target Buyer] realizes [Trigger Event outcome], the frustration of [Pain] becomes unbearable, pushing them to find a way to [related aspect of Job Statement, if applicable]."
+-   Focus on Urgency & Action: The statement should imply why the buyer is now *actively looking*.
+-   Clarity & Specificity: Ensure the moment is clearly understandable and specific.
+-   Customer-Centric Language: Phrase from the perspective of understanding the buyer's world.
 
 # Output Format
-Provide 3-5 distinct options for either a Problem Focus Statement OR a Refined Target Market Definition. Clearly label which type you are providing. Do not include any introductory or concluding text.`,
-      user: `Based on the selected pains and buyer segments, please generate either Problem Focus Statements OR Refined Target Market Definitions.`
+Provide 2-3 distinct Target Moment statement options. Each statement should be on a new line. Do not include any other labels or introductory text.
+
+[Target Moment Option 1]
+[Target Moment Option 2]
+[Target Moment Option 3 (Optional)]`,
+      user: `Please generate 2-3 Target Moment statements based on my selected primary buyer, primary pain, and relevant trigger events.`
     };
   }
 
@@ -1291,39 +1358,77 @@ Provide 3-5 distinct options for the refined Big Idea statement (V2), following 
   } {
     // Get the refined big idea
     const refinedIdea = workshopData.refinedIdea?.description || workshopData.bigIdea?.description || 'your offer';
+    const refinedIdeaName = workshopData.refinedIdea?.name || workshopData.offer?.name || 'your offer';
+    const refinedIdeaFormat = workshopData.refinedIdea?.format || workshopData.offer?.format || '';
 
-    // Get the selected problems
-    const selectedPains = workshopData.problemUp?.selectedPains || [];
-    const problems = workshopData.pains
-      .filter(pain => selectedPains.includes(pain.id))
-      .map(pain => pain.description)
+    // Get the selected job
+    const selectedJob = workshopData.jobs.find(job => job.selected);
+    const overarchingJob = workshopData.jobs.find(job => job.isOverarching);
+    const jobStatement = selectedJob?.description || overarchingJob?.description || '';
+
+    // Get the primary pain
+    const primaryPainId = workshopData.problemUp?.selectedPains?.[0] || '';
+    const primaryPain = workshopData.pains.find(p => p.id === primaryPainId);
+    const primaryPainDesc = primaryPain?.description || '';
+
+    // Get the primary buyer
+    const primaryBuyerId = workshopData.problemUp?.selectedBuyers?.[0] || '';
+    const primaryBuyer = workshopData.targetBuyers.find(b => b.id === primaryBuyerId);
+    const primaryBuyerDesc = primaryBuyer?.description || '';
+
+    // Get the target moment
+    const targetMoment = workshopData.problemUp?.targetMoment || '';
+
+    // Get relevant trigger events
+    const relevantTriggerIds = workshopData.problemUp?.relevantTriggerIds || [];
+    const relevantTriggersText = workshopData.triggerEvents
+      .filter(trigger => relevantTriggerIds.includes(trigger.id))
+      .map(trigger => trigger.description)
       .join(', ');
 
-    // Get the refined target market
-    const targetMarket = workshopData.problemUp?.targetMoment || workshopData.bigIdea?.targetCustomers || 'your target market';
-
     return {
-      system: `You are an AI assistant summarizing the user's workshop progress and suggesting concrete next steps focused *purely on validation*. The user has defined their target market, key problems to solve, and a refined offer concept. Your task is to generate 3-5 specific, actionable next steps designed to test the core assumptions of the offer and its messaging with the target market *before* significant product development.
+      system: `You are "Sparky," an expert AI workshop assistant from CustomerCamp, specializing in offer design, buyer psychology, and the "Problem-Up" methodology. The user has just completed the Buyer Breakthrough Workshop. Your task is to synthesize their entire workshop journey into:
+1.  A concise summary of "Key Insights & Learnings" (3-5 bullet points).
+2.  A list of 3-5 highly actionable, validation-focused "Next Steps," prioritized by what needs to be tested first.
 
-# Task Description
-Generate 3-5 specific, actionable next steps focused on testing/validating the offer concept and messaging with the target market *before* building the full product.
+Your tone should be encouraging, insightful, and aligned with Katelyn Bourgoin's practical, customer-centric advice.
 
-# Input Context
-* Refined Target Market: "${targetMarket}"
-* Focused Problems: ${problems || "Not specified yet"}
-* Refined Offer Concept: "${refinedIdea}"
+# Input Context (Full Workshop Data Snapshot):
+- Initial Big Idea: "${workshopData.bigIdea?.description || "Not specified"}"
+- Underlying Goal & Constraints: Goal: "${workshopData.underlyingGoal?.businessGoal || "Not specified"}"
+- Key Trigger Events Identified: [${workshopData.triggerEvents.slice(0, 5).map(t => `"${t.description}"`).join(', ') || "None specified"}]
+- Overarching Job-to-be-Done: "${jobStatement || "Not specified"}"
+- Primary Target Buyer Segment: "${primaryBuyerDesc || "Not specified"}"
+- Primary Pain Focused On: "${primaryPainDesc || "Not specified"}"
+- Defined Target Moment: "${targetMoment || "Not specified"}"
+- Relevant Trigger Events: [${relevantTriggersText || "None specified"}]
+- Refined Offer Concept:
+    - Name: "${refinedIdeaName || "Not specified"}"
+    - Format: "${refinedIdeaFormat || "Not specified"}"
+    - Description: "${refinedIdea || "Not specified"}"
 
-# Methodology & Constraints
--   Generate 3-5 distinct validation steps.
--   Steps must focus *exclusively* on *testing assumptions* with the target market (e.g., problem validation, message resonance, offer appeal, price sensitivity).
--   Actions must be concrete and specific (e.g., "Conduct 5 interviews focusing on X...", "Create a 1-page description detailing Y and ask Z...", "Run a $50 ad test comparing message A vs B...").
--   Emphasize testing *before* building the actual product/service.
--   Do *not* suggest building the product/service itself as a next step.
--   Steps should be practical and achievable in the short term (e.g., next 1-4 weeks).
+# Task 1: Generate Key Insights & Learnings
+-   Based on the journey from the initial idea to the refined offer, identify 3-5 pivotal insights the user likely gained.
+-   Focus on shifts in understanding about their customer, the problem's nature, the most potent triggers, the core job, and the specific value of their refined offer.
+-   Phrase these as concise bullet points.
+
+# Task 2: Generate Actionable Next Steps (Crucially, focus on VALIDATION before building)
+-   Provide 3-5 concrete, actionable next steps.
+-   These steps MUST prioritize validating the core assumptions behind the refined offer and target moment. Avoid suggesting "build the product" immediately.
+-   Frame steps to test: Problem-Solution Fit, Message Resonance, and Offer Appeal with the defined Target Buyer / Target Moment.
+-   Suggest specific, small, and quick validation activities (e.g., 3-5 problem validation interviews, drafting a 1-paragraph offer description to get feedback, creating a simple "smoke test" landing page, analyzing 3 direct competitors/alternatives).
+-   For each step, briefly explain *why* it's important for validation.
+-   Structure as a numbered list. Include an estimated timeframe if appropriate (e.g., "Within the next 7 days," "Over the next 2-4 weeks").
 
 # Output Format
-Provide 3-5 distinct, actionable validation steps. Do not include any introductory or concluding text, only the list of options.`,
-      user: `Please suggest 3-5 specific next steps to validate "${refinedIdea}" with ${targetMarket} before building the full product.`
+Provide the output as a VALID JSON object with two keys: "keyInsights" (a string with bullet points) and "nextSteps" (a string with a numbered list).
+
+Example JSON Structure:
+{
+  "keyInsights": "- Insight 1...\n- Insight 2...\n- Insight 3...",
+  "nextSteps": "1. Next Step 1 (Why it's important)...\n2. Next Step 2 (Why it's important)...\n3. Next Step 3 (Why it's important)..."
+}`,
+      user: `Based on my workshop journey, please generate key insights and actionable next steps for validating my offer concept before building it.`
     };
   }
 }

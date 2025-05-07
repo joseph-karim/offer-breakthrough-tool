@@ -98,9 +98,10 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
     </div>
 
     <div style="margin-bottom: 30px;">
-      <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Reflections</h2>
-      <p><strong>Key Insights:</strong> ${workshopData.reflections?.keyInsights || 'None'}</p>
-      <p><strong>Next Steps:</strong> ${workshopData.reflections?.nextSteps || 'None'}</p>
+      <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Reflections & Action Plan</h2>
+      <p><strong>Key Insights & Learnings:</strong> ${workshopData.reflections?.keyInsights || 'None'}</p>
+      <p><strong>Actionable Next Steps:</strong> ${workshopData.reflections?.nextSteps || 'None'}</p>
+      <p><strong>Personal Reflection:</strong> ${workshopData.reflections?.personalReflection || 'None'}</p>
     </div>
   `;
 

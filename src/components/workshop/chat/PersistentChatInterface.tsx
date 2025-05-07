@@ -147,11 +147,11 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       case 7:
         return "Welcome to Step 7: Painstorming!\n\nNow we'll identify the painful problems your target buyers experience when trying to get the job done. We'll evaluate each pain using the FIRE framework (Frequent, Intense, Recurring, Expensive) to find the hottest problems worth solving.\n\nYou can now expand each pain card to rate it on all four FIRE dimensions, giving you a systematic way to identify which problems are most likely to drive buying decisions.";
       case 8:
-        return "Which problems will you focus on? Select ones that align with your skills and goals.";
+        return "Welcome to Step 8: Problem-Up Analysis!\n\nNow we'll connect your insights from previous steps to define your 'Target Moment' - the specific scenario where your ideal buyer feels a key pain acutely and becomes ready to seek a solution.\n\nThis focused definition will be the foundation for your offer design in the next steps.";
       case 9:
         return "Create a targeted offer based on your insights. What format would best solve these problems?";
       case 10:
-        return "How will you validate your offer? What assumptions need testing before you build?";
+        return "Welcome to the Workshop Summary & Next Steps!\n\nCongratulations on completing the Buyer Breakthrough Workshop! You've made incredible progress in defining your offer.\n\nIn this final step, we'll reflect on your journey, capture key insights, and create an actionable plan to validate your offer concept before building it.";
       default:
         return "I'm here to help with the workshop. Ask me anything about the current step.";
     }
@@ -176,11 +176,11 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       case 7:
         return "Let's identify the painful problems your target buyers experience. What specific functional, emotional, social, or anticipated pains do they face? Remember to evaluate each pain using the FIRE framework by expanding the pain cards.";
       case 8:
-        return "Which pains do you feel most qualified or excited to solve?";
+        return "Let's define your 'Target Moment' by connecting your primary buyer, primary pain, and relevant trigger events. Which buyer and pain would you like to focus on first?";
       case 9:
         return "Would you like suggestions for offer formats that would work well for your target market?";
       case 10:
-        return "Would you like suggestions for validation methods you could implement in the next few weeks?";
+        return "Looking back at your workshop journey, what were your biggest 'aha!' moments or key insights? I can help you capture these and create a validation plan for your next steps.";
       default:
         return "";
     }
