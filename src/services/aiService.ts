@@ -373,19 +373,25 @@ Here's the context for painstorming:
           let jobsPrompt = `
             You are a CustomerCamp AI assistant applying JTBD principles.
 
-            The user identified Main Job(s) and provided initial thoughts in the context below. Generate 5-7 specific, actionable Related Jobs (tasks/outcomes needed) for each Main Job.
+            The user identified Main Job(s) and provided initial thoughts in the context below. First, analyze the context to understand the user's business and customer needs. Then, generate 5-7 specific, actionable Related Jobs (tasks/outcomes needed) for each Main Job.
 
             Context:
             ${context}
 
             Return a valid JSON object with this structure:
             {
+              "analysis": {
+                "summary": "A detailed analysis of the user's business context and customer needs",
+                "mainJobInsights": "Insights about the main job(s) identified and their significance",
+                "recommendationRationale": "Explanation of why the suggested jobs are relevant and important"
+              },
               "jobs": [
                 {
                   "id": "unique_id_1",
                   "description": "Description of the job to be done",
                   "type": "functional/emotional/social",
                   "importance": "high/medium/low",
+                  "rationale": "Explanation of why this job is important and how it relates to the main job",
                   "source": "assistant"
                 },
                 ... additional jobs ...
@@ -402,13 +408,18 @@ Here's the context for painstorming:
 
               The user identified preliminary Main Job(s) in the context below. Your goal is to apply the "so that" technique to progressively refine these statements to uncover deeper motivations.
 
-              For each job statement, generate a chain of 3-5 "so that" connections to reveal the ultimate desired outcome. Then craft 5-7 specific, actionable Related Jobs that would help achieve the refined Main Job.
+              First, provide a detailed analysis of the context and the user's business needs. Then, for each job statement, generate a chain of 3-5 "so that" connections to reveal the ultimate desired outcome. Finally, craft 5-7 specific, actionable Related Jobs that would help achieve the refined Main Job.
 
               Context:
               ${context}
 
               Return a valid JSON object with this structure:
               {
+                "analysis": {
+                  "summary": "A detailed analysis of the user's business context and customer needs",
+                  "mainJobInsights": "Insights about the main job(s) identified and their significance",
+                  "recommendationRationale": "Explanation of why the suggested jobs are relevant and important"
+                },
                 "refinedJobs": [
                   {
                     "original": "The original job statement",
@@ -427,6 +438,7 @@ Here's the context for painstorming:
                     "description": "Description of the job to be done based on refined understanding",
                     "type": "functional/emotional/social",
                     "importance": "high/medium/low",
+                    "rationale": "Explanation of why this job is important and how it relates to the main job",
                     "source": "assistant"
                   },
                   ... additional jobs ...
@@ -450,19 +462,25 @@ Here's the context for painstorming:
           let targetBuyersPrompt = `
             You are a CustomerCamp AI assistant.
 
-            Based on the Related Jobs the user selected in the context below, suggest 5 additional, diverse potential target buyers (specific types of businesses or individuals) who frequently need to accomplish these jobs.
+            Based on the Related Jobs the user selected in the context below, first analyze the jobs to understand the key characteristics of potential buyers. Then, suggest 5 additional, diverse potential target buyers (specific types of businesses or individuals) who frequently need to accomplish these jobs.
 
             Context:
             ${context}
 
             Return a valid JSON object with this structure:
             {
+              "analysis": {
+                "summary": "A detailed analysis of the jobs and what they reveal about potential buyers",
+                "marketInsights": "Insights about the market segments that might need these jobs done",
+                "recommendationRationale": "Explanation of why the suggested buyer personas are relevant and promising"
+              },
               "targetBuyers": [
                 {
                   "id": "unique_id_1",
                   "description": "Detailed description of this buyer persona",
                   "jobsToBeDone": ["job 1", "job 2", "job 3"],
                   "painPoints": ["pain 1", "pain 2", "pain 3"],
+                  "rationale": "Explanation of why this buyer is a good fit for the user's business",
                   "source": "assistant"
                 },
                 ... additional buyers ...
@@ -477,7 +495,7 @@ Here's the context for painstorming:
             targetBuyersPrompt = `
               You are the Target Buyer Analyzer, a CustomerCamp AI specialist in buyer persona development and analysis.
 
-              Based on the Related Jobs the user selected in the context below, analyze potential target buyers who need to accomplish these jobs. For each suggested buyer, provide in-depth evaluation of:
+              Based on the Related Jobs the user selected in the context below, first provide a comprehensive analysis of the market landscape and potential buyer segments. Then, for each suggested buyer, provide in-depth evaluation of:
 
               1. Pain Intensity - How painful the problem is for this buyer
               2. Buying Power - Their ability to make purchasing decisions
@@ -489,6 +507,12 @@ Here's the context for painstorming:
 
               Return a valid JSON object with this structure:
               {
+                "analysis": {
+                  "summary": "A detailed analysis of the jobs and what they reveal about potential buyers",
+                  "marketInsights": "Insights about the market segments that might need these jobs done",
+                  "recommendationRationale": "Explanation of why the suggested buyer personas are relevant and promising",
+                  "marketTrends": "Relevant trends affecting these buyer segments"
+                },
                 "targetBuyers": [
                   {
                     "id": "unique_id_1",
@@ -538,20 +562,26 @@ Here's the context for painstorming:
           let painsPrompt = `
             You are a CustomerCamp AI assistant performing Painstorming.
 
-            For the target buyers and related jobs described in the context below, brainstorm a list of 10-15 specific potential pains they might face. Consider functional, emotional, social, and situational aspects based on buyer psychology principles.
+            For the target buyers and related jobs described in the context below, first analyze the buyers and jobs to understand the underlying needs and challenges. Then, brainstorm a list of 10-15 specific potential pains they might face. Consider functional, emotional, social, and situational aspects based on buyer psychology principles.
 
             Context:
             ${context}
 
             Return a valid JSON object with this structure:
             {
+              "analysis": {
+                "summary": "A detailed analysis of the target buyers and their jobs",
+                "painPatterns": "Insights about common patterns in the pains identified",
+                "recommendationRationale": "Explanation of why these pains are significant and worth addressing"
+              },
               "pains": [
                 {
                   "id": "unique_id_1",
                   "description": "Description of the pain",
                   "type": "functional/emotional/social",
                   "severity": "high/medium/low",
-                  "isFire": true/false
+                  "isFire": true/false,
+                  "rationale": "Explanation of why this pain is important and how it affects the buyer"
                 },
                 ... additional pains ...
               ]
@@ -565,7 +595,7 @@ Here's the context for painstorming:
             painsPrompt = `
               You are the Painstorming Helper, a CustomerCamp AI specialist in identifying and exploring customer pain points.
 
-              For the target buyers and related jobs described in the context below, conduct an exhaustive exploration of potential pains. Go beyond obvious issues to identify hidden, underlying, and emerging pains. Consider:
+              For the target buyers and related jobs described in the context below, first provide a comprehensive analysis of the buyers' context and needs. Then, conduct an exhaustive exploration of potential pains. Go beyond obvious issues to identify hidden, underlying, and emerging pains. Consider:
 
               1. Direct functional problems with current solutions
               2. Emotional frustrations and anxieties
@@ -581,6 +611,13 @@ Here's the context for painstorming:
 
               Return a valid JSON object with this structure:
               {
+                "analysis": {
+                  "summary": "A detailed analysis of the target buyers and their jobs",
+                  "painPatterns": "Insights about common patterns in the pains identified",
+                  "recommendationRationale": "Explanation of why these pains are significant and worth addressing",
+                  "marketContext": "Broader market context that influences these pains",
+                  "competitiveInsights": "How competitors are addressing (or failing to address) these pains"
+                },
                 "pains": [
                   {
                     "id": "unique_id_1",
@@ -590,7 +627,8 @@ Here's the context for painstorming:
                     "isFire": true/false,
                     "frequency": "how often this pain occurs",
                     "impact": "explanation of the consequences of this pain",
-                    "hiddenInsight": "non-obvious aspect of this pain others might miss"
+                    "hiddenInsight": "non-obvious aspect of this pain others might miss",
+                    "rationale": "Explanation of why this pain is important and how it affects the buyer"
                   },
                   ... additional pains ...
                 ]
@@ -605,7 +643,7 @@ Here's the context for painstorming:
             painsPrompt = `
               You are the Capability Analyzer, a CustomerCamp AI specialist in matching solution capabilities to customer problems.
 
-              For the market described in the context below, identify 10-15 specific problems or pains they might face. Then, for each problem, analyze how specific techniques, systems, frameworks, or approaches could solve it effectively.
+              For the market described in the context below, first provide a comprehensive analysis of the market context and needs. Then, identify 10-15 specific problems or pains they might face. Finally, for each problem, analyze how specific techniques, systems, frameworks, or approaches could solve it effectively.
 
               Focus on connecting actual solution capabilities (methods, frameworks, systems, processes) to specific pain points.
 
@@ -614,13 +652,20 @@ Here's the context for painstorming:
 
               Return a valid JSON object with this structure:
               {
+                "analysis": {
+                  "summary": "A detailed analysis of the target buyers and their jobs",
+                  "painPatterns": "Insights about common patterns in the pains identified",
+                  "recommendationRationale": "Explanation of why these pains are significant and worth addressing",
+                  "capabilityInsights": "Analysis of the most effective capabilities for addressing these pains"
+                },
                 "capabilityMatrix": [
                   {
                     "problem": {
                       "id": "unique_id_1",
                       "description": "Description of the problem",
                       "type": "functional/emotional/social",
-                      "severity": "high/medium/low"
+                      "severity": "high/medium/low",
+                      "rationale": "Explanation of why this problem is important and how it affects the buyer"
                     },
                     "potentialCapabilities": [
                       {
@@ -628,7 +673,8 @@ Here's the context for painstorming:
                         "description": "Description of how this capability solves the problem",
                         "effectivenessScore": 8,
                         "uniquenessScore": 7,
-                        "implementationDifficulty": "low/medium/high"
+                        "implementationDifficulty": "low/medium/high",
+                        "rationale": "Explanation of why this capability is effective for this problem"
                       },
                       ... additional capabilities ...
                     ]
@@ -654,13 +700,18 @@ Here's the context for painstorming:
           let problemUpPrompt = `
             You are a CustomerCamp AI assistant helping with the Problem Up process.
 
-            Based on the pains and target buyers identified in the context below, recommend which specific pains and buyers to focus on. Also suggest a target moment (when the pain is most acute) and provide additional notes on how to approach this problem-buyer combination.
+            Based on the pains and target buyers identified in the context below, first analyze the relationships between pains and buyers to identify the most promising combinations. Then, recommend which specific pains and buyers to focus on. Also suggest a target moment (when the pain is most acute) and provide additional notes on how to approach this problem-buyer combination.
 
             Context:
             ${context}
 
             Return a valid JSON object with this structure:
             {
+              "analysis": {
+                "summary": "A detailed analysis of the pains and buyers and their relationships",
+                "selectionRationale": "Explanation of why the recommended pains and buyers were selected",
+                "marketOpportunity": "Assessment of the market opportunity for this problem-buyer combination"
+              },
               "problemUp": {
                 "selectedPains": ["pain_id_1", "pain_id_2"],
                 "selectedBuyers": ["buyer_id_1", "buyer_id_2"],
@@ -677,7 +728,7 @@ Here's the context for painstorming:
             problemUpPrompt = `
               You are the Problem Up Advisor, a CustomerCamp AI specialist in identifying the most promising problem-buyer combinations.
 
-              Based on the pains and target buyers identified in the context below, conduct a detailed analysis to identify the most promising problem-buyer combinations. Consider:
+              Based on the pains and target buyers identified in the context below, first provide a comprehensive analysis of all potential problem-buyer combinations. Then, conduct a detailed analysis to identify the most promising combinations. Consider:
 
               1. Pain intensity and frequency for each buyer
               2. Your unique ability to solve these specific pains
@@ -689,20 +740,28 @@ Here's the context for painstorming:
 
               Return a valid JSON object with this structure:
               {
+                "analysis": {
+                  "summary": "A detailed analysis of the pains and buyers and their relationships",
+                  "selectionRationale": "Explanation of why the recommended pains and buyers were selected",
+                  "marketOpportunity": "Assessment of the market opportunity for this problem-buyer combination",
+                  "competitiveAnalysis": "Analysis of the competitive landscape for this problem-buyer combination",
+                  "strategicFit": "Assessment of how well this combination fits with the user's capabilities and goals"
+                },
                 "problemUp": {
                   "selectedPains": ["pain_id_1", "pain_id_2"],
                   "selectedBuyers": ["buyer_id_1", "buyer_id_2"],
                   "targetMoment": "Description of the specific moment when the pain is most acute",
                   "notes": "Additional notes and insights about this problem-buyer combination"
                 },
-                "analysis": {
+                "detailedAnalysis": {
                   "painAnalysis": [
                     {
                       "painId": "pain_id_1",
                       "intensity": "High/Medium/Low",
                       "frequency": "Daily/Weekly/Monthly",
                       "solutionFit": "How well your capabilities match this pain",
-                      "commercialOpportunity": "Size of the market opportunity"
+                      "commercialOpportunity": "Size of the market opportunity",
+                      "rationale": "Detailed explanation of why this pain was selected or not selected"
                     },
                     ... additional pains ...
                   ],
@@ -711,7 +770,8 @@ Here's the context for painstorming:
                       "buyerId": "buyer_id_1",
                       "accessibilityScore": "How easy it is to reach this buyer",
                       "willingnessToPay": "How likely they are to pay for a solution",
-                      "decisionMakingPower": "Their ability to make purchasing decisions"
+                      "decisionMakingPower": "Their ability to make purchasing decisions",
+                      "rationale": "Detailed explanation of why this buyer was selected or not selected"
                     },
                     ... additional buyers ...
                   ],
@@ -736,13 +796,19 @@ Here's the context for painstorming:
           let refineIdeaPrompt = `
             You are a CustomerCamp AI assistant helping refine a business idea.
 
-            Based on the initial big idea, selected pains, and target buyers described in the context below, generate a refined version of the idea that specifically addresses these pains for these buyers. Also create an offer based on this refined idea.
+            Based on the initial big idea, selected pains, and target buyers described in the context below, first analyze how the initial idea can be improved to better address the selected pains for the target buyers. Then, generate a refined version of the idea that specifically addresses these pains for these buyers. Also create an offer based on this refined idea.
 
             Context:
             ${context}
 
             Return a valid JSON object with this structure:
             {
+              "analysis": {
+                "summary": "A detailed analysis of the initial idea and how it can be improved",
+                "painAddressingStrategy": "How the refined idea addresses the selected pains",
+                "marketFit": "Assessment of how well the refined idea fits the target market",
+                "differentiationStrategy": "How the refined idea differentiates from competitors"
+              },
               "refinedIdea": {
                 "description": "Detailed description of the refined idea",
                 "targetCustomers": "Description of the target customers",
@@ -751,7 +817,8 @@ Here's the context for painstorming:
               "offer": {
                 "name": "Name of the offer",
                 "description": "Detailed description of the offer",
-                "format": "The format of the offer (e.g., course, coaching, service, product, software)"
+                "format": "The format of the offer (e.g., course, coaching, service, product, software)",
+                "rationale": "Explanation of why this format and approach were chosen"
               }
             }
 
@@ -763,7 +830,7 @@ Here's the context for painstorming:
             refineIdeaPrompt = `
               You are the Idea Refiner, a CustomerCamp AI specialist in crafting compelling business ideas and offers.
 
-              Based on the initial big idea, selected pains, and target buyers described in the context below, create a highly refined version of the idea that specifically addresses these pains for these buyers. Also create a detailed offer based on this refined idea.
+              Based on the initial big idea, selected pains, and target buyers described in the context below, first provide a comprehensive analysis of the initial idea and the market opportunity. Then, create a highly refined version of the idea that specifically addresses these pains for these buyers. Finally, create a detailed offer based on this refined idea.
 
               Consider:
               1. How to position the offer for maximum appeal
@@ -776,6 +843,14 @@ Here's the context for painstorming:
 
               Return a valid JSON object with this structure:
               {
+                "analysis": {
+                  "summary": "A detailed analysis of the initial idea and how it can be improved",
+                  "painAddressingStrategy": "How the refined idea addresses the selected pains",
+                  "marketFit": "Assessment of how well the refined idea fits the target market",
+                  "differentiationStrategy": "How the refined idea differentiates from competitors",
+                  "evolutionFromInitial": "How and why the idea has evolved from the initial concept",
+                  "marketOpportunityAssessment": "Detailed assessment of the market opportunity"
+                },
                 "refinedIdea": {
                   "description": "Detailed description of the refined idea",
                   "targetCustomers": "Description of the target customers",
@@ -790,7 +865,8 @@ Here's the context for painstorming:
                   "keyFeatures": ["feature 1", "feature 2", "feature 3"],
                   "benefits": ["benefit 1", "benefit 2", "benefit 3"],
                   "deliveryMethod": "How the offer will be delivered",
-                  "pricingStrategy": "Recommended pricing approach"
+                  "pricingStrategy": "Recommended pricing approach",
+                  "rationale": "Detailed explanation of why this format and approach were chosen"
                 }
               }
 
@@ -811,16 +887,25 @@ Here's the context for painstorming:
           const summaryPrompt = `
             You are a CustomerCamp AI assistant providing a final workshop summary.
 
-            Based on the complete workshop data in the context below, provide a summary of key insights and next steps.
+            Based on the complete workshop data in the context below, first analyze the entire workshop journey and the key decisions made. Then, provide a comprehensive summary of key insights, learnings, and recommended next steps.
 
             Context:
             ${context}
 
             Return a valid JSON object with this structure:
             {
+              "analysis": {
+                "workshopJourney": "Analysis of the entire workshop process and how the idea evolved",
+                "keyDecisions": "Analysis of the key decisions made during the workshop",
+                "marketOpportunity": "Assessment of the market opportunity for the refined idea",
+                "competitivePosition": "Analysis of the competitive position of the refined idea"
+              },
               "reflections": {
                 "keyInsights": "Key insights from the workshop process",
-                "nextSteps": "Recommended next steps to take"
+                "learnings": "Important learnings about the market, customers, and business model",
+                "nextSteps": "Recommended next steps to take",
+                "potentialChallenges": "Potential challenges to be aware of",
+                "successFactors": "Critical factors for success"
               }
             }
 
