@@ -2,8 +2,9 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Pain } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, Plus, X, Flame, MessageSquare } from 'lucide-react';
+import { AlertCircle, HelpCircle, Plus, Flame, MessageSquare, ArrowUpDown } from 'lucide-react';
 import { PainstormingModal } from '../chat/PainstormingModal';
+import { PainItemInteractiveCard } from '../pain/PainItemInteractiveCard';
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 
@@ -33,7 +34,8 @@ export const Step07_Painstorming: React.FC = () => {
   const [selectedBuyerSegment, setSelectedBuyerSegment] = useState<string>('');
   const [selectedPainType, setSelectedPainType] = useState<'functional' | 'emotional' | 'social' | 'anticipated'>('functional');
   const [isFire, setIsFire] = useState(false);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<'none' | 'fireScore'>('none');
+  const [filterFire, setFilterFire] = useState(false);
 
   // Update local state when store value changes
   useEffect(() => {
@@ -47,14 +49,48 @@ export const Step07_Painstorming: React.FC = () => {
     }
   }, [targetBuyers, selectedBuyerSegment]);
 
+  // Sort and filter pains
+  const sortedAndFilteredPains = useCallback(() => {
+    let result = [...painsList];
+
+    // Apply filter
+    if (filterFire) {
+      result = result.filter(pain => pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7));
+    }
+
+    // Apply sort
+    if (sortBy === 'fireScore') {
+      result.sort((a, b) => {
+        const scoreA = a.calculatedFireScore || 0;
+        const scoreB = b.calculatedFireScore || 0;
+        return scoreB - scoreA; // Descending order
+      });
+    }
+
+    return result;
+  }, [painsList, sortBy, filterFire]);
+
   const handleAddPain = useCallback(() => {
     if (newPain.trim() !== '' && selectedBuyerSegment) {
+      // Initialize FIRE scores if marked as FIRE
+      const fireScores = isFire ? {
+        frequency: 2, // Medium
+        intensity: 2, // Medium
+        recurring: 2, // Medium
+        expensive: 2  // Medium
+      } : undefined;
+
+      // Calculate score if FIRE
+      const calculatedFireScore = isFire ? 8 : undefined; // 2+2+2+2=8
+
       const pain: Pain = {
         id: `user-${Date.now()}`,
         description: newPain.trim(),
         buyerSegment: selectedBuyerSegment,
         type: selectedPainType,
         isFire,
+        fireScores,
+        calculatedFireScore,
         source: 'user'
       };
 
@@ -77,24 +113,37 @@ export const Step07_Painstorming: React.FC = () => {
     }
   }, [handleAddPain]);
 
-  const toggleFireStatus = useCallback((id: string) => {
-    const updatedPains = painsList.map(pain =>
-      pain.id === id ? { ...pain, isFire: !pain.isFire } : pain
-    );
-    setPainsList(updatedPains);
-    updateWorkshopData({ pains: updatedPains });
-  }, [painsList, updateWorkshopData]);
-
   const handleConfirmSelection = useCallback((selectedProblems: string[]) => {
     // Add the selected problems as pains
-    const newPains = selectedProblems.map(problem => ({
-      id: `ai-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-      description: problem,
-      buyerSegment: targetBuyers.length > 0 ? targetBuyers[0].description : '', // Default to first buyer segment
-      type: 'functional' as const, // Default to functional, can be updated later
-      isFire: true, // Mark as FIRE since these are the key problems
-      source: 'assistant' as const
-    }));
+    const newPains = selectedProblems.map(problem => {
+      // Check if the problem contains "FIRE" to set initial scores higher
+      const containsFire = problem.includes("FIRE");
+
+      // Initialize FIRE scores
+      const fireScores = {
+        frequency: containsFire ? 3 : 2, // High if FIRE, Medium otherwise
+        intensity: containsFire ? 3 : 2,  // High if FIRE, Medium otherwise
+        recurring: containsFire ? 3 : 2,  // High if FIRE, Medium otherwise
+        expensive: containsFire ? 3 : 2   // High if FIRE, Medium otherwise
+      };
+
+      // Calculate score
+      const calculatedFireScore = containsFire ? 12 : 8; // 3+3+3+3=12 or 2+2+2+2=8
+
+      // Remove the "(FIRE?)" marker from the description if present
+      const cleanDescription = problem.replace(/\s*\(FIRE\?\)\s*/g, '');
+
+      return {
+        id: `ai-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        description: cleanDescription,
+        buyerSegment: targetBuyers.length > 0 ? targetBuyers[0].description : '', // Default to first buyer segment
+        type: 'functional' as const, // Default to functional, can be updated later
+        isFire: true, // Mark as FIRE since these are the key problems
+        fireScores,
+        calculatedFireScore,
+        source: 'assistant' as const
+      };
+    });
 
     // Update the store with the new pains
     const updatedPains = [...painsList, ...newPains];
@@ -284,7 +333,7 @@ export const Step07_Painstorming: React.FC = () => {
                   color: '#6b7280',
                   marginTop: '4px'
                 }}>
-                  F.I.R.E. = Frequent, Intense, Requires action, Expensive
+                  F.I.R.E. = Frequent, Intense, Recurring, Expensive
                 </div>
               </div>
 
@@ -320,148 +369,132 @@ export const Step07_Painstorming: React.FC = () => {
 
           {/* List of pains */}
           <div>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              margin: '0 0 16px 0'
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '16px'
             }}>
-              Painful Problems Identified
-            </h3>
+              <h3 style={{
+                fontSize: '18px',
+                fontWeight: 600,
+                color: '#1e293b',
+                margin: 0
+              }}>
+                Painful Problems Identified
+              </h3>
 
-            {painsList.length > 0 ? (
-              <div style={{ display: 'grid', gap: '12px' }}>
-                {painsList.map(pain => (
-                  <div
-                    key={pain.id}
+              {painsList.length > 0 && (
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    onClick={() => setFilterFire(!filterFire)}
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px 16px',
-                      backgroundColor: '#f9fafb',
+                      gap: '8px',
+                      padding: '8px 12px',
                       borderRadius: '8px',
-                      border: '1px solid #e5e7eb',
-                      borderLeft: `3px solid ${getPainTypeColor(pain.type)}`,
+                      border: '1px solid',
+                      borderColor: filterFire ? '#ef4444' : '#d1d5db',
+                      backgroundColor: filterFire ? '#fee2e2' : 'transparent',
+                      color: filterFire ? '#b91c1c' : '#6b7280',
+                      fontSize: '14px',
+                      fontWeight: filterFire ? 600 : 400,
+                      cursor: 'pointer',
                     }}
-                    onMouseEnter={() => setHoveredId(pain.id)}
-                    onMouseLeave={() => setHoveredId(null)}
                   >
-                    <div style={{
+                    <Flame size={16} color={filterFire ? '#ef4444' : '#6b7280'} fill={filterFire ? '#ef4444' : 'none'} />
+                    {filterFire ? 'Showing FIRE problems' : 'Show FIRE problems only'}
+                  </button>
+
+                  <button
+                    onClick={() => setSortBy(sortBy === 'fireScore' ? 'none' : 'fireScore')}
+                    style={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                      flex: 1,
-                    }}>
-                      <div style={{
-                        fontSize: '15px',
-                        fontWeight: 500,
-                        color: '#1e293b',
-                      }}>
-                        {pain.description}
-                      </div>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        fontSize: '12px',
-                        color: '#6b7280',
-                      }}>
-                        <span style={{
-                          padding: '2px 6px',
-                          borderRadius: '4px',
-                          backgroundColor: `${getPainTypeColor(pain.type)}20`,
-                          color: getPainTypeColor(pain.type),
-                          fontWeight: 500,
-                        }}>
-                          {getPainTypeLabel(pain.type)}
-                        </span>
-                        <span>
-                          {pain.buyerSegment}
-                        </span>
-                        {pain.source === 'assistant' && (
-                          <span style={{
-                            padding: '2px 6px',
-                            borderRadius: '4px',
-                            backgroundColor: '#FFDD00',
-                            color: '#1e293b',
-                            fontWeight: 500,
-                          }}>
-                            AI
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      border: '1px solid',
+                      borderColor: sortBy === 'fireScore' ? '#0ea5e9' : '#d1d5db',
+                      backgroundColor: sortBy === 'fireScore' ? '#e0f2fe' : 'transparent',
+                      color: sortBy === 'fireScore' ? '#0369a1' : '#6b7280',
+                      fontSize: '14px',
+                      fontWeight: sortBy === 'fireScore' ? 600 : 400,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <ArrowUpDown size={16} color={sortBy === 'fireScore' ? '#0ea5e9' : '#6b7280'} />
+                    {sortBy === 'fireScore' ? 'Sorted by FIRE score' : 'Sort by FIRE score'}
+                  </button>
+                </div>
+              )}
+            </div>
 
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button
-                        onClick={() => toggleFireStatus(pain.id)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '4px',
-                        }}
-                        aria-label={pain.isFire ? "Remove FIRE status" : "Mark as FIRE problem"}
-                        title={pain.isFire ? "Remove FIRE status" : "Mark as FIRE problem"}
-                      >
-                        <Flame
-                          size={20}
-                          color={pain.isFire ? '#ef4444' : '#6b7280'}
-                          fill={pain.isFire ? '#ef4444' : 'none'}
-                        />
-                      </button>
-
-                      <button
-                        onClick={() => handleDeletePain(pain.id)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          opacity: hoveredId === pain.id ? 1 : 0,
-                          transition: 'opacity 0.2s',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          padding: '4px',
-                        }}
-                        aria-label="Delete pain"
-                      >
-                        <X size={16} color="#6b7280" />
-                      </button>
-                    </div>
-                  </div>
+            {painsList.length > 0 ? (
+              <div>
+                {sortedAndFilteredPains().map(pain => (
+                  <PainItemInteractiveCard
+                    key={pain.id}
+                    pain={pain}
+                    onDelete={handleDeletePain}
+                  />
                 ))}
+
+                {sortedAndFilteredPains().length === 0 && (
+                  <div style={{
+                    padding: '24px',
+                    textAlign: 'center',
+                    color: '#6b7280',
+                    backgroundColor: '#f9fafb',
+                    borderRadius: '8px',
+                    border: '1px dashed #d1d5db'
+                  }}>
+                    No problems match your current filter. {filterFire && (
+                      <button
+                        onClick={() => setFilterFire(false)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#0ea5e9',
+                          cursor: 'pointer',
+                          padding: 0,
+                          fontWeight: 500,
+                          textDecoration: 'underline'
+                        }}
+                      >
+                        Clear filter
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <div style={styles.examplesContainerStyle}>
-              <div style={styles.examplesLabelStyle}>
-                EXAMPLES
-              </div>
+                <div style={styles.examplesLabelStyle}>
+                  EXAMPLES
+                </div>
                 <ul style={styles.examplesListStyle}>
                   <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Struggles to find time to create content consistently (Functional)
-              </li>
+                    <span style={styles.exampleBulletStyle}>•</span>
+                    Struggles to find time to create content consistently (Functional)
+                  </li>
                   <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Feels overwhelmed by the constant pressure to stay visible online (Emotional)
-              </li>
+                    <span style={styles.exampleBulletStyle}>•</span>
+                    Feels overwhelmed by the constant pressure to stay visible online (Emotional)
+                  </li>
                   <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Worries about being perceived as irrelevant by peers and clients (Social)
-              </li>
+                    <span style={styles.exampleBulletStyle}>•</span>
+                    Worries about being perceived as irrelevant by peers and clients (Social)
+                  </li>
                   <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Fears their service business will be disrupted by AI (Anticipated)
-              </li>
+                    <span style={styles.exampleBulletStyle}>•</span>
+                    Fears their service business will be disrupted by AI (Anticipated)
+                  </li>
                   <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Can't scale their business without working more hours (Functional, FIRE)
-              </li>
+                    <span style={styles.exampleBulletStyle}>•</span>
+                    Can't scale their business without working more hours (Functional, FIRE)
+                  </li>
                 </ul>
               </div>
             )}

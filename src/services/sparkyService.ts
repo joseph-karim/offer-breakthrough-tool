@@ -315,14 +315,26 @@ export class SparkyService {
     const segments = workshopData.targetBuyers?.filter(buyer => buyer.selected).map(buyer => buyer.description) || ["your target segments"];
 
     if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
-      return `Here are some example pain points for ${segments[0] || "your target segment"}:\n\n1. Spending weeks stuck on design tasks instead of focusing on their core business. (Functional, FIRE)\n\n2. Fear that a DIY look will make potential customers question their expertise. (Emotional/Social, FIRE)\n\n3. Feeling overwhelmed by the number of elements needed (website, social media, marketing materials). (Emotional)\n\n4. Worrying that investing in professional help is too expensive before validating their idea. (Anticipated/Financial)\n\n5. Inability to create consistent visuals across different platforms and materials. (Functional)`;
+      return `Here are some example pain points for ${segments[0] || "your target segment"} with FIRE evaluations:\n\n1. Spending weeks stuck on design tasks instead of focusing on their core business. (Functional) - FIRE Score: 10/12 (F:3, I:3, R:2, E:2) (High FIRE)\n\n2. Fear that a DIY look will make potential customers question their expertise. (Emotional/Social) - FIRE Score: 9/12 (F:3, I:3, R:1, E:2) (Medium FIRE)\n\n3. Feeling overwhelmed by the number of elements needed (website, social media, marketing materials). (Emotional) - FIRE Score: 7/12 (F:2, I:2, R:1, E:2) (Medium FIRE)\n\n4. Worrying that investing in professional help is too expensive before validating their idea. (Anticipated) - FIRE Score: 6/12 (F:1, I:2, R:1, E:2) (Low FIRE)\n\n5. Inability to create consistent visuals across different platforms and materials. (Functional) - FIRE Score: 8/12 (F:3, I:2, R:2, E:1) (Medium FIRE)`;
+    }
+
+    if (lowerMessage.includes('fire') || lowerMessage.includes('frequent') || lowerMessage.includes('intense') || lowerMessage.includes('recurring') || lowerMessage.includes('expensive')) {
+      return "FIRE problems are the most painful and urgent issues your customers face. They are:\n\n- **F**requent: They happen often, not just occasionally\n- **I**ntense: They cause significant pain or frustration\n- **R**ecurring: They keep coming back even after temporary fixes\n- **E**xpensive: They cost time, money, opportunities, or reputation\n\nFIRE problems are the ones customers are most willing to pay to solve. When identifying pains, look for those that meet multiple FIRE criteria.\n\nYou can now evaluate each pain on a 1-3 scale for each FIRE dimension by clicking the expand button on any pain card. This helps you systematically identify which problems are most likely to drive buying decisions.";
+    }
+
+    if (lowerMessage.includes('score') || lowerMessage.includes('rating') || lowerMessage.includes('evaluate')) {
+      return "The FIRE scoring system helps you evaluate each pain point across four dimensions:\n\n1. **Frequency (1-3)**: How often does this problem occur?\n   - Low (1): Rarely happens (quarterly or less)\n   - Medium (2): Happens occasionally (monthly)\n   - High (3): Happens frequently (weekly or daily)\n\n2. **Intensity (1-3)**: How painful is this problem when it occurs?\n   - Low (1): Minor annoyance\n   - Medium (2): Significant frustration\n   - High (3): Major pain point/blocker\n\n3. **Recurring (1-3)**: How often does this problem come back after being temporarily solved?\n   - Low (1): Once solved, it stays solved\n   - Medium (2): Returns occasionally\n   - High (3): Constantly returns despite attempts to fix it\n\n4. **Expensive (1-3)**: How costly is this problem in terms of money, time, opportunity, or reputation?\n   - Low (1): Minor cost/impact\n   - Medium (2): Noticeable cost/impact\n   - High (3): Significant cost/impact\n\nThe total FIRE score (4-12) helps you prioritize which problems to focus on. Problems with scores of 10-12 are considered 'High FIRE' and are most likely to drive buying decisions.";
     }
 
     if (lowerMessage.includes('type') || lowerMessage.includes('kind')) {
       return "There are several types of pains to consider:\n\n1. Functional Pains: Processes that break down, inefficiencies, technical roadblocks\n\n2. Emotional Pains: Frustration, overwhelm, anxiety, fear of failure\n\n3. Social Pains: How others perceive them, reputation risks, comparison to peers\n\n4. Anticipated Pains: Future risks or negative outcomes they worry about\n\nFIRE pains (Frequent, Intense, Recurring, Expensive) are especially important to identify.";
     }
 
-    return `I'd be happy to help you identify pain points for ${segments.join(", ")}! Think about: What functional roadblocks do they hit? What emotional costs do they experience? How might others perceive them if they struggle with this job? What future risks do they worry about? Let's identify those FIRE pains (Frequent, Intense, Recurring, Expensive).`;
+    if (lowerMessage.includes('sort') || lowerMessage.includes('filter')) {
+      return "You can now sort and filter your pain points to focus on the most important ones:\n\n- **Sort by FIRE score**: Click the 'Sort by FIRE score' button to arrange pains from highest to lowest FIRE score. This helps you quickly identify your hottest problems.\n\n- **Filter FIRE problems**: Click the 'Show FIRE problems only' button to display only pains that are marked as FIRE or have a FIRE score of 7 or higher. This helps you focus on the problems most likely to drive buying decisions.\n\nThese tools are especially useful when you have many pain points and need to identify which ones to prioritize for your offer.";
+    }
+
+    return `I'm here to help you identify and evaluate the painful problems your target buyers experience. What specific aspect of painstorming would you like help with? I can help you:\n\n- Brainstorm pain points for specific buyer segments\n- Explain the different types of pains (functional, emotional, social, anticipated)\n- Guide you through evaluating FIRE scores (Frequent, Intense, Recurring, Expensive)\n- Show you how to sort and filter your pain points to find the hottest problems\n\nYou can now expand each pain card to rate it on all four FIRE dimensions, giving you a systematic way to identify which problems are most likely to drive buying decisions.`;
   }
 
   /**
@@ -523,9 +535,10 @@ export class SparkyService {
 
       case 7: // Painstorming
         suggestions.push(
-          { id: `suggestion-${Date.now()}-1`, content: 'Spending weeks stuck on design tasks instead of focusing on their core business. (Functional, FIRE)', type },
-          { id: `suggestion-${Date.now()}-2`, content: 'Fear that a DIY look will make potential customers question their expertise. (Emotional/Social, FIRE)', type },
-          { id: `suggestion-${Date.now()}-3`, content: 'Feeling overwhelmed by the number of elements needed (website, social media, marketing materials). (Emotional)', type }
+          { id: `suggestion-${Date.now()}-1`, content: 'Spending weeks stuck on design tasks instead of focusing on their core business. (Functional) - FIRE Score: 10/12 (F:3, I:3, R:2, E:2) (High FIRE)', type },
+          { id: `suggestion-${Date.now()}-2`, content: 'Fear that a DIY look will make potential customers question their expertise. (Emotional/Social) - FIRE Score: 9/12 (F:3, I:3, R:1, E:2) (Medium FIRE)', type },
+          { id: `suggestion-${Date.now()}-3`, content: 'Feeling overwhelmed by the number of elements needed (website, social media, marketing materials). (Emotional) - FIRE Score: 7/12 (F:2, I:2, R:1, E:2) (Medium FIRE)', type },
+          { id: `suggestion-${Date.now()}-4`, content: 'Worrying that investing in professional help is too expensive before validating their idea. (Anticipated) - FIRE Score: 6/12 (F:1, I:2, R:1, E:2) (Low FIRE)', type }
         );
         break;
 
@@ -707,15 +720,26 @@ The goal is to identify specific target buyer segments who strongly experience t
         break;
 
       case 7: // Do Rapid Painstorming
-        stepPrompt = `For the user's top 3 target buyer segments, help brainstorm specific pains (Functional, Emotional, Social, Anticipated) they experience related to the chosen Job-to-be-Done. Highlight potential FIRE pains (Frequent, Intense, Recurring, Expensive). Identify overlapping pains.
+        stepPrompt = `For the user's top 3 target buyer segments, help brainstorm specific pains (Functional, Emotional, Social, Anticipated) they experience related to the chosen Job-to-be-Done. Guide them in using the enhanced FIRE evaluation system (Frequent, Intense, Recurring, Expensive) with 1-3 ratings for each dimension.
 
 Example guidance questions:
 - "For [Segment 1], what functional roadblocks might they hit trying to do this job? What processes break down?"
 - "What are the emotional costs for [Segment 2] if they fail to get this job done well?"
 - "How might [Segment 3]'s peers or clients perceive them if they struggle with this job? (Social pains)"
-- "Which of these pains feel like 'FIRE' pains – Frequent, Intense, Recurring, Expensive?"
+- "For this pain, how would you rate its frequency on a scale of 1-3?"
+- "How intense is this pain when it occurs? Is it a minor annoyance or a major blocker?"
+- "Does this problem keep recurring even after temporary fixes?"
+- "How expensive is this problem in terms of money, time, opportunity, or reputation?"
 
-The goal is to identify specific pain points for each target segment related to the job-to-be-done.`;
+Explain the FIRE scoring system (4-12 scale) and how it helps prioritize problems:
+- Frequency (1-3): How often the problem occurs
+- Intensity (1-3): How painful the problem is when it occurs
+- Recurring (1-3): How often the problem returns after being temporarily solved
+- Expensive (1-3): How costly the problem is in various dimensions
+
+Also guide them in using the sort and filter features to focus on the highest-scoring FIRE problems.
+
+The goal is to systematically identify and prioritize the most painful problems worth solving.`;
         break;
 
       case 8: // Problem-Up
@@ -1092,10 +1116,10 @@ Provide 3-5 distinct potential target buyer segment options. Do not include any 
     const buyerSegments = topBuyers.map(buyer => buyer.description).join('\n* ');
 
     return {
-      system: `You are an AI assistant specialized in Painstorming based on JTBD. Your task is to generate specific pain points for each of the user's top 3 target buyer segments related to their chosen Job Statement.
+      system: `You are an AI assistant specialized in Painstorming based on JTBD. Your task is to generate specific pain points for each of the user's top 3 target buyer segments related to their chosen Job Statement, and provide initial FIRE scores for each pain.
 
 # Task Description
-For *each* of the 3 target segments provided, generate 3-5 specific pain points they likely experience when trying to achieve the Job Statement. Identify potential overlapping pains across segments.
+For *each* of the 3 target segments provided, generate 3-5 specific pain points they likely experience when trying to achieve the Job Statement. Evaluate each pain using the FIRE framework and identify potential overlapping pains across segments.
 
 # Input Context
 * Chosen Job Statement: "${selectedJob?.description || "Not specified"}"
@@ -1108,13 +1132,22 @@ For *each* of the 3 target segments provided, generate 3-5 specific pain points 
 -   Generate 3-5 specific pains *per segment*.
 -   Ensure pains cover a mix of types (Functional, Emotional, Social, Anticipated) and are directly related to the struggle of getting the Job done *for that specific segment*.
 -   Explicitly label the type for each pain: (Functional), (Emotional), (Social), or (Anticipated).
--   Optionally, suggest if a pain might be a FIRE pain (Frequent, Intense, Recurring, Expensive) by adding "(FIRE?)".
+-   For each pain, provide an initial FIRE evaluation with scores for each dimension:
+    * Frequency (1-3): How often the problem occurs
+    * Intensity (1-3): How painful the problem is when it occurs
+    * Recurring (1-3): How often the problem returns after being temporarily solved
+    * Expensive (1-3): How costly the problem is in various dimensions
+-   Calculate a total FIRE score (4-12) for each pain.
+-   Mark pains with high FIRE scores (10-12) as "(High FIRE)", medium scores (7-9) as "(Medium FIRE)", and low scores (4-6) as "(Low FIRE)".
 -   Identify 1-2 key pains that seem likely to overlap across multiple provided segments at the end.
 -   Ensure pains are specific and plausible for the segment and job context.
 
 # Output Format
-Structure the output clearly by segment, then list overlapping pains. Do not include any introductory or concluding text, only the formatted output.`,
-      user: `Please generate specific pain points for each of these buyer segments related to the job statement: "${selectedJob?.description || "Not specified"}"`
+Structure the output clearly by segment, then list overlapping pains. For each pain, include the FIRE evaluation in a concise format. Do not include any introductory or concluding text, only the formatted output.
+
+Example format for each pain:
+"[Pain description] (Pain Type) - FIRE Score: [Total]/12 (F:[Score], I:[Score], R:[Score], E:[Score]) (High/Medium/Low FIRE)"`,
+      user: `Please generate specific pain points for each of these buyer segments related to the job statement: "${selectedJob?.description || "Not specified"}". For each pain, include a FIRE evaluation (Frequency, Intensity, Recurring, Expensive) on a 1-3 scale for each dimension.`
     };
   }
 

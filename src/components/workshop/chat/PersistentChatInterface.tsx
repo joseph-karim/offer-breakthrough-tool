@@ -145,7 +145,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       case 6:
         return "Which segments experience your job statement most intensely? Consider urgency and willingness to pay.";
       case 7:
-        return "What pains do your target segments experience? Look for functional, emotional, and social pains.";
+        return "Welcome to Step 7: Painstorming!\n\nNow we'll identify the painful problems your target buyers experience when trying to get the job done. We'll evaluate each pain using the FIRE framework (Frequent, Intense, Recurring, Expensive) to find the hottest problems worth solving.\n\nYou can now expand each pain card to rate it on all four FIRE dimensions, giving you a systematic way to identify which problems are most likely to drive buying decisions.";
       case 8:
         return "Which problems will you focus on? Select ones that align with your skills and goals.";
       case 9:
@@ -174,7 +174,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       case 6:
         return "What types of people or businesses frequently need your solution?";
       case 7:
-        return "What functional, emotional, or social pains do your target segments face?";
+        return "Let's identify the painful problems your target buyers experience. What specific functional, emotional, social, or anticipated pains do they face? Remember to evaluate each pain using the FIRE framework by expanding the pain cards.";
       case 8:
         return "Which pains do you feel most qualified or excited to solve?";
       case 9:

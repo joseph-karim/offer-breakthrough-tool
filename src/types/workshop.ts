@@ -50,8 +50,15 @@ export interface Pain {
   description: string;
   buyerSegment: string;
   type: 'functional' | 'emotional' | 'social' | 'anticipated';
-  isFire?: boolean; // Frequent, Intense, Requires action, Expensive
+  isFire?: boolean; // Frequent, Intense, Recurring, Expensive
   source: 'user' | 'assistant';
+  fireScores?: {
+    frequency: number; // 1-3 scale
+    intensity: number; // 1-3 scale
+    recurring: number; // 1-3 scale
+    expensive: number; // 1-3 scale
+  };
+  calculatedFireScore?: number; // Sum of the above (4-12 scale)
 }
 
 export interface ProblemUp {
