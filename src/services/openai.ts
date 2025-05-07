@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import type { ChatCompletionMessageParam } from 'openai/resources';
 
 interface OpenAIConfig {
   apiKey?: string; // Made optional since we'll use the Netlify function
@@ -46,7 +47,7 @@ export class OpenAIService {
       const temp = temperature ?? this.config.temperature!;
       const maxTokens = this.config.maxTokens;
 
-      const messages = [
+      const messages: ChatCompletionMessageParam[] = [
         {
           role: 'system',
           content: systemPrompt
@@ -125,7 +126,7 @@ export class OpenAIService {
 
   async chatCompletion(options: {
     model: string;
-    messages: Array<{role: 'system' | 'user' | 'assistant'; content: string}>;
+    messages: ChatCompletionMessageParam[];
     temperature?: number;
     max_tokens?: number;
   }) {
