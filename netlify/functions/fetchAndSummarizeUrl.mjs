@@ -52,7 +52,7 @@ export default async (req, context) => {
 
     // Prepare the API request payload
     const payload = {
-      model: 'sonar-medium-online', // Using medium model for balance of cost/capability
+      model: 'sonar', // Using the correct model name from the documentation
       messages: [
         {
           role: 'system',
