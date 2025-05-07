@@ -1,55 +1,53 @@
 // Netlify function to fetch and summarize URL content using Perplexity API
-const fetch = require('node-fetch');
+import { Context } from "@netlify/functions";
+import fetch from "node-fetch";
 
-exports.handler = async function(event, context) {
+export default async (req, context) => {
   // Only allow POST requests
-  if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Method Not Allowed' })
-    };
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 
   try {
     // Log the incoming request for debugging
-    console.log('Function invoked with event:', {
-      httpMethod: event.httpMethod,
-      path: event.path,
-      headers: event.headers,
-      bodyLength: event.body ? event.body.length : 0
+    console.log('Function invoked with request:', {
+      method: req.method,
+      url: req.url,
+      headers: Object.fromEntries(req.headers.entries())
     });
 
     // Parse the request body
-    const requestBody = JSON.parse(event.body);
+    const requestBody = await req.json();
     const { url } = requestBody;
 
     console.log('Parsed request body:', { url });
 
     if (!url) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'URL is required' })
-      };
+      return new Response(JSON.stringify({ error: 'URL is required' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Get the Perplexity API key from environment variables
-    const apiKey = process.env.PERPLEXITY_API_KEY;
+    const apiKey = Netlify.env.get("PERPLEXITY_API_KEY");
 
     // Log environment variables (excluding sensitive values)
-    console.log('Environment variables available:', Object.keys(process.env));
     console.log('PERPLEXITY_API_KEY exists:', !!apiKey);
 
     if (!apiKey) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: 'Perplexity API key is not configured',
-          debug: {
-            envVarsAvailable: Object.keys(process.env),
-            keyExists: !!apiKey
-          }
-        })
-      };
+      return new Response(JSON.stringify({
+        error: 'Perplexity API key is not configured',
+        debug: {
+          keyExists: !!apiKey
+        }
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Prepare the API request payload
@@ -114,15 +112,15 @@ exports.handler = async function(event, context) {
         }
 
         console.error('Perplexity API error:', errorData);
-        return {
-          statusCode: response.status,
-          body: JSON.stringify({
-            error: 'Error fetching content from Perplexity API',
-            details: errorData,
-            status: response.status,
-            statusText: response.statusText
-          })
-        };
+        return new Response(JSON.stringify({
+          error: 'Error fetching content from Perplexity API',
+          details: errorData,
+          status: response.status,
+          statusText: response.statusText
+        }), {
+          status: response.status,
+          headers: { 'Content-Type': 'application/json' }
+        });
       }
 
       // Process successful response
@@ -134,42 +132,42 @@ exports.handler = async function(event, context) {
         console.log('Successfully extracted summary, length:', summary.length);
       } else {
         console.error('Unexpected response structure:', data);
-        return {
-          statusCode: 500,
-          body: JSON.stringify({
-            error: 'Unexpected response structure from Perplexity API',
-            responseStructure: Object.keys(data)
-          })
-        };
+        return new Response(JSON.stringify({
+          error: 'Unexpected response structure from Perplexity API',
+          responseStructure: Object.keys(data)
+        }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        });
       }
     } catch (apiError) {
       console.error('Error making API request:', apiError);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: 'Error making request to Perplexity API',
-          details: apiError.message
-        })
-      };
+      return new Response(JSON.stringify({
+        error: 'Error making request to Perplexity API',
+        details: apiError.message
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
     // Return the successful response with the summary
     console.log('Successfully returning summary, length:', summary.length);
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ summary })
-    };
+    return new Response(JSON.stringify({ summary }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch (error) {
     console.error('Function error:', error);
     console.error('Error stack:', error.stack);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: 'Internal Server Error',
-        message: error.message,
-        stack: error.stack,
-        type: error.constructor.name
-      })
-    };
+    return new Response(JSON.stringify({
+      error: 'Internal Server Error',
+      message: error.message,
+      stack: error.stack,
+      type: error.constructor.name
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 };
