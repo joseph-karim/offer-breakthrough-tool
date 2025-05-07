@@ -1,21 +1,29 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { BigIdea } from '../../../types/workshop';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Lightbulb } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
+import { Button } from '../../ui/Button';
+import { URLInputModal } from '../chat/URLInputModal';
+import { BrainstormContext } from '../../../services/brainstormService';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
+const selectAddChatMessage = (state: WorkshopStore) => state.addChatMessage;
+const selectBrainstormBigIdeasWithContext = (state: WorkshopStore) => state.brainstormBigIdeasWithContext;
+const selectIsAiLoading = (state: WorkshopStore) => state.isAiLoading;
 
 
 export const Step02_BigIdea: React.FC = () => {
   const bigIdea = useWorkshopStore(selectBigIdea);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
-
+  const addChatMessage = useWorkshopStore(selectAddChatMessage);
+  const brainstormBigIdeasWithContext = useWorkshopStore(selectBrainstormBigIdeasWithContext);
+  const isAiLoading = useWorkshopStore(selectIsAiLoading);
 
   const [formData, setFormData] = useState<BigIdea>({
     description: bigIdea?.description || '',
@@ -23,6 +31,14 @@ export const Step02_BigIdea: React.FC = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
+  const [showURLModal, setShowURLModal] = useState(false);
+  const [hasTriggeredProactiveHelp, setHasTriggeredProactiveHelp] = useState(false);
+
+  // Reference to track if the component has mounted
+  const hasComponentMounted = useRef(false);
+
+  // Keywords that trigger proactive help
+  const helpKeywords = ['help', 'stuck', 'idea', 'brainstorm', 'suggest', 'example'];
 
   // Update local state when store value changes
   useEffect(() => {
@@ -33,6 +49,57 @@ export const Step02_BigIdea: React.FC = () => {
       });
     }
   }, [bigIdea]);
+
+  // Proactive help effect - triggers when the component mounts and the description is empty
+  useEffect(() => {
+    // Only run this effect after the component has mounted
+    if (!hasComponentMounted.current) {
+      hasComponentMounted.current = true;
+      return;
+    }
+
+    // Check if the description is empty and we haven't triggered proactive help yet
+    if (!formData.description.trim() && !hasTriggeredProactiveHelp) {
+      // Add a small delay to make it feel more natural
+      const timer = setTimeout(() => {
+        // Send a proactive message offering help
+        addChatMessage(2, {
+          id: Date.now().toString(),
+          content: "I notice you're starting your Big Idea. Would you like help brainstorming? I can suggest ideas based on your LinkedIn profile, website, or a description of your expertise. Just type 'help me brainstorm' or click the brainstorm button below.",
+          role: 'assistant',
+          timestamp: new Date().toISOString(),
+          step: 2
+        });
+
+        setHasTriggeredProactiveHelp(true);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [formData.description, hasTriggeredProactiveHelp, addChatMessage]);
+
+  // Effect to monitor for help keywords in the description
+  useEffect(() => {
+    if (formData.description && !hasTriggeredProactiveHelp) {
+      // Check if any help keywords are in the description
+      const containsHelpKeyword = helpKeywords.some(keyword =>
+        formData.description.toLowerCase().includes(keyword.toLowerCase())
+      );
+
+      if (containsHelpKeyword) {
+        // Send a proactive message offering help
+        addChatMessage(2, {
+          id: Date.now().toString(),
+          content: "I see you might need some help with your Big Idea. Would you like me to help you brainstorm? I can suggest ideas based on your LinkedIn profile, website, or a description of your expertise.",
+          role: 'assistant',
+          timestamp: new Date().toISOString(),
+          step: 2
+        });
+
+        setHasTriggeredProactiveHelp(true);
+      }
+    }
+  }, [formData.description, hasTriggeredProactiveHelp, helpKeywords, addChatMessage]);
 
   const handleInputChange = useCallback((field: keyof BigIdea, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -53,6 +120,31 @@ export const Step02_BigIdea: React.FC = () => {
     }, 500);
     setSaveTimer(timer);
   }, [formData, updateWorkshopData, saveTimer]);
+
+  // Handle opening the URL input modal
+  const handleOpenURLModal = useCallback(() => {
+    setShowURLModal(true);
+  }, []);
+
+  // Handle closing the URL input modal
+  const handleCloseURLModal = useCallback(() => {
+    setShowURLModal(false);
+  }, []);
+
+  // Handle submitting the URL or text for brainstorming
+  const handleBrainstormWithContext = useCallback((contextType: 'url' | 'text', contextValue: string) => {
+    // Create the context object
+    const context: BrainstormContext = {
+      contextType,
+      contextValue
+    };
+
+    // Call the brainstorm action
+    brainstormBigIdeasWithContext(context);
+
+    // Close the modal
+    setShowURLModal(false);
+  }, [brainstormBigIdeasWithContext]);
 
   // Check if a field is empty
   const isFieldEmpty = (field: keyof BigIdea) => showErrors && !formData[field]?.trim();
@@ -114,18 +206,43 @@ export const Step02_BigIdea: React.FC = () => {
       }}>
         {/* Big Idea Description */}
         <div style={{ marginBottom: '30px' }}>
-          <label
-            htmlFor="big-idea-description"
-            style={{
-              fontSize: '16px',
-              fontWeight: 600,
-              color: '#333333',
-              display: 'block',
-              marginBottom: '10px'
-            }}
-          >
-            What is your product or service idea?
-          </label>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '10px'
+          }}>
+            <label
+              htmlFor="big-idea-description"
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#333333',
+                display: 'block'
+              }}
+            >
+              What is your product or service idea?
+            </label>
+
+            <Button
+              onClick={handleOpenURLModal}
+              disabled={isAiLoading}
+              style={{
+                backgroundColor: '#FFDD00',
+                color: '#333333',
+                borderRadius: '20px',
+                fontSize: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '8px 12px'
+              }}
+            >
+              <Lightbulb size={16} />
+              Help me brainstorm
+            </Button>
+          </div>
+
           <textarea
             id="big-idea-description"
             value={formData.description}
@@ -214,7 +331,13 @@ export const Step02_BigIdea: React.FC = () => {
         </div>
       </div>
 
-
+      {/* URL Input Modal */}
+      <URLInputModal
+        isOpen={showURLModal}
+        onClose={handleCloseURLModal}
+        onSubmit={handleBrainstormWithContext}
+        isLoading={isAiLoading}
+      />
     </div>
   );
 };

@@ -6,11 +6,14 @@ import { AIMessage, ChatSuggestion } from '../../../types/chat';
 import { JTBDService } from '../../../services/jtbdService';
 import { OpenAIService } from '../../../services/openai';
 import { SparkyService, SparkyMessage, SuggestionOption } from '../../../services/sparkyService';
+import { BrainstormIdea } from '../../../services/brainstormService';
 import { JTBDSuggestionModal } from './JTBDSuggestionModal';
 import { MessagesContainer } from './MessagesContainer';
 import { SuggestionBubble } from './SuggestionBubble';
+import { BrainstormSuggestion } from './BrainstormSuggestion';
 import { ExpandedChatModal } from './ExpandedChatModal';
-import { Send, Loader2, X, Maximize2, Minimize2 } from 'lucide-react';
+import { URLInputModal } from './URLInputModal';
+import { Send, Loader2, X, Maximize2, Minimize2, Lightbulb } from 'lucide-react';
 
 // Custom type for position styles
 type PositionStyles = {
@@ -40,7 +43,11 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
     currentSuggestion,
     setCurrentSuggestion,
     acceptSuggestion,
-    updateWorkshopData
+    updateWorkshopData,
+    brainstormIdeas,
+    isBrainstorming,
+    brainstormBigIdeasWithContext,
+    useBrainstormIdea
   } = useWorkshopStore();
 
   const [inputValue, setInputValue] = useState('');
@@ -49,6 +56,8 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [appliedSuggestions, setAppliedSuggestions] = useState<string[]>([]);
+  const [appliedBrainstormIdeas, setAppliedBrainstormIdeas] = useState<string[]>([]);
+  const [showURLModal, setShowURLModal] = useState(false);
   // We need to keep this state even if it's not directly used in the render
   // as it's used in the generateSparkySuggestions function
   const [, setSparkySuggestions] = useState<SuggestionOption[]>([]);
@@ -510,6 +519,82 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         }
       }
 
+      // Check for brainstorming requests in Step 2
+      const brainstormRegex = /brainstorm|help.*idea|suggest.*idea|generate.*idea/i;
+      const urlRegex = /url|website|linkedin|profile/i;
+
+      if (currentStep === 2 && brainstormRegex.test(inputValue)) {
+        // If they mention URL, open the URL input modal
+        if (urlRegex.test(inputValue)) {
+          const message: SparkyMessage = {
+            id: Date.now().toString(),
+            content: "I'd be happy to help you brainstorm ideas based on your URL or background information!",
+            role: 'assistant',
+            timestamp: new Date().toISOString(),
+            stepContext: currentStep
+          };
+
+          setSparkyMessages(prev => [...prev, message]);
+
+          // Also add to workshop store
+          const workshopMessage: AIMessage = {
+            id: message.id,
+            content: message.content,
+            role: message.role,
+            timestamp: message.timestamp,
+            step: currentStep
+          };
+
+          if (typeof currentStep === 'number') {
+            addChatMessage(currentStep, workshopMessage);
+          }
+
+          // Open the URL input modal
+          setShowURLModal(true);
+          setIsTyping(false);
+          return;
+        }
+
+        // If they just want general brainstorming help
+        const message: SparkyMessage = {
+          id: Date.now().toString(),
+          content: "I'd be happy to help you brainstorm ideas! Would you like to provide a URL (like your LinkedIn profile or website) or just tell me about your expertise?",
+          role: 'assistant',
+          timestamp: new Date().toISOString(),
+          stepContext: currentStep
+        };
+
+        setSparkyMessages(prev => [...prev, message]);
+
+        // Also add to workshop store
+        const workshopMessage: AIMessage = {
+          id: message.id,
+          content: message.content,
+          role: message.role,
+          timestamp: message.timestamp,
+          step: currentStep
+        };
+
+        if (typeof currentStep === 'number') {
+          addChatMessage(currentStep, workshopMessage);
+        }
+
+        setIsTyping(false);
+        return;
+      }
+
+      // Check if the user is responding to a brainstorming prompt with text
+      if (currentStep === 2 &&
+          sparkyMessages.length > 0 &&
+          sparkyMessages[sparkyMessages.length - 1].content.includes("Would you like to provide a URL") &&
+          !urlRegex.test(inputValue)) {
+
+        // They're providing text about their expertise
+        handleBrainstormWithContext('text', inputValue);
+        setIsTyping(false);
+        return;
+      }
+
       // Check if the message is asking for JTBD refinement
       const refineOverarchingRegex = /refine\s+overarching/i;
       const refineSupportingRegex = /refine\s+supporting/i;
@@ -824,6 +909,64 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
 
 
+  // Handle opening the URL input modal
+  const handleOpenURLModal = useCallback(() => {
+    setShowURLModal(true);
+  }, []);
+
+  // Handle closing the URL input modal
+  const handleCloseURLModal = useCallback(() => {
+    setShowURLModal(false);
+  }, []);
+
+  // Handle submitting the URL or text for brainstorming
+  const handleBrainstormWithContext = useCallback((contextType: 'url' | 'text', contextValue: string) => {
+    // Create a user message for the chat
+    const userMessage: SparkyMessage = {
+      id: Date.now().toString(),
+      content: contextType === 'url'
+        ? `I'd like to brainstorm ideas based on this URL: ${contextValue}`
+        : `I'd like to brainstorm ideas based on my background: ${contextValue.substring(0, 50)}${contextValue.length > 50 ? '...' : ''}`,
+      role: 'user',
+      timestamp: new Date().toISOString(),
+      stepContext: currentStep
+    };
+
+    // Add to Sparky messages
+    setSparkyMessages(prev => [...prev, userMessage]);
+
+    // Also add to workshop store
+    const workshopUserMessage: AIMessage = {
+      id: userMessage.id,
+      content: userMessage.content,
+      role: userMessage.role,
+      timestamp: userMessage.timestamp,
+      step: currentStep
+    };
+
+    if (typeof currentStep === 'number') {
+      addChatMessage(currentStep, workshopUserMessage);
+    }
+
+    // Call the brainstorm action
+    brainstormBigIdeasWithContext({
+      contextType,
+      contextValue
+    });
+
+    // Close the modal
+    setShowURLModal(false);
+  }, [currentStep, addChatMessage, brainstormBigIdeasWithContext]);
+
+  // Handle using a brainstormed idea
+  const handleUseBrainstormIdea = useCallback((idea: BrainstormIdea) => {
+    // Mark this idea as applied
+    setAppliedBrainstormIdeas(prev => [...prev, idea.conceptName]);
+
+    // Use the idea
+    useBrainstormIdea(idea);
+  }, [useBrainstormIdea]);
+
   // Handle adding a specific suggestion to the workshop
   const handleAddSuggestion = useCallback((id: string, content: string, type: string) => {
     // Mark this suggestion as applied
@@ -860,7 +1003,6 @@ Would you like to refine any of these statements? Type "refine overarching" or "
             bigIdea: {
               ...workshopData.bigIdea,
               description: content,
-              targetCustomers: workshopData.bigIdea?.targetCustomers || '',
               version: 'initial'
             }
           });
@@ -1047,7 +1189,7 @@ Would you like to refine any of these statements? Type "refine overarching" or "
               : JSON.stringify(message.content, null, 2)}
 
             {/* Render previous suggestions if they exist */}
-            {hasSuggestions && (
+            {hasSuggestions && message.suggestions && (
               <div style={{ marginTop: '12px', opacity: 0.8 }}>
                 {message.suggestions.map((suggestion: ChatSuggestion) => {
                   if (typeof suggestion.content === 'string') {
@@ -1151,6 +1293,56 @@ Would you like to refine any of these statements? Type "refine overarching" or "
 
   // Render suggestions as individual bubbles
   const renderSuggestions = () => {
+    // If we have brainstorm ideas, show those
+    if (brainstormIdeas && brainstormIdeas.length > 0 && currentStep === 2) {
+      return (
+        <div
+          style={{
+            padding: '12px 16px',
+            borderTop: '1px solid #EEEEEE',
+            backgroundColor: '#F9F9F9'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>
+              <Lightbulb size={16} style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              Brainstormed Ideas
+            </h4>
+            {currentStep === 2 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleOpenURLModal}
+                style={{
+                  fontSize: '12px',
+                  padding: '4px 8px',
+                  borderRadius: '12px'
+                }}
+              >
+                Try Another URL
+              </Button>
+            )}
+          </div>
+          <div
+            style={{
+              maxHeight: '300px',
+              overflowY: 'auto'
+            }}
+          >
+            {brainstormIdeas.map((idea) => (
+              <BrainstormSuggestion
+                key={idea.conceptName}
+                idea={idea}
+                onUse={handleUseBrainstormIdea}
+                isUsed={appliedBrainstormIdeas.includes(idea.conceptName)}
+              />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // Otherwise show regular suggestions
     if (!showSuggestions || !currentSuggestion) return null;
 
     return (
@@ -1163,6 +1355,20 @@ Would you like to refine any of these statements? Type "refine overarching" or "
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
           <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>Suggestions</h4>
+          {currentStep === 2 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOpenURLModal}
+              style={{
+                fontSize: '12px',
+                padding: '4px 8px',
+                borderRadius: '12px'
+              }}
+            >
+              Brainstorm with URL
+            </Button>
+          )}
         </div>
         <div
           style={{
@@ -1474,6 +1680,14 @@ Would you like to refine any of these statements? Type "refine overarching" or "
         currentInput={currentJTBDStatement}
         suggestions={jtbdSuggestions}
         onSelectSuggestion={handleSelectJTBDSuggestion}
+      />
+
+      {/* URL Input Modal */}
+      <URLInputModal
+        isOpen={showURLModal}
+        onClose={handleCloseURLModal}
+        onSubmit={handleBrainstormWithContext}
+        isLoading={isBrainstorming}
       />
     </>
   );

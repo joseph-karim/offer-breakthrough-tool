@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "netlify dev",
     "build": "npm install && tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "netlify-dev": "netlify dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
@@ -18,6 +19,8 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "lucide-react": "^0.503.0",
+    "netlify-cli": "^17.19.0",
+    "node-fetch": "^3.3.2",
     "openai": "^4.91.1",
     "postcss": "^8.5.3",
     "react": "^19.0.0",

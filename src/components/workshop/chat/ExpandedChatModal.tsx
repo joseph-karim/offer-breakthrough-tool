@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Minimize2, X, Send, Loader2 } from 'lucide-react';
 import { SparkyMessage } from '../../../services/sparkyService';
+import { AIMessage } from '../../../types/chat';
 import { MessagesContainer } from './MessagesContainer';
 import { createPortal } from 'react-dom';
 import { Button } from '../../ui/Button';
@@ -8,10 +9,10 @@ import { Button } from '../../ui/Button';
 interface ExpandedChatModalProps {
   isOpen: boolean;
   onClose: () => void; // Function to close the modal
-  messages: SparkyMessage[];
+  messages: (SparkyMessage | AIMessage)[];
   isTyping: boolean;
   currentStep: number;
-  renderMessage: (message: SparkyMessage) => React.ReactNode;
+  renderMessage: (message: SparkyMessage | AIMessage) => React.ReactNode;
   handleSendMessage: (message: string) => void; // Function to send a message
   suggestionsPanel?: React.ReactNode; // Optional suggestions panel
 }

@@ -3,6 +3,8 @@ import type { WorkshopData } from '../types/workshop';
 import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
+import { OpenAIService } from '../services/openai';
+import { BrainstormService, BrainstormContext, BrainstormIdea } from '../services/brainstormService';
 
 export interface WorkshopStore {
   // Session state
@@ -16,6 +18,10 @@ export interface WorkshopStore {
   // Workshop data
   workshopData: WorkshopData;
   currentSuggestion: ChatSuggestion | null;
+
+  // Brainstorming state
+  brainstormIdeas: BrainstormIdea[];
+  isBrainstorming: boolean;
 
   // Painstorming modal state
   isPainstormingModalOpen: boolean;
@@ -38,6 +44,11 @@ export interface WorkshopStore {
   generateStepSuggestion: (step: number) => Promise<void>;
   acceptSuggestion: (step: number) => void;
   answerFollowUpQuestion: (step: number, question: string) => Promise<void>;
+
+  // Brainstorming actions
+  brainstormBigIdeasWithContext: (context: BrainstormContext) => Promise<void>;
+  refineBigIdea: (initialIdea: string, userFeedback: string) => Promise<void>;
+  useBrainstormIdea: (idea: BrainstormIdea) => void;
 
   // Painstorming modal actions
   openPainstormingModal: (output: string) => void;
@@ -118,9 +129,23 @@ const isStepComplete = (_step: number, _data: WorkshopData): boolean => {
   */
 };
 
+// Create API key for OpenAI services
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY || '';
+
+// Create OpenAI service
+const openaiService = new OpenAIService({
+  apiKey: apiKey
+});
+
 // Create AI service instance
 const aiService = new AIService({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY || ''
+  apiKey: apiKey
+});
+
+// Create Brainstorm service instance
+const brainstormService = new BrainstormService({
+  openaiService: openaiService,
+  model: 'gpt-4.1-2025-04-14'
 });
 
 // Helper function to extract relevant context for a step
@@ -336,6 +361,10 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   // Workshop data
   workshopData: initialWorkshopData,
   currentSuggestion: null,
+
+  // Brainstorming state
+  brainstormIdeas: [],
+  isBrainstorming: false,
 
   // Painstorming modal state
   isPainstormingModalOpen: false,
@@ -803,6 +832,164 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         }
       };
     });
+  },
+
+  // Brainstorming actions
+  brainstormBigIdeasWithContext: async (context: BrainstormContext) => {
+    const { addChatMessage } = get();
+
+    set({ isAiLoading: true, isBrainstorming: true, brainstormIdeas: [] });
+
+    // Add a message to indicate we're processing
+    const processingMessage: AIMessage = {
+      id: Date.now().toString(),
+      content: context.contextType === 'url'
+        ? `I'll analyze the content from ${context.contextValue} to help brainstorm ideas...`
+        : "I'll analyze your background information to help brainstorm ideas...",
+      role: 'assistant',
+      timestamp: new Date().toISOString(),
+      step: 2
+    };
+
+    addChatMessage(2, processingMessage);
+
+    try {
+      // Generate ideas based on the context
+      const ideas = await brainstormService.generateBigIdeaSuggestions(context);
+
+      // Store the ideas
+      set({ brainstormIdeas: ideas });
+
+      // Create a message with the ideas
+      let ideasContent = "Based on your information, here are some scalable offer ideas:\n\n";
+
+      ideas.forEach((idea) => {
+        ideasContent += `**${idea.conceptName}**\n${idea.description}\n\n`;
+      });
+
+      ideasContent += "You can click 'Use this idea' on any suggestion that resonates with you, or ask me to refine one further.";
+
+      const ideasMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: ideasContent,
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+        step: 2
+      };
+
+      addChatMessage(2, ideasMessage);
+    } catch (error) {
+      console.error("Error generating brainstorm ideas:", error);
+
+      // Add error message
+      const errorMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: "I'm sorry, I encountered an error while brainstorming ideas. Let me provide some general examples instead.",
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+        step: 2
+      };
+
+      addChatMessage(2, errorMessage);
+
+      // Add fallback examples
+      const fallbackMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: "Here are some example Big Idea statements:\n\n1. A 6-week group coaching program that helps service-based entrepreneurs create their first scalable digital product.\n\n2. A template pack that helps consultants quickly create high-converting proposals.\n\n3. A productized service that provides SEO audits specifically for e-commerce stores.\n\n4. A membership community that provides ongoing support and resources for freelance designers.\n\n5. A course that teaches small business owners how to use AI tools to streamline their operations.",
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+        step: 2
+      };
+
+      addChatMessage(2, fallbackMessage);
+    } finally {
+      set({ isAiLoading: false, isBrainstorming: false });
+    }
+  },
+
+  refineBigIdea: async (initialIdea: string, userFeedback: string) => {
+    const { addChatMessage } = get();
+
+    set({ isAiLoading: true, isBrainstorming: true, brainstormIdeas: [] });
+
+    // Add a message to indicate we're processing
+    const processingMessage: AIMessage = {
+      id: Date.now().toString(),
+      content: `I'll refine the idea based on your feedback...`,
+      role: 'assistant',
+      timestamp: new Date().toISOString(),
+      step: 2
+    };
+
+    addChatMessage(2, processingMessage);
+
+    try {
+      // Generate refined ideas
+      const ideas = await brainstormService.refineBigIdea(initialIdea, userFeedback);
+
+      // Store the ideas
+      set({ brainstormIdeas: ideas });
+
+      // Create a message with the ideas
+      let ideasContent = "Here are some refined versions of your idea:\n\n";
+
+      ideas.forEach((idea) => {
+        ideasContent += `**${idea.conceptName}**\n${idea.description}\n\n`;
+      });
+
+      ideasContent += "You can click 'Use this idea' on any suggestion that resonates with you.";
+
+      const ideasMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: ideasContent,
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+        step: 2
+      };
+
+      addChatMessage(2, ideasMessage);
+    } catch (error) {
+      console.error("Error refining big idea:", error);
+
+      // Add error message
+      const errorMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: "I'm sorry, I encountered an error while refining your idea. Let's try a different approach.",
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+        step: 2
+      };
+
+      addChatMessage(2, errorMessage);
+    } finally {
+      set({ isAiLoading: false, isBrainstorming: false });
+    }
+  },
+
+  useBrainstormIdea: (idea: BrainstormIdea) => {
+    const { updateWorkshopData, addChatMessage } = get();
+
+    // Update the big idea with the selected idea
+    updateWorkshopData({
+      bigIdea: {
+        description: idea.description,
+        version: 'initial'
+      }
+    });
+
+    // Add a confirmation message
+    const confirmationMessage: AIMessage = {
+      id: Date.now().toString(),
+      content: `✅ I've added "${idea.conceptName}" to your workshop.`,
+      role: 'assistant',
+      timestamp: new Date().toISOString(),
+      step: 2
+    };
+
+    addChatMessage(2, confirmationMessage);
+
+    // Clear the brainstorm ideas
+    set({ brainstormIdeas: [] });
   },
 
   generatePainstormingSuggestions: async () => {
