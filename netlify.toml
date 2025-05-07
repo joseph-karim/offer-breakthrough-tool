@@ -18,6 +18,11 @@
 [functions]
   node_bundler = "esbuild"
 
+  # Environment variables for functions in production
+  [functions.environment]
+  # Note: In production, set this in the Netlify dashboard
+  # PERPLEXITY_API_KEY = "your_api_key_here"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
