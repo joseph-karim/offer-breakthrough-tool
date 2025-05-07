@@ -4,7 +4,7 @@ import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
 import { OpenAIService } from '../services/openai';
-import { BrainstormService, BrainstormContext, BrainstormIdea, BrainstormResult } from '../services/brainstormService';
+import { BrainstormService, BrainstormContext, BrainstormIdea } from '../services/brainstormService';
 
 export interface WorkshopStore {
   // Session state
