@@ -141,7 +141,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       case 4:
         return "👋 Welcome to Step 4: Buying Triggers!\n\nThese are the specific moments or 'final straw' situations that shift a potential customer from just having a problem to actively looking for a solution. Understanding these is key to finding profitable problems.\n\nI'll help you explore a broad range of potential triggers related to your business area. Let's start by understanding your expertise and what you've observed with past customers.";
       case 5:
-        return "Define your Jobs-to-be-Done using 'Help me [VERB] my [OBJECT] [CONTEXT]'. Type 'jtbd' for help.";
+        return "Welcome to Step 5: Jobs-to-be-Done!\n\nNow let's get to the core of what your customers are truly trying to achieve. We'll use the 'Jobs-to-be-Done' framework to understand the fundamental progress your customers are trying to make.\n\nWe'll identify both an Overarching Job (the main progress) and Supporting Jobs (more specific tasks that help achieve the main job).";
       case 6:
         return "Which segments experience your job statement most intensely? Consider urgency and willingness to pay.";
       case 7:
@@ -170,7 +170,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       case 4:
         return "To start, tell me a bit about your business or your primary area of expertise. What do you generally do, or what kind of services have you offered in the past?";
       case 5:
-        return "Type 'jtbd' if you'd like help generating job statements.";
+        return "Looking at your business and those Buying Triggers we brainstormed, what's the main, high-level 'job' or 'progress' a customer is trying to make when they'd start looking for solutions in your area of expertise? Think big picture here.";
       case 6:
         return "What types of people or businesses frequently need your solution?";
       case 7:

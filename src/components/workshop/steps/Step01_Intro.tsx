@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { Target, Zap, ArrowRight } from 'lucide-react';
+import { Zap, ArrowRight } from 'lucide-react';
 
 export const Step01_Intro: React.FC = () => {
   const { setCurrentStep } = useWorkshopStore();
@@ -30,7 +30,7 @@ export const Step01_Intro: React.FC = () => {
           position: 'relative'
         }}>
           <img
-            src="/assets/BB_Main_image.png"
+            src="./assets/BB_Main_image.png"
             alt="Buyer Breakthrough"
             style={{
               width: '100%',
@@ -41,7 +41,8 @@ export const Step01_Intro: React.FC = () => {
               maxHeight: '100%',
               left: '0',
               right: '0',
-              margin: '0 auto'
+              margin: '0 auto',
+              display: 'block' // Ensure the image is displayed as a block element
             }}
           />
         </div>
@@ -180,7 +181,11 @@ export const Step01_Intro: React.FC = () => {
                 justifyContent: 'center',
                 marginRight: '15px'
               }}>
-                <Target size={24} color="#000000" />
+                <img
+                  src="./assets/bomb-icon.png"
+                  alt="Bomb Icon"
+                  style={{ width: '24px', height: '24px' }}
+                />
               </div>
               <h3 style={{
                 fontSize: '20px',

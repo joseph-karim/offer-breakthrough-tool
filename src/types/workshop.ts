@@ -27,6 +27,10 @@ export interface Job {
   description: string;
   source: 'user' | 'assistant';
   selected?: boolean;
+  isOverarching?: boolean;
+  type?: 'functional' | 'emotional' | 'social';
+  importance?: 'high' | 'medium' | 'low';
+  rationale?: string;
 }
 
 export interface TargetBuyer {

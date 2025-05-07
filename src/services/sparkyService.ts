@@ -237,18 +237,56 @@ export class SparkyService {
   /**
    * Mock response for Jobs step
    */
-  private getMockJobsResponse(message: string, _workshopData: WorkshopData): string {
+  private getMockJobsResponse(message: string, workshopData: WorkshopData): string {
     const lowerMessage = message.toLowerCase();
+    const triggerEvents = workshopData.triggerEvents || [];
+    const bigIdea = workshopData.bigIdea?.description || "your business";
 
-    if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
-      return "Here are some example Job Statements in the proper format:\n\n1. Help me establish a professional brand identity quickly and affordably when launching my business.\n\n2. Help me streamline my client onboarding process without sacrificing the personal touch.\n\n3. Help me create consistent content for my audience when I'm short on time and ideas.\n\n4. Help me convert more discovery calls into paying clients without feeling pushy or salesy.\n\nNotice how each follows the format: Help me [VERB] my [OBJECT] [CONTEXT].";
+    // Get the overarching job and supporting jobs
+    const overarchingJob = workshopData.jobs.find(job => job.isOverarching);
+    const supportingJobs = workshopData.jobs.filter(job => !job.isOverarching);
+
+    // Check if we're in the initial overarching job discussion
+    if (!overarchingJob && supportingJobs.length === 0) {
+      if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
+        return "Here are some example Overarching Job Statements in the proper format:\n\n1. Help me generate predictable revenue from my existing audience without spending more on ads.\n\n2. Help me build a sustainable business that doesn't depend on my constant presence.\n\n3. Help me transform my expertise into a scalable solution that serves more people.\n\nNotice how each follows the format: Help me [VERB] my [OBJECT] [CONTEXT]. These are big-picture statements that capture the fundamental progress your customers are trying to make.";
+      }
+
+      if (lowerMessage.includes('trigger') || lowerMessage.includes('context')) {
+        const sampleTriggers = triggerEvents.slice(0, 2).map(t => `"${t.description}"`).join(' or ');
+        return `Looking at your trigger events like ${sampleTriggers || "the ones we discussed"}, we can see patterns in what pushes customers to seek solutions. These triggers often reveal the underlying job they're trying to get done. For example, if a trigger is "Just saw a competitor's polished marketing materials," the job might be "Help me establish a professional brand identity that stands out from competitors."`;
+      }
+
+      if (lowerMessage.includes('format') || lowerMessage.includes('structure')) {
+        return "The Overarching Job Statement should follow this format: 'Help me [VERB] my [OBJECT] [CONTEXT]'\n\nFor example: 'Help me generate predictable revenue from my existing audience without spending more on ads.'\n\n- VERB: Use active verbs like generate, build, transform, establish, etc.\n- OBJECT: What they're trying to improve or change\n- CONTEXT: The specific situation, constraints, or emotional state\n\nThis format captures the fundamental progress your customers are trying to make.";
+      }
+
+      return `I'd be happy to help you define the Overarching Job Statement for ${bigIdea}! This is about understanding the main progress your customers are trying to make, not just what they're buying.\n\nThink about: What fundamental problem are they trying to solve or aspiration are they trying to reach? What's the big-picture outcome they want?\n\nLet's craft this in the format 'Help me [VERB] my [OBJECT] [CONTEXT]'.`;
     }
 
-    if (lowerMessage.includes('format') || lowerMessage.includes('structure')) {
-      return "The Job Statement should follow this format: 'Help me [VERB] my [OBJECT] [CONTEXT]'\n\nFor example: 'Help me establish a professional brand identity quickly and affordably when launching my business.'\n\n- VERB: Use active verbs like establish, create, streamline, transform, etc.\n- OBJECT: What they're trying to improve or change\n- CONTEXT: The specific situation, constraints, or emotional state\n\nThis format captures the progress your customers are trying to make.";
+    // If we have an overarching job but no supporting jobs, focus on supporting jobs
+    if (overarchingJob && supportingJobs.length === 0) {
+      if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
+        return `Now that we have your Overarching Job Statement: "${overarchingJob.description}", let's think about Supporting Jobs.\n\nHere are some examples:\n\n1. Help me stay top-of-mind with my audience between launches.\n\n2. Help me convert more subscribers into paying customers.\n\n3. Help me feel confident my marketing systems are working.\n\n4. Help me maximize the value of each email subscriber.\n\nThese are more specific jobs that help achieve the main Overarching Job.`;
+      }
+
+      if (lowerMessage.includes('so that') || lowerMessage.includes('technique')) {
+        return `The "so that" technique is a great way to refine job statements! Start with what customers think they want, then keep asking "so that..." to dig deeper.\n\nFor example:\n"I want email sequences... so that... I can sell to my list... so that... I can generate revenue... so that... I can have predictable income without constantly chasing new leads."\n\nThis reveals the true job: "Help me generate predictable revenue from my existing audience without spending more on ads or constantly creating new content."`;
+      }
+
+      return `Great! Now that we have your Overarching Job Statement: "${overarchingJob.description}", let's break it down into Supporting Jobs.\n\nWhat smaller, more specific 'jobs' or tasks would someone need to accomplish to get that main job done? Think about the steps, challenges, or related activities involved.`;
     }
 
-    return "I'd be happy to help you define the Job-to-be-Done! This is about understanding the progress your customers are trying to make, not just what they're buying. Think about: What underlying struggle are they trying to resolve? What outcome would make that struggle go away? Let's craft this in the format 'Help me [VERB] my [OBJECT] [CONTEXT]'.";
+    // If we have both overarching and supporting jobs
+    if (lowerMessage.includes('next') || lowerMessage.includes('step')) {
+      return `You've done a great job defining both your Overarching Job Statement and Supporting Jobs! Next, we'll use these to identify potential buyer segments who experience these jobs most intensely. This will help you target your offer to the right people.`;
+    }
+
+    if (lowerMessage.includes('refine') || lowerMessage.includes('improve')) {
+      return `To refine your job statements further, try the "so that" technique. Take one of your current statements and ask "so that I can achieve what?" several times to get to the deeper motivation.\n\nAlso, make sure your statements follow the format "Help me [VERB] my [OBJECT] [CONTEXT]" and focus on the progress customers want to make, not the features they want to buy.`;
+    }
+
+    return `You've made great progress defining your Jobs-to-be-Done! You have an Overarching Job Statement: "${overarchingJob?.description || 'Not defined yet'}" and ${supportingJobs.length} Supporting Job(s).\n\nIs there anything specific about these job statements you'd like help with? I can help you refine them, add more supporting jobs, or explain how to use them in the next steps of the workshop.`;
   }
 
   /**
@@ -458,11 +496,21 @@ export class SparkyService {
         break;
 
       case 5: // Jobs
-        suggestions.push(
-          { id: `suggestion-${Date.now()}-1`, content: 'Help me establish a professional brand identity quickly and affordably when launching my business.', type },
-          { id: `suggestion-${Date.now()}-2`, content: 'Help me streamline my client onboarding process without sacrificing the personal touch.', type },
-          { id: `suggestion-${Date.now()}-3`, content: 'Help me create consistent content for my audience when I\'m short on time and ideas.', type }
-        );
+        // Check if we're looking for overarching or supporting jobs
+        if (type === 'overarching' || (!_workshopData.jobs.find(job => job.isOverarching))) {
+          suggestions.push(
+            { id: `suggestion-${Date.now()}-1`, content: 'Help me generate predictable revenue from my existing audience without spending more on ads.', type },
+            { id: `suggestion-${Date.now()}-2`, content: 'Help me build a sustainable business that doesn\'t depend on my constant presence.', type },
+            { id: `suggestion-${Date.now()}-3`, content: 'Help me transform my expertise into a scalable solution that serves more people.', type }
+          );
+        } else {
+          suggestions.push(
+            { id: `suggestion-${Date.now()}-1`, content: 'Help me stay top-of-mind with my audience between launches.', type },
+            { id: `suggestion-${Date.now()}-2`, content: 'Help me convert more subscribers into paying customers.', type },
+            { id: `suggestion-${Date.now()}-3`, content: 'Help me feel confident my marketing systems are working.', type },
+            { id: `suggestion-${Date.now()}-4`, content: 'Help me maximize the value of each email subscriber.', type }
+          );
+        }
         break;
 
       case 6: // Target Buyers
@@ -632,14 +680,19 @@ The goal is to identify a broad range of specific moments or situations (10-15) 
         break;
 
       case 5: // Define Job-to-be-Done
-        stepPrompt = `Help the user brainstorm potential jobs (Overarching & Supporting) their customers are trying to get done, guide them to select relevant jobs based on their skills, and refine ONE key job statement using the Help me [VERB] my [OBJECT] [CONTEXT] format.
+        stepPrompt = `Help the user brainstorm potential jobs their customers are trying to get done, clearly separating Overarching Jobs from Supporting Jobs. Use the user's business context and trigger events from previous steps to inform your suggestions.
+
+Guided Questioning Flow:
+1. First, help the user identify the Overarching Job (the main, high-level progress a customer is trying to make)
+2. Once an Overarching Job is defined, help the user identify Supporting Jobs (more specific tasks that help achieve the main job)
+3. Use the "so that" technique to refine job statements if needed
 
 Example guidance questions:
-- "Looking at those trigger events, what's the underlying struggle they represent? What outcome would make that struggle go away?"
-- "Let's use the 'so that...' method. A customer wants [Outcome from Big Idea]... so that... they can achieve what?"
-- "Considering your own skills, which of these potential jobs do you feel uniquely equipped to help people solve?"
+- "Looking at your business and those Buying Triggers we brainstormed, what's the main, high-level 'job' or 'progress' a customer is trying to make?"
+- "Now that we have your Overarching Job, what smaller, more specific 'jobs' would someone need to accomplish to get that main job done?"
+- "Let's use the 'so that...' method. A customer wants [Initial Desire]... so that... they can achieve what?"
 
-The goal is to define the core progress the customer is trying to make when they seek a solution like the user's.`;
+The goal is to define both the Overarching Job (the fundamental progress) and Supporting Jobs (more specific tasks) that customers are trying to accomplish.`;
         break;
 
       case 6: // Identify Potential Target Buyers
@@ -890,7 +943,10 @@ Provide exactly 10-15 distinct Trigger Event options, each described clearly and
     system: string;
     user: string;
   } {
-    // Check if we're brainstorming or refining
+    // Get the overarching job
+    const overarchingJob = workshopData.jobs.find(job => job.isOverarching);
+
+    // Check if we're refining
     const isRefining = type === 'refine' && workshopData.jobs.some(job => job.selected);
 
     if (isRefining) {
@@ -921,30 +977,65 @@ Refine the user's draft Job Statement into 3-5 options adhering to the specified
 Provide 3-5 distinct revised Job Statement options strictly in the required format. Do not include any additional commentary or explanation.`,
         user: `Please refine this draft job statement: "${selectedJob?.description || ""}" into 3-5 improved options that follow the "Help me [VERB] my [OBJECT] [CONTEXT]" format.`
       };
-    } else {
-      // Brainstorming new job statements
+    } else if (type === 'overarching' || !overarchingJob) {
+      // Generating Overarching Job statements
       return {
-        system: `You are an expert assistant trained in the Jobs-to-be-Done (JTBD) methodology by Clayton Christensen and Bob Moesta. Your task is to analyze the user's input about their business/product idea, desired outcomes, and key trigger events to generate accurate, progress-focused Job Statements.
+        system: `You are an expert assistant trained in the Jobs-to-be-Done (JTBD) methodology by Clayton Christensen and Bob Moesta. Your primary task is to help the user formulate a single, compelling "Overarching Job Statement" based on their business context and previously identified customer buying triggers.
 
 # Task Description
-Generate 3-5 distinct potential Job Statements (can be a mix of overarching and supporting) that represent the progress the user's target customers are trying to make when they might "hire" the user's product or service, based on the provided context.
+Generate 2-3 distinct "Overarching Job Statement" options that represent the main, high-level progress a potential customer is trying to make, which would lead them to seek solutions related to the user's business/expertise.
 
-# Input Context
-You will be provided with the following information from the user:
-1.  **Product/Service Idea:** "${workshopData.bigIdea?.description || ""}"
-2.  **Desired Outcomes:** "${workshopData.underlyingGoal?.businessGoal || ""}"
-3.  **Trigger Events:** ${workshopData.triggerEvents?.map(t => `"${t.description}"`).join(', ') || "None specified"}
+# Input Context Provided by User/Workshop:
+1.  User's Business / Area of Expertise: "${workshopData.bigIdea?.description || ""}"
+2.  Key Buying Triggers Observed/Brainstormed: [${workshopData.triggerEvents?.map(t => `"${t.description}"`).join(', ') || "None specified"}]
+3.  User's Desired Business Outcomes for their new offer: "${workshopData.underlyingGoal?.businessGoal || ""}"
 
 # Methodology & Constraints
--   **Focus on Progress:** Job statements MUST describe the customer's desired progress, *not* the product's features or the solution itself.
--   **Solution-Agnostic:** The statement should be broad enough that multiple different solutions could potentially fulfill the job.
--   **Format:** Use the format "Help me [VERB] my [OBJECT] [CONTEXT]" where possible, but prioritize capturing the core job accurately even if the format needs slight variation. Use clear, active verbs.
--   **Context is Key:** Incorporate relevant context (time constraints, resource limitations, emotional states, etc.) derived from the trigger events and desired outcomes.
--   **Avoid Common Mistakes:** Do not generate statements that are product-focused, too vague, feature-oriented, or treat the solution category as the job itself.
+-   Focus on Progress: The Overarching Job Statement MUST describe the customer's fundamental desired progress or problem to be solved, NOT the user's product features.
+-   Solution-Agnostic: The statement should be broad enough that multiple different solutions could potentially fulfill this main job.
+-   Format: Strictly adhere to: "Help me [VERB] my [OBJECT] [CONTEXT]". Use clear, active verbs.
+-   Context is Key: Incorporate relevant high-level context (e.g., life stage, business stage, core motivations) derived from the inputs. The "CONTEXT" part of the statement should reflect the circumstances or desired state.
+-   High-Level: This is the "big picture" job. Avoid getting too granular; that's for supporting jobs.
+-   Avoid Common Mistakes: Do not generate statements that are product-focused, too vague, feature-oriented, or treat a solution category as the job itself.
 
 # Output Format
-Provide 3-5 distinct potential Job Statement options. Do not include any additional commentary or explanation.`,
-        user: `Please generate 3-5 potential job statements based on the user's Big Idea: "${workshopData.bigIdea?.description || ""}" and trigger events.`
+Provide exactly 2-3 distinct Overarching Job Statement options. Each statement should be on a new line. Do not include any other labels or introductory text.
+
+Help me [VERB] my [OBJECT] [CONTEXT]
+Help me [VERB] my [OBJECT] [CONTEXT]
+Help me [VERB] my [OBJECT] [CONTEXT]`,
+        user: `Please generate 2-3 Overarching Job Statement options based on my business: "${workshopData.bigIdea?.description || "Not specified"}" and the trigger events I've identified.`
+      };
+    } else {
+      // Generating Supporting Job statements
+      return {
+        system: `You are an expert assistant trained in the Jobs-to-be-Done (JTBD) methodology. The user has defined an Overarching Job Statement. Your task is to generate 3-5 distinct "Supporting Job Statements" that represent more specific tasks, goals, or progress a customer needs to make to successfully achieve that Overarching Job.
+
+# Task Description
+Generate 3-5 distinct "Supporting Job Statements".
+
+# Input Context Provided by User/Workshop:
+1.  User's Defined Overarching Job Statement: "${overarchingJob?.description || ""}"
+2.  User's Business / Area of Expertise: "${workshopData.bigIdea?.description || ""}"
+3.  Key Buying Triggers Observed/Brainstormed: [${workshopData.triggerEvents?.map(t => `"${t.description}"`).join(', ') || "None specified"}]
+4.  User's Desired Business Outcomes: "${workshopData.underlyingGoal?.businessGoal || ""}"
+
+# Methodology & Constraints
+-   Directly Support Overarching Job: Each Supporting Job MUST be a logical sub-component, prerequisite, or related activity necessary for achieving the Overarching Job Statement.
+-   Focus on Progress: Statements MUST describe the customer's desired progress.
+-   Solution-Agnostic: Statements should be broad enough that multiple different solutions could potentially fulfill them.
+-   Format: Strictly adhere to the format: "Help me [VERB] my [OBJECT] [CONTEXT]". Use clear, active verbs.
+-   Context is Key: Incorporate relevant context derived from the inputs, particularly how it relates to the Overarching Job.
+-   Granularity: These jobs are more specific than the Overarching Job but should not be mere task-list items. They are still "jobs" in themselves.
+-   Avoid Common Mistakes: Do not generate statements that are product-focused, too vague, or feature-oriented.
+
+# Output Format
+Provide exactly 3-5 distinct Supporting Job Statement options. Each statement should be on a new line. Do not include any other labels or introductory text.
+
+Help me [VERB] my [OBJECT] [CONTEXT]
+Help me [VERB] my [OBJECT] [CONTEXT]
+Help me [VERB] my [OBJECT] [CONTEXT]`,
+        user: `Please generate 3-5 Supporting Job Statements that would help achieve the Overarching Job: "${overarchingJob?.description || "Not specified"}"`
       };
     }
   }
