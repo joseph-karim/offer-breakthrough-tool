@@ -15,6 +15,11 @@ export interface BrainstormIdea {
   description: string;
 }
 
+export interface BrainstormResult {
+  ideas: BrainstormIdea[];
+  summary: string; // Summary of findings from the user's background and rationale for suggestions
+}
+
 /**
  * BrainstormService - Handles brainstorming of Big Ideas based on user context
  */
@@ -57,7 +62,7 @@ export class BrainstormService {
   /**
    * Generate Big Idea suggestions based on user context
    */
-  async generateBigIdeaSuggestions(context: BrainstormContext): Promise<BrainstormIdea[]> {
+  async generateBigIdeaSuggestions(context: BrainstormContext): Promise<BrainstormResult> {
     try {
       let userInputBackgroundInfo = '';
 
@@ -70,14 +75,37 @@ export class BrainstormService {
         userInputBackgroundInfo = context.contextValue;
       }
 
+      // First, generate a summary of findings from the user's background
+      const summaryPrompt = `You are an expert business analyst. Analyze the following information about a service provider's background, expertise, and current services. Provide a concise summary of your findings, highlighting key strengths, unique value propositions, target audience, and potential areas for scalable offers.
+
+# Input Context
+User's Background/Expertise/Current Services: "${userInputBackgroundInfo}"
+
+# Output Format
+Provide a concise (3-4 paragraph) analysis that includes:
+1. A summary of the person's core expertise and unique strengths
+2. Their apparent target audience and the problems they solve
+3. Key opportunities for scalable offers based on their background
+4. Why certain types of scalable offers would be particularly well-suited for them`;
+
+      const summaryUserPrompt = `Please analyze this background information and provide a concise summary of findings.`;
+
+      // Get the summary from OpenAI
+      const summaryResponse = await this.openai.generateCompletion(
+        summaryPrompt,
+        summaryUserPrompt,
+        0.7,
+        this.model
+      );
+
       // Generate suggestions using OpenAI
-      const systemPrompt = `You are an AI assistant helping a user (likely a service provider like a consultant, freelancer, or agency owner) brainstorm initial scalable offer ideas for the Buyer Breakthrough Workshop. The user has provided summarized information about their current expertise or business (potentially extracted from a website or LinkedIn profile by another AI). Your task is to generate 3-5 distinct, scalable offer concepts.
+      const ideasPrompt = `You are an AI assistant helping a user (likely a service provider like a consultant, freelancer, or agency owner) brainstorm initial scalable offer ideas for the Buyer Breakthrough Workshop. The user has provided summarized information about their current expertise or business (potentially extracted from a website or LinkedIn profile by another AI). Your task is to generate 3-5 distinct, scalable offer concepts.
 
 # Task Description
 Generate 3-5 distinct, scalable offer concepts (e.g., online course, productized service, template kit, group workshop, niche software idea). For each concept, provide a Concept Name and a brief Description of what it is and the primary benefit it offers.
 
 # Input Context
-User's Background/Expertise/Current Services (Summary from Website/LinkedIn or User Input): "${userInputBackgroundInfo}" 
+User's Background/Expertise/Current Services (Summary from Website/LinkedIn or User Input): "${userInputBackgroundInfo}"
 
 # Methodology & Constraints
 - Generate 3-5 distinct concepts.
@@ -93,50 +121,84 @@ Provide exactly 3-5 distinct options. Format each option as follows, with no int
 **Concept Name:** [Example: "Client Onboarding Automation Kit"]
 **Description:** [Example: "A set of templates and video guides that helps freelance designers streamline and automate their new client intake process."]`;
 
-      const userPrompt = `Please generate 3-5 scalable offer concepts based on the provided background information.`;
+      const ideasUserPrompt = `Please generate 3-5 scalable offer concepts based on the provided background information.`;
 
       // Get the structured output from OpenAI
-      const response = await this.openai.generateStructuredOutput<{ ideas: BrainstormIdea[] }>(
-        systemPrompt,
-        userPrompt,
+      const ideasResponse = await this.openai.generateStructuredOutput<{ ideas: BrainstormIdea[] }>(
+        ideasPrompt,
+        ideasUserPrompt,
         0.7,
         this.model
       );
 
       // If the response doesn't have the expected structure, try to parse it manually
-      if (!response.ideas) {
+      if (!ideasResponse.ideas) {
         // Try to parse the raw response
         const rawResponse = await this.openai.generateCompletion(
-          systemPrompt,
-          userPrompt,
+          ideasPrompt,
+          ideasUserPrompt,
           0.7,
           this.model
         );
 
-        return this.parseRawIdeaResponse(rawResponse);
+        const ideas = this.parseRawIdeaResponse(rawResponse);
+        return {
+          ideas,
+          summary: summaryResponse || "Based on your background information, here are some scalable offer ideas that could leverage your expertise."
+        };
       }
 
-      return response.ideas;
+      return {
+        ideas: ideasResponse.ideas,
+        summary: summaryResponse || "Based on your background information, here are some scalable offer ideas that could leverage your expertise."
+      };
     } catch (error) {
       console.error('Error generating Big Idea suggestions:', error);
-      // Return fallback suggestions
-      return this.getFallbackSuggestions();
+      // Return fallback suggestions with a generic summary
+      return {
+        ideas: this.getFallbackSuggestions(),
+        summary: "Here are some general scalable offer ideas that might work for your business. For more tailored suggestions, please provide more details about your expertise and services."
+      };
     }
   }
 
   /**
    * Refine an existing Big Idea based on user feedback
    */
-  async refineBigIdea(initialIdea: string, userFeedback: string): Promise<BrainstormIdea[]> {
+  async refineBigIdea(initialIdea: string, userFeedback: string): Promise<BrainstormResult> {
     try {
-      const systemPrompt = `You are an AI assistant helping a user refine their initial product/service idea for the Buyer Breakthrough Workshop. The user is a service-based entrepreneur looking to create a more scalable offer. Your task is to generate 3-5 concise "Big Idea" statements adhering strictly to the format: "[What it is] + [what will it help customers do]".
+      // First, generate a summary of the refinement approach
+      const summaryPrompt = `You are an expert business analyst. Analyze the following initial idea and user feedback for refining a scalable offer concept. Provide a concise explanation of how you'll approach the refinement and what aspects you'll focus on improving.
+
+# Input Context
+Initial Idea: "${initialIdea}"
+User's Refinement Request: "${userFeedback}"
+
+# Output Format
+Provide a concise (2-3 paragraph) analysis that includes:
+1. What aspects of the initial idea are strong and worth preserving
+2. What aspects need improvement based on the user's feedback
+3. Your approach to refining the idea (what specific elements you'll focus on)`;
+
+      const summaryUserPrompt = `Please analyze this initial idea and feedback to explain your refinement approach.`;
+
+      // Get the summary from OpenAI
+      const summaryResponse = await this.openai.generateCompletion(
+        summaryPrompt,
+        summaryUserPrompt,
+        0.7,
+        this.model
+      );
+
+      // Generate refined ideas
+      const ideasPrompt = `You are an AI assistant helping a user refine their initial product/service idea for the Buyer Breakthrough Workshop. The user is a service-based entrepreneur looking to create a more scalable offer. Your task is to generate 3-5 concise "Big Idea" statements adhering strictly to the format: "[What it is] + [what will it help customers do]".
 
 # Task Description
 Generate 3-5 concise "Big Idea" statements based on the user's input.
 
 # Input Context
 User's Initial Idea Draft: "${initialIdea}"
-User's Refinement Request: "${userFeedback}" 
+User's Refinement Request: "${userFeedback}"
 
 # Methodology & Constraints
 - Statements MUST follow the format: "[What it is] + [what will it help customers do]".
@@ -150,34 +212,44 @@ User's Refinement Request: "${userFeedback}"
 # Output Format
 Provide exactly 3-5 distinct options, each on a new line, following the specified format. Do not include any introductory or concluding text, only the list of options.`;
 
-      const userPrompt = `Please refine the following Big Idea based on my feedback: "${initialIdea}". My feedback: "${userFeedback}"`;
+      const ideasUserPrompt = `Please refine the following Big Idea based on my feedback: "${initialIdea}". My feedback: "${userFeedback}"`;
 
       // Get the structured output from OpenAI
-      const response = await this.openai.generateStructuredOutput<{ ideas: BrainstormIdea[] }>(
-        systemPrompt,
-        userPrompt,
+      const ideasResponse = await this.openai.generateStructuredOutput<{ ideas: BrainstormIdea[] }>(
+        ideasPrompt,
+        ideasUserPrompt,
         0.7,
         this.model
       );
 
       // If the response doesn't have the expected structure, try to parse it manually
-      if (!response.ideas) {
+      if (!ideasResponse.ideas) {
         // Try to parse the raw response
         const rawResponse = await this.openai.generateCompletion(
-          systemPrompt,
-          userPrompt,
+          ideasPrompt,
+          ideasUserPrompt,
           0.7,
           this.model
         );
 
-        return this.parseRawIdeaResponse(rawResponse);
+        const ideas = this.parseRawIdeaResponse(rawResponse);
+        return {
+          ideas,
+          summary: summaryResponse || "Based on your feedback, I've refined the initial idea. Here are some improved versions:"
+        };
       }
 
-      return response.ideas;
+      return {
+        ideas: ideasResponse.ideas,
+        summary: summaryResponse || "Based on your feedback, I've refined the initial idea. Here are some improved versions:"
+      };
     } catch (error) {
       console.error('Error refining Big Idea:', error);
-      // Return fallback suggestions
-      return this.getFallbackSuggestions();
+      // Return fallback suggestions with a generic summary
+      return {
+        ideas: this.getFallbackSuggestions(),
+        summary: "I've considered your feedback and created some refined versions of your idea. Here are some options to consider:"
+      };
     }
   }
 
@@ -187,32 +259,32 @@ Provide exactly 3-5 distinct options, each on a new line, following the specifie
   private parseRawIdeaResponse(rawResponse: string): BrainstormIdea[] {
     try {
       const ideas: BrainstormIdea[] = [];
-      
+
       // Try to parse the response as a list of ideas
       const lines = rawResponse.split('\n').filter(line => line.trim().length > 0);
-      
+
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        
+
         // Check if this line contains a concept name
         if (line.includes('**Concept Name:**')) {
           const conceptName = line.replace('**Concept Name:**', '').trim();
-          
+
           // Look for the description in the next line
           if (i + 1 < lines.length && lines[i + 1].includes('**Description:**')) {
             const description = lines[i + 1].replace('**Description:**', '').trim();
-            
+
             ideas.push({
               conceptName,
               description
             });
-            
+
             // Skip the description line
             i++;
           }
         }
       }
-      
+
       // If we couldn't parse any ideas, try a different approach
       if (ideas.length === 0) {
         // Try to parse each line as a complete idea
@@ -225,7 +297,7 @@ Provide exactly 3-5 distinct options, each on a new line, following the specifie
           }
         }
       }
-      
+
       return ideas.length > 0 ? ideas : this.getFallbackSuggestions();
     } catch (error) {
       console.error('Error parsing raw idea response:', error);

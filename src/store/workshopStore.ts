@@ -4,7 +4,7 @@ import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
 import { OpenAIService } from '../services/openai';
-import { BrainstormService, BrainstormContext, BrainstormIdea } from '../services/brainstormService';
+import { BrainstormService, BrainstormContext, BrainstormIdea, BrainstormResult } from '../services/brainstormService';
 
 export interface WorkshopStore {
   // Session state
@@ -855,15 +855,26 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
     try {
       // Generate ideas based on the context
-      const ideas = await brainstormService.generateBigIdeaSuggestions(context);
+      const result = await brainstormService.generateBigIdeaSuggestions(context);
 
       // Store the ideas
-      set({ brainstormIdeas: ideas });
+      set({ brainstormIdeas: result.ideas });
+
+      // First, add the summary message to provide context and analysis
+      const summaryMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: result.summary,
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+        step: 2
+      };
+
+      addChatMessage(2, summaryMessage);
 
       // Create a message with the ideas
-      let ideasContent = "Based on your information, here are some scalable offer ideas:\n\n";
+      let ideasContent = "Based on this analysis, here are some scalable offer ideas for you to consider:\n\n";
 
-      ideas.forEach((idea) => {
+      result.ideas.forEach((idea) => {
         ideasContent += `**${idea.conceptName}**\n${idea.description}\n\n`;
       });
 
@@ -925,15 +936,26 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
     try {
       // Generate refined ideas
-      const ideas = await brainstormService.refineBigIdea(initialIdea, userFeedback);
+      const result = await brainstormService.refineBigIdea(initialIdea, userFeedback);
 
       // Store the ideas
-      set({ brainstormIdeas: ideas });
+      set({ brainstormIdeas: result.ideas });
+
+      // First, add the summary message to provide context and analysis
+      const summaryMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: result.summary,
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+        step: 2
+      };
+
+      addChatMessage(2, summaryMessage);
 
       // Create a message with the ideas
       let ideasContent = "Here are some refined versions of your idea:\n\n";
 
-      ideas.forEach((idea) => {
+      result.ideas.forEach((idea) => {
         ideasContent += `**${idea.conceptName}**\n${idea.description}\n\n`;
       });
 
