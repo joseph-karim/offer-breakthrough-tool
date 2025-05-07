@@ -24,7 +24,7 @@ exports.handler = async function(event, context) {
 
     // Get the Perplexity API key from environment variables
     const apiKey = process.env.PERPLEXITY_API_KEY;
-    
+
     if (!apiKey) {
       return {
         statusCode: 500,

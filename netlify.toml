@@ -11,17 +11,8 @@
   autoLaunch = true
   framework = "#custom"
 
-  # Load environment variables from .env.development during local development
-  [dev.environment]
-  PERPLEXITY_API_KEY = "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"
-
 [functions]
   node_bundler = "esbuild"
-
-  # Environment variables for functions in production
-  [functions.environment]
-  # Note: In production, set this in the Netlify dashboard
-  # PERPLEXITY_API_KEY = "your_api_key_here"
 
 [[redirects]]
   from = "/*"
