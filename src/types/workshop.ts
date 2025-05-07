@@ -17,6 +17,9 @@ export interface TriggerEvent {
   id: string;
   description: string;
   source: 'user' | 'assistant';
+  emotionalState?: string; // The emotional state during this event
+  urgency?: 'high' | 'medium' | 'low'; // Level of urgency
+  triggerType?: 'situational' | 'internal' | 'social' | 'performance'; // Type of trigger
 }
 
 export interface Job {

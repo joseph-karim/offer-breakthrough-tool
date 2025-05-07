@@ -334,11 +334,11 @@ Here's the context for painstorming:
 
         case 4: {
           const triggerEventsPrompt = `
-            You are a CustomerCamp AI assistant trained in buyer psychology.
+            You are an expert in consumer behavior, deeply familiar with the work of Katelyn Bourgoin, Bob Moesta, Alan Klement, Byron Sharp, and Robert Cialdini. Your task is to help a user brainstorm a comprehensive list of potential buying Triggers (also known as "trigger events") that might push a new customer into the buying journey for products or services related to the user's general line of business or expertise.
 
-            Analyze the user's description of client situations and urgency factors provided in the context below. Generate a list of 5-10 specific, concrete Trigger Events (situations or 'final straws') that might lead someone to seek solutions related to the user's described experiences.
+            Analyze the user's description of their business, observed client situations, and any other context provided below. Generate a list of 10-15 specific, concrete Trigger Events (situations or 'final straws') that might lead someone to seek solutions related to the user's described experiences.
 
-            Focus on specific happenings, not general needs. These should be the moments when potential customers realize they need a solution.
+            Focus on specific happenings, not general needs. These should be the moments when potential customers realize they need a solution. Do not overly constrain triggers to a single, narrow idea if the user's business description is broader.
 
             Context:
             ${context}
@@ -348,14 +348,21 @@ Here's the context for painstorming:
               "triggerEvents": [
                 {
                   "id": "unique_id_1",
-                  "description": "Description of the trigger event",
+                  "description": "Description of the trigger event from the customer's viewpoint",
                   "emotionalState": "The emotional state during this event",
                   "urgency": "high/medium/low",
+                  "triggerType": "situational/internal/social/performance",
                   "source": "assistant"
                 },
-                ... additional events ...
+                ... additional events (10-15 total) ...
               ]
             }
+
+            Ensure you generate a mix of trigger types:
+            - Situational: External events like deadlines, launches, or new opportunities
+            - Internal/Emotional: Internal feelings like frustration, overwhelm, or FOMO
+            - Social: Comparisons to peers, client expectations, or industry standards
+            - Performance: When systems break down, metrics drop, or physical evidence of a problem appears
 
             Only respond with the JSON object, nothing else.
           `;
@@ -1145,16 +1152,82 @@ Here's the context for painstorming:
             triggerEvents: [
               {
                 id: "trigger_1",
-                description: "Losing a major client unexpectedly",
-                emotionalState: "Anxious and uncertain",
+                description: "Launched a DIY social media ad campaign for a seasonal promotion, only to see it get zero engagement and generate no new customers",
+                emotionalState: "Frustrated and discouraged",
                 urgency: "high",
+                triggerType: "performance",
                 source: "assistant"
               },
               {
                 id: "trigger_2",
-                description: "Feeling overwhelmed by too many small clients",
-                emotionalState: "Stressed and scattered",
+                description: "A new, slick competitor opened up down the street and immediately started running targeted online ads",
+                emotionalState: "Anxious and threatened",
+                urgency: "high",
+                triggerType: "situational",
+                source: "assistant"
+              },
+              {
+                id: "trigger_3",
+                description: "Received a scathing 1-star online review from a customer that specifically mentioned how hard it was to find information about their services online",
+                emotionalState: "Embarrassed and concerned",
+                urgency: "high",
+                triggerType: "social",
+                source: "assistant"
+              },
+              {
+                id: "trigger_4",
+                description: "Spent an entire weekend trying to update their outdated website themselves, only to break something crucial",
+                emotionalState: "Overwhelmed and out of depth",
                 urgency: "medium",
+                triggerType: "performance",
+                source: "assistant"
+              },
+              {
+                id: "trigger_5",
+                description: "Attended a local business networking event and felt a pang of jealousy as peers discussed successful online marketing strategies",
+                emotionalState: "Inadequate and behind",
+                urgency: "medium",
+                triggerType: "social",
+                source: "assistant"
+              },
+              {
+                id: "trigger_6",
+                description: "Their most reliable referral source unexpectedly dried up, creating a sudden need to find new ways to attract customers",
+                emotionalState: "Panicked and desperate",
+                urgency: "high",
+                triggerType: "situational",
+                source: "assistant"
+              },
+              {
+                id: "trigger_7",
+                description: "Realized their children are more tech-savvy about online promotion than they are",
+                emotionalState: "Self-doubt and inadequacy",
+                urgency: "low",
+                triggerType: "internal",
+                source: "assistant"
+              },
+              {
+                id: "trigger_8",
+                description: "Noticed foot traffic has been steadily declining for three consecutive months",
+                emotionalState: "Worried and pressured",
+                urgency: "medium",
+                triggerType: "performance",
+                source: "assistant"
+              },
+              {
+                id: "trigger_9",
+                description: "A potential customer called, explicitly stating they 'couldn't find much about you online' before choosing a more visible competitor",
+                emotionalState: "Regretful and motivated",
+                urgency: "high",
+                triggerType: "social",
+                source: "assistant"
+              },
+              {
+                id: "trigger_10",
+                description: "After calculating year-end financials, they saw that marketing spend was high but new customer acquisition was flat",
+                emotionalState: "Concerned and analytical",
+                urgency: "medium",
+                triggerType: "performance",
                 source: "assistant"
               }
             ]

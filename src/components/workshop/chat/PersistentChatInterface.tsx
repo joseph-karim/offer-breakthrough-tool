@@ -139,7 +139,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
       case 3:
         return "What business goals and constraints do you have for this offer? I can help with examples.";
       case 4:
-        return "What moments trigger customers to seek your solution? (Situational, emotional, or social triggers)";
+        return "👋 Welcome to Step 4: Buying Triggers!\n\nThese are the specific moments or 'final straw' situations that shift a potential customer from just having a problem to actively looking for a solution. Understanding these is key to finding profitable problems.\n\nI'll help you explore a broad range of potential triggers related to your business area. Let's start by understanding your expertise and what you've observed with past customers.";
       case 5:
         return "Define your Jobs-to-be-Done using 'Help me [VERB] my [OBJECT] [CONTEXT]'. Type 'jtbd' for help.";
       case 6:
@@ -168,7 +168,7 @@ export const PersistentChatInterface: React.FC<PersistentChatInterfaceProps> = (
         }
         return "What business goals do you have for this offer?";
       case 4:
-        return "What situations might prompt someone to seek your offer?";
+        return "To start, tell me a bit about your business or your primary area of expertise. What do you generally do, or what kind of services have you offered in the past?";
       case 5:
         return "Type 'jtbd' if you'd like help generating job statements.";
       case 6:

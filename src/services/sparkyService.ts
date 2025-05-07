@@ -174,20 +174,64 @@ export class SparkyService {
 
   /**
    * Mock response for Trigger Events step
+   * Implements the revised guided questioning flow for broader trigger event brainstorming
    */
   private getMockTriggerEventsResponse(message: string, workshopData: WorkshopData): string {
     const lowerMessage = message.toLowerCase();
-    const bigIdea = workshopData.bigIdea?.description || "your offer";
 
+    // Store user responses for the guided questioning flow
+    // In a real implementation, these would be stored in state
+    // For mock purposes, we'll infer from the message content
+
+    // Check if this is the first question about business description
+    if (workshopData.triggerEvents.length === 0 &&
+        !lowerMessage.includes('example') &&
+        !lowerMessage.includes('suggestion') &&
+        !lowerMessage.includes('type') &&
+        !lowerMessage.includes('kind')) {
+
+      // Store the business description (in a real implementation)
+      // For now, just respond with the next question
+      return "Thanks! Now, thinking about the kinds of customers you've worked with, or the types of problems your expertise typically solves:\n\nLooking back, what kind of specific situations, events, or acute frustrations have you noticed that seem to *push* people to finally reach out or start searching for a solution related to what you do?\n\n(For example: Did they miss a deadline? Did a competitor make a move? Did they get some tough feedback? Did a system break?)";
+    }
+
+    // Check if this is the second question about observed situations
+    if (workshopData.triggerEvents.length === 0 &&
+        lowerMessage.includes('miss') ||
+        lowerMessage.includes('deadline') ||
+        lowerMessage.includes('competitor') ||
+        lowerMessage.includes('feedback') ||
+        lowerMessage.includes('system')) {
+
+      // Store the observed situations (in a real implementation)
+      // For now, just respond with the optional third question
+      return "That's helpful! And in those situations, what kind of feelings do you think these potential customers are experiencing?\n\n(e.g., Overwhelmed? Anxious? Embarrassed? Pressured? FOMO?) You can list a few, or I can also draw on common patterns.";
+    }
+
+    // Check if this is the third question about feelings
+    if (workshopData.triggerEvents.length === 0 &&
+        lowerMessage.includes('overwhelm') ||
+        lowerMessage.includes('anxious') ||
+        lowerMessage.includes('embarrass') ||
+        lowerMessage.includes('pressure') ||
+        lowerMessage.includes('fomo')) {
+
+      // Store the feelings (in a real implementation)
+      // For now, just respond with the transition to AI generation
+      return "Excellent! Based on your business and those situations/frustrations you've seen, I'm going to brainstorm a broader range of potential Buying Triggers. This might include common feelings and pressures people experience in such scenarios.\n\nThis will give us a good list to start with. Give me a moment to generate these...";
+    }
+
+    // Standard responses for common questions
     if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
-      return `Here are some example trigger events that might prompt customers to seek ${bigIdea}:\n\n1. Just landed their first big client presentation but realized their DIY materials look amateurish.\n\n2. Received a quote for custom work that was 5x their available budget.\n\n3. Wasted a whole weekend trying to do it themselves and felt completely unproductive.\n\n4. Saw a competitor launch with a polished solution and felt immediate pressure to level up.\n\n5. Facing an upcoming deadline and realizing they don't have the skills to complete the work in time.`;
+      return `Here are some example trigger events that might prompt customers to seek solutions in your field:\n\n1. Launched a DIY social media ad campaign for a seasonal promotion, only to see it get zero engagement and generate no new customers, leading to a feeling of wasted money and frustration.\n\n2. A new, slick competitor opened up down the street and immediately started running targeted online ads, making the business owner feel invisible and anxious about losing market share.\n\n3. Received a scathing 1-star online review from a customer that specifically mentioned how hard it was to find information about their services online, causing public embarrassment and immediate concern for their reputation.\n\n4. Spent an entire weekend trying to update their outdated website themselves, only to break something crucial and realize they are completely out of their depth and overwhelmed.\n\n5. Attended a local business networking event and felt a pang of jealousy as peers discussed successful online marketing strategies, highlighting their own lack of a clear plan.`;
     }
 
     if (lowerMessage.includes('type') || lowerMessage.includes('kind')) {
-      return "There are several types of trigger events to consider:\n\n1. Situational triggers: External events like deadlines, launches, or new opportunities\n\n2. Emotional triggers: Internal feelings like frustration, overwhelm, or FOMO\n\n3. Social triggers: Comparisons to peers, client expectations, or industry standards\n\n4. Anticipated triggers: Future concerns or risks they want to avoid\n\nWhich types would you like to explore for your offer?";
+      return "There are several types of trigger events to consider:\n\n1. Situational triggers: External events like deadlines, launches, or new opportunities\n\n2. Internal/Emotional triggers: Internal feelings like frustration, overwhelm, or FOMO\n\n3. Social triggers: Comparisons to peers, client expectations, or industry standards\n\n4. Performance Gaps/Physical triggers: When systems break down, metrics drop, or physical evidence of a problem appears\n\nA good brainstorming session includes a mix of all these types to capture the full range of potential buying triggers.";
     }
 
-    return `I'd be happy to help you identify trigger events for ${bigIdea}! These are the specific moments when potential customers realize they need your solution. Think about: What was happening right before your past clients hired you? What frustrations or pressures might create urgency? What's the "final straw" that pushes someone to seek help?`;
+    // Default response
+    return "I'm here to help you brainstorm buying triggers! These are those specific moments or 'final straw' situations that shift a potential customer from just having a problem to actively looking for a solution.\n\nTo give you the most helpful suggestions, I'd like to understand:\n1. Your business or area of expertise\n2. Situations you've observed that push people to seek solutions\n3. Feelings customers might experience in those moments\n\nWould you like to start by telling me about your business?";
   }
 
   /**
@@ -400,9 +444,16 @@ export class SparkyService {
 
       case 4: // Trigger Events
         suggestions.push(
-          { id: `suggestion-${Date.now()}-1`, content: 'Just landed their first big client presentation but realized their DIY materials look amateurish.', type },
-          { id: `suggestion-${Date.now()}-2`, content: 'Received a quote for custom work that was 5x their available budget.', type },
-          { id: `suggestion-${Date.now()}-3`, content: 'Wasted a whole weekend trying to do it themselves and felt completely unproductive.', type }
+          { id: `suggestion-${Date.now()}-1`, content: 'Launched a DIY social media ad campaign for a seasonal promotion, only to see it get zero engagement and generate no new customers, leading to a feeling of wasted money and frustration.', type },
+          { id: `suggestion-${Date.now()}-2`, content: 'A new, slick competitor opened up down the street and immediately started running targeted online ads, making the business owner feel invisible and anxious about losing market share.', type },
+          { id: `suggestion-${Date.now()}-3`, content: 'Received a scathing 1-star online review from a customer that specifically mentioned how hard it was to find information about their services online, causing public embarrassment and immediate concern for their reputation.', type },
+          { id: `suggestion-${Date.now()}-4`, content: 'Spent an entire weekend trying to update their outdated website themselves, only to break something crucial and realize they are completely out of their depth and overwhelmed.', type },
+          { id: `suggestion-${Date.now()}-5`, content: 'Attended a local business networking event and felt a pang of jealousy as peers discussed successful online marketing strategies, highlighting their own lack of a clear plan.', type },
+          { id: `suggestion-${Date.now()}-6`, content: 'Their most reliable referral source unexpectedly dried up, creating a sudden and urgent need to find new, consistent ways to attract customers.', type },
+          { id: `suggestion-${Date.now()}-7`, content: 'Realized their children are more tech-savvy about online promotion than they are, leading to a moment of self-doubt about their ability to keep the business modern.', type },
+          { id: `suggestion-${Date.now()}-8`, content: 'Noticed foot traffic has been steadily declining for three consecutive months, forcing them to confront that "word-of-mouth" alone isn\'t cutting it anymore.', type },
+          { id: `suggestion-${Date.now()}-9`, content: 'A potential customer called, explicitly stating they "couldn\'t find much about you online" before choosing a more visible competitor.', type },
+          { id: `suggestion-${Date.now()}-10`, content: 'After calculating year-end financials, they saw that marketing spend was high but new customer acquisition was flat, triggering a need for a more effective approach.', type }
         );
         break;
 
@@ -564,14 +615,20 @@ The goal is to clarify why they're creating this offer and what constraints they
         break;
 
       case 4: // Identify Buying Triggers
-        stepPrompt = `Help the user brainstorm specific Trigger Events (situational, physical, social, internal/emotional) that would push their potential customers to seek a solution like the one described in their "Big Idea".
+        stepPrompt = `Help the user explore Buying Triggers through a guided questioning flow that shifts from narrowly focusing on their current Big Idea V1 to a broader exploration of potential triggers related to the user's general business/expertise and the types of problems such businesses often solve.
+
+Guided Questioning Flow:
+1. First, gather context about the user's business or primary area of expertise
+2. Next, ask about observed situations or frustrations that push customers to seek solutions
+3. Optionally, ask about associated feelings customers might experience
+4. Then transition to AI-generated suggestions for a broader range of potential triggers
 
 Example guidance questions:
-- "What was going on in your best clients' businesses right before they hired you?"
-- "What external pressures might make someone urgently need the outcome your offer provides?"
-- "What internal feelings might bubble up? Overwhelm? Frustration? Fear of missing out?"
+- "Tell me a bit about your business or your primary area of expertise. What do you generally do?"
+- "What kind of specific situations or acute frustrations have you noticed that seem to *push* people to finally reach out?"
+- "In those situations, what kind of feelings might these potential customers be experiencing?"
 
-The goal is to identify specific moments or situations when potential customers would be most motivated to seek their solution.`;
+The goal is to identify a broad range of specific moments or situations (10-15) when potential customers would be motivated to seek a solution, without being overly constrained by the user's initial Big Idea V1.`;
         break;
 
       case 5: // Define Job-to-be-Done
@@ -783,27 +840,46 @@ Provide 3-5 options for Goals and 3-5 options for Constraints, clearly labeled. 
     system: string;
     user: string;
   } {
+    // Extract user's business description from the chat history if available
+    // In a real implementation, this would come from stored state
+    const userBusinessDescription = workshopData.bigIdea?.targetCustomers || "Not directly provided";
+
+    // Extract observed situations from the chat history if available
+    // In a real implementation, this would come from stored state
+    const userObservedSituations = workshopData.triggerEvents?.length > 0
+      ? workshopData.triggerEvents.map(t => t.description).join(', ')
+      : "Not directly provided";
+
     return {
-      system: `You are an AI assistant helping a user brainstorm Trigger Events for their specific offer idea, applying JTBD principles. Your task is to generate 3-5 distinct, specific Trigger Events from the customer's perspective that would create urgency for the user's solution.
+      system: `You are an expert in consumer behavior, deeply familiar with the work of Katelyn Bourgoin, Bob Moesta, Alan Klement, Byron Sharp, and Robert Cialdini. Your task is to help a user brainstorm a comprehensive list of potential buying Triggers (also known as "trigger events") that might push a new customer into the buying journey for products or services related to the user's general line of business or expertise. The user is early in their offer design process and may not have a specific "Big Idea" or "Target Customer" fully defined yet.
 
 # Task Description
-Generate 3-5 distinct, specific Trigger Events (situations, 'final straws', moments of realization) from the *customer's* perspective that would create urgency for the user's solution.
+Generate 10-15 distinct, plausible Trigger Events. These events must represent specific moments, situations, or realizations (the 'final straw') that would likely create urgency and push a potential customer from passively experiencing a struggle (related to the user's business area) to actively seeking a solution.
 
 # Input Context
-* Big Idea: "${workshopData.bigIdea?.description || "Not specified"}"
-* Target Customers: "${workshopData.bigIdea?.targetCustomers || "Not specified"}"
-* Existing Triggers: ${workshopData.triggerEvents?.length > 0 ? workshopData.triggerEvents.map(t => `"${t.description}"`).join(', ') : "None yet"}
+1. User's Business / Area of Expertise: "${userBusinessDescription}" - What the user generally does or offers.
+2. Observed Situations/Frustrations by User: "${userObservedSituations}" - Specific scenarios the user has seen that indicate a customer might need a solution.
+3. User's Big Idea (Optional): "${workshopData.bigIdea?.description || "Not fully defined yet"}" - The user's initial product/service concept.
 
 # Methodology & Constraints
--   Generate 3-5 distinct Trigger Events.
--   Each event must be described clearly from the *customer's* viewpoint.
--   Events must create *urgency* or represent a *struggle/catalyst* directly related to the problem the Big Idea solves.
--   Aim for specificity and realism based on the provided context (Big Idea, Target Customers).
--   Attempt to include a mix of trigger types (Situational, Emotional, Social) if plausible.
+- Trigger Definition: Buying triggers are specific events or stimuli that push a customer towards a purchase decision. Focus strictly on identifying specific catalyst events, situations, experiences, or realizations that move the customer into the buying journey. These are the moments that create urgency and make the status quo unacceptable.
+- Broad Brainstorming: Since the user is early in the process, aim for a diverse range of triggers relevant to the user's general field of business. Do not overly constrain triggers to a single, narrow V1 idea if the user's business description is broader.
+- Customer Perspective: Phrase all triggers vividly from the *customer's* viewpoint and experience. What actually happens to them? What do they think or feel in that moment?
+- Specificity & Concreteness: Avoid vague triggers. Aim for concrete moments. *Instead of* "Needs better marketing," *prefer* "Just saw a competitor's ad campaign that made their own marketing look amateurish and outdated."
+- Mix of Types: Generate a mix of trigger types:
+  - **(Situational):** e.g., "Their main client, representing 40% of revenue, just announced they're not renewing their contract."
+  - **(Internal/Emotional):** e.g., "Woke up at 3 AM for the fifth night in a row, stressed about whether the business will survive the current downturn, and realized something fundamental has to change."
+  - **(Social):** e.g., "Overheard a respected peer at a conference casually mention how a new tool tripled their team's productivity, making them feel acutely behind the curve."
+  - **(Performance Gaps/Physical):** e.g., "The custom-coded website crashed during the biggest sales event of the year, losing thousands in potential orders."
+- Infer Emotions: Use your broad knowledge to infer and incorporate likely strong emotions into the trigger descriptions to make them more compelling.
 
 # Output Format
-Provide exactly 3-5 distinct Trigger Event options, each described clearly from the customer's viewpoint. Do not include any introductory or concluding text, only the list of options.`,
-      user: `Please generate 3-5 specific trigger events for the user's Big Idea: "${workshopData.bigIdea?.description || "Not specified"}"`
+Provide exactly 10-15 distinct Trigger Event options, each described clearly and specifically from the customer's viewpoint. Try to subtly weave in the implied emotion or state of mind. Do not include any introductory or concluding text, only the list of options.
+
+1. [Trigger Event Option 1: Specific situation/moment/realization reflecting the inputs, incorporating likely emotions]
+2. [Trigger Event Option 2]
+... (up to 15)`,
+      user: `Please generate 10-15 specific trigger events based on the user's business area: "${userBusinessDescription}" and observed situations: "${userObservedSituations}"`
     };
   }
 

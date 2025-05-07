@@ -67,14 +67,14 @@ export const Step04_TriggerEvents: React.FC = () => {
 
       {/* Description */}
       <div style={styles.stepDescriptionStyle}>
-        <p>What specific events or situations cause someone to actively seek a solution like yours?</p>
+        <p>What specific moments or 'final straw' situations shift a potential customer from just having a problem to actively looking for a solution?</p>
       </div>
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
         <div style={styles.infoBoxStyle}>
           <Info style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#ea580c' }} />
-          Focus on the *moment* of change. What just happened that made them realize they need help NOW?
+          Focus on specific moments that create urgency. Think broadly about your business area, not just your current idea. Include a mix of situational, emotional, social, and performance triggers.
         </div>
 
         {/* List of existing events */}
@@ -131,7 +131,7 @@ export const Step04_TriggerEvents: React.FC = () => {
               value={newEvent}
               onChange={(e) => setNewEvent(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="e.g., Just got promoted to manager"
+              placeholder="e.g., Launched a social media campaign that got zero engagement"
               style={styles.inputStyle}
             />
             <Button
@@ -155,23 +155,27 @@ export const Step04_TriggerEvents: React.FC = () => {
             <ul style={styles.examplesListStyle}>
               <li style={styles.exampleItemStyle}>
                 <span style={styles.exampleBulletStyle}>•</span>
-                Lost a major client due to poor reporting
+                Launched a social media campaign that got zero engagement
               </li>
               <li style={styles.exampleItemStyle}>
                 <span style={styles.exampleBulletStyle}>•</span>
-                Team doubled in size in 3 months
+                A competitor launched with a more polished solution
               </li>
               <li style={styles.exampleItemStyle}>
                 <span style={styles.exampleBulletStyle}>•</span>
-                Received negative feedback about leadership style
+                Received a negative review mentioning poor online presence
               </li>
               <li style={styles.exampleItemStyle}>
                 <span style={styles.exampleBulletStyle}>•</span>
-                Missed quarterly targets for the first time
+                Spent a weekend trying to DIY their website and broke it
               </li>
               <li style={styles.exampleItemStyle}>
                 <span style={styles.exampleBulletStyle}>•</span>
-                New competitor entered the market with better features
+                Felt embarrassed at a networking event when discussing marketing
+              </li>
+              <li style={styles.exampleItemStyle}>
+                <span style={styles.exampleBulletStyle}>•</span>
+                Their main referral source suddenly dried up
               </li>
             </ul>
           </div>
