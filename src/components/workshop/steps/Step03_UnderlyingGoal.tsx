@@ -104,14 +104,16 @@ export const Step03_UnderlyingGoal: React.FC = () => {
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
         <div style={{
-          backgroundColor: '#fcf720',
-          padding: '15px',
+          backgroundColor: '#feffb7',
+          padding: '12px 15px',
           borderRadius: '10px',
           marginBottom: '20px',
           color: '#222222',
-          fontWeight: '500'
+          fontWeight: '500',
+          fontSize: '14px',
+          lineHeight: '1.5'
         }}>
-          <p style={{ margin: 0 }}>Your underlying goal can relate to your business and/or personal life.</p>
+          Your underlying goal can relate to your business and/or personal life.
         </div>
 
         {/* Business Goal */}

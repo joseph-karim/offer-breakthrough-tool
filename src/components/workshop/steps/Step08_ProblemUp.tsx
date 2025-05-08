@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { ProblemUp } from '../../../types/workshop';
-import { Check, Flame, AlertCircle, ChevronUp, ChevronDown } from 'lucide-react';
+import { Check, Flame, ChevronUp, ChevronDown } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import * as styles from '../../../styles/stepStyles';
 import { Button } from '../../ui/Button';
@@ -470,7 +470,6 @@ export const Step08_ProblemUp: React.FC = () => {
           </div>
 
           <div style={styles.yellowInfoBoxStyle}>
-            <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
             Now, let's narrow your focus to define your "Target Moment" - the specific scenario where your ideal buyer feels a key pain acutely and becomes ready to seek a solution.
           </div>
 

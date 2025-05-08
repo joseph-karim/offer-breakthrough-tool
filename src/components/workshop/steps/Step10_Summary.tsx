@@ -7,6 +7,7 @@ import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { useSparkyService } from '../../../hooks/useSparkyService';
+import Confetti from 'react-confetti';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectWorkshopData = (state: WorkshopStore) => state.workshopData;
@@ -24,11 +25,40 @@ export const Step10_Summary: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
   const [isGeneratingNextSteps, setIsGeneratingNextSteps] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(true);
   const [formData, setFormData] = useState({
     keyInsights: workshopData.reflections?.keyInsights || '',
     nextSteps: workshopData.reflections?.nextSteps || '',
     personalReflection: workshopData.reflections?.personalReflection || ''
   });
+
+  // Window dimensions for confetti
+  const [windowDimension, setWindowDimension] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+
+  // Update window dimensions when window is resized
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowDimension({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Hide confetti after 10 seconds
+    const timer = setTimeout(() => {
+      setShowConfetti(false);
+    }, 10000);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timer);
+    };
+  }, []);
 
   // Initialize with data from the store
   useEffect(() => {
@@ -143,6 +173,17 @@ export const Step10_Summary: React.FC = () => {
 
   return (
     <div style={styles.stepContainerStyle}>
+      {/* Confetti animation */}
+      {showConfetti && (
+        <Confetti
+          width={windowDimension.width}
+          height={windowDimension.height}
+          recycle={false}
+          numberOfPieces={200}
+          gravity={0.1}
+        />
+      )}
+
       {/* Step indicator */}
       <div style={{
         display: 'flex',
@@ -182,7 +223,6 @@ export const Step10_Summary: React.FC = () => {
       <div style={styles.contentContainerStyle}>
         <div style={{ display: 'grid', gap: '24px' }}>
           <div style={styles.yellowInfoBoxStyle}>
-            <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
             Congratulations on completing the Buyer Breakthrough Workshop! Now it's time to reflect on your journey, capture key insights, and create an actionable plan to validate your offer concept before building it.
           </div>
 

@@ -3,7 +3,7 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Job } from '../../../types/workshop';
-import { Target, Plus, X, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, X, Info, ChevronDown, ChevronUp } from 'lucide-react';
 import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import * as styles from '../../../styles/stepStyles';
 
@@ -147,7 +147,7 @@ export const Step05_Jobs: React.FC = () => {
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
         <div style={styles.yellowInfoBoxStyle}>
-          <p style={{ margin: 0 }}>A 'job' describes the progress that the customer seeks to make in a specific context.</p>
+          A 'job' describes the progress that the customer seeks to make in a specific context.
         </div>
 
         {/* Context from previous steps */}
@@ -156,7 +156,8 @@ export const Step05_Jobs: React.FC = () => {
           backgroundColor: '#f8fafc',
           borderRadius: '8px',
           border: '1px solid #e2e8f0',
-          marginTop: '20px'
+          marginTop: '20px',
+          marginBottom: '24px'  /* Added more bottom margin for spacing */
         }}>
           <h3 style={{
             fontSize: '16px',
@@ -195,7 +196,6 @@ export const Step05_Jobs: React.FC = () => {
         </div>
 
         <div style={styles.yellowInfoBoxStyle}>
-          <Target style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
           Think beyond features. Focus on the underlying need or goal. Why are they really looking for a solution?
         </div>
 

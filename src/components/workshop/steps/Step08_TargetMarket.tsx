@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetMarketProfile } from '../../../types/workshop';
-import { Target, Plus, X, MessageSquare } from 'lucide-react';
+import { Plus, X, MessageSquare } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import * as styles from '../../../styles/stepStyles';
@@ -255,7 +255,6 @@ export const Step08_TargetMarket: React.FC = () => {
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
         <div style={styles.yellowInfoBoxStyle}>
-          <Target style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
           Defining your market by shared traits, triggers, and their desired transformation helps create differentiated offers and makes marketing much easier.
         </div>
 

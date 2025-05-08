@@ -201,14 +201,16 @@ export const Step02_BigIdea: React.FC = () => {
 
       {/* Info box - UPDATED TO USE BRAND YELLOW */}
       <div style={{
-        backgroundColor: '#fcf720',
-        padding: '15px',
+        backgroundColor: '#feffb7',
+        padding: '12px 15px',
         borderRadius: '10px',
-        marginBottom: '25px',
+        marginBottom: '20px',
         color: '#222222',
-        fontWeight: '500'
+        fontWeight: '500',
+        fontSize: '14px',
+        lineHeight: '1.5'
       }}>
-        <p style={{ margin: 0 }}>Don't overthink it. This is just version 1.0 of your idea. You'll refine it as you dig deeper.</p>
+        Don't overthink it. This is just version 1.0 of your idea. You'll refine it as you dig deeper.
       </div>
 
       {/* Main content area */}

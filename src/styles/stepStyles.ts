@@ -170,10 +170,12 @@ export const yellowHighlightStyle: CSSProperties = {
 };
 
 export const yellowInfoBoxStyle: CSSProperties = {
-  backgroundColor: '#fcf720',
-  padding: '15px',
+  backgroundColor: '#feffb7',
+  padding: '12px 15px',
   borderRadius: '10px',
-  marginBottom: '25px',
+  marginBottom: '20px',
   color: '#222222',
-  fontWeight: '500'
+  fontWeight: '500',
+  fontSize: '14px',
+  lineHeight: '1.5'
 };
