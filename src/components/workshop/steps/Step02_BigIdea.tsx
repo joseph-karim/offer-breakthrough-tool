@@ -7,7 +7,6 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Button } from '../../ui/Button';
 import { URLInputModal } from '../chat/URLInputModal';
 import { BrainstormContext } from '../../../services/brainstormService';
-import * as styles from '../../../styles/stepStyles';
 
 
 // Separate selectors to prevent unnecessary re-renders
