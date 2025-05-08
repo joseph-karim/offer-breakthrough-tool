@@ -56,25 +56,52 @@ export const Step04_TriggerEvents: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={styles.stepHeaderContainerStyle}>
-        <div style={styles.stepNumberStyle}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        marginBottom: '20px' 
+      }}>
+        <div style={{
+          backgroundColor: '#fcf720',
+          color: 'black',
+          width: '30px',
+          height: '30px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          marginRight: '15px',
+          position: 'relative',
+          top: '4px'
+        }}>
           3
         </div>
-        <h2 style={styles.stepTitleStyle}>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#333333',
+          margin: 0,
+          lineHeight: '1'
+        }}>
           Identify Trigger Events
         </h2>
       </div>
 
       {/* Description */}
       <div style={styles.stepDescriptionStyle}>
-        <p>What specific moments or 'final straw' situations shift a potential customer from just having a problem to actively looking for a solution?</p>
+        <p>Let's explore the specific moments in your prospective buyer's life that might trigger them to realize they need a solution like yours. These trigger events provide clues about what your customers really want to get done.</p>
+        <p>Trigger events can be:<br />
+        Situational (eg. losing a client, getting divorced, hiring a new team member, etc.)<br />
+        Physical (eg. being cold, hip pain, etc.)<br /> 
+        Social (eg. feeling embarrassed, a fight with a colleague)<br />
+        Internal/emotional (eg. feeling overwhelmed, being bored, etc.)</p>
       </div>
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={styles.infoBoxStyle}>
-          <Info style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#ea580c' }} />
-          Focus on specific moments that create urgency. Think broadly about your business area, not just your current idea. Include a mix of situational, emotional, social, and performance triggers.
+        <div style={styles.yellowInfoBoxStyle}>
+          <p style={{ margin: 0 }}>Focus on the *moment* that triggered them to begin the buying journey.</p>
         </div>
 
         {/* List of existing events */}
@@ -123,7 +150,7 @@ export const Step04_TriggerEvents: React.FC = () => {
             htmlFor="newTriggerEvent"
             style={styles.labelStyle}
           >
-            Add Trigger Event:
+            What might trigger someone to need a solution like yours?
           </label>
           <div style={{ display: 'flex', gap: '12px' }}>
             <input
@@ -131,14 +158,29 @@ export const Step04_TriggerEvents: React.FC = () => {
               value={newEvent}
               onChange={(e) => setNewEvent(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="e.g., Launched a social media campaign that got zero engagement"
-              style={styles.inputStyle}
+              placeholder="e.g., Lost a major client and realized need for stable income."
+              style={{
+                flex: 1,
+                padding: '12px',
+                borderRadius: '15px',
+                border: '1px solid #DDDDDD',
+                fontSize: '14px',
+                backgroundColor: '#F2F2F2',
+                color: '#333333',
+              }}
             />
             <Button
               variant="primary"
               onClick={handleAddEvent}
               disabled={!newEvent.trim()}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#fcf720', color: '#222222' }}
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                backgroundColor: '#fcf720', 
+                color: '#222222',
+                borderRadius: '15px',
+              }}
             >
               <Plus size={20} />
               Add
@@ -148,34 +190,61 @@ export const Step04_TriggerEvents: React.FC = () => {
 
         {/* Example trigger events */}
         {events.length === 0 && (
-          <div style={styles.examplesContainerStyle}>
-            <div style={styles.examplesLabelStyle}>
+          <div style={{
+            backgroundColor: '#F0E6FF', // Purple background
+            borderRadius: '15px',
+            padding: '20px'
+          }}>
+            <div style={{
+              display: 'inline-block',
+              fontSize: '14px',
+              color: '#FFFFFF',
+              fontWeight: 'bold',
+              marginBottom: '15px',
+              backgroundColor: '#6B46C1',
+              padding: '4px 12px',
+              borderRadius: '20px'
+            }}>
               EXAMPLES
             </div>
-            <ul style={styles.examplesListStyle}>
-              <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Launched a social media campaign that got zero engagement
+            <ul style={{
+              listStyle: 'none',
+              padding: 0,
+              margin: 0,
+              color: '#333333',
+              fontSize: '14px'
+            }}>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Hit a revenue plateau in business and feel stuck
               </li>
-              <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                A competitor launched with a more polished solution
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Missed family event due to work
               </li>
-              <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Received a negative review mentioning poor online presence
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Spent weeks working on a new offer, launched it, and it didn't sell as hoped
               </li>
-              <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Spent a weekend trying to DIY their website and broke it
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Rejected for promotion due to skills gap
               </li>
-              <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Felt embarrassed at a networking event when discussing marketing
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Team doubled in size in 3 months
               </li>
-              <li style={styles.exampleItemStyle}>
-                <span style={styles.exampleBulletStyle}>•</span>
-                Their main referral source suddenly dried up
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Received negative feedback about leadership style
+              </li>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Missed quarterly targets for the first time
+              </li>
+              <li style={{ display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                New competitor entered the market with better features
               </li>
             </ul>
           </div>

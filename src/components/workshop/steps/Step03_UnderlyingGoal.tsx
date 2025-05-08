@@ -67,11 +67,34 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={styles.stepHeaderContainerStyle}>
-        <div style={styles.stepNumberStyle}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        marginBottom: '20px' 
+      }}>
+        <div style={{
+          backgroundColor: '#fcf720',
+          color: 'black',
+          width: '30px',
+          height: '30px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          marginRight: '15px',
+          position: 'relative',
+          top: '4px'
+        }}>
           2
         </div>
-        <h2 style={styles.stepTitleStyle}>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#333333',
+          margin: 0,
+          lineHeight: '1'
+        }}>
           Clarify Your Underlying Goal
         </h2>
       </div>
@@ -84,10 +107,12 @@ export const Step03_UnderlyingGoal: React.FC = () => {
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
         <div style={{
-          backgroundColor: '#feffb7',
+          backgroundColor: '#fcf720',
           padding: '15px',
           borderRadius: '10px',
-          marginBottom: '20px'
+          marginBottom: '20px',
+          color: '#222222',
+          fontWeight: '500'
         }}>
           <p style={{ margin: 0 }}>Your underlying goal can relate to your business and/or personal life.</p>
         </div>

@@ -12,7 +12,7 @@ export const stepContainerStyle: CSSProperties = {
 
 export const stepHeaderContainerStyle: CSSProperties = {
   display: 'flex',
-  alignItems: 'center',
+  alignItems: 'center', 
   marginBottom: '20px'
 };
 
@@ -26,14 +26,17 @@ export const stepNumberStyle: CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   fontWeight: 'bold',
-  marginRight: '15px'
+  marginRight: '15px',
+  position: 'relative',
+  top: '4px' // Adjust position to align with text baseline
 };
 
 export const stepTitleStyle: CSSProperties = {
   fontSize: '24px',
   fontWeight: 'bold',
   color: '#333333',
-  margin: 0
+  margin: 0,
+  lineHeight: '1'
 };
 
 export const stepDescriptionStyle: CSSProperties = {
@@ -164,22 +167,10 @@ export const yellowHighlightStyle: CSSProperties = {
 };
 
 export const yellowInfoBoxStyle: CSSProperties = {
-  backgroundColor: '#feffb7',
+  backgroundColor: '#fcf720',
   padding: '15px',
   borderRadius: '10px',
-  marginBottom: '25px'
-};
-
-export const brainstormButtonStyle: CSSProperties = {
-  backgroundColor: '#fcf720',
-  color: '#333333',
-  borderRadius: '20px',
-  fontSize: '14px',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '6px',
-  padding: '8px 12px',
-  fontWeight: 'bold',
-  border: 'none',
-  cursor: 'pointer'
+  marginBottom: '25px',
+  color: '#222222',
+  fontWeight: '500'
 };

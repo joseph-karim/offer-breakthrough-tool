@@ -179,11 +179,34 @@ export const Step07_Painstorming: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={styles.stepHeaderContainerStyle}>
-        <div style={styles.stepNumberStyle}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        marginBottom: '20px' 
+      }}>
+        <div style={{
+          backgroundColor: '#fcf720',
+          color: 'black',
+          width: '30px',
+          height: '30px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          marginRight: '15px',
+          position: 'relative',
+          top: '4px'
+        }}>
           07
         </div>
-        <h2 style={styles.stepTitleStyle}>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#333333',
+          margin: 0,
+          lineHeight: '1'
+        }}>
           Painstorming
         </h2>
       </div>
@@ -208,8 +231,8 @@ export const Step07_Painstorming: React.FC = () => {
 
 
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={styles.infoBoxStyle}>
-            <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#e11d48' }} />
+          <div style={styles.yellowInfoBoxStyle}>
+            <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
             The more urgent, painful, and expensive the problems, the more people will pay for your solution.
           </div>
 

@@ -218,11 +218,34 @@ export const Step08_ProblemUp: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={styles.stepHeaderContainerStyle}>
-        <div style={styles.stepNumberStyle}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        marginBottom: '20px' 
+      }}>
+        <div style={{
+          backgroundColor: '#fcf720',
+          color: 'black',
+          width: '30px',
+          height: '30px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          marginRight: '15px',
+          position: 'relative',
+          top: '4px'
+        }}>
           08
         </div>
-        <h2 style={styles.stepTitleStyle}>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#333333',
+          margin: 0,
+          lineHeight: '1'
+        }}>
           Problem Up
         </h2>
       </div>
@@ -420,8 +443,8 @@ export const Step08_ProblemUp: React.FC = () => {
             </div>
           </div>
 
-          <div style={styles.infoBoxStyle}>
-            <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#0ea5e9' }} />
+          <div style={styles.yellowInfoBoxStyle}>
+            <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
             Now, let's narrow your focus to define your "Target Moment" - the specific scenario where your ideal buyer feels a key pain acutely and becomes ready to seek a solution.
           </div>
 
@@ -764,8 +787,8 @@ export const Step08_ProblemUp: React.FC = () => {
                     onClick={generateTargetMomentSuggestions}
                     disabled={!primaryPainId || !primaryBuyerId || formData.relevantTriggerIds.length === 0 || isGeneratingSuggestions}
                     style={{
-                      backgroundColor: (!primaryPainId || !primaryBuyerId || formData.relevantTriggerIds.length === 0) ? '#cbd5e1' : '#0ea5e9',
-                      color: (!primaryPainId || !primaryBuyerId || formData.relevantTriggerIds.length === 0) ? '#64748b' : 'white',
+                      backgroundColor: (!primaryPainId || !primaryBuyerId || formData.relevantTriggerIds.length === 0) ? '#cbd5e1' : '#fcf720',
+                      color: (!primaryPainId || !primaryBuyerId || formData.relevantTriggerIds.length === 0) ? '#64748b' : '#222222',
                       padding: '10px 20px',
                       borderRadius: '8px',
                       fontWeight: 600,
@@ -824,15 +847,7 @@ export const Step08_ProblemUp: React.FC = () => {
                 )}
               </>
             ) : (
-              <div style={{
-                padding: '16px',
-                backgroundColor: '#fff4e5',
-                borderRadius: '8px',
-                border: '1px solid #ffd8a8',
-                color: '#9a3412',
-                fontSize: '14px',
-                marginBottom: '16px'
-              }}>
+              <div style={styles.yellowInfoBoxStyle}>
                 Please select a primary pain and buyer segment first to continue.
               </div>
             )}

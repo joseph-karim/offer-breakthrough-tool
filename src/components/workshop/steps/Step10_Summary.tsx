@@ -144,11 +144,34 @@ export const Step10_Summary: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={styles.stepHeaderContainerStyle}>
-        <div style={styles.stepNumberStyle}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        marginBottom: '20px' 
+      }}>
+        <div style={{
+          backgroundColor: '#fcf720',
+          color: 'black',
+          width: '30px',
+          height: '30px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          marginRight: '15px',
+          position: 'relative',
+          top: '4px'
+        }}>
           10
         </div>
-        <h2 style={styles.stepTitleStyle}>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#333333',
+          margin: 0,
+          lineHeight: '1'
+        }}>
           Workshop Summary
         </h2>
       </div>
@@ -161,8 +184,8 @@ export const Step10_Summary: React.FC = () => {
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={styles.infoBoxStyle}>
-            <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#22c55e' }} />
+          <div style={styles.yellowInfoBoxStyle}>
+            <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
             Congratulations on completing the Buyer Breakthrough Workshop! Now it's time to reflect on your journey, capture key insights, and create an actionable plan to validate your offer concept before building it.
           </div>
 
@@ -699,17 +722,11 @@ export const Step10_Summary: React.FC = () => {
           </div>
 
           {/* What's Next? */}
-          <div style={{
-            padding: '16px',
-            backgroundColor: '#fffbeb',
-            borderRadius: '8px',
-            border: '1px solid #fbbf24',
-            marginTop: '32px'
-          }}>
+          <div style={styles.yellowInfoBoxStyle}>
             <h3 style={{
               fontSize: '18px',
               fontWeight: 600,
-              color: '#92400e',
+              color: '#222222',
               margin: '0 0 12px 0'
             }}>
               What's Next?
@@ -717,7 +734,6 @@ export const Step10_Summary: React.FC = () => {
 
             <p style={{
               fontSize: '14px',
-              color: '#92400e',
               margin: '0 0 16px 0'
             }}>
               Now that you have a refined offer idea and validation plan, it's time to test your concept with real potential buyers before building anything major. Remember, the goal is to validate your assumptions about the problem, solution, and market fit before investing significant time and resources.

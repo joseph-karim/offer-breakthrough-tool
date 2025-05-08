@@ -161,10 +161,10 @@ export const Step02_BigIdea: React.FC = () => {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: '#FFFFFF', color: '#333333', padding: '30px', borderRadius: '20px' }}>
       {/* Step indicator */}
-      <div style={{
-        display: 'flex',
+      <div style={{ 
+        display: 'flex', 
         alignItems: 'center',
-        marginBottom: '20px'
+        marginBottom: '20px' 
       }}>
         <div style={{
           backgroundColor: '#fcf720',
@@ -176,7 +176,9 @@ export const Step02_BigIdea: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'center',
           fontWeight: 'bold',
-          marginRight: '15px'
+          marginRight: '15px',
+          position: 'relative',
+          top: '4px'
         }}>
           1
         </div>
@@ -184,7 +186,8 @@ export const Step02_BigIdea: React.FC = () => {
           fontSize: '24px',
           fontWeight: 'bold',
           color: '#333333',
-          margin: 0
+          margin: 0,
+          lineHeight: '1'
         }}>
           Define Your Big Idea
         </h2>
@@ -199,12 +202,14 @@ export const Step02_BigIdea: React.FC = () => {
         <p>Describe your idea using this simple framework: <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[What it is]</span> + <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[what will it help customers do]</span></p>
       </div>
 
-      {/* Info box */}
+      {/* Info box - UPDATED TO USE BRAND YELLOW */}
       <div style={{
-        backgroundColor: '#feffb7',
+        backgroundColor: '#fcf720',
         padding: '15px',
         borderRadius: '10px',
-        marginBottom: '25px'
+        marginBottom: '25px',
+        color: '#222222',
+        fontWeight: '500'
       }}>
         <p style={{ margin: 0 }}>Don't overthink it. This is just version 1.0 of your idea. You'll refine it as you dig deeper.</p>
       </div>

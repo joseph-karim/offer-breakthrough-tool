@@ -99,11 +99,34 @@ export const Step09_RefineIdea: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={styles.stepHeaderContainerStyle}>
-        <div style={styles.stepNumberStyle}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        marginBottom: '20px' 
+      }}>
+        <div style={{
+          backgroundColor: '#fcf720',
+          color: 'black',
+          width: '30px',
+          height: '30px',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontWeight: 'bold',
+          marginRight: '15px',
+          position: 'relative',
+          top: '4px'
+        }}>
           09
         </div>
-        <h2 style={styles.stepTitleStyle}>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#333333',
+          margin: 0,
+          lineHeight: '1'
+        }}>
           Refine Your Idea
         </h2>
       </div>
@@ -118,8 +141,8 @@ export const Step09_RefineIdea: React.FC = () => {
 
 
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={styles.infoBoxStyle}>
-            <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#3b82f6' }} />
+          <div style={styles.yellowInfoBoxStyle}>
+            <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
             Now it's time to refine your initial idea based on the insights you've gained throughout the workshop.
           </div>
 
@@ -348,8 +371,8 @@ export const Step09_RefineIdea: React.FC = () => {
           </div>
 
           {/* Next Steps */}
-          <div style={styles.infoBoxStyle}>
-            <ArrowRight style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#ea580c' }} />
+          <div style={styles.yellowInfoBoxStyle}>
+            <ArrowRight style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
             In the next step, you'll review your workshop journey and plan your next actions.
           </div>
         </div>
