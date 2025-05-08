@@ -32,7 +32,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
     // Base styles
     const base: React.CSSProperties = {
-      position: 'absolute',
+      position: 'fixed', // Changed from absolute to fixed for better positioning
       backgroundColor: '#1f2937',
       color: 'white',
       padding: '10px 14px', // Slightly increased padding
@@ -85,55 +85,49 @@ export const Tooltip: React.FC<TooltipProps> = ({
       case 'top':
         newPosition = {
           ...base,
-          bottom: '100%',
-          left: '50%',
-          transform: 'translateX(-50%) translateY(-8px)',
+          left: containerRect.left + containerRect.width / 2,
+          bottom: windowHeight - containerRect.top + 8, // Position from the bottom of the screen
+          transform: 'translateX(-50%)',
         };
         break;
       case 'bottom':
         newPosition = {
           ...base,
-          top: '100%',
-          left: '50%',
-          transform: 'translateX(-50%) translateY(8px)',
+          left: containerRect.left + containerRect.width / 2,
+          top: containerRect.bottom + 8,
+          transform: 'translateX(-50%)',
         };
         break;
       case 'left':
         newPosition = {
           ...base,
-          right: '100%',
-          top: '50%',
-          transform: 'translateY(-50%) translateX(-8px)',
+          right: windowWidth - containerRect.left + 8, // Position from the right of the screen
+          top: containerRect.top + containerRect.height / 2,
+          transform: 'translateY(-50%)',
         };
         break;
       case 'right':
         newPosition = {
           ...base,
-          left: '100%',
-          top: '50%',
-          transform: 'translateY(-50%) translateX(8px)',
+          left: containerRect.right + 8,
+          top: containerRect.top + containerRect.height / 2,
+          transform: 'translateY(-50%)',
         };
         break;
     }
 
     // Additional adjustments to prevent overflow
     if (finalPosition === 'top' || finalPosition === 'bottom') {
-      // Check if tooltip would overflow left edge
-      if (containerRect.left + (tooltipRect.width / 2) > windowWidth) {
-        const rightOffset = Math.min(windowWidth - containerRect.right, tooltipRect.width / 2);
-        newPosition.left = 'auto';
-        newPosition.right = `${rightOffset}px`;
-        newPosition.transform = finalPosition === 'top'
-          ? 'translateY(-8px)'
-          : 'translateY(8px)';
+      const tooltipWidth = tooltipRef.current.offsetWidth;
+      
+      // Adjust if tooltip would overflow left edge
+      if (newPosition.left - (tooltipWidth / 2) < 10) {
+        newPosition.left = tooltipWidth / 2 + 10;
       }
-      // Check if tooltip would overflow right edge
-      else if (containerRect.right - (tooltipRect.width / 2) < 0) {
-        const leftOffset = Math.min(containerRect.left, tooltipRect.width / 2);
-        newPosition.left = `${leftOffset}px`;
-        newPosition.transform = finalPosition === 'top'
-          ? 'translateY(-8px)'
-          : 'translateY(8px)';
+      
+      // Adjust if tooltip would overflow right edge
+      if (newPosition.left + (tooltipWidth / 2) > windowWidth - 10) {
+        newPosition.left = windowWidth - (tooltipWidth / 2) - 10;
       }
     }
 

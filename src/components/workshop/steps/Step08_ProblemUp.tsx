@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { ProblemUp } from '../../../types/workshop';
-import { Check, Flame, AlertCircle } from 'lucide-react';
+import { Check, Flame, AlertCircle, ChevronUp, ChevronDown } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import * as styles from '../../../styles/stepStyles';
 import { Button } from '../../ui/Button';
@@ -26,13 +26,16 @@ export const Step08_ProblemUp: React.FC = () => {
   const addChatMessage = useWorkshopStore(selectAddChatMessage);
 
   // Get the selected job
-  const selectedJob = jobs.find(job => job.selected);
+  const selectedJob = jobs.find(job => job.isOverarching);
 
   // Get FIRE pains
   const firePains = pains.filter(pain => pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7));
 
   // Get selected target buyers
-  const selectedTargetBuyers = targetBuyers.filter(buyer => buyer.selected);
+  const selectedTargetBuyers = targetBuyers.filter(buyer => buyer.isTopThree || buyer.selected);
+
+  // State for collapsible panels
+  const [isInsightsExpanded, setIsInsightsExpanded] = useState(true);
 
   // Use local state for the problem-up data
   const [formData, setFormData] = useState<ProblemUp>({
@@ -215,6 +218,11 @@ export const Step08_ProblemUp: React.FC = () => {
     }
   };
 
+  // Toggle Workshop Insights panel
+  const toggleInsightsPanel = () => {
+    setIsInsightsExpanded(!isInsightsExpanded);
+  };
+
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
@@ -258,189 +266,210 @@ export const Step08_ProblemUp: React.FC = () => {
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
         <div style={{ display: 'grid', gap: '24px' }}>
-          {/* Context Display Section */}
-          <div style={{
-            backgroundColor: '#f8fafc',
-            borderRadius: '8px',
-            padding: '16px',
-            border: '1px solid #e2e8f0'
-          }}>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              marginTop: 0,
-              marginBottom: '16px'
-            }}>
-              Your Workshop Insights
-            </h3>
-
-            {/* Overarching Job Statement */}
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{
-                fontSize: '14px',
+          {/* Collapsible Workshop Insights */}
+          <div>
+            <div 
+              onClick={toggleInsightsPanel}
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 16px',
+                backgroundColor: isInsightsExpanded ? '#fcf720' : '#f9fafb',
+                borderRadius: '8px',
+                border: '1px solid #e5e7eb',
+                cursor: 'pointer',
+                marginBottom: isInsightsExpanded ? '16px' : '0',
+                fontWeight: 600
+              }}
+            >
+              <h3 style={{
+                fontSize: '16px',
                 fontWeight: 600,
-                color: '#64748b',
-                marginBottom: '4px'
+                color: '#1e293b',
+                margin: 0
               }}>
-                Your Overarching Job Statement:
-              </div>
+                Your Workshop Insights
+              </h3>
+              {isInsightsExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </div>
+
+            {isInsightsExpanded && (
               <div style={{
-                backgroundColor: 'white',
-                padding: '12px',
-                borderRadius: '6px',
+                backgroundColor: '#f8fafc',
+                borderRadius: '8px',
+                padding: '16px',
                 border: '1px solid #e2e8f0',
-                fontSize: '15px',
-                color: '#334155'
+                marginBottom: '16px'
               }}>
-                {selectedJob?.description || "No job statement selected yet"}
-              </div>
-              <div style={{
-                fontSize: '12px',
-                color: '#64748b',
-                marginTop: '4px'
-              }}>
-                The main progress your customer is trying to make.
-              </div>
-            </div>
+                {/* Overarching Job Statement */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#64748b',
+                    marginBottom: '4px'
+                  }}>
+                    Your Overarching Job Statement:
+                  </div>
+                  <div style={{
+                    backgroundColor: 'white',
+                    padding: '12px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '15px',
+                    color: '#334155'
+                  }}>
+                    {selectedJob?.description || "No job statement selected yet"}
+                  </div>
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#64748b',
+                    marginTop: '4px'
+                  }}>
+                    The main progress your customer is trying to make.
+                  </div>
+                </div>
 
-            {/* Top Target Buyer Segments */}
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{
-                fontSize: '14px',
-                fontWeight: 600,
-                color: '#64748b',
-                marginBottom: '4px'
-              }}>
-                Your Top Target Buyer Segments:
-              </div>
-              {selectedTargetBuyers.length > 0 ? (
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '15px',
-                  color: '#334155'
-                }}>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    {selectedTargetBuyers.map(buyer => (
-                      <li key={buyer.id}>{buyer.description}</li>
-                    ))}
-                  </ul>
+                {/* Top Target Buyer Segments */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#64748b',
+                    marginBottom: '4px'
+                  }}>
+                    Your Top Target Buyer Segments:
+                  </div>
+                  {selectedTargetBuyers.length > 0 ? (
+                    <div style={{
+                      backgroundColor: 'white',
+                      padding: '12px',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '15px',
+                      color: '#334155'
+                    }}>
+                      <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                        {selectedTargetBuyers.map(buyer => (
+                          <li key={buyer.id}>{buyer.description}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div style={{
+                      backgroundColor: 'white',
+                      padding: '12px',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '15px',
+                      color: '#94a3b8'
+                    }}>
+                      No target buyers selected yet
+                    </div>
+                  )}
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#64748b',
+                    marginTop: '4px'
+                  }}>
+                    The key groups you're focusing on.
+                  </div>
                 </div>
-              ) : (
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '15px',
-                  color: '#94a3b8'
-                }}>
-                  No target buyers selected yet
-                </div>
-              )}
-              <div style={{
-                fontSize: '12px',
-                color: '#64748b',
-                marginTop: '4px'
-              }}>
-                The key groups you're focusing on.
-              </div>
-            </div>
 
-            {/* Key Buying Triggers */}
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{
-                fontSize: '14px',
-                fontWeight: 600,
-                color: '#64748b',
-                marginBottom: '4px'
-              }}>
-                Key Buying Triggers Identified:
-              </div>
-              {triggerEvents.length > 0 ? (
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '15px',
-                  color: '#334155'
-                }}>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    {triggerEvents.slice(0, 5).map(trigger => (
-                      <li key={trigger.id}>{trigger.description}</li>
-                    ))}
-                  </ul>
+                {/* Key Buying Triggers */}
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#64748b',
+                    marginBottom: '4px'
+                  }}>
+                    Key Buying Triggers Identified:
+                  </div>
+                  {triggerEvents.length > 0 ? (
+                    <div style={{
+                      backgroundColor: 'white',
+                      padding: '12px',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '15px',
+                      color: '#334155'
+                    }}>
+                      <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                        {triggerEvents.slice(0, 5).map(trigger => (
+                          <li key={trigger.id}>{trigger.description}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div style={{
+                      backgroundColor: 'white',
+                      padding: '12px',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '15px',
+                      color: '#94a3b8'
+                    }}>
+                      No trigger events identified yet
+                    </div>
+                  )}
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#64748b',
+                    marginTop: '4px'
+                  }}>
+                    The moments that likely push these buyers to seek a solution.
+                  </div>
                 </div>
-              ) : (
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '15px',
-                  color: '#94a3b8'
-                }}>
-                  No trigger events identified yet
-                </div>
-              )}
-              <div style={{
-                fontSize: '12px',
-                color: '#64748b',
-                marginTop: '4px'
-              }}>
-                The moments that likely push these buyers to seek a solution.
-              </div>
-            </div>
 
-            {/* High-Impact FIRE Pains */}
-            <div>
-              <div style={{
-                fontSize: '14px',
-                fontWeight: 600,
-                color: '#64748b',
-                marginBottom: '4px'
-              }}>
-                Your Selected High-Impact (FIRE) Pains:
-              </div>
-              {firePains.length > 0 ? (
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '15px',
-                  color: '#334155'
-                }}>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    {firePains.slice(0, 5).map(pain => (
-                      <li key={pain.id}>{pain.description}</li>
-                    ))}
-                  </ul>
+                {/* High-Impact FIRE Pains */}
+                <div>
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#64748b',
+                    marginBottom: '4px'
+                  }}>
+                    Your Selected High-Impact (FIRE) Pains:
+                  </div>
+                  {firePains.length > 0 ? (
+                    <div style={{
+                      backgroundColor: 'white',
+                      padding: '12px',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '15px',
+                      color: '#334155'
+                    }}>
+                      <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                        {firePains.slice(0, 5).map(pain => (
+                          <li key={pain.id}>{pain.description}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div style={{
+                      backgroundColor: 'white',
+                      padding: '12px',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
+                      fontSize: '15px',
+                      color: '#94a3b8'
+                    }}>
+                      No FIRE pains identified yet
+                    </div>
+                  )}
+                  <div style={{
+                    fontSize: '12px',
+                    color: '#64748b',
+                    marginTop: '4px'
+                  }}>
+                    The specific, acute problems you've chosen to focus on solving.
+                  </div>
                 </div>
-              ) : (
-                <div style={{
-                  backgroundColor: 'white',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  border: '1px solid #e2e8f0',
-                  fontSize: '15px',
-                  color: '#94a3b8'
-                }}>
-                  No FIRE pains identified yet
-                </div>
-              )}
-              <div style={{
-                fontSize: '12px',
-                color: '#64748b',
-                marginTop: '4px'
-              }}>
-                The specific, acute problems you've chosen to focus on solving.
               </div>
-            </div>
+            )}
           </div>
 
           <div style={styles.yellowInfoBoxStyle}>

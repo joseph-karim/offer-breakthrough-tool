@@ -1,15 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import type { Pain } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, Plus, Flame, MessageSquare, ArrowUpDown } from 'lucide-react';
-import { PainstormingModal } from '../chat/PainstormingModal';
-import { PainItemInteractiveCard } from '../pain/PainItemInteractiveCard';
+import { AlertCircle, HelpCircle, MessageSquare, Check } from 'lucide-react';
 import { Button } from '../../ui/Button';
+import { SaveIndicator } from '../../ui/SaveIndicator';
+import { PainstormingModal } from '../chat/PainstormingModal';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
-const selectPains = (state: WorkshopStore) => state.workshopData.pains;
+const selectJobs = (state: WorkshopStore) => state.workshopData.jobs;
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 const selectIsPainstormingModalOpen = (state: WorkshopStore) => state.isPainstormingModalOpen;
@@ -17,9 +16,18 @@ const selectPainstormingOutput = (state: WorkshopStore) => state.painstormingOut
 const selectClosePainstormingModal = (state: WorkshopStore) => state.closePainstormingModal;
 const selectSetFocusedProblems = (state: WorkshopStore) => state.setFocusedProblems;
 const selectGeneratePainstormingSuggestions = (state: WorkshopStore) => state.generatePainstormingSuggestions;
+const selectIsAiLoading = (state: WorkshopStore) => state.isAiLoading;
+
+interface PainstormingResults {
+  buyer1Pains: string;
+  buyer2Pains: string;
+  buyer3Pains: string;
+  overlappingPains: string;
+  ahaMoments: string;
+}
 
 export const Step07_Painstorming: React.FC = () => {
-  const pains = useWorkshopStore(selectPains);
+  const jobs = useWorkshopStore(selectJobs);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const isPainstormingModalOpen = useWorkshopStore(selectIsPainstormingModalOpen);
@@ -27,154 +35,80 @@ export const Step07_Painstorming: React.FC = () => {
   const closePainstormingModal = useWorkshopStore(selectClosePainstormingModal);
   const setFocusedProblems = useWorkshopStore(selectSetFocusedProblems);
   const generatePainstormingSuggestions = useWorkshopStore(selectGeneratePainstormingSuggestions);
+  const isAiLoading = useWorkshopStore(selectIsAiLoading);
 
-  // Use local state for the pains
-  const [painsList, setPainsList] = useState<Pain[]>(pains || []);
-  const [newPain, setNewPain] = useState('');
-  const [selectedBuyerSegment, setSelectedBuyerSegment] = useState<string>('');
-  const [selectedPainType, setSelectedPainType] = useState<'functional' | 'emotional' | 'social' | 'anticipated'>('functional');
-  const [isFire, setIsFire] = useState(false);
-  const [sortBy, setSortBy] = useState<'none' | 'fireScore'>('none');
-  const [filterFire, setFilterFire] = useState(false);
+  // Local state for form values
+  const [formData, setFormData] = useState<PainstormingResults>({
+    buyer1Pains: '',
+    buyer2Pains: '',
+    buyer3Pains: '',
+    overlappingPains: '',
+    ahaMoments: ''
+  });
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
 
-  // Update local state when store value changes
+  // Get top selected buyers (up to 3)
+  const topBuyers = targetBuyers
+    .filter(buyer => buyer.isTopThree)
+    .slice(0, 3);
+
+  // Get selected job
+  const selectedJob = jobs.find(job => job.isOverarching || job.selected);
+
+  // Load initial data if available
   useEffect(() => {
-    setPainsList(pains || []);
-  }, [pains]);
-
-  // Set default buyer segment if none selected
-  useEffect(() => {
-    if (targetBuyers.length > 0 && !selectedBuyerSegment) {
-      setSelectedBuyerSegment(targetBuyers[0].description);
-    }
-  }, [targetBuyers, selectedBuyerSegment]);
-
-  // Sort and filter pains
-  const sortedAndFilteredPains = useCallback(() => {
-    let result = [...painsList];
-
-    // Apply filter
-    if (filterFire) {
-      result = result.filter(pain => pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7));
-    }
-
-    // Apply sort
-    if (sortBy === 'fireScore') {
-      result.sort((a, b) => {
-        const scoreA = a.calculatedFireScore || 0;
-        const scoreB = b.calculatedFireScore || 0;
-        return scoreB - scoreA; // Descending order
+    const currentData = useWorkshopStore.getState().workshopData.painstormingResults;
+    if (currentData) {
+      setFormData({
+        buyer1Pains: currentData.buyer1Pains || '',
+        buyer2Pains: currentData.buyer2Pains || '',
+        buyer3Pains: currentData.buyer3Pains || '',
+        overlappingPains: currentData.overlappingPains || '',
+        ahaMoments: currentData.ahaMoments || ''
       });
     }
+  }, []);
 
-    return result;
-  }, [painsList, sortBy, filterFire]);
+  const handleInputChange = useCallback((field: keyof PainstormingResults, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
 
-  const handleAddPain = useCallback(() => {
-    if (newPain.trim() !== '' && selectedBuyerSegment) {
-      // Initialize FIRE scores if marked as FIRE
-      const fireScores = isFire ? {
-        frequency: 2, // Medium
-        intensity: 2, // Medium
-        recurring: 2, // Medium
-        expensive: 2  // Medium
-      } : undefined;
-
-      // Calculate score if FIRE
-      const calculatedFireScore = isFire ? 8 : undefined; // 2+2+2+2=8
-
-      const pain: Pain = {
-        id: `user-${Date.now()}`,
-        description: newPain.trim(),
-        buyerSegment: selectedBuyerSegment,
-        type: selectedPainType,
-        isFire,
-        fireScores,
-        calculatedFireScore,
-        source: 'user'
-      };
-
-      setPainsList(prev => [...prev, pain]);
-      setNewPain(''); // Clear input
-      updateWorkshopData({ pains: [...painsList, pain] });
+    if (saveTimer) {
+      clearTimeout(saveTimer);
     }
-  }, [newPain, selectedBuyerSegment, selectedPainType, isFire, painsList, updateWorkshopData]);
 
-  const handleDeletePain = useCallback((id: string) => {
-    const updatedPains = painsList.filter(pain => pain.id !== id);
-    setPainsList(updatedPains);
-    updateWorkshopData({ pains: updatedPains });
-  }, [painsList, updateWorkshopData]);
-
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleAddPain();
-    }
-  }, [handleAddPain]);
+    setIsSaving(true);
+    const timer = setTimeout(() => {
+      updateWorkshopData({
+        painstormingResults: {
+          ...formData,
+          [field]: value
+        }
+      });
+      setIsSaving(false);
+    }, 500);
+    setSaveTimer(timer);
+  }, [formData, updateWorkshopData, saveTimer]);
 
   const handleConfirmSelection = useCallback((selectedProblems: string[]) => {
-    // Add the selected problems as pains
-    const newPains = selectedProblems.map(problem => {
-      // Check if the problem contains "FIRE" to set initial scores higher
-      const containsFire = problem.includes("FIRE");
-
-      // Initialize FIRE scores
-      const fireScores = {
-        frequency: containsFire ? 3 : 2, // High if FIRE, Medium otherwise
-        intensity: containsFire ? 3 : 2,  // High if FIRE, Medium otherwise
-        recurring: containsFire ? 3 : 2,  // High if FIRE, Medium otherwise
-        expensive: containsFire ? 3 : 2   // High if FIRE, Medium otherwise
-      };
-
-      // Calculate score
-      const calculatedFireScore = containsFire ? 12 : 8; // 3+3+3+3=12 or 2+2+2+2=8
-
-      // Remove the "(FIRE?)" marker from the description if present
-      const cleanDescription = problem.replace(/\s*\(FIRE\?\)\s*/g, '');
-
-      return {
-        id: `ai-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-        description: cleanDescription,
-        buyerSegment: targetBuyers.length > 0 ? targetBuyers[0].description : '', // Default to first buyer segment
-        type: 'functional' as const, // Default to functional, can be updated later
-        isFire: true, // Mark as FIRE since these are the key problems
-        fireScores,
-        calculatedFireScore,
-        source: 'assistant' as const
-      };
-    });
-
-    // Update the store with the new pains
-    const updatedPains = [...painsList, ...newPains];
-    setPainsList(updatedPains);
-    updateWorkshopData({ pains: updatedPains });
-
-    // Save the selected problems for reference in the Problem Up step
+    // Save the selected problems to store
     setFocusedProblems(selectedProblems);
-  }, [painsList, targetBuyers, updateWorkshopData, setFocusedProblems]);
-
-  // Get pain type label
-  const getPainTypeLabel = (type: string): string => {
-    switch (type) {
-      case 'functional': return 'Functional';
-      case 'emotional': return 'Emotional';
-      case 'social': return 'Social';
-      case 'anticipated': return 'Anticipated';
-      default: return type;
-    }
-  };
-
-  // Get pain type color
-  const getPainTypeColor = (type: string): string => {
-    switch (type) {
-      case 'functional': return '#3b82f6'; // Blue
-      case 'emotional': return '#ec4899'; // Pink
-      case 'social': return '#8b5cf6'; // Purple
-      case 'anticipated': return '#f59e0b'; // Amber
-      default: return '#6b7280'; // Gray
-    }
-  };
+    
+    // Also update the overlapping pains in our local form
+    const formattedProblems = selectedProblems.map(p => `- ${p}`).join('\n');
+    setFormData(prev => ({
+      ...prev,
+      overlappingPains: formattedProblems
+    }));
+    
+    // Update workshopData
+    updateWorkshopData({
+      painstormingResults: {
+        ...formData,
+        overlappingPains: formattedProblems
+      }
+    });
+  }, [setFocusedProblems, formData, updateWorkshopData]);
 
   return (
     <div style={styles.stepContainerStyle}>
@@ -198,7 +132,7 @@ export const Step07_Painstorming: React.FC = () => {
           position: 'relative',
           top: '4px'
         }}>
-          07
+          6
         </div>
         <h2 style={{
           fontSize: '24px',
@@ -207,320 +141,248 @@ export const Step07_Painstorming: React.FC = () => {
           margin: 0,
           lineHeight: '1'
         }}>
-          Painstorming
+          Do Rapid Painstorming
         </h2>
       </div>
 
       {/* Description */}
       <div style={styles.stepDescriptionStyle}>
-        <p>Identify the painful problems your target buyers experience when trying to get the job done</p>
+        <p>Let's do some rapid painstorming to identify the painful and expensive problems that your potential buyers might struggle with when trying to get the job done.</p>
       </div>
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
+        <div style={styles.yellowInfoBoxStyle}>
+          <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
+          Remember: FIRE problems are Frequent, Intense, Recurring (or Require Action), and Expensive. These are often the most valuable problems to solve.
+        </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <Button
-          variant="yellow"
-          onClick={generatePainstormingSuggestions}
-          rightIcon={<MessageSquare size={16} />}
-        >
-          Generate Painstorming Analysis
-        </Button>
-      </div>
+        {/* Context Display */}
+        <div style={{
+          padding: '16px',
+          backgroundColor: '#f8fafc',
+          borderRadius: '8px',
+          border: '1px solid #e2e8f0',
+          marginTop: '20px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 12px 0'
+          }}>
+            Context for Painstorming:
+          </h3>
 
-
-        <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={styles.yellowInfoBoxStyle}>
-            <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
-            The more urgent, painful, and expensive the problems, the more people will pay for your solution.
-          </div>
-
-          {/* Add new pain */}
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <label
-                htmlFor="new-pain"
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: '#1e293b',
-                  display: 'block'
-                }}
-              >
-                Add a painful problem
-              </label>
-              <div title="Describe a specific problem your target buyers face">
-                <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gap: '12px' }}>
-              {/* Buyer segment selector */}
-              <div>
-                <label
-                  htmlFor="buyer-segment"
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    color: '#4b5563',
-                    display: 'block',
-                    marginBottom: '4px'
-                  }}
-                >
-                  Buyer segment:
-                </label>
-                <select
-                  id="buyer-segment"
-                  value={selectedBuyerSegment}
-                  onChange={(e) => setSelectedBuyerSegment(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px 12px',
-                    borderRadius: '8px',
-                    border: '1px solid #d1d5db',
-                    fontSize: '14px',
-                    backgroundColor: 'white',
-                  }}
-                >
-                  <option value="" disabled>Select a buyer segment</option>
-                  {targetBuyers.map(buyer => (
-                    <option key={buyer.id} value={buyer.description}>
-                      {buyer.description}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Pain type selector */}
-              <div>
-                <label
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    color: '#4b5563',
-                    display: 'block',
-                    marginBottom: '4px'
-                  }}
-                >
-                  Pain type:
-                </label>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  {(['functional', 'emotional', 'social', 'anticipated'] as const).map(type => (
-                    <button
-                      key={type}
-                      onClick={() => setSelectedPainType(type)}
-                      style={{
-                        flex: 1,
-                        padding: '8px 12px',
-                        borderRadius: '8px',
-                        border: '1px solid',
-                        borderColor: selectedPainType === type ? getPainTypeColor(type) : '#d1d5db',
-                        backgroundColor: selectedPainType === type ? `${getPainTypeColor(type)}20` : 'transparent',
-                        color: selectedPainType === type ? getPainTypeColor(type) : '#6b7280',
-                        fontSize: '14px',
-                        fontWeight: selectedPainType === type ? 600 : 400,
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {getPainTypeLabel(type)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* FIRE toggle */}
-              <div>
-                <button
-                  onClick={() => setIsFire(!isFire)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    border: '1px solid',
-                    borderColor: isFire ? '#ef4444' : '#d1d5db',
-                    backgroundColor: isFire ? '#fee2e2' : 'transparent',
-                    color: isFire ? '#b91c1c' : '#6b7280',
-                    fontSize: '14px',
-                    fontWeight: isFire ? 600 : 400,
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Flame size={16} color={isFire ? '#ef4444' : '#6b7280'} fill={isFire ? '#ef4444' : 'none'} />
-                  {isFire ? 'This is a F.I.R.E. problem' : 'Mark as F.I.R.E. problem'}
-                </button>
-                <div style={{
-                  fontSize: '12px',
-                  color: '#6b7280',
-                  marginTop: '4px'
-                }}>
-                  F.I.R.E. = Frequent, Intense, Recurring, Expensive
-                </div>
-              </div>
-
-              {/* Pain description input */}
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <input
-                  id="new-pain"
-                  type="text"
-                  value={newPain}
-                  onChange={(e) => setNewPain(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  placeholder="e.g., Struggles to find time to create content consistently"
-                  style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '8px',
-                    border: '1px solid #d1d5db',
-                    fontSize: '14px',
-                    backgroundColor: 'white',
-                  }}
-                />
-                <Button
-                  onClick={handleAddPain}
-                  disabled={!newPain.trim() || !selectedBuyerSegment}
-                  variant="yellow"
-                  rightIcon={<Plus size={16} />}
-                >
-                  Add
-                </Button>
-              </div>
+          <div style={{ marginBottom: '12px' }}>
+            <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Focus Job Statement:</p>
+            <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+              {selectedJob?.description || "No job statement selected yet"}
             </div>
           </div>
 
-          {/* List of pains */}
           <div>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '16px'
-            }}>
-              <h3 style={{
-                fontSize: '18px',
-                fontWeight: 600,
-                color: '#1e293b',
-                margin: 0
+            <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Top 3 Target Buyer Segments:</p>
+            {topBuyers.length > 0 ? (
+              <ul style={{
+                margin: '0',
+                paddingLeft: '24px',
+                color: '#334155',
+                fontSize: '14px'
               }}>
-                Painful Problems Identified
-              </h3>
-
-              {painsList.length > 0 && (
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button
-                    onClick={() => setFilterFire(!filterFire)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '8px 12px',
-                      borderRadius: '8px',
-                      border: '1px solid',
-                      borderColor: filterFire ? '#ef4444' : '#d1d5db',
-                      backgroundColor: filterFire ? '#fee2e2' : 'transparent',
-                      color: filterFire ? '#b91c1c' : '#6b7280',
-                      fontSize: '14px',
-                      fontWeight: filterFire ? 600 : 400,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <Flame size={16} color={filterFire ? '#ef4444' : '#6b7280'} fill={filterFire ? '#ef4444' : 'none'} />
-                    {filterFire ? 'Showing FIRE problems' : 'Show FIRE problems only'}
-                  </button>
-
-                  <button
-                    onClick={() => setSortBy(sortBy === 'fireScore' ? 'none' : 'fireScore')}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '8px 12px',
-                      borderRadius: '8px',
-                      border: '1px solid',
-                      borderColor: sortBy === 'fireScore' ? '#0ea5e9' : '#d1d5db',
-                      backgroundColor: sortBy === 'fireScore' ? '#e0f2fe' : 'transparent',
-                      color: sortBy === 'fireScore' ? '#0369a1' : '#6b7280',
-                      fontSize: '14px',
-                      fontWeight: sortBy === 'fireScore' ? 600 : 400,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <ArrowUpDown size={16} color={sortBy === 'fireScore' ? '#0ea5e9' : '#6b7280'} />
-                    {sortBy === 'fireScore' ? 'Sorted by FIRE score' : 'Sort by FIRE score'}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {painsList.length > 0 ? (
-              <div>
-                {sortedAndFilteredPains().map(pain => (
-                  <PainItemInteractiveCard
-                    key={pain.id}
-                    pain={pain}
-                    onDelete={handleDeletePain}
-                  />
+                {topBuyers.map((buyer, index) => (
+                  <li key={index}>{buyer.description}</li>
                 ))}
-
-                {sortedAndFilteredPains().length === 0 && (
-                  <div style={{
-                    padding: '24px',
-                    textAlign: 'center',
-                    color: '#6b7280',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '8px',
-                    border: '1px dashed #d1d5db'
-                  }}>
-                    No problems match your current filter. {filterFire && (
-                      <button
-                        onClick={() => setFilterFire(false)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: '#0ea5e9',
-                          cursor: 'pointer',
-                          padding: 0,
-                          fontWeight: 500,
-                          textDecoration: 'underline'
-                        }}
-                      >
-                        Clear filter
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
+              </ul>
             ) : (
-              <div style={styles.examplesContainerStyle}>
-                <div style={styles.examplesLabelStyle}>
-                  EXAMPLES
-                </div>
-                <ul style={styles.examplesListStyle}>
-                  <li style={styles.exampleItemStyle}>
-                    <span style={styles.exampleBulletStyle}>•</span>
-                    Struggles to find time to create content consistently (Functional)
-                  </li>
-                  <li style={styles.exampleItemStyle}>
-                    <span style={styles.exampleBulletStyle}>•</span>
-                    Feels overwhelmed by the constant pressure to stay visible online (Emotional)
-                  </li>
-                  <li style={styles.exampleItemStyle}>
-                    <span style={styles.exampleBulletStyle}>•</span>
-                    Worries about being perceived as irrelevant by peers and clients (Social)
-                  </li>
-                  <li style={styles.exampleItemStyle}>
-                    <span style={styles.exampleBulletStyle}>•</span>
-                    Fears their service business will be disrupted by AI (Anticipated)
-                  </li>
-                  <li style={styles.exampleItemStyle}>
-                    <span style={styles.exampleBulletStyle}>•</span>
-                    Can't scale their business without working more hours (Functional, FIRE)
-                  </li>
-                </ul>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                No target buyers selected yet. Please go back to Step 5 to select your top 3 buyer segments.
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Step 1: Start Painstorming with Sparky */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 12px 0'
+          }}>
+            Step 1: Start Painstorming with Sparky
+          </h3>
+
+          <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+            Sparky will analyze your Job Statement and Target Buyers to brainstorm potential pains, including Functional, Emotional, Social, and Perceived Risk types, and identify potential FIRE problems and overlaps. Click below to begin.
+          </p>
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="primary"
+              onClick={generatePainstormingSuggestions}
+              isLoading={isAiLoading}
+              rightIcon={<MessageSquare size={16} />}
+              style={{ 
+                backgroundColor: '#fcf720', 
+                color: '#222222',
+                borderRadius: '15px',
+                fontSize: '15px'
+              }}
+            >
+              {isAiLoading ? 'Generating Analysis...' : 'Generate Painstorming Analysis'}
+            </Button>
+          </div>
+        </div>
+
+        {/* Step 2: Record Identified Problems */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 12px 0'
+          }}>
+            Step 2: Record Identified Problems
+          </h3>
+
+          <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+            Copy the lists generated by Sparky (from the chat window or modal) and paste them into the corresponding fields below. Feel free to add any other problems you think of!
+          </p>
+
+          {/* Form fields for each buyer */}
+          <div style={{ display: 'grid', gap: '20px' }}>
+            {/* Buyer 1 */}
+            <div>
+              <label
+                htmlFor="buyer1-pains"
+                style={styles.labelStyle}
+              >
+                Potential Buyer #1: {topBuyers[0]?.description || "First Buyer"}
+              </label>
+              <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
+                What problems did you identify for this segment?
+              </p>
+              <textarea
+                id="buyer1-pains"
+                value={formData.buyer1Pains}
+                onChange={(e) => handleInputChange('buyer1Pains', e.target.value)}
+                placeholder={`Paste the list of pains Sparky identified for ${topBuyers[0]?.description || "this buyer"} here. e.g.,\n- Spending weeks stuck on tasks...\n- Fear that a DIY look will hurt credibility...\n- Feeling overwhelmed by...`}
+                style={styles.textareaStyle}
+                rows={6}
+              />
+            </div>
+
+            {/* Buyer 2 */}
+            <div>
+              <label
+                htmlFor="buyer2-pains"
+                style={styles.labelStyle}
+              >
+                Potential Buyer #2: {topBuyers[1]?.description || "Second Buyer"}
+              </label>
+              <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
+                What problems did you identify for this segment?
+              </p>
+              <textarea
+                id="buyer2-pains"
+                value={formData.buyer2Pains}
+                onChange={(e) => handleInputChange('buyer2Pains', e.target.value)}
+                placeholder={`Paste the list of pains Sparky identified for ${topBuyers[1]?.description || "this buyer"} here.`}
+                style={styles.textareaStyle}
+                rows={6}
+              />
+            </div>
+
+            {/* Buyer 3 */}
+            <div>
+              <label
+                htmlFor="buyer3-pains"
+                style={styles.labelStyle}
+              >
+                Potential Buyer #3: {topBuyers[2]?.description || "Third Buyer"}
+              </label>
+              <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
+                What problems did you identify for this segment?
+              </p>
+              <textarea
+                id="buyer3-pains"
+                value={formData.buyer3Pains}
+                onChange={(e) => handleInputChange('buyer3Pains', e.target.value)}
+                placeholder={`Paste the list of pains Sparky identified for ${topBuyers[2]?.description || "this buyer"} here.`}
+                style={styles.textareaStyle}
+                rows={6}
+              />
+            </div>
+
+            {/* Overlapping Problems */}
+            <div>
+              <label
+                htmlFor="overlapping-pains"
+                style={styles.labelStyle}
+              >
+                Overlapping Problems Across Segments
+              </label>
+              <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
+                What overlapping problems did Sparky identify (especially FIRE ones)?
+              </p>
+              <textarea
+                id="overlapping-pains"
+                value={formData.overlappingPains}
+                onChange={(e) => handleInputChange('overlappingPains', e.target.value)}
+                placeholder={`Paste the list of overlapping problems identified by Sparky here. e.g.,\n- FIRE Problem: 'I don't have the time or expertise...'\n- Problem: 'Struggle to make materials look consistent...'`}
+                style={styles.textareaStyle}
+                rows={6}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Step 3: Make Note of Any 'Aha!' Moments */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 12px 0'
+          }}>
+            Step 3: Make Note of Any 'Aha!' Moments
+          </h3>
+
+          <div style={{ 
+            backgroundColor: '#f9fafb',
+            borderRadius: '8px',
+            border: '1px solid #e5e7eb',
+            padding: '16px',
+            marginBottom: '16px'
+          }}>
+            <p style={{ fontWeight: 600, margin: '0 0 8px 0' }}>Ask yourself:</p>
+            <ul style={{ margin: '0', paddingLeft: '24px' }}>
+              <li>What patterns do you see in the problems?</li>
+              <li>Which problems feel most resonant or 'ouchy' based on your experience?</li>
+              <li>Are there any problems listed that particularly excite you to solve?</li>
+              <li>Are there problems here you might already be solving for clients without explicitly realizing it?</li>
+            </ul>
+          </div>
+
+          <label
+            htmlFor="aha-moments"
+            style={styles.labelStyle}
+          >
+            Your 'Aha!' Moments & Reflections on Pains:
+          </label>
+          <textarea
+            id="aha-moments"
+            value={formData.ahaMoments}
+            onChange={(e) => handleInputChange('ahaMoments', e.target.value)}
+            placeholder="Jot down any key insights, surprising patterns, or problems that stand out most to you after reviewing the painstorming analysis."
+            style={styles.textareaStyle}
+            rows={5}
+          />
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+            <SaveIndicator saving={isSaving} />
           </div>
         </div>
       </div>

@@ -54,3 +54,19 @@ body.modal-open .modal-backdrop,
 body.modal-open .modal-backdrop * {
   z-index: 2147483647 !important;
 }
+
+/* Tooltip styles */
+#tooltip {
+  z-index: 9999 !important; /* High z-index for tooltips */
+  pointer-events: none !important; /* Prevent tooltips from intercepting mouse events */
+}
+
+/* Ensure tooltips appear above other content but below modals */
+[role="tooltip"] {
+  z-index: 9999 !important;
+}
+
+/* Fix for Help Circle icon hover effects */
+[class*="HelpCircle"] {
+  cursor: help !important;
+}

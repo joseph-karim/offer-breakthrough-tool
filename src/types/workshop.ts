@@ -43,6 +43,8 @@ export interface TargetBuyer {
   longTermValue?: number;
   solutionFit?: number;
   accessibility?: number;
+  shortlisted?: boolean; // Added for step 6 shortlisting
+  isTopThree?: boolean; // Added for step 6 top 3 selection
 }
 
 export interface Pain {
@@ -97,7 +99,14 @@ export interface Reflections {
   personalReflection?: string;
 }
 
-// All legacy interfaces have been removed
+// New interface for Painstorming Results
+export interface PainstormingResults {
+  buyer1Pains: string;
+  buyer2Pains: string;
+  buyer3Pains: string;
+  overlappingPains: string;
+  ahaMoments: string;
+}
 
 // This interface defines the data structure for the 10-step workshop flow
 export interface WorkshopData {
@@ -118,6 +127,7 @@ export interface WorkshopData {
 
   // Step 7: Painstorming
   pains: Pain[];
+  painstormingResults?: PainstormingResults;
 
   // Step 8: Problem Up
   problemUp?: ProblemUp;
