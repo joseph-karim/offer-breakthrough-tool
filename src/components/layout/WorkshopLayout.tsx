@@ -43,10 +43,10 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
               alignItems: 'center',
               justifyContent: 'center',
               marginRight: '12px',
-              padding: '6px'
+              padding: '4px'
             }}>
               <img
-                src="/assets/bomb-icon.png"
+                src="/assets/bomb.png"
                 alt="Bomb icon"
                 style={{
                   width: '100%',

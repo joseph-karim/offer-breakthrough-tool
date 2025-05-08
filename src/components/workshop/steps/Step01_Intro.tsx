@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 
-
 export const Step01_Intro: React.FC = () => {
   const { setCurrentStep } = useWorkshopStore();
 
@@ -14,26 +13,44 @@ export const Step01_Intro: React.FC = () => {
         flexDirection: 'column',
         gap: '20px',
         marginBottom: '20px',
+        maxWidth: '1000px',
+        margin: '0 auto',
       }}>
-        {/* Top section with image and headline */}
+        {/* Logo at the top */}
         <div style={{
           display: 'flex',
-          gap: '20px',
-          marginBottom: '20px',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '15px',
+          marginTop: '5px',
         }}>
-          {/* Left column - Image */}
+          <img
+            src="/assets/Buyer Breakthrough Logo.png"
+            alt="Buyer Breakthrough Logo"
+            style={{
+              maxWidth: '280px',
+              height: 'auto',
+            }}
+          />
+        </div>
+
+        {/* Main content section */}
+        <div style={{
+          display: 'flex',
+          gap: '30px',
+          marginBottom: '30px',
+          alignItems: 'center',
+        }}>
+          {/* Left column - Katelyn Image */}
           <div style={{
-            width: '50%',
-            backgroundColor: '#222222',
-            borderRadius: '10px',
-            overflow: 'hidden',
+            width: '45%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}>
             <img
-              src="/assets/BB_Main_image.png"
-              alt="Buyer Breakthrough"
+              src="/assets/katelyn graphic.png"
+              alt="Katelyn with graphics"
               style={{
                 width: '100%',
                 height: 'auto',
@@ -43,23 +60,21 @@ export const Step01_Intro: React.FC = () => {
 
           {/* Right column - From Burnout to Breakthrough */}
           <div style={{
-            width: '50%',
-            backgroundColor: '#222222',
-            padding: '25px',
-            borderRadius: '10px',
+            width: '55%',
+            padding: '20px',
           }}>
             <h2 style={{
-              fontSize: '28px',
+              fontSize: '32px',
               fontWeight: 'bold',
               color: 'white',
-              marginBottom: '15px'
+              marginBottom: '20px'
             }}>
               From Burnout to Breakthrough
             </h2>
             <p style={{
-              fontSize: '16px',
+              fontSize: '18px',
               color: 'white',
-              lineHeight: '1.5'
+              lineHeight: '1.6'
             }}>
               Find profitable problems worth solving and design a scalable offer idea that "actually" sells in this live 2.5-hour workshop
             </p>
@@ -154,8 +169,8 @@ export const Step01_Intro: React.FC = () => {
       {/* Start Button */}
       <div style={{
         textAlign: 'center',
-        marginTop: '20px',
-        marginBottom: '20px',
+        maxWidth: '1000px',
+        margin: '20px auto',
       }}>
         <Button
           onClick={() => setCurrentStep(2)}
