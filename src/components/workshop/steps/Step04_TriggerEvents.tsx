@@ -58,7 +58,6 @@ export const Step04_TriggerEvents: React.FC = () => {
       {/* Step indicator */}
       <div style={{
         display: 'flex',
-        alignItems: 'center',
         marginBottom: '20px'
       }}>
         <div style={{
@@ -72,8 +71,7 @@ export const Step04_TriggerEvents: React.FC = () => {
           justifyContent: 'center',
           fontWeight: 'bold',
           marginRight: '15px',
-          position: 'relative',
-          top: '4px'
+          marginTop: '3px'
         }}>
           3
         </div>
@@ -81,8 +79,7 @@ export const Step04_TriggerEvents: React.FC = () => {
           fontSize: '24px',
           fontWeight: 'bold',
           color: '#333333',
-          margin: 0,
-          lineHeight: '1'
+          margin: 0
         }}>
           Identify Trigger Events
         </h2>

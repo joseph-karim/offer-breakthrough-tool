@@ -25,7 +25,7 @@ export const Step05_Jobs: React.FC = () => {
   const [newOverarchingJob, setNewOverarchingJob] = useState('');
   const [newSupportingJob, setNewSupportingJob] = useState('');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  
+
   // Accordion state
   const [isJobHierarchyOpen, setIsJobHierarchyOpen] = useState(false);
   const [isJobRefinementOpen, setIsJobRefinementOpen] = useState(false);
@@ -109,10 +109,9 @@ export const Step05_Jobs: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center',
-        marginBottom: '20px' 
+      <div style={{
+        display: 'flex',
+        marginBottom: '20px'
       }}>
         <div style={{
           backgroundColor: '#fcf720',
@@ -125,8 +124,7 @@ export const Step05_Jobs: React.FC = () => {
           justifyContent: 'center',
           fontWeight: 'bold',
           marginRight: '15px',
-          position: 'relative',
-          top: '4px'
+          marginTop: '3px'
         }}>
           4
         </div>
@@ -134,8 +132,7 @@ export const Step05_Jobs: React.FC = () => {
           fontSize: '24px',
           fontWeight: 'bold',
           color: '#333333',
-          margin: 0,
-          lineHeight: '1'
+          margin: 0
         }}>
           Uncover Jobs To Be Done (JTBD)
         </h2>
@@ -203,7 +200,7 @@ export const Step05_Jobs: React.FC = () => {
 
         {/* Job Hierarchy Framework - ACCORDION */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '20px' }}>
-          <div 
+          <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -232,9 +229,9 @@ export const Step05_Jobs: React.FC = () => {
           </div>
 
           {isJobHierarchyOpen && (
-            <div style={{ 
-              padding: '16px', 
-              backgroundColor: '#f8fafc', 
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
               borderRadius: '8px',
               border: '1px solid #e2e8f0'
             }}>
@@ -266,7 +263,7 @@ export const Step05_Jobs: React.FC = () => {
 
         {/* Job Statement Refinement - ACCORDION */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '24px' }}>
-          <div 
+          <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -403,11 +400,11 @@ export const Step05_Jobs: React.FC = () => {
                   variant="primary"
                   onClick={handleAddOverarchingJob}
                   disabled={!newOverarchingJob.trim()}
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '8px', 
-                    backgroundColor: '#fcf720', 
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: '#fcf720',
                     color: '#222222',
                     borderRadius: '15px',
                   }}
@@ -539,13 +536,13 @@ export const Step05_Jobs: React.FC = () => {
                 variant="primary"
                 onClick={handleAddSupportingJob}
                 disabled={!newSupportingJob.trim()}
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '8px', 
-                  backgroundColor: '#fcf720', 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#fcf720',
                   color: '#222222',
-                  borderRadius: '15px', 
+                  borderRadius: '15px',
                 }}
               >
                 <Plus size={20} />

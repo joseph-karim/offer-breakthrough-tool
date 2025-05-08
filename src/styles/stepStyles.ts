@@ -12,8 +12,9 @@ export const stepContainerStyle: CSSProperties = {
 
 export const stepHeaderContainerStyle: CSSProperties = {
   display: 'flex',
-  alignItems: 'center', 
-  marginBottom: '20px'
+  alignItems: 'center',
+  marginBottom: '20px',
+  height: '30px'
 };
 
 export const stepNumberStyle: CSSProperties = {
@@ -27,8 +28,7 @@ export const stepNumberStyle: CSSProperties = {
   justifyContent: 'center',
   fontWeight: 'bold',
   marginRight: '15px',
-  position: 'relative',
-  top: '4px' // Adjust position to align with text baseline
+  flexShrink: 0
 };
 
 export const stepTitleStyle: CSSProperties = {
@@ -36,7 +36,10 @@ export const stepTitleStyle: CSSProperties = {
   fontWeight: 'bold',
   color: '#333333',
   margin: 0,
-  lineHeight: '1'
+  padding: 0,
+  display: 'flex',
+  alignItems: 'center',
+  height: '30px'
 };
 
 export const stepDescriptionStyle: CSSProperties = {

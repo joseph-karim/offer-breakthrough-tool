@@ -224,7 +224,6 @@ export const Step06_TargetBuyers: React.FC = () => {
       {/* Step indicator */}
       <div style={{
         display: 'flex',
-        alignItems: 'center',
         marginBottom: '20px'
       }}>
         <div style={{
@@ -238,8 +237,7 @@ export const Step06_TargetBuyers: React.FC = () => {
           justifyContent: 'center',
           fontWeight: 'bold',
           marginRight: '15px',
-          position: 'relative',
-          top: '4px'
+          marginTop: '3px'
         }}>
           5
         </div>
@@ -247,8 +245,7 @@ export const Step06_TargetBuyers: React.FC = () => {
           fontSize: '24px',
           fontWeight: 'bold',
           color: '#333333',
-          margin: 0,
-          lineHeight: '1'
+          margin: 0
         }}>
           Identify Potential Buyers
         </h2>

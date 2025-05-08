@@ -20,7 +20,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
-  
+
   // Hover state for tooltip
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
@@ -67,10 +67,9 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center',
-        marginBottom: '20px' 
+      <div style={{
+        display: 'flex',
+        marginBottom: '20px'
       }}>
         <div style={{
           backgroundColor: '#fcf720',
@@ -83,8 +82,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
           justifyContent: 'center',
           fontWeight: 'bold',
           marginRight: '15px',
-          position: 'relative',
-          top: '4px'
+          marginTop: '3px'
         }}>
           2
         </div>
@@ -92,8 +90,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
           fontSize: '24px',
           fontWeight: 'bold',
           color: '#333333',
-          margin: 0,
-          lineHeight: '1'
+          margin: 0
         }}>
           Clarify Your Underlying Goal
         </h2>
@@ -126,13 +123,13 @@ export const Step03_UnderlyingGoal: React.FC = () => {
             >
               What is your underlying business goal?
             </label>
-            <div 
+            <div
               onMouseEnter={() => setIsTooltipVisible(true)}
               onMouseLeave={() => setIsTooltipVisible(false)}
               style={{ position: 'relative', cursor: 'help' }}
             >
               <HelpCircle size={16} style={{ color: '#6b7280' }} />
-              
+
               {isTooltipVisible && (
                 <div style={{
                   position: 'absolute',

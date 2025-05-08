@@ -220,7 +220,6 @@ export const Step08_TargetMarket: React.FC = () => {
       {/* Step indicator */}
       <div style={{
         display: 'flex',
-        alignItems: 'center',
         marginBottom: '20px'
       }}>
         <div style={{
@@ -234,17 +233,15 @@ export const Step08_TargetMarket: React.FC = () => {
           justifyContent: 'center',
           fontWeight: 'bold',
           marginRight: '15px',
-          position: 'relative',
-          top: '4px'
+          marginTop: '3px'
         }}>
-          09
+          08
         </div>
         <h2 style={{
           fontSize: '24px',
           fontWeight: 'bold',
           color: '#333333',
-          margin: 0,
-          lineHeight: '1'
+          margin: 0
         }}>
           Define Your Focused Target Market
         </h2>

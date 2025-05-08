@@ -144,10 +144,9 @@ export const Step10_Summary: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center',
-        marginBottom: '20px' 
+      <div style={{
+        display: 'flex',
+        marginBottom: '20px'
       }}>
         <div style={{
           backgroundColor: '#fcf720',
@@ -160,8 +159,7 @@ export const Step10_Summary: React.FC = () => {
           justifyContent: 'center',
           fontWeight: 'bold',
           marginRight: '15px',
-          position: 'relative',
-          top: '4px'
+          marginTop: '3px'
         }}>
           10
         </div>
@@ -169,8 +167,7 @@ export const Step10_Summary: React.FC = () => {
           fontSize: '24px',
           fontWeight: 'bold',
           color: '#333333',
-          margin: 0,
-          lineHeight: '1'
+          margin: 0
         }}>
           Workshop Summary
         </h2>

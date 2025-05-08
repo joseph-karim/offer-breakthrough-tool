@@ -7,6 +7,7 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Button } from '../../ui/Button';
 import { URLInputModal } from '../chat/URLInputModal';
 import { BrainstormContext } from '../../../services/brainstormService';
+import * as styles from '../../../styles/stepStyles';
 
 
 // Separate selectors to prevent unnecessary re-renders
@@ -163,7 +164,6 @@ export const Step02_BigIdea: React.FC = () => {
       {/* Step indicator */}
       <div style={{
         display: 'flex',
-        alignItems: 'center',
         marginBottom: '20px'
       }}>
         <div style={{
@@ -177,8 +177,7 @@ export const Step02_BigIdea: React.FC = () => {
           justifyContent: 'center',
           fontWeight: 'bold',
           marginRight: '15px',
-          position: 'relative',
-          top: '4px'
+          marginTop: '3px'
         }}>
           1
         </div>
@@ -186,8 +185,7 @@ export const Step02_BigIdea: React.FC = () => {
           fontSize: '24px',
           fontWeight: 'bold',
           color: '#333333',
-          margin: 0,
-          lineHeight: '1'
+          margin: 0
         }}>
           Define Your Big Idea
         </h2>
