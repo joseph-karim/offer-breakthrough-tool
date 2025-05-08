@@ -11,6 +11,7 @@ import { Step05_Jobs } from './steps/Step05_Jobs';
 import { Step06_TargetBuyers } from './steps/Step06_TargetBuyers';
 import { Step07_Painstorming } from './steps/Step07_Painstorming';
 import { Step08_ProblemUp } from './steps/Step08_ProblemUp';
+import { Step08_TargetMarket } from './steps/Step08_TargetMarket';
 import { Step09_RefineIdea } from './steps/Step09_RefineIdea';
 import { Step10_Summary } from './steps/Step10_Summary';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
@@ -54,7 +55,7 @@ export const WorkshopWizard = () => {
 
   const goToNextStep = useCallback(() => {
     setValidationErrors(false); // Reset validation errors when successfully moving forward
-    setCurrentStep(Math.min(10, currentStep + 1));
+    setCurrentStep(Math.min(11, currentStep + 1));
   }, [currentStep, setCurrentStep, setValidationErrors]);
 
   // Don't render anything until initialization is complete
@@ -108,9 +109,11 @@ export const WorkshopWizard = () => {
       case 8:
         return <Step08_ProblemUp key="step8" />;
       case 9:
-        return <Step09_RefineIdea key="step9" />;
+        return <Step08_TargetMarket key="step9" />;
       case 10:
-        return <Step10_Summary key="step10" />;
+        return <Step09_RefineIdea key="step10" />;
+      case 11:
+        return <Step10_Summary key="step11" />;
       default:
         return <div key={`step${currentStep}`}>Step {currentStep} is under construction</div>;
     }
@@ -232,7 +235,7 @@ export const WorkshopWizard = () => {
 
                 <Button
                   onClick={goToNextStep}
-                  disabled={currentStep === 10}
+                  disabled={currentStep === 11}
                   variant="yellow"
                   size="lg"
                   rightIcon={<ChevronRight style={{ width: '20px', height: '20px', color: '#222222' }} />}
@@ -245,11 +248,11 @@ export const WorkshopWizard = () => {
                     borderRadius: '8px',
                     fontWeight: 'bold',
                     padding: '10px 20px',
-                    opacity: currentStep === 10 ? 0.6 : 1,
-                    cursor: currentStep === 10 ? 'not-allowed' : 'pointer'
+                    opacity: currentStep === 11 ? 0.6 : 1,
+                    cursor: currentStep === 11 ? 'not-allowed' : 'pointer'
                   }}
                 >
-                  {currentStep === 10 ? 'Complete Workshop' : 'Next Step'}
+                  {currentStep === 11 ? 'Complete Workshop' : 'Next Step'}
                 </Button>
               </div>
             )}

@@ -10,7 +10,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
   const { currentStep } = useWorkshopStore();
 
   // Total steps reduced by 1 since intro is not counted as a step
-  const totalSteps = 9;
+  const totalSteps = 10;
   // Check if current page is intro page
   const isIntroPage = currentStep === 1;
 

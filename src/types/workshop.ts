@@ -71,6 +71,13 @@ export interface ProblemUp {
   notes: string;
 }
 
+export interface TargetMarketProfile {
+  name: string;
+  commonTraits: string[];
+  commonTriggers: string[];
+  coreTransformation: string;
+}
+
 export interface Offer {
   id: string;
   name: string;
@@ -132,11 +139,14 @@ export interface WorkshopData {
   // Step 8: Problem Up
   problemUp?: ProblemUp;
 
-  // Step 9: Refine Idea
+  // Step 9: Target Market Profile
+  targetMarketProfile?: TargetMarketProfile;
+
+  // Step 10: Refine Idea
   refinedIdea?: BigIdea;
   offer?: Offer;
 
-  // Step 10: Summary
+  // Step 11: Summary
   reflections?: Reflections;
 
   // Chat messages for each step

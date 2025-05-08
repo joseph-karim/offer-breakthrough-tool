@@ -76,6 +76,12 @@ const initialWorkshopData: WorkshopData = {
     targetMoment: '',
     notes: ''
   },
+  targetMarketProfile: {
+    name: '',
+    commonTraits: [],
+    commonTriggers: [],
+    coreTransformation: ''
+  },
   refinedIdea: {
     description: '',
     targetCustomers: '',
@@ -270,9 +276,33 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
       `;
       break;
 
-    case 9: // Refine Idea
+    case 9: // Target Market Profile
       context = `
-        Workshop Progress: Step 9 - Refine Your Idea
+        Workshop Progress: Step 9 - Define Your Focused Target Market
+
+        Primary Buyer:
+        ${workshopData.problemUp?.selectedBuyers.map(id => {
+          const buyer = workshopData.targetBuyers.find(b => b.id === id);
+          return buyer ? `- ${buyer.description}` : `- Unknown buyer (ID: ${id})`;
+        }).join('\n') || 'None selected'}
+
+        Primary Pain:
+        ${workshopData.problemUp?.selectedPains.map(id => {
+          const pain = workshopData.pains.find(p => p.id === id);
+          return pain ? `- ${pain.description}` : `- Unknown pain (ID: ${id})`;
+        }).join('\n') || 'None selected'}
+
+        Target Moment:
+        ${workshopData.problemUp ? workshopData.problemUp.targetMoment : ''}
+
+        Overarching Job:
+        ${workshopData.jobs.find(job => job.isOverarching)?.description || 'No overarching job defined'}
+      `;
+      break;
+
+    case 10: // Refine Idea
+      context = `
+        Workshop Progress: Step 10 - Refine Your Idea
 
         Initial Big Idea:
         ${workshopData.bigIdea ? `${workshopData.bigIdea.description}` : ''}
@@ -293,12 +323,16 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
         Target Moment:
         ${workshopData.problemUp ? workshopData.problemUp.targetMoment : ''}
 
+        Target Market Profile:
+        ${workshopData.targetMarketProfile ? `Name: ${workshopData.targetMarketProfile.name}` : ''}
+        ${workshopData.targetMarketProfile ? `Core Transformation: ${workshopData.targetMarketProfile.coreTransformation}` : ''}
+
         Notes:
         ${workshopData.problemUp ? workshopData.problemUp.notes : ''}
       `;
       break;
 
-    case 10: // Summary
+    case 11: // Summary
       context = `
         Workshop Summary:
 
@@ -333,6 +367,10 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
 
         Target Moment:
         ${workshopData.problemUp ? workshopData.problemUp.targetMoment : ''}
+
+        Target Market Profile:
+        ${workshopData.targetMarketProfile ? `Name: ${workshopData.targetMarketProfile.name}` : ''}
+        ${workshopData.targetMarketProfile ? `Core Transformation: ${workshopData.targetMarketProfile.coreTransformation}` : ''}
 
         Refined Idea:
         ${workshopData.refinedIdea ? `${workshopData.refinedIdea.description}` : ''}
@@ -412,7 +450,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   setCurrentStep: (step: number) => {
-    if (step >= 1 && step <= 10) {
+    if (step >= 1 && step <= 11) {
       set({ currentStep: step });
 
       // Initialize step chat if it doesn't exist
