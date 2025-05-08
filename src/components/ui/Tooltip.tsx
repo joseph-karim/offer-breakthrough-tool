@@ -119,14 +119,14 @@ export const Tooltip: React.FC<TooltipProps> = ({
     // Additional adjustments to prevent overflow
     if (finalPosition === 'top' || finalPosition === 'bottom') {
       const tooltipWidth = tooltipRef.current.offsetWidth;
-      
+
       // Adjust if tooltip would overflow left edge
-      if (newPosition.left - (tooltipWidth / 2) < 10) {
+      if (typeof newPosition.left === 'number' && newPosition.left - (tooltipWidth / 2) < 10) {
         newPosition.left = tooltipWidth / 2 + 10;
       }
-      
+
       // Adjust if tooltip would overflow right edge
-      if (newPosition.left + (tooltipWidth / 2) > windowWidth - 10) {
+      if (typeof newPosition.left === 'number' && newPosition.left + (tooltipWidth / 2) > windowWidth - 10) {
         newPosition.left = windowWidth - (tooltipWidth / 2) - 10;
       }
     }

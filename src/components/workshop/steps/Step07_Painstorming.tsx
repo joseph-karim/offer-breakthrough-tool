@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { AlertCircle, HelpCircle, MessageSquare, Check } from 'lucide-react';
+import { AlertCircle, MessageSquare } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { PainstormingModal } from '../chat/PainstormingModal';
@@ -93,14 +93,14 @@ export const Step07_Painstorming: React.FC = () => {
   const handleConfirmSelection = useCallback((selectedProblems: string[]) => {
     // Save the selected problems to store
     setFocusedProblems(selectedProblems);
-    
+
     // Also update the overlapping pains in our local form
     const formattedProblems = selectedProblems.map(p => `- ${p}`).join('\n');
     setFormData(prev => ({
       ...prev,
       overlappingPains: formattedProblems
     }));
-    
+
     // Update workshopData
     updateWorkshopData({
       painstormingResults: {
@@ -113,10 +113,10 @@ export const Step07_Painstorming: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={{ 
-        display: 'flex', 
+      <div style={{
+        display: 'flex',
         alignItems: 'center',
-        marginBottom: '20px' 
+        marginBottom: '20px'
       }}>
         <div style={{
           backgroundColor: '#fcf720',
@@ -224,8 +224,8 @@ export const Step07_Painstorming: React.FC = () => {
               onClick={generatePainstormingSuggestions}
               isLoading={isAiLoading}
               rightIcon={<MessageSquare size={16} />}
-              style={{ 
-                backgroundColor: '#fcf720', 
+              style={{
+                backgroundColor: '#fcf720',
                 color: '#222222',
                 borderRadius: '15px',
                 fontSize: '15px'
@@ -350,7 +350,7 @@ export const Step07_Painstorming: React.FC = () => {
             Step 3: Make Note of Any 'Aha!' Moments
           </h3>
 
-          <div style={{ 
+          <div style={{
             backgroundColor: '#f9fafb',
             borderRadius: '8px',
             border: '1px solid #e5e7eb',

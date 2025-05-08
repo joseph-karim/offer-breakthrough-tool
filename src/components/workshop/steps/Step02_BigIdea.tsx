@@ -7,7 +7,7 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Button } from '../../ui/Button';
 import { URLInputModal } from '../chat/URLInputModal';
 import { BrainstormContext } from '../../../services/brainstormService';
-import * as styles from '../../../styles/stepStyles';
+
 
 // Separate selectors to prevent unnecessary re-renders
 const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
@@ -161,10 +161,10 @@ export const Step02_BigIdea: React.FC = () => {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: '#FFFFFF', color: '#333333', padding: '30px', borderRadius: '20px' }}>
       {/* Step indicator */}
-      <div style={{ 
-        display: 'flex', 
+      <div style={{
+        display: 'flex',
         alignItems: 'center',
-        marginBottom: '20px' 
+        marginBottom: '20px'
       }}>
         <div style={{
           backgroundColor: '#fcf720',

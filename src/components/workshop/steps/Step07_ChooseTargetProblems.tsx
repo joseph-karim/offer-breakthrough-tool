@@ -2,14 +2,14 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Pain } from '../../../types/workshop';
-import { HelpCircle, Plus, X, ChevronUp, ChevronDown, Check } from 'lucide-react';
+import { Plus, ChevronUp, ChevronDown, Check } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectPains = (state: WorkshopStore) => state.workshopData.pains || [];
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
-const selectProblemUp = (state: WorkshopStore) => state.workshopData.problemUp || { selectedPains: [] };
+const selectProblemUp = (state: WorkshopStore) => state.workshopData.problemUp;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 
 export const Step07_ChooseTargetProblems: React.FC = () => {
@@ -17,23 +17,23 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const problemUp = useWorkshopStore(selectProblemUp);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  
+
   // State for selected problems to solve
   const [selectedProblems, setSelectedProblems] = useState<string[]>(problemUp?.selectedPains || []);
   const [newProblem, setNewProblem] = useState('');
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  // const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isInsightsExpanded, setIsInsightsExpanded] = useState(true);
   const [isGuideExpanded, setIsGuideExpanded] = useState(true);
-  
+
   // Get FIRE pains - the most critical problems
   const firePains = pains.filter(pain => pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7));
-  
+
   // Get top buyer segments
   const topBuyers = targetBuyers.filter(buyer => buyer.isTopThree).slice(0, 3);
 
   // Initialize with any existing selected pains
   useEffect(() => {
-    if (problemUp?.selectedPains?.length > 0) {
+    if (problemUp && problemUp.selectedPains && problemUp.selectedPains.length > 0) {
       setSelectedProblems(problemUp.selectedPains);
     }
   }, [problemUp]);
@@ -42,36 +42,48 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
   const toggleProblemSelection = useCallback((painId: string) => {
     setSelectedProblems(prev => {
       const isSelected = prev.includes(painId);
-      
+
       // If already selected, remove it
       if (isSelected) {
         const newSelection = prev.filter(id => id !== painId);
-        
+
         // Update workshop data
         updateWorkshopData({
-          problemUp: {
+          problemUp: problemUp ? {
             ...problemUp,
             selectedPains: newSelection
+          } : {
+            selectedPains: newSelection,
+            selectedBuyers: [],
+            relevantTriggerIds: [],
+            targetMoment: '',
+            notes: ''
           }
         });
-        
+
         return newSelection;
-      } 
+      }
       // If not selected and we have less than 5 selections, add it
       else if (prev.length < 5) {
         const newSelection = [...prev, painId];
-        
+
         // Update workshop data
         updateWorkshopData({
-          problemUp: {
+          problemUp: problemUp ? {
             ...problemUp,
             selectedPains: newSelection
+          } : {
+            selectedPains: newSelection,
+            selectedBuyers: [],
+            relevantTriggerIds: [],
+            targetMoment: '',
+            notes: ''
           }
         });
-        
+
         return newSelection;
       }
-      
+
       // Otherwise, just return the current selection
       return prev;
     });
@@ -89,23 +101,29 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
         source: 'user',
         isFire: true // Mark as important by default
       };
-      
+
       // Update pains in the store
       const updatedPains = [...pains, newPain];
       updateWorkshopData({ pains: updatedPains });
-      
+
       // Add to selected problems
       const newSelection = [...selectedProblems, newPain.id];
       setSelectedProblems(newSelection);
-      
+
       // Update workshop data
       updateWorkshopData({
-        problemUp: {
+        problemUp: problemUp ? {
           ...problemUp,
           selectedPains: newSelection
+        } : {
+          selectedPains: newSelection,
+          selectedBuyers: [],
+          relevantTriggerIds: [],
+          targetMoment: '',
+          notes: ''
         }
       });
-      
+
       setNewProblem(''); // Clear input
     }
   }, [newProblem, selectedProblems, pains, topBuyers, problemUp, updateWorkshopData]);
@@ -116,17 +134,17 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
       handleAddProblem();
     }
   }, [handleAddProblem]);
-  
+
   // Get pain display information
   const getPainDetails = (painId: string) => {
     const pain = pains.find(p => p.id === painId);
     if (!pain) return null;
-    
+
     const buyerSegment = pain.buyerSegment;
     const isFire = pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7);
-    
-    return { 
-      description: pain.description, 
+
+    return {
+      description: pain.description,
       buyerSegment,
       isFire,
       type: pain.type,
@@ -137,10 +155,10 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={{ 
-        display: 'flex', 
+      <div style={{
+        display: 'flex',
         alignItems: 'center',
-        marginBottom: '20px' 
+        marginBottom: '20px'
       }}>
         <div style={{
           backgroundColor: '#fcf720',
@@ -215,7 +233,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                 Problems Identified:
               </h4>
               {pains.length > 0 ? (
-                <ul style={{ 
+                <ul style={{
                   margin: '0',
                   paddingLeft: '24px',
                   color: '#334155',
@@ -227,7 +245,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                   {pains.length > 5 && <li>...and {pains.length - 5} more.</li>}
                 </ul>
               ) : (
-                <p style={{ 
+                <p style={{
                   fontSize: '14px',
                   color: '#6b7280',
                   margin: 0
@@ -246,7 +264,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                 Your Top 3 Buyer Segments:
               </h4>
               {topBuyers.length > 0 ? (
-                <ul style={{ 
+                <ul style={{
                   margin: '0',
                   paddingLeft: '24px',
                   color: '#334155',
@@ -257,7 +275,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                   ))}
                 </ul>
               ) : (
-                <p style={{ 
+                <p style={{
                   fontSize: '14px',
                   color: '#6b7280',
                   margin: 0
@@ -293,7 +311,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
           </div>
 
           {isGuideExpanded && (
-            <div style={{ 
+            <div style={{
               backgroundColor: '#f9fafb',
               borderRadius: '8px',
               border: '1px solid #e5e7eb',
@@ -343,22 +361,22 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                 onClick={handleAddProblem}
                 disabled={!newProblem.trim() || selectedProblems.length >= 5}
                 variant="primary"
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '8px', 
-                  backgroundColor: '#fcf720', 
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#fcf720',
                   color: '#222222',
-                  borderRadius: '15px', 
+                  borderRadius: '15px',
                 }}
               >
                 <Plus size={16} />
                 Add
               </Button>
             </div>
-            <p style={{ 
-              fontSize: '14px', 
-              color: '#6b7280', 
+            <p style={{
+              fontSize: '14px',
+              color: '#6b7280',
               margin: '0',
               fontStyle: 'italic'
             }}>
@@ -379,7 +397,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
               </h4>
               <div style={{ display: 'grid', gap: '12px', marginBottom: '20px' }}>
                 {firePains.map(pain => (
-                  <div 
+                  <div
                     key={pain.id}
                     style={{
                       display: 'flex',
@@ -442,7 +460,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                 {pains
                   .filter(pain => !pain.isFire && (!pain.calculatedFireScore || pain.calculatedFireScore < 7))
                   .map(pain => (
-                    <div 
+                    <div
                       key={pain.id}
                       style={{
                         display: 'flex',
@@ -504,7 +522,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
               }}>
                 Your Selected Problems ({selectedProblems.length}/5):
               </h4>
-              <ul style={{ 
+              <ul style={{
                 margin: '0',
                 paddingLeft: '24px',
                 color: '#166534',
@@ -514,11 +532,11 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                   const painDetails = getPainDetails(painId);
                   return painDetails ? (
                     <li key={painId} style={{ marginBottom: '8px' }}>
-                      <strong>{painDetails.description}</strong> 
+                      <strong>{painDetails.description}</strong>
                       {painDetails.isFire && <span style={{ color: '#dc2626', fontWeight: 'bold' }}> (FIRE)</span>}
-                      <div style={{ 
-                        fontSize: '13px', 
-                        color: '#4b5563', 
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#4b5563',
                         fontStyle: 'italic',
                         marginTop: '2px'
                       }}>

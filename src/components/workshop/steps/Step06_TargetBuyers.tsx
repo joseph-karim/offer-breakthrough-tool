@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetBuyer } from '../../../types/workshop';
-import { HelpCircle, Plus, X, Star, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { HelpCircle, Plus, X, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 
@@ -22,8 +22,8 @@ export const Step06_TargetBuyers: React.FC = () => {
   const [shortlistedBuyers, setShortlistedBuyers] = useState<string[]>([]);
   const [topThreeBuyers, setTopThreeBuyers] = useState<string[]>([]);
   const [newTopBuyer, setNewTopBuyer] = useState('');
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-  
+  // const [hoveredId, setHoveredId] = useState<string | null>(null);
+
   // Accordion states
   const [isStep1Expanded, setIsStep1Expanded] = useState(true);
   const [isStep2Expanded, setIsStep2Expanded] = useState(false);
@@ -32,7 +32,7 @@ export const Step06_TargetBuyers: React.FC = () => {
   // Update local state when store value changes
   useEffect(() => {
     setBuyers(targetBuyers || []);
-    
+
     // Extract shortlisted and top buyers from store data
     const shortlisted = targetBuyers?.filter(b => b.shortlisted).map(b => b.description) || [];
     setShortlistedBuyers(shortlisted);
@@ -99,13 +99,13 @@ export const Step06_TargetBuyers: React.FC = () => {
   const handleAddTopBuyer = useCallback(() => {
     if (newTopBuyer.trim() !== '' && topThreeBuyers.length < 3) {
       setTopThreeBuyers(prev => [...prev, newTopBuyer.trim()]);
-      
+
       // Update the full buyers list
       const existingBuyer = buyers.find(b => b.description === newTopBuyer.trim());
-      
+
       if (existingBuyer) {
         // Mark an existing buyer as top three
-        const updatedBuyers = buyers.map(b => 
+        const updatedBuyers = buyers.map(b =>
           b.id === existingBuyer.id ? { ...b, isTopThree: true } : b
         );
         setBuyers(updatedBuyers);
@@ -124,12 +124,12 @@ export const Step06_TargetBuyers: React.FC = () => {
           shortlisted: true,
           isTopThree: true
         };
-        
+
         const updatedBuyers = [...buyers, buyer];
         setBuyers(updatedBuyers);
         updateWorkshopData({ targetBuyers: updatedBuyers });
       }
-      
+
       setNewTopBuyer(''); // Clear input
     }
   }, [newTopBuyer, topThreeBuyers, buyers, updateWorkshopData]);
@@ -138,32 +138,32 @@ export const Step06_TargetBuyers: React.FC = () => {
     const buyerToDelete = buyers.find(buyer => buyer.id === id);
     const updatedBuyers = buyers.filter(buyer => buyer.id !== id);
     setBuyers(updatedBuyers);
-    
+
     if (buyerToDelete) {
       // Remove from shortlisted or top three if necessary
       if (buyerToDelete.shortlisted) {
         setShortlistedBuyers(prev => prev.filter(desc => desc !== buyerToDelete.description));
       }
-      
+
       if (buyerToDelete.isTopThree) {
         setTopThreeBuyers(prev => prev.filter(desc => desc !== buyerToDelete.description));
       }
-      
+
       // Remove from potential buyers list
       setPotentialBuyers(prev => prev.filter(desc => desc !== buyerToDelete.description));
     }
-    
+
     updateWorkshopData({ targetBuyers: updatedBuyers });
   }, [buyers, updateWorkshopData]);
 
   const handleRemoveTopBuyer = useCallback((description: string) => {
     setTopThreeBuyers(prev => prev.filter(desc => desc !== description));
-    
+
     // Update the full buyers list
-    const updatedBuyers = buyers.map(b => 
+    const updatedBuyers = buyers.map(b =>
       b.description === description ? { ...b, isTopThree: false } : b
     );
-    
+
     setBuyers(updatedBuyers);
     updateWorkshopData({ targetBuyers: updatedBuyers });
   }, [buyers, updateWorkshopData]);
@@ -185,18 +185,18 @@ export const Step06_TargetBuyers: React.FC = () => {
 
   const toggleShortlistBuyer = useCallback((description: string) => {
     const buyer = buyers.find(b => b.description === description);
-    
+
     if (buyer) {
       const isCurrentlyShortlisted = buyer.shortlisted;
-      
+
       // Update shortlisted status
-      const updatedBuyers = buyers.map(b => 
+      const updatedBuyers = buyers.map(b =>
         b.id === buyer.id ? { ...b, shortlisted: !isCurrentlyShortlisted } : b
       );
-      
+
       setBuyers(updatedBuyers);
       updateWorkshopData({ targetBuyers: updatedBuyers });
-      
+
       // Update shortlisted list
       if (isCurrentlyShortlisted) {
         setShortlistedBuyers(prev => prev.filter(desc => desc !== description));
@@ -222,10 +222,10 @@ export const Step06_TargetBuyers: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={{ 
-        display: 'flex', 
+      <div style={{
+        display: 'flex',
         alignItems: 'center',
-        marginBottom: '20px' 
+        marginBottom: '20px'
       }}>
         <div style={{
           backgroundColor: '#fcf720',
@@ -306,13 +306,13 @@ export const Step06_TargetBuyers: React.FC = () => {
                   onClick={handleAddPotentialBuyer}
                   disabled={!newPotentialBuyer.trim()}
                   variant="primary"
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '8px', 
-                    backgroundColor: '#fcf720', 
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: '#fcf720',
                     color: '#222222',
-                    borderRadius: '15px', 
+                    borderRadius: '15px',
                   }}
                 >
                   <Plus size={16} />
@@ -350,7 +350,7 @@ export const Step06_TargetBuyers: React.FC = () => {
                         >
                           <Star size={16} fill={shortlistedBuyers.includes(description) ? '#FFDD00' : 'none'} />
                         </button>
-                        
+
                         {/* Find the buyer object with this description and delete it */}
                         {(() => {
                           const buyer = buyers.find(b => b.description === description);
@@ -450,13 +450,13 @@ export const Step06_TargetBuyers: React.FC = () => {
                     onClick={handleAddBuyer}
                     disabled={!newBuyer.trim()}
                     variant="primary"
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '8px', 
-                      backgroundColor: '#fcf720', 
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      backgroundColor: '#fcf720',
                       color: '#222222',
-                      borderRadius: '15px', 
+                      borderRadius: '15px',
                     }}
                   >
                     <Plus size={16} />
@@ -645,8 +645,8 @@ export const Step06_TargetBuyers: React.FC = () => {
                 >
                   <option value="">Select a buyer from your shortlist</option>
                   {shortlistedBuyers.map((buyer, index) => (
-                    <option 
-                      key={index} 
+                    <option
+                      key={index}
                       value={buyer}
                       disabled={topThreeBuyers.includes(buyer)}
                     >
@@ -658,13 +658,13 @@ export const Step06_TargetBuyers: React.FC = () => {
                   onClick={handleAddTopBuyer}
                   disabled={!newTopBuyer.trim() || topThreeBuyers.length >= 3}
                   variant="primary"
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '8px', 
-                    backgroundColor: '#fcf720', 
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: '#fcf720',
                     color: '#222222',
-                    borderRadius: '15px', 
+                    borderRadius: '15px',
                   }}
                 >
                   <Plus size={16} />
@@ -683,7 +683,7 @@ export const Step06_TargetBuyers: React.FC = () => {
                   }}>
                     Your Top 3 Buyers:
                   </h4>
-                  
+
                   <div style={{ display: 'grid', gap: '12px' }}>
                     {topThreeBuyers.map((description, index) => (
                       <div
@@ -715,7 +715,7 @@ export const Step06_TargetBuyers: React.FC = () => {
                           </div>
                           <span style={{ color: '#166534', fontWeight: 500 }}>{description}</span>
                         </div>
-                        
+
                         <button
                           onClick={() => handleRemoveTopBuyer(description)}
                           style={{
@@ -729,7 +729,7 @@ export const Step06_TargetBuyers: React.FC = () => {
                         </button>
                       </div>
                     ))}
-                    
+
                     {topThreeBuyers.length < 3 && (
                       <div style={{
                         padding: '12px 16px',

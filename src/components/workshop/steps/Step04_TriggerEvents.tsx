@@ -3,7 +3,7 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TriggerEvent } from '../../../types/workshop';
-import { Info, Plus, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import * as styles from '../../../styles/stepStyles';
 
 
@@ -56,10 +56,10 @@ export const Step04_TriggerEvents: React.FC = () => {
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
-      <div style={{ 
-        display: 'flex', 
+      <div style={{
+        display: 'flex',
         alignItems: 'center',
-        marginBottom: '20px' 
+        marginBottom: '20px'
       }}>
         <div style={{
           backgroundColor: '#fcf720',
@@ -93,7 +93,7 @@ export const Step04_TriggerEvents: React.FC = () => {
         <p>Let's explore the specific moments in your prospective buyer's life that might trigger them to realize they need a solution like yours. These trigger events provide clues about what your customers really want to get done.</p>
         <p>Trigger events can be:<br />
         Situational (eg. losing a client, getting divorced, hiring a new team member, etc.)<br />
-        Physical (eg. being cold, hip pain, etc.)<br /> 
+        Physical (eg. being cold, hip pain, etc.)<br />
         Social (eg. feeling embarrassed, a fight with a colleague)<br />
         Internal/emotional (eg. feeling overwhelmed, being bored, etc.)</p>
       </div>
@@ -173,11 +173,11 @@ export const Step04_TriggerEvents: React.FC = () => {
               variant="primary"
               onClick={handleAddEvent}
               disabled={!newEvent.trim()}
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                backgroundColor: '#fcf720', 
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#fcf720',
                 color: '#222222',
                 borderRadius: '15px',
               }}
