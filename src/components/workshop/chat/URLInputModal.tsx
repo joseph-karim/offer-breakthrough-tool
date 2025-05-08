@@ -182,7 +182,7 @@ export const URLInputModal: React.FC<URLInputModalProps> = ({
                 padding: '12px',
                 borderRadius: '12px',
                 border: '2px solid',
-                borderColor: inputType === 'url' ? '#FFDD00' : '#EEEEEE',
+                borderColor: inputType === 'url' ? '#fcf720' : '#EEEEEE',
                 backgroundColor: inputType === 'url' ? '#FFFBEB' : '#FFFFFF',
                 cursor: 'pointer',
                 display: 'flex',
@@ -207,7 +207,7 @@ export const URLInputModal: React.FC<URLInputModalProps> = ({
                 padding: '12px',
                 borderRadius: '12px',
                 border: '2px solid',
-                borderColor: inputType === 'text' ? '#FFDD00' : '#EEEEEE',
+                borderColor: inputType === 'text' ? '#fcf720' : '#EEEEEE',
                 backgroundColor: inputType === 'text' ? '#FFFBEB' : '#FFFFFF',
                 cursor: 'pointer',
                 display: 'flex',
@@ -341,7 +341,7 @@ export const URLInputModal: React.FC<URLInputModalProps> = ({
             onClick={handleSubmit}
             disabled={isLoading}
             style={{
-              backgroundColor: '#FFDD00',
+              backgroundColor: '#fcf720',
               color: 'black',
               borderRadius: '20px',
               fontWeight: 'bold',

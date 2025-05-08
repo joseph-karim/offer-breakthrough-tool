@@ -61,7 +61,7 @@ export default {
       },
       colors: {
         brand: {
-          yellow: "#FFDD00",
+          yellow: "#fcf720",
           black: "#222222",
           purple: "#6B46C1",
         },
@@ -98,5 +98,8 @@ export default {
       },
     },
   },
-  plugins: [],
-}  
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
+}

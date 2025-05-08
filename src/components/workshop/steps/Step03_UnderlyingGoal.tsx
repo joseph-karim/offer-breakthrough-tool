@@ -4,7 +4,6 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { UnderlyingGoal } from '../../../types/workshop';
 import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { ResponsiveTooltip } from '../../ui/ResponsiveTooltip';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -21,6 +20,9 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
+  
+  // Hover state for tooltip
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   // Update local state when store value changes
   useEffect(() => {
@@ -62,14 +64,12 @@ export const Step03_UnderlyingGoal: React.FC = () => {
     return '';
   };
 
-
-
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
       <div style={styles.stepHeaderContainerStyle}>
         <div style={styles.stepNumberStyle}>
-          3
+          2
         </div>
         <h2 style={styles.stepTitleStyle}>
           Clarify Your Underlying Goal
@@ -78,14 +78,18 @@ export const Step03_UnderlyingGoal: React.FC = () => {
 
       {/* Description */}
       <div style={styles.stepDescriptionStyle}>
-        <p>Define what you want to achieve with your new offer and what constraints you have</p>
+        <p>Let's get clear on why you're building a new offer. There are many ways to achieve a goal, but you must clarify where you're going in the first place.</p>
       </div>
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={styles.infoBoxStyle}>
-          <AlertCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#ea580c' }} />
-          Clarifying your underlying goal will help you design a solution that works for both your customers AND your business.
+        <div style={{
+          backgroundColor: '#feffb7',
+          padding: '15px',
+          borderRadius: '10px',
+          marginBottom: '20px'
+        }}>
+          <p style={{ margin: 0 }}>Your underlying goal can relate to your business and/or personal life.</p>
         </div>
 
         {/* Business Goal */}
@@ -97,15 +101,51 @@ export const Step03_UnderlyingGoal: React.FC = () => {
             >
               What is your underlying business goal?
             </label>
-            <ResponsiveTooltip content="What do you hope to achieve with this new offer? How will it fit into your broader business strategy?">
-              <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-            </ResponsiveTooltip>
+            <div 
+              onMouseEnter={() => setIsTooltipVisible(true)}
+              onMouseLeave={() => setIsTooltipVisible(false)}
+              style={{ position: 'relative', cursor: 'help' }}
+            >
+              <HelpCircle size={16} style={{ color: '#6b7280' }} />
+              
+              {isTooltipVisible && (
+                <div style={{
+                  position: 'absolute',
+                  top: '-5px',
+                  left: '100%',
+                  transform: 'translateY(-100%)',
+                  backgroundColor: '#1e293b',
+                  color: 'white',
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  lineHeight: '1.5',
+                  maxWidth: '280px',
+                  zIndex: 10,
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                  marginLeft: '8px',
+                  whiteSpace: 'normal',
+                }}>
+                  What do you hope to achieve with this new offer? How will it fit into your broader business strategy?
+                  <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: '100%',
+                    width: '8px',
+                    height: '8px',
+                    backgroundColor: '#1e293b',
+                    transform: 'translateY(-50%) rotate(45deg)',
+                    marginRight: '-4px',
+                  }} />
+                </div>
+              )}
+            </div>
           </div>
           <textarea
             id="business-goal"
             value={formData.businessGoal}
             onChange={(e) => handleInputChange('businessGoal', e.target.value)}
-            placeholder="e.g., Create a new revenue stream that's less dependent on my time and expertise"
+            placeholder="e.g., Use new offer to solve a small problem for ideal customers and deliver a quick win that both earns their trust and creates interest in our other products/services."
             style={isFieldEmpty('businessGoal') ? styles.errorTextareaStyle : styles.textareaStyle}
           />
           {isFieldEmpty('businessGoal') && (
@@ -118,8 +158,6 @@ export const Step03_UnderlyingGoal: React.FC = () => {
             <SaveIndicator saving={isSaving} />
           </div>
         </div>
-
-
 
         {/* Example Goals */}
         <div style={styles.examplesContainerStyle}>

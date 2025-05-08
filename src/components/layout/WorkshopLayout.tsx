@@ -9,7 +9,10 @@ interface WorkshopLayoutProps {
 export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
   const { currentStep } = useWorkshopStore();
 
-  const totalSteps = 10;
+  // Total steps reduced by 1 since intro is not counted as a step
+  const totalSteps = 9;
+  // Check if current page is intro page
+  const isIntroPage = currentStep === 1;
 
   return (
     <div style={{
@@ -32,7 +35,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
         }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{
-              backgroundColor: '#FFDD00',
+              backgroundColor: '#fcf720',
               width: '32px',
               height: '32px',
               borderRadius: '50%',
@@ -56,35 +59,39 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
               Buyer Breakthrough Workshop
             </h1>
           </div>
+          {!isIntroPage && (
+            <div style={{
+              fontSize: '12px',
+              color: 'black',
+              backgroundColor: '#fcf720',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontWeight: 'bold'
+            }}>
+              Step {currentStep - 1} of {totalSteps}
+            </div>
+          )}
+        </div>
+        {!isIntroPage && (
           <div style={{
-            fontSize: '12px',
-            color: 'black',
-            backgroundColor: '#FFDD00',
-            padding: '4px 12px',
-            borderRadius: '20px',
-            fontWeight: 'bold'
+            marginTop: '12px',
+            height: '4px',
+            width: '100%',
+            backgroundColor: '#333333',
+            borderRadius: '9999px',
+            overflow: 'hidden'
           }}>
-            Step {currentStep} of {totalSteps}
+            <div
+              style={{
+                height: '100%',
+                width: `${((currentStep - 1) / totalSteps) * 100}%`,
+                backgroundColor: '#fcf720',
+                borderRadius: '9999px',
+                transition: 'width 0.3s ease'
+              }}
+            />
           </div>
-        </div>
-        <div style={{
-          marginTop: '12px',
-          height: '4px',
-          width: '100%',
-          backgroundColor: '#333333',
-          borderRadius: '9999px',
-          overflow: 'hidden'
-        }}>
-          <div
-            style={{
-              height: '100%',
-              width: `${(currentStep / totalSteps) * 100}%`,
-              backgroundColor: '#FFDD00',
-              borderRadius: '9999px',
-              transition: 'width 0.3s ease'
-            }}
-          />
-        </div>
+        )}
       </header>
 
       <div style={{

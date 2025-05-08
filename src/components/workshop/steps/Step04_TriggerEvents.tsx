@@ -58,7 +58,7 @@ export const Step04_TriggerEvents: React.FC = () => {
       {/* Step indicator */}
       <div style={styles.stepHeaderContainerStyle}>
         <div style={styles.stepNumberStyle}>
-          4
+          3
         </div>
         <h2 style={styles.stepTitleStyle}>
           Identify Trigger Events
@@ -138,7 +138,7 @@ export const Step04_TriggerEvents: React.FC = () => {
               variant="primary"
               onClick={handleAddEvent}
               disabled={!newEvent.trim()}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#FFDD00', color: '#222222' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#fcf720', color: '#222222' }}
             >
               <Plus size={20} />
               Add

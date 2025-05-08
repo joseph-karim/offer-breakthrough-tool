@@ -76,7 +76,7 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
     case 'outline':
       return {
         backgroundColor: '#333333',
-        border: '2px solid #FFDD00',
+        border: '2px solid #fcf720', // Updated to brand Yellow
         color: '#FFFFFF',
       };
     case 'muted':
@@ -93,7 +93,7 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       };
     case 'yellow':
       return {
-        backgroundColor: '#FFDD00',
+        backgroundColor: '#fcf720', // Updated to brand Yellow
         color: '#222222',
         border: 'none',
       };
@@ -113,12 +113,12 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       return {
         backgroundColor: '#333333',
         border: '1px solid #444444',
-        borderLeft: '3px solid #FFDD00',
+        borderLeft: '3px solid #fcf720', // Updated to brand Yellow
         color: '#FFFFFF',
       };
     case 'yellowToBlack':
       return {
-        backgroundColor: '#FFDD00',
+        backgroundColor: '#fcf720', // Updated to brand Yellow
         color: '#222222',
         border: 'none',
       };
@@ -130,7 +130,7 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       };
     case 'yellowToPurple':
       return {
-        backgroundColor: '#FFDD00',
+        backgroundColor: '#fcf720', // Updated to brand Yellow
         color: '#222222',
         border: 'none',
       };
@@ -144,7 +144,7 @@ const getVariantStyles = (variant: CardVariant): CSSProperties => {
       return {
         backgroundColor: '#222222',
         color: '#FFFFFF',
-        border: '1px solid #FFDD00',
+        border: '1px solid #fcf720', // Updated to brand Yellow
       };
     default:
       return {
@@ -185,7 +185,7 @@ const getHoverStyles = (variant: CardVariant, shouldHover: boolean): CSSProperti
     case 'yellowToBlack':
       return {
         ...baseHover,
-        boxShadow: '0 20px 25px -5px rgba(255, 221, 0, 0.4), 0 10px 10px -5px rgba(255, 221, 0, 0.2)',
+        boxShadow: '0 20px 25px -5px rgba(252, 247, 32, 0.4), 0 10px 10px -5px rgba(252, 247, 32, 0.2)', // Updated to brand Yellow
       };
     case 'black':
     case 'blackToYellow':
@@ -202,13 +202,13 @@ const getHoverStyles = (variant: CardVariant, shouldHover: boolean): CSSProperti
     case 'purpleToYellow':
       return {
         ...baseHover,
-        boxShadow: '0 20px 25px -5px rgba(107, 70, 193, 0.4), 0 10px 10px -5px rgba(255, 221, 0, 0.2)',
+        boxShadow: '0 20px 25px -5px rgba(107, 70, 193, 0.4), 0 10px 10px -5px rgba(252, 247, 32, 0.2)', // Updated to brand Yellow
       };
     case 'darkGradient':
       return {
         ...baseHover,
         boxShadow: '0 20px 25px -5px rgba(34, 34, 34, 0.4), 0 10px 10px -5px rgba(34, 34, 34, 0.2)',
-        border: '2px solid #FFDD00',
+        border: '2px solid #fcf720', // Updated to brand Yellow
       };
     default:
       return baseHover;
@@ -223,18 +223,18 @@ const getBorderGradientStyle = (variant: CardVariant, hasBorderGradient: boolean
   switch (variant) {
     case 'yellow':
     case 'yellowToBlack':
-      gradientColors = 'linear-gradient(135deg, #FFDD00, #222222)';
+      gradientColors = 'linear-gradient(135deg, #fcf720, #222222)'; // Updated to brand Yellow
       break;
     case 'black':
     case 'blackToYellow':
-      gradientColors = 'linear-gradient(135deg, #222222, #FFDD00)';
+      gradientColors = 'linear-gradient(135deg, #222222, #fcf720)'; // Updated to brand Yellow
       break;
     case 'purple':
     case 'yellowToPurple':
-      gradientColors = 'linear-gradient(135deg, #FFDD00, #6B46C1)';
+      gradientColors = 'linear-gradient(135deg, #fcf720, #6B46C1)'; // Updated to brand Yellow
       break;
     case 'purpleToYellow':
-      gradientColors = 'linear-gradient(135deg, #6B46C1, #FFDD00)';
+      gradientColors = 'linear-gradient(135deg, #6B46C1, #fcf720)'; // Updated to brand Yellow
       break;
     case 'darkGradient':
       gradientColors = 'linear-gradient(135deg, #222222, #333333)';

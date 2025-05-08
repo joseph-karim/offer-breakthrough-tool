@@ -78,10 +78,10 @@ export const WorkshopWizard = () => {
           borderRadius: '12px',
           backgroundColor: '#FFFFFF',
           border: '1px solid #EEEEEE',
-          borderLeft: '3px solid #FFDD00',
+          borderLeft: '3px solid #fcf720', // Updated to brand Yellow
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
         }}>
-          <Sparkles style={{ color: '#FFDD00' }} />
+          <Sparkles style={{ color: '#fcf720' }} /> {/* Updated to brand Yellow */}
           ✨ Initializing workshop... ✨
         </div>
       </div>
@@ -116,8 +116,6 @@ export const WorkshopWizard = () => {
     }
   })();
 
-  // Completion percentage calculation removed as it's now in WorkshopLayout
-
   // Base styles for the whole app
   const containerStyle: CSSProperties = {
     minHeight: '100vh',
@@ -128,10 +126,6 @@ export const WorkshopWizard = () => {
     position: 'relative',
     color: '#FFFFFF', // White text for dark background
   };
-
-  // Header styles removed as they're now in WorkshopLayout
-
-
 
   // Content container styles
   const contentContainerStyle: CSSProperties = {
@@ -198,14 +192,6 @@ export const WorkshopWizard = () => {
           width: '100%',
           maxWidth: '100%'
         }}>
-        {/* Background decoration - removed for cleaner look */}
-
-        {/* Decorative blobs - removed completely for cleaner look */}
-        {/* {decorativeBlobs.map((style, index) => (
-          <div key={index} style={{...style, opacity: 0.1}}></div>
-        ))} */}
-
-        {/* Header removed as it's now in WorkshopLayout */}
 
         {/* Main content */}
         <main style={contentContainerStyle}>
@@ -219,52 +205,54 @@ export const WorkshopWizard = () => {
               {currentStepComponent}
             </div>
 
-            {/* Inline Navigation Buttons */}
-            <div style={inlineNavStyle}>
-              <Button
-                onClick={goToPreviousStep}
-                disabled={currentStep === 1}
-                variant="outline"
-                size="lg"
-                leftIcon={<ChevronLeft style={{ width: '20px', height: '20px' }} />}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: 'transparent',
-                  color: '#FFDD00',
-                  border: '2px solid #FFDD00',
-                  borderRadius: '8px',
-                  padding: '10px 20px',
-                  opacity: currentStep === 1 ? 0.6 : 1,
-                  cursor: currentStep === 1 ? 'not-allowed' : 'pointer'
-                }}
-              >
-                Back
-              </Button>
+            {/* Show navigation buttons only if not on intro page */}
+            {currentStep > 1 && (
+              <div style={inlineNavStyle}>
+                <Button
+                  onClick={goToPreviousStep}
+                  disabled={currentStep === 1}
+                  variant="outline"
+                  size="lg"
+                  leftIcon={<ChevronLeft style={{ width: '20px', height: '20px' }} />}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: 'transparent',
+                    color: '#fcf720', // Updated to brand Yellow
+                    border: '2px solid #fcf720', // Updated to brand Yellow
+                    borderRadius: '8px',
+                    padding: '10px 20px',
+                    opacity: currentStep === 1 ? 0.6 : 1,
+                    cursor: currentStep === 1 ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  Back
+                </Button>
 
-              <Button
-                onClick={goToNextStep}
-                disabled={currentStep === 10}
-                variant="yellow"
-                size="lg"
-                rightIcon={<ChevronRight style={{ width: '20px', height: '20px', color: '#222222' }} />}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#FFDD00',
-                  color: 'black',
-                  borderRadius: '8px',
-                  fontWeight: 'bold',
-                  padding: '10px 20px',
-                  opacity: currentStep === 10 ? 0.6 : 1,
-                  cursor: currentStep === 10 ? 'not-allowed' : 'pointer'
-                }}
-              >
-                {currentStep === 10 ? 'Complete Workshop' : 'Next Step'}
-              </Button>
-            </div>
+                <Button
+                  onClick={goToNextStep}
+                  disabled={currentStep === 10}
+                  variant="yellow"
+                  size="lg"
+                  rightIcon={<ChevronRight style={{ width: '20px', height: '20px', color: '#222222' }} />}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: '#fcf720', // Updated to brand Yellow
+                    color: 'black',
+                    borderRadius: '8px',
+                    fontWeight: 'bold',
+                    padding: '10px 20px',
+                    opacity: currentStep === 10 ? 0.6 : 1,
+                    cursor: currentStep === 10 ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {currentStep === 10 ? 'Complete Workshop' : 'Next Step'}
+                </Button>
+              </div>
+            )}
           </div>
         </main>
       </div>

@@ -12,7 +12,7 @@
     --radius: 20px;
 
     /* Brand Colors */
-    --yellow: 53 100% 50%;
+    --yellow: 58 98% 54%;
     --yellow-foreground: 0 0% 13%;
 
     --purple: 262 59% 51%;
@@ -41,7 +41,7 @@
 
   /* Highlight should have only ONE per section/box */
   .highlight-yellow {
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
     font-weight: bold;
     padding: 0 2px;
@@ -55,7 +55,7 @@
   }
 
   mark, .mark {
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
     font-weight: bold;
     padding: 0 2px;
@@ -136,7 +136,7 @@
   }
 
   .btn-primary {
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
     opacity: 1;
     transition: opacity 0.2s;
@@ -159,12 +159,12 @@
 
   .btn-outline {
     background-color: transparent;
-    border: 2px solid #FFDD00;
+    border: 2px solid #fcf720;
     color: white;
   }
 
   .btn-outline:hover {
-    background-color: rgba(255, 221, 0, 0.1);
+    background-color: rgba(252, 247, 32, 0.1);
   }
 
   .card {
@@ -175,7 +175,7 @@
   }
 
   .card-yellow {
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
     padding: 10px !important;
     border-radius: 0;
@@ -356,14 +356,14 @@
     font-weight: 700;
     font-size: 18px;
     margin-top: 16px;
-    color: #FFDD00;
-    border-bottom: 2px solid #FFDD00;
+    color: #fcf720;
+    border-bottom: 2px solid #fcf720;
     padding-bottom: 4px;
   }
 
   /* Main styled components based on learnwhybuy.com */
   .accent-yellow {
-    border-left: 3px solid #FFDD00;
+    border-left: 3px solid #fcf720;
   }
 
   /* Text highlight styles */
@@ -382,13 +382,13 @@
 
   .tab.active {
     border-bottom-color: transparent;
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
   }
 
   /* Yellow box styling */
   .yellow-box {
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
     padding: 8px;
     border-radius: 0;
@@ -397,7 +397,7 @@
 
   /* Product tab styling */
   .product-tab {
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
     font-weight: bold;
     padding: 4px 8px;
@@ -449,7 +449,7 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
     font-size: 24px;
     border-radius: 0;
@@ -478,7 +478,7 @@
 
   /* Explosive highlight box specifically for the purple sections */
   .explosive-highlight {
-    background-color: #FFDD00;
+    background-color: #fcf720;
     color: #222222;
     font-weight: 900;
     font-size: 24px;
@@ -584,7 +584,7 @@ html, body, #root {
 }
 
 /* Fix for highlight spans to ensure proper styling */
-span[style*="background-color: #FFDD00"] {
+span[style*="background-color: #fcf720"] {
   color: #222222 !important;
   font-weight: bold;
   padding: 0 2px;
@@ -631,15 +631,15 @@ body.modal-open > *:not(.modal-backdrop) {
 
 /* Direct brand color utility classes */
 .bg-brand-yellow {
-  background-color: #FFDD00;
+  background-color: #fcf720;
 }
 
 .text-brand-yellow {
-  color: #FFDD00;
+  color: #fcf720;
 }
 
 .border-brand-yellow {
-  border-color: #FFDD00;
+  border-color: #fcf720;
 }
 
 .bg-brand-black {
@@ -698,4 +698,3 @@ body.modal-open > *:not(.modal-backdrop) {
 .border-black {
   border-color: black;
 }
-

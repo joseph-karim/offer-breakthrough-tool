@@ -17,7 +17,7 @@ export const stepHeaderContainerStyle: CSSProperties = {
 };
 
 export const stepNumberStyle: CSSProperties = {
-  backgroundColor: '#FFDD00',
+  backgroundColor: '#fcf720',
   color: 'black',
   width: '30px',
   height: '30px',
@@ -153,4 +153,33 @@ export const inputStyle: CSSProperties = {
 export const errorInputStyle: CSSProperties = {
   ...inputStyle,
   borderColor: '#ef4444'
+};
+
+// New styles for yellow highlight and focus elements
+export const yellowHighlightStyle: CSSProperties = {
+  backgroundColor: '#333333',
+  color: '#fcf720',
+  padding: '0 4px',
+  fontWeight: 'bold'
+};
+
+export const yellowInfoBoxStyle: CSSProperties = {
+  backgroundColor: '#feffb7',
+  padding: '15px',
+  borderRadius: '10px',
+  marginBottom: '25px'
+};
+
+export const brainstormButtonStyle: CSSProperties = {
+  backgroundColor: '#fcf720',
+  color: '#333333',
+  borderRadius: '20px',
+  fontSize: '14px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '6px',
+  padding: '8px 12px',
+  fontWeight: 'bold',
+  border: 'none',
+  cursor: 'pointer'
 };

@@ -7,6 +7,7 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Button } from '../../ui/Button';
 import { URLInputModal } from '../chat/URLInputModal';
 import { BrainstormContext } from '../../../services/brainstormService';
+import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
@@ -157,8 +158,6 @@ export const Step02_BigIdea: React.FC = () => {
     return '';
   };
 
-
-
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: '#FFFFFF', color: '#333333', padding: '30px', borderRadius: '20px' }}>
       {/* Step indicator */}
@@ -168,7 +167,7 @@ export const Step02_BigIdea: React.FC = () => {
         marginBottom: '20px'
       }}>
         <div style={{
-          backgroundColor: '#FFDD00',
+          backgroundColor: '#fcf720',
           color: 'black',
           width: '30px',
           height: '30px',
@@ -179,7 +178,7 @@ export const Step02_BigIdea: React.FC = () => {
           fontWeight: 'bold',
           marginRight: '15px'
         }}>
-          2
+          1
         </div>
         <h2 style={{
           fontSize: '24px',
@@ -187,7 +186,7 @@ export const Step02_BigIdea: React.FC = () => {
           color: '#333333',
           margin: 0
         }}>
-          Your Big Idea
+          Define Your Big Idea
         </h2>
       </div>
 
@@ -196,8 +195,18 @@ export const Step02_BigIdea: React.FC = () => {
         marginBottom: '30px',
         color: '#555555'
       }}>
-        <p>Describe your product idea using a simple framework: <span style={{ color: '#FFDD00', backgroundColor: '#333333', padding: '0 4px' }}>[What it is]</span> + <span style={{ color: '#FFDD00', backgroundColor: '#333333', padding: '0 4px' }}>[what will it help customers do]</span></p>
-        <p>This is just version 1 of your idea. You'll refine it as you go through the workshop.</p>
+        <p>Let's start with your initial product or service idea. Don't worry about making it perfect - we'll refine it throughout the workshop</p>
+        <p>Describe your idea using this simple framework: <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[What it is]</span> + <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[what will it help customers do]</span></p>
+      </div>
+
+      {/* Info box */}
+      <div style={{
+        backgroundColor: '#feffb7',
+        padding: '15px',
+        borderRadius: '10px',
+        marginBottom: '25px'
+      }}>
+        <p style={{ margin: 0 }}>Don't overthink it. This is just version 1.0 of your idea. You'll refine it as you dig deeper.</p>
       </div>
 
       {/* Main content area */}
@@ -221,14 +230,14 @@ export const Step02_BigIdea: React.FC = () => {
                 display: 'block'
               }}
             >
-              What is your product or service idea?
+              What is your big idea for your new product or productized service?
             </label>
 
             <Button
               onClick={handleOpenURLModal}
               disabled={isAiLoading}
               style={{
-                backgroundColor: '#FFDD00',
+                backgroundColor: '#fcf720',
                 color: '#333333',
                 borderRadius: '20px',
                 fontSize: '14px',
@@ -247,7 +256,7 @@ export const Step02_BigIdea: React.FC = () => {
             id="big-idea-description"
             value={formData.description}
             onChange={(e) => handleInputChange('description', e.target.value)}
-            placeholder="e.g., A 6-week group coaching program that helps service-based entrepreneurs create a scalable digital product"
+            placeholder="e.g., A fillable buyer profile template and series of custom GPTs that helps entrepreneurs identify the best-fit buyers for their underperforming product/service"
             style={{
               width: '100%',
               minHeight: '100px',
@@ -280,8 +289,6 @@ export const Step02_BigIdea: React.FC = () => {
           </div>
         </div>
 
-
-
         {/* Example Ideas */}
         <div style={{
           backgroundColor: '#F0E6FF',
@@ -309,7 +316,7 @@ export const Step02_BigIdea: React.FC = () => {
           }}>
             <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
               <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-              A 6-week group coaching program that helps service-based entrepreneurs create a scalable digital product
+              A 6-week group coaching program that helps bootstrapped startups fix their user onboarding experience
             </li>
             <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
               <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>

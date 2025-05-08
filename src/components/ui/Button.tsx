@@ -47,7 +47,7 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
   switch (variant) {
     case 'primary':
       return {
-        backgroundColor: '#FFDD00', // Brand Yellow
+        backgroundColor: '#fcf720', // Updated to brand Yellow
         color: '#222222', // Black text for contrast
         border: 'none',
         fontWeight: 'bold',
@@ -64,7 +64,7 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
       return {
         backgroundColor: 'transparent',
         color: '#222222', // Black text for readability
-        border: '2px solid #FFDD00',
+        border: '2px solid #fcf720', // Updated to brand Yellow
         fontWeight: 'bold',
       };
     case 'ghost':
@@ -82,7 +82,7 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
       };
     case 'yellow':
       return {
-        backgroundColor: '#FFDD00',
+        backgroundColor: '#fcf720', // Updated to brand Yellow
         color: '#222222',
         border: 'none',
         fontWeight: 'bold',
@@ -104,21 +104,21 @@ const getVariantStyles = (variant: ButtonVariant): CSSProperties => {
       };
     case 'gradient':
       return {
-        backgroundColor: '#FFDD00',
+        backgroundColor: '#fcf720', // Updated to brand Yellow
         color: '#222222',
         border: 'none',
         fontWeight: 'bold',
       };
     case 'yellowToBlack':
       return {
-        backgroundColor: '#FFDD00',
+        backgroundColor: '#fcf720', // Updated to brand Yellow
         color: '#222222',
         border: 'none',
         fontWeight: 'bold',
       };
     case 'yellowToPurple':
       return {
-        backgroundColor: '#FFDD00',
+        backgroundColor: '#fcf720', // Updated to brand Yellow
         color: '#222222',
         border: 'none',
         fontWeight: 'bold',
