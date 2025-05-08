@@ -4,6 +4,7 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { UnderlyingGoal } from '../../../types/workshop';
 import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
+import { FloatingTooltip } from '../../ui/FloatingTooltip';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -21,8 +22,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
 
-  // Hover state for tooltip
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  // We don't need the tooltip state anymore with FloatingTooltip
 
   // Update local state when store value changes
   useEffect(() => {
@@ -116,52 +116,27 @@ export const Step03_UnderlyingGoal: React.FC = () => {
 
         {/* Business Goal */}
         <div style={styles.formGroupStyle}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
             <label
               htmlFor="business-goal"
-              style={styles.labelStyle}
+              style={{
+                ...styles.labelStyle,
+                marginBottom: 0, // Override the default margin to prevent spacing issues
+                display: 'inline-flex', // Change to inline-flex for better alignment
+                alignItems: 'center', // Center items vertically
+              }}
             >
               What is your underlying business goal?
             </label>
-            <div
-              onMouseEnter={() => setIsTooltipVisible(true)}
-              onMouseLeave={() => setIsTooltipVisible(false)}
-              style={{ position: 'relative', cursor: 'help' }}
+            <FloatingTooltip
+              content="What do you hope to achieve with this new offer? How will it fit into your broader business strategy?"
+              placement="right"
+              maxWidth={280}
             >
-              <HelpCircle size={16} style={{ color: '#6b7280' }} />
-
-              {isTooltipVisible && (
-                <div style={{
-                  position: 'absolute',
-                  top: '-5px',
-                  left: '100%',
-                  transform: 'translateY(-100%)',
-                  backgroundColor: '#1e293b',
-                  color: 'white',
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  fontSize: '12px',
-                  lineHeight: '1.5',
-                  maxWidth: '280px',
-                  zIndex: 10,
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                  marginLeft: '8px',
-                  whiteSpace: 'normal',
-                }}>
-                  What do you hope to achieve with this new offer? How will it fit into your broader business strategy?
-                  <div style={{
-                    position: 'absolute',
-                    top: '50%',
-                    right: '100%',
-                    width: '8px',
-                    height: '8px',
-                    backgroundColor: '#1e293b',
-                    transform: 'translateY(-50%) rotate(45deg)',
-                    marginRight: '-4px',
-                  }} />
-                </div>
-              )}
-            </div>
+              <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+                <HelpCircle size={16} style={{ color: '#6b7280' }} />
+              </div>
+            </FloatingTooltip>
           </div>
           <textarea
             id="business-goal"

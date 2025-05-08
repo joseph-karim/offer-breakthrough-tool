@@ -4,7 +4,7 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { BigIdea } from '../../../types/workshop';
 import { AlertCircle, HelpCircle, ArrowRight } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { ResponsiveTooltip } from '../../ui/ResponsiveTooltip';
+import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -138,9 +138,28 @@ export const Step09_RefineIdea: React.FC = () => {
 
 
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={styles.yellowInfoBoxStyle}>
-            <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
-            Now it's time to refine your initial idea based on the insights you've gained throughout the workshop.
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
+            <label
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#1e293b',
+                display: 'inline-flex',
+                alignItems: 'center',
+                margin: 0
+              }}
+            >
+              Refine Your Idea
+            </label>
+            <ResponsiveFloatingTooltip
+              content="Now it's time to refine your initial idea based on the insights you've gained throughout the workshop."
+              placement="right"
+              maxWidth={300}
+            >
+              <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+                <HelpCircle size={16} style={{ color: '#6b7280' }} />
+              </div>
+            </ResponsiveFloatingTooltip>
           </div>
 
           {/* Initial Big Idea */}
@@ -283,21 +302,29 @@ export const Step09_RefineIdea: React.FC = () => {
 
           {/* Refined Big Idea */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
               <label
                 htmlFor="refined-idea-description"
                 style={{
                   fontSize: '16px',
                   fontWeight: 600,
                   color: '#1e293b',
-                  display: 'block'
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  margin: 0
                 }}
               >
                 Your Refined Big Idea
               </label>
-              <ResponsiveTooltip content="Describe your refined product or service idea based on the insights from the workshop">
-                <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-              </ResponsiveTooltip>
+              <ResponsiveFloatingTooltip
+                content="Describe your refined product or service idea based on the insights from the workshop"
+                placement="right"
+                maxWidth={300}
+              >
+                <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+                  <HelpCircle size={16} style={{ color: '#6b7280' }} />
+                </div>
+              </ResponsiveFloatingTooltip>
             </div>
             <textarea
               id="refined-idea-description"
@@ -326,21 +353,29 @@ export const Step09_RefineIdea: React.FC = () => {
 
           {/* Refined Target Customers */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
               <label
                 htmlFor="refined-target-customers"
                 style={{
                   fontSize: '16px',
                   fontWeight: 600,
                   color: '#1e293b',
-                  display: 'block'
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  margin: 0
                 }}
               >
                 Refined Target Customers
               </label>
-              <ResponsiveTooltip content="Describe your refined target customers based on the insights from the workshop">
-                <HelpCircle size={16} style={{ color: '#6b7280', cursor: 'help' }} />
-              </ResponsiveTooltip>
+              <ResponsiveFloatingTooltip
+                content="Describe your refined target customers based on the insights from the workshop"
+                placement="right"
+                maxWidth={300}
+              >
+                <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+                  <HelpCircle size={16} style={{ color: '#6b7280' }} />
+                </div>
+              </ResponsiveFloatingTooltip>
             </div>
             <textarea
               id="refined-target-customers"
@@ -368,9 +403,28 @@ export const Step09_RefineIdea: React.FC = () => {
           </div>
 
           {/* Next Steps */}
-          <div style={styles.yellowInfoBoxStyle}>
-            <ArrowRight style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
-            In the next step, you'll review your workshop journey and plan your next actions.
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
+            <label
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#1e293b',
+                display: 'inline-flex',
+                alignItems: 'center',
+                margin: 0
+              }}
+            >
+              Next Steps
+            </label>
+            <ResponsiveFloatingTooltip
+              content="In the next step, you'll review your workshop journey and plan your next actions."
+              placement="right"
+              maxWidth={300}
+            >
+              <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+                <ArrowRight size={16} style={{ color: '#6b7280' }} />
+              </div>
+            </ResponsiveFloatingTooltip>
           </div>
         </div>
       </div>

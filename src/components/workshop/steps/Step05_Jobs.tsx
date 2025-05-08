@@ -4,6 +4,7 @@ import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Job } from '../../../types/workshop';
 import { Target, Plus, X, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import * as styles from '../../../styles/stepStyles';
 
 
@@ -338,9 +339,28 @@ export const Step05_Jobs: React.FC = () => {
             Your Overarching Job Statement
           </h3>
 
-          <div style={styles.yellowInfoBoxStyle}>
-            <Info style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
-            This is the main, high-level 'job' or 'progress' a customer is trying to make. Think big picture here.
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
+            <label
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#1e293b',
+                display: 'inline-flex',
+                alignItems: 'center',
+                margin: 0
+              }}
+            >
+              Overarching Job Statement
+            </label>
+            <ResponsiveFloatingTooltip
+              content="This is the main, high-level 'job' or 'progress' a customer is trying to make. Think big picture here."
+              placement="right"
+              maxWidth={300}
+            >
+              <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+                <Info size={16} style={{ color: '#6b7280' }} />
+              </div>
+            </ResponsiveFloatingTooltip>
           </div>
 
           {/* Display existing overarching job if it exists */}
@@ -470,9 +490,28 @@ export const Step05_Jobs: React.FC = () => {
             Your Supporting Job Statements
           </h3>
 
-          <div style={styles.yellowInfoBoxStyle}>
-            <Info style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
-            These are the smaller, more specific 'jobs' that help achieve the Overarching Job.
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
+            <label
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#1e293b',
+                display: 'inline-flex',
+                alignItems: 'center',
+                margin: 0
+              }}
+            >
+              Supporting Job Statements
+            </label>
+            <ResponsiveFloatingTooltip
+              content="These are the smaller, more specific 'jobs' that help achieve the Overarching Job."
+              placement="right"
+              maxWidth={300}
+            >
+              <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+                <Info size={16} style={{ color: '#6b7280' }} />
+              </div>
+            </ResponsiveFloatingTooltip>
           </div>
 
           {/* List of existing supporting jobs */}

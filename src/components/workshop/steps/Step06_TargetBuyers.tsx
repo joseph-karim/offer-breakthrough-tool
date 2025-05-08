@@ -4,6 +4,7 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetBuyer } from '../../../types/workshop';
 import { HelpCircle, Plus, X, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '../../ui/Button';
+import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -258,9 +259,28 @@ export const Step06_TargetBuyers: React.FC = () => {
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={styles.yellowInfoBoxStyle}>
-          <HelpCircle style={{ height: '20px', width: '20px', marginRight: '8px', flexShrink: 0, color: '#222222' }} />
-          Think contextually about who might need to get the job done. Consider specific life factors, business models, industries, job titles, etc.
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
+          <label
+            style={{
+              fontSize: '16px',
+              fontWeight: 600,
+              color: '#1e293b',
+              display: 'inline-flex',
+              alignItems: 'center',
+              margin: 0
+            }}
+          >
+            Identify Potential Buyers
+          </label>
+          <ResponsiveFloatingTooltip
+            content="Think contextually about who might need to get the job done. Consider specific life factors, business models, industries, job titles, etc."
+            placement="right"
+            maxWidth={300}
+          >
+            <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+              <HelpCircle size={16} style={{ color: '#6b7280' }} />
+            </div>
+          </ResponsiveFloatingTooltip>
         </div>
 
         {/* Step 1: Buyer Brainstorm - ACCORDION */}

@@ -6,7 +6,7 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Reflections } from '../../../types/workshop';
 import { CheckCircle2, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
-import { ResponsiveTooltip } from '../../ui/ResponsiveTooltip';
+import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 
 // Modified selectors to prevent creating new objects on each call
 const selectReflections = (state: WorkshopStore) => state.workshopData.reflections;
@@ -108,25 +108,35 @@ export const Step11_Summary: React.FC = () => {
           <div>
             <div style={{
               display: 'flex',
-              alignItems: 'center',
+              alignItems: 'flex-start',
               gap: '8px',
               marginBottom: '8px'
             }}>
               <label
                 htmlFor="key-insights"
-                style={{ fontWeight: 600, color: '#374151' }}
+                style={{
+                  fontWeight: 600,
+                  color: '#374151',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  margin: 0
+                }}
               >
                 Key Insights:
               </label>
-              <ResponsiveTooltip content="Summarize the most important discoveries and decisions from the workshop" position="right">
+              <ResponsiveFloatingTooltip
+                content="Summarize the most important discoveries and decisions from the workshop"
+                placement="right"
+                maxWidth={300}
+              >
                 <div style={{
                   display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'help'
+                  cursor: 'help',
+                  marginTop: '3px'
                 }}>
                   <HelpCircle size={16} style={{ color: '#9ca3af' }} />
                 </div>
-              </ResponsiveTooltip>
+              </ResponsiveFloatingTooltip>
             </div>
             <textarea
               id="key-insights"
@@ -150,25 +160,35 @@ export const Step11_Summary: React.FC = () => {
           <div>
             <div style={{
               display: 'flex',
-              alignItems: 'center',
+              alignItems: 'flex-start',
               gap: '8px',
               marginBottom: '8px'
             }}>
               <label
                 htmlFor="next-steps"
-                style={{ fontWeight: 600, color: '#374151' }}
+                style={{
+                  fontWeight: 600,
+                  color: '#374151',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  margin: 0
+                }}
               >
                 Action Plan:
               </label>
-              <ResponsiveTooltip content="List specific actions you'll take to implement your offer" position="right">
+              <ResponsiveFloatingTooltip
+                content="List specific actions you'll take to implement your offer"
+                placement="right"
+                maxWidth={300}
+              >
                 <div style={{
                   display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'help'
+                  cursor: 'help',
+                  marginTop: '3px'
                 }}>
                   <HelpCircle size={16} style={{ color: '#9ca3af' }} />
                 </div>
-              </ResponsiveTooltip>
+              </ResponsiveFloatingTooltip>
             </div>
             <textarea
               id="next-steps"

@@ -11,6 +11,8 @@
     "netlify-dev": "netlify dev"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.8",
+    "@floating-ui/react-dom": "^2.1.2",
     "@netlify/functions": "^3.1.5",
     "@supabase/supabase-js": "^2.49.4",
     "@tailwindcss/forms": "^0.5.10",
