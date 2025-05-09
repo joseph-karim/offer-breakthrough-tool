@@ -2,6 +2,7 @@
   "type": "workshopStep",
   "title": "Define Your Big Idea",
   "stepNumber": 1,
+  "pageId": "workshop-step-1",
   "description": "Let's start with your initial product or service idea. Don't worry about making it perfect - we'll refine it throughout the workshop.",
   "placeholders": {
     "bigIdeaPlaceholder": "e.g., A fillable buyer profile template and series of custom GPTs that helps entrepreneurs identify the best-fit buyers for their underperforming product/service",
