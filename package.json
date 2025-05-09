@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "netlify-dev": "netlify dev",
-    "stackbit-dev": "npm run dev"
+    "stackbit": "vite --port 8000"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.8",

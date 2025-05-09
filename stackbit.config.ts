@@ -5,6 +5,7 @@ export default defineStackbitConfig({
   stackbitVersion: '~0.6.0',
   nodeVersion: '18',
   ssgName: 'custom',
+  devCommand: 'npx vite --port {PORT}',
   contentSources: [
     new GitContentSource({
       rootPath: __dirname,
@@ -32,8 +33,6 @@ export default defineStackbitConfig({
       },
     }),
   ],
-  // This is the critical part for your dev server:
-  devCommand: 'node_modules/.bin/vite dev --port {PORT} --host 127.0.0.1',
 
   // Add annotations to help Stackbit identify editable regions
   // This tells Stackbit to look for data-sb-field-path attributes in your HTML
