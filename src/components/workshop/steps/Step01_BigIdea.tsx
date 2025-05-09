@@ -180,36 +180,45 @@ export const Step02_BigIdea: React.FC = () => {
         }}>
           1
         </div>
-        <h2 style={{
-          fontSize: '24px',
-          fontWeight: 'bold',
-          color: '#333333',
-          margin: 0
-        }}>
+        <h2
+          style={{
+            fontSize: '24px',
+            fontWeight: 'bold',
+            color: '#333333',
+            margin: 0
+          }}
+          data-sb-field-path="title"
+        >
           Define Your Big Idea
         </h2>
       </div>
 
       {/* Description */}
-      <div style={{
-        marginBottom: '30px',
-        color: '#555555'
-      }}>
+      <div
+        style={{
+          marginBottom: '30px',
+          color: '#555555'
+        }}
+        data-sb-field-path="description"
+      >
         <p>Let's start with your initial product or service idea. Don't worry about making it perfect - we'll refine it throughout the workshop</p>
         <p>Describe your idea using this simple framework: <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[What it is]</span> + <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[what will it help customers do]</span></p>
       </div>
 
       {/* Info box - UPDATED TO USE BRAND YELLOW */}
-      <div style={{
-        backgroundColor: '#feffb7',
-        padding: '12px 15px',
-        borderRadius: '10px',
-        marginBottom: '20px',
-        color: '#222222',
-        fontWeight: '500',
-        fontSize: '14px',
-        lineHeight: '1.5'
-      }}>
+      <div
+        style={{
+          backgroundColor: '#feffb7',
+          padding: '12px 15px',
+          borderRadius: '10px',
+          marginBottom: '20px',
+          color: '#222222',
+          fontWeight: '500',
+          fontSize: '14px',
+          lineHeight: '1.5'
+        }}
+        data-sb-field-path="infoBox"
+      >
         Don't overthink it. This is just version 1.0 of your idea. You'll refine it as you dig deeper.
       </div>
 
@@ -233,6 +242,7 @@ export const Step02_BigIdea: React.FC = () => {
                 color: '#333333',
                 display: 'block'
               }}
+              data-sb-field-path="labels.bigIdeaLabel"
             >
               What is your big idea for your new product or productized service?
             </label>
@@ -274,6 +284,7 @@ export const Step02_BigIdea: React.FC = () => {
               backgroundColor: '#F2F2F2',
               color: '#333333',
             }}
+            data-sb-field-path="placeholders.bigIdeaPlaceholder"
           />
           {isFieldEmpty('description') && (
             <div style={{

@@ -20,3 +20,8 @@
   status = 200
 
 # Netlify functions are handled automatically, no need for explicit redirects
+
+# Stackbit configuration
+[stackbit]
+  # Use the stackbit-dev script to start the development server
+  dev_command = "npm run stackbit-dev"
