@@ -167,7 +167,7 @@ export const Step07_ProblemUp: React.FC = () => {
           marginRight: '15px',
           marginTop: '3px'
         }}>
-          08
+          7
         </div>
         <h2 style={{
           fontSize: '24px',

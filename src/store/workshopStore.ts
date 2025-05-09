@@ -409,7 +409,7 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
 export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   // Session state
   sessionId: null,
-  currentStep: 1,
+  currentStep: 0, // 0 for intro page, 1-10 for actual steps
   isSaving: false,
   isAiLoading: false,
   validationErrors: false,
@@ -438,7 +438,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
     const newSessionId = `session_${Date.now()}`;
     set({
       sessionId: newSessionId,
-      currentStep: 1,
+      currentStep: 0, // 0 for intro page
       workshopData: { ...initialWorkshopData },
       isInitialized: true
     });

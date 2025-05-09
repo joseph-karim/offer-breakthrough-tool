@@ -119,7 +119,7 @@ export const Step09_RefineIdea: React.FC = () => {
           marginRight: '15px',
           marginTop: '3px'
         }}>
-          09
+          9
         </div>
         <h2 style={{
           fontSize: '24px',

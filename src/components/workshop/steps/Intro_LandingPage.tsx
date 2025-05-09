@@ -8,8 +8,8 @@ export const Step01_Intro: React.FC = () => {
   const navigate = useNavigate();
 
   const handleStartWorkshop = () => {
-    setCurrentStep(2);
-    navigate('/step/2');
+    setCurrentStep(1); // Set to step 1 (first actual step)
+    navigate('/step/1');
   };
 
   return (

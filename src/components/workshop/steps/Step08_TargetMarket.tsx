@@ -177,7 +177,7 @@ export const Step08_TargetMarket: React.FC = () => {
           marginRight: '15px',
           marginTop: '3px'
         }}>
-          08
+          8
         </div>
         <h2 style={{
           fontSize: '24px',

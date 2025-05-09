@@ -17,10 +17,10 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
     sendSparkyModalMessage
   } = useWorkshopStore();
 
-  // Total steps reduced by 1 since intro is not counted as a step
+  // Total steps in the workshop
   const totalSteps = 10;
-  // Check if current page is intro page
-  const isIntroPage = currentStep === 1;
+  // Check if current page is intro page (not a step)
+  const isIntroPage = currentStep === 0;
 
   return (
     <div style={{
@@ -76,7 +76,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
               borderRadius: '20px',
               fontWeight: 'bold'
             }}>
-              Step {currentStep - 1} of {totalSteps}
+              Step {currentStep} of {totalSteps}
             </div>
           )}
         </div>
@@ -92,7 +92,7 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
             <div
               style={{
                 height: '100%',
-                width: `${((currentStep - 1) / totalSteps) * 100}%`,
+                width: `${(currentStep / totalSteps) * 100}%`,
                 backgroundColor: '#fcf720',
                 borderRadius: '9999px',
                 transition: 'width 0.3s ease'
