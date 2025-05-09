@@ -6,21 +6,45 @@ export default defineStackbitConfig({
   nodeVersion: '18',
   ssgName: 'custom',
   devCommand: 'npx vite --port {PORT}',
+
+  // Define page models for URL mapping
+  pageModels: ['page', 'workshopStep'],
+
   contentSources: [
     new GitContentSource({
       rootPath: __dirname,
-      contentDirs: ['src'],
+      contentDirs: ['src/content'],
       models: [
-        // Component models for workshop steps
+        // Page model for the main pages
+        {
+          name: 'page',
+          type: 'page',
+          label: 'Page',
+          urlPath: '/{slug}',
+          fields: [
+            { name: 'title', type: 'string', label: 'Title', required: true },
+            { name: 'slug', type: 'string', label: 'Slug', required: true },
+            { name: 'content', type: 'markdown', label: 'Content' }
+          ]
+        },
+        // Workshop step model
         {
           name: 'workshopStep',
-          type: 'object',
+          type: 'page',
           label: 'Workshop Step',
+          urlPath: '/workshop/{stepNumber}',
           fields: [
-            { name: 'title', type: 'string', label: 'Step Title' },
+            { name: 'title', type: 'string', label: 'Step Title', required: true },
+            { name: 'stepNumber', type: 'number', label: 'Step Number', required: true },
             { name: 'description', type: 'markdown', label: 'Step Description' },
-            { name: 'placeholders', type: 'object', label: 'Input Placeholders' },
-            { name: 'tooltips', type: 'object', label: 'Help Tooltips' },
+            { name: 'placeholders', type: 'object', label: 'Input Placeholders', fields: [
+              { name: 'bigIdeaPlaceholder', type: 'string', label: 'Big Idea Placeholder' },
+              { name: 'targetCustomersPlaceholder', type: 'string', label: 'Target Customers Placeholder' }
+            ]},
+            { name: 'tooltips', type: 'object', label: 'Help Tooltips', fields: [
+              { name: 'bigIdeaTooltip', type: 'string', label: 'Big Idea Tooltip' },
+              { name: 'targetCustomersTooltip', type: 'string', label: 'Target Customers Tooltip' }
+            ]},
             { name: 'examples', type: 'list', label: 'Examples', items: { type: 'string' } }
           ]
         }

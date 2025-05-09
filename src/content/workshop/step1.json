@@ -1,0 +1,21 @@
+{
+  "type": "workshopStep",
+  "title": "Define Your Big Idea",
+  "stepNumber": 1,
+  "description": "Let's start with your initial product or service idea. Don't worry about making it perfect - we'll refine it throughout the workshop.",
+  "placeholders": {
+    "bigIdeaPlaceholder": "e.g., A fillable buyer profile template and series of custom GPTs that helps entrepreneurs identify the best-fit buyers for their underperforming product/service",
+    "targetCustomersPlaceholder": "e.g., Service-based entrepreneurs who have created a product but aren't seeing the sales they expected"
+  },
+  "tooltips": {
+    "bigIdeaTooltip": "Describe your idea using this simple framework: [What it is] + [what will it help customers do]",
+    "targetCustomersTooltip": "Who is this product or service designed to help?"
+  },
+  "examples": [
+    "A 6-week group coaching program that helps bootstrapped startups fix their user onboarding experience",
+    "A SaaS tool that helps content creators repurpose their content across multiple platforms",
+    "A membership community that provides ongoing support and resources for freelance designers",
+    "A productized service that delivers monthly SEO audits and recommendations for e-commerce stores",
+    "A course that teaches small business owners how to use AI tools to streamline their operations"
+  ]
+}
