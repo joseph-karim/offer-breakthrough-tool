@@ -28,6 +28,17 @@ export interface WorkshopStore {
   painstormingOutput: string | null;
   focusedProblems: string[];
 
+  // Sparky Chat Modal state
+  isSparkyModalOpen: boolean;
+  sparkyModalConfig: {
+    stepNumber: number | null;
+    exerciseKey: string | null;
+    exerciseTitle: string | null;
+    initialContext: Record<string, any>;
+    systemPromptKey?: string;
+  } | null;
+  currentModalChatMessages: AIMessage[];
+
   // Actions
   initializeSession: () => Promise<void>;
   loadSession: (sessionId: string) => Promise<void>;
@@ -44,6 +55,12 @@ export interface WorkshopStore {
   generateStepSuggestion: (step: number) => Promise<void>;
   acceptSuggestion: (step: number) => void;
   answerFollowUpQuestion: (step: number, question: string) => Promise<void>;
+
+  // Sparky Modal actions
+  openSparkyModal: (config: WorkshopStore['sparkyModalConfig']) => void;
+  closeSparkyModal: () => void;
+  sendSparkyModalMessage: (userMessage: string) => Promise<void>;
+  clearSparkyModalMessages: () => void;
 
   // Brainstorming actions
   brainstormBigIdeasWithContext: (context: BrainstormContext) => Promise<void>;
@@ -410,6 +427,11 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   isPainstormingModalOpen: false,
   painstormingOutput: null,
   focusedProblems: [],
+
+  // Sparky Chat Modal state
+  isSparkyModalOpen: false,
+  sparkyModalConfig: null,
+  currentModalChatMessages: [],
 
   // Actions
   initializeSession: async () => {
@@ -842,6 +864,110 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
     } finally {
       set({ isAiLoading: false });
     }
+  },
+
+  // Sparky Modal actions
+  openSparkyModal: (config) => {
+    const { workshopData } = get();
+    const stepNumber = config?.stepNumber || get().currentStep;
+
+    // Get existing messages for this step if available
+    const existingMessages = workshopData.stepChats[stepNumber]?.messages || [];
+
+    set({
+      isSparkyModalOpen: true,
+      sparkyModalConfig: config,
+      currentModalChatMessages: [...existingMessages]
+    });
+
+    // If there are no messages yet, add an initial assistant message
+    if (existingMessages.length === 0 && config?.initialContext) {
+      const initialMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: `I'm here to help you with ${config.exerciseTitle}. Let's get started!`,
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+      };
+
+      set(state => ({
+        currentModalChatMessages: [...state.currentModalChatMessages, initialMessage]
+      }));
+
+      // Also add to the step chat for persistence
+      const { addChatMessage } = get();
+      addChatMessage(stepNumber, initialMessage);
+    }
+  },
+
+  closeSparkyModal: () => {
+    set({
+      isSparkyModalOpen: false,
+      sparkyModalConfig: null
+    });
+  },
+
+  sendSparkyModalMessage: async (userMessage: string) => {
+    const { sparkyModalConfig, addChatMessage } = get();
+    const stepNumber = sparkyModalConfig?.stepNumber || get().currentStep;
+
+    // Create user message
+    const userMsg: AIMessage = {
+      id: Date.now().toString(),
+      content: userMessage,
+      role: 'user',
+      timestamp: new Date().toISOString(),
+    };
+
+    // Add to modal messages
+    set(state => ({
+      currentModalChatMessages: [...state.currentModalChatMessages, userMsg]
+    }));
+
+    // Add to step chat for persistence
+    addChatMessage(stepNumber, userMsg);
+
+    set({ isAiLoading: true });
+
+    try {
+      // Generate AI response using existing answerFollowUpQuestion
+      const { workshopData, answerFollowUpQuestion } = get();
+      await answerFollowUpQuestion(stepNumber, userMessage);
+
+      // Get the latest message that was just added to the step chat
+      const stepChat = workshopData.stepChats[stepNumber];
+      const latestMessage = stepChat?.messages[stepChat.messages.length - 1];
+
+      if (latestMessage && latestMessage.role === 'assistant') {
+        // Add to modal messages
+        set(state => ({
+          currentModalChatMessages: [...state.currentModalChatMessages, latestMessage]
+        }));
+      }
+    } catch (error) {
+      console.error('Error sending modal message:', error);
+
+      // Add error message
+      const errorMessage: AIMessage = {
+        id: Date.now().toString(),
+        content: "I'm sorry, I encountered an error processing your message. Please try again.",
+        role: 'assistant',
+        timestamp: new Date().toISOString(),
+      };
+
+      // Add to modal messages
+      set(state => ({
+        currentModalChatMessages: [...state.currentModalChatMessages, errorMessage]
+      }));
+
+      // Add to step chat for persistence
+      addChatMessage(stepNumber, errorMessage);
+    } finally {
+      set({ isAiLoading: false });
+    }
+  },
+
+  clearSparkyModalMessages: () => {
+    set({ currentModalChatMessages: [] });
   },
 
   // Painstorming modal actions

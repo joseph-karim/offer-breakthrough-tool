@@ -78,6 +78,13 @@ export interface TargetMarketProfile {
   coreTransformation: string;
 }
 
+export interface TargetMarket {
+  description: string;
+  demographics: string;
+  psychographics: string;
+  notes: string;
+}
+
 export interface Offer {
   id: string;
   name: string;
@@ -139,8 +146,9 @@ export interface WorkshopData {
   // Step 8: Problem Up
   problemUp?: ProblemUp;
 
-  // Step 9: Target Market Profile
+  // Step 9: Target Market
   targetMarketProfile?: TargetMarketProfile;
+  targetMarket?: TargetMarket;
 
   // Step 10: Refine Idea
   refinedIdea?: BigIdea;

@@ -2,10 +2,13 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetMarketProfile } from '../../../types/workshop';
-import { Plus, X, MessageSquare } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import * as styles from '../../../styles/stepStyles';
+import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
+import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
+import { ContextBox } from '../ContextBox';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectProblemUp = (state: WorkshopStore) => state.workshopData.problemUp;
@@ -15,8 +18,8 @@ const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBu
 const selectJobs = (state: WorkshopStore) => state.workshopData.jobs;
 // const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.triggerEvents;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectAddChatMessage = (state: WorkshopStore) => state.addChatMessage;
-const selectIsAiLoading = (state: WorkshopStore) => state.isAiLoading;
+
+
 
 export const Step08_TargetMarket: React.FC = () => {
   const problemUp = useWorkshopStore(selectProblemUp);
@@ -26,8 +29,8 @@ export const Step08_TargetMarket: React.FC = () => {
   const jobs = useWorkshopStore(selectJobs);
   // const triggerEvents = useWorkshopStore(selectTriggerEvents);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const addChatMessage = useWorkshopStore(selectAddChatMessage);
-  const isAiLoading = useWorkshopStore(selectIsAiLoading);
+
+
 
   // Get the primary pain, buyer, and job
   const primaryPain = problemUp?.selectedPains && problemUp.selectedPains.length > 0
@@ -152,68 +155,7 @@ export const Step08_TargetMarket: React.FC = () => {
     }
   }, []);
 
-  // Handle brainstorming with Sparky
-  const handleBrainstormWithSparky = useCallback(() => {
-    // Add a message to the chat
-    addChatMessage(9, {
-      id: Date.now().toString(),
-      content: "I'll help you define your target market profile based on your selected buyer, pain, and target moment. Let me analyze this information and suggest some key traits, triggers, and a transformation statement.",
-      role: 'assistant',
-      timestamp: new Date().toISOString(),
-      step: 9
-    });
 
-    // Mock AI response with suggestions
-    setTimeout(() => {
-      const buyerDesc = primaryBuyer?.description || "your target buyer";
-      const painDesc = primaryPain?.description || "the main pain point";
-
-      // Generate suggestions based on context
-      const suggestedTraits = [
-        `${buyerDesc.split(' ')[0]} with 3+ years experience`,
-        `Feels overwhelmed by increasing complexity`,
-        `Values time freedom over marginal revenue gains`,
-        `Self-identifies as "stuck" in their business`
-      ];
-
-      const suggestedTriggers = [
-        `Recently missed family events due to work demands`,
-        `Competitor launched a more scalable service model`,
-        `Hit revenue ceiling for third consecutive quarter`
-      ];
-
-      const suggestedTransformation = `From: Overworked ${buyerDesc.split(' ')[0]} trapped in day-to-day operations\nTo: Strategic business owner with scalable systems and more personal freedom`;
-
-      const suggestedName = `Growth-Seeking ${buyerDesc.split(' ')[0]} at the Scalability Crossroads`;
-
-      // Update the form with suggestions
-      setFormData({
-        name: suggestedName,
-        commonTraits: suggestedTraits,
-        commonTriggers: suggestedTriggers,
-        coreTransformation: suggestedTransformation
-      });
-
-      // Save to store
-      updateWorkshopData({
-        targetMarketProfile: {
-          name: suggestedName,
-          commonTraits: suggestedTraits,
-          commonTriggers: suggestedTriggers,
-          coreTransformation: suggestedTransformation
-        }
-      });
-
-      // Add response to chat
-      addChatMessage(9, {
-        id: (Date.now() + 1).toString(),
-        content: `Based on your focus on "${buyerDesc}" who experiences "${painDesc}", I've created a target market profile for you. I've added suggested traits, triggers, and a transformation statement to the form. Feel free to edit these to better match your vision.`,
-        role: 'assistant',
-        timestamp: new Date().toISOString(),
-        step: 9
-      });
-    }, 2000);
-  }, [primaryBuyer, primaryPain, addChatMessage, updateWorkshopData]);
 
   return (
     <div style={styles.stepContainerStyle}>
@@ -307,53 +249,46 @@ export const Step08_TargetMarket: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 1: Brainstorm with Sparky */}
-        <div style={{ marginBottom: '24px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 12px 0'
-          }}>
-            Step 1: Brainstorm Market Descriptors with Sparky
-          </h3>
+        <AccordionGroup>
+          {/* Step 1: Brainstorm with Sparky */}
+          <AccordionItem
+            title="Step 1: Brainstorm Market Descriptors with Sparky"
+            defaultExpanded={true}
+          >
+            <ContextBox>
+              <ul className="list-disc list-inside">
+                <li><strong>Primary Buyer:</strong> {primaryBuyer?.description || "Not selected yet"}</li>
+                <li><strong>Primary Pain:</strong> {primaryPain?.description || "Not selected yet"}</li>
+                <li><strong>Target Moment:</strong> {problemUp?.targetMoment || "Not defined yet"}</li>
+              </ul>
+            </ContextBox>
 
-          <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-            Sparky can help you brainstorm common traits, relevant triggers, and the core transformation promise for the market segment you focused on in the previous step. Click below to get started.
-          </p>
+            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+              Sparky can help you brainstorm common traits, relevant triggers, and the core transformation promise for the market segment you focused on in the previous step.
+            </p>
 
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-            <Button
-              variant="primary"
-              onClick={handleBrainstormWithSparky}
-              isLoading={isAiLoading}
-              rightIcon={<MessageSquare size={16} />}
-              style={{
-                backgroundColor: '#fcf720',
-                color: '#222222',
-                borderRadius: '15px',
-                fontSize: '15px'
-              }}
-            >
-              {isAiLoading ? 'Generating Suggestions...' : 'Brainstorm Market Profile with Sparky'}
-            </Button>
-          </div>
-        </div>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <ChatWithSparkyButton
+                exerciseKey="targetMarket"
+                exerciseTitle="Define Your Target Market with Sparky"
+                initialContext={{
+                  primaryBuyer: primaryBuyer?.description,
+                  primaryPain: primaryPain?.description,
+                  targetMoment: problemUp?.targetMoment,
+                  overarchingJob: overarchingJob?.description
+                }}
+                systemPromptKey="TARGET_MARKET_PROMPT"
+              />
+            </div>
+          </AccordionItem>
 
-        {/* Step 2: Describe Target Market Profile */}
-        <div style={{ marginBottom: '24px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 12px 0'
-          }}>
-            Step 2: Describe Your Focused Target Market Profile
-          </h3>
-
-          <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-            Add the key descriptors for this specific market segment. Focus only on attributes most relevant for shaping your offer. You can use Sparky's suggestions as a starting point.
-          </p>
+          {/* Step 2: Describe Target Market Profile */}
+          <AccordionItem
+            title="Step 2: Describe Your Focused Target Market Profile"
+          >
+            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+              Add the key descriptors for this specific market segment. Focus only on attributes most relevant for shaping your offer. You can use Sparky's suggestions as a starting point.
+            </p>
 
           {/* Market Profile Name */}
           <div style={{ marginBottom: '20px' }}>
@@ -588,7 +523,8 @@ export const Step08_TargetMarket: React.FC = () => {
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
             <SaveIndicator saving={isSaving} />
           </div>
-        </div>
+          </AccordionItem>
+        </AccordionGroup>
       </div>
     </div>
   );

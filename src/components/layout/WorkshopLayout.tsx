@@ -1,13 +1,21 @@
 import { ReactNode } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { WorkshopChatWrapper } from '../workshop/chat/WorkshopChatWrapper';
+import { SparkyChatModal } from '../workshop/chat/SparkyChatModal';
 
 interface WorkshopLayoutProps {
   children: ReactNode;
 }
 
 export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
-  const { currentStep } = useWorkshopStore();
+  const {
+    currentStep,
+    isSparkyModalOpen,
+    sparkyModalConfig,
+    currentModalChatMessages,
+    isAiLoading,
+    closeSparkyModal,
+    sendSparkyModalMessage
+  } = useWorkshopStore();
 
   // Total steps reduced by 1 since intro is not counted as a step
   const totalSteps = 10;
@@ -99,32 +107,31 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
         flexGrow: 1,
         height: 'calc(100vh - 65px)', // Header height + border
         overflow: 'hidden',
-        width: '100%'
+        width: '100%',
+        justifyContent: 'center'
       }}>
-        {/* Persistent Chat - Only show from step 2 onwards */}
-        {currentStep > 1 && (
-          <div style={{
-            width: '40%',
-            minWidth: '400px',
-            maxWidth: '600px',
-            borderRight: '1px solid #333333',
-            height: '100%',
-            overflow: 'hidden'
-          }}>
-            <WorkshopChatWrapper />
-          </div>
-        )}
-
         <main style={{
-          flexGrow: 1,
           height: '100%',
           overflow: 'auto',
           padding: 0,
-          width: currentStep > 1 ? '60%' : '100%'
+          width: '100%',
+          maxWidth: '1000px'
         }}>
           {children}
         </main>
       </div>
+
+      {/* Sparky Chat Modal */}
+      {isSparkyModalOpen && sparkyModalConfig && (
+        <SparkyChatModal
+          isOpen={isSparkyModalOpen}
+          onClose={closeSparkyModal}
+          title={sparkyModalConfig.exerciseTitle || 'Chat with Sparky'}
+          messages={currentModalChatMessages}
+          isTyping={isAiLoading}
+          onSendMessage={sendSparkyModalMessage}
+        />
+      )}
     </div>
   );
 };

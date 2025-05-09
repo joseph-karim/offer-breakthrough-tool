@@ -3,14 +3,14 @@ import { useWorkshopStore } from '../../store/workshopStore';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 // Import step components
-import { Step01_Intro } from './steps/Step01_Intro';
-import { Step02_BigIdea } from './steps/Step02_BigIdea';
-import { Step03_UnderlyingGoal } from './steps/Step03_UnderlyingGoal';
-import { Step04_TriggerEvents } from './steps/Step04_TriggerEvents';
-import { Step05_Jobs } from './steps/Step05_Jobs';
-import { Step06_TargetBuyers } from './steps/Step06_TargetBuyers';
-import { Step07_Painstorming } from './steps/Step07_Painstorming';
-import { Step08_ProblemUp } from './steps/Step08_ProblemUp';
+import { Step01_Intro } from './steps/Intro_LandingPage';
+import { Step02_BigIdea } from './steps/Step01_BigIdea';
+import { Step03_UnderlyingGoal } from './steps/Step02_UnderlyingGoal';
+import { Step04_TriggerEvents } from './steps/Step03_TriggerEvents';
+import { Step05_Jobs } from './steps/Step04_Jobs';
+import { Step06_TargetBuyers } from './steps/Step05_TargetBuyers';
+import { Step07_Painstorming } from './steps/Step06_Painstorming';
+import { Step08_ProblemUp } from './steps/Step07_ProblemUp';
 import { Step08_TargetMarket } from './steps/Step08_TargetMarket';
 import { Step09_RefineIdea } from './steps/Step09_RefineIdea';
 import { Step10_Summary } from './steps/Step10_Summary';
@@ -55,7 +55,7 @@ export const WorkshopWizard = () => {
 
   const goToNextStep = useCallback(() => {
     setValidationErrors(false); // Reset validation errors when successfully moving forward
-    setCurrentStep(Math.min(11, currentStep + 1));
+    setCurrentStep(Math.min(12, currentStep + 1));
   }, [currentStep, setCurrentStep, setValidationErrors]);
 
   // Don't render anything until initialization is complete
@@ -235,7 +235,7 @@ export const WorkshopWizard = () => {
 
                 <Button
                   onClick={goToNextStep}
-                  disabled={currentStep === 11}
+                  disabled={currentStep === 12}
                   variant="yellow"
                   size="lg"
                   rightIcon={<ChevronRight style={{ width: '20px', height: '20px', color: '#222222' }} />}
@@ -248,11 +248,11 @@ export const WorkshopWizard = () => {
                     borderRadius: '8px',
                     fontWeight: 'bold',
                     padding: '10px 20px',
-                    opacity: currentStep === 11 ? 0.6 : 1,
-                    cursor: currentStep === 11 ? 'not-allowed' : 'pointer'
+                    opacity: currentStep === 12 ? 0.6 : 1,
+                    cursor: currentStep === 12 ? 'not-allowed' : 'pointer'
                   }}
                 >
-                  {currentStep === 11 ? 'Complete Workshop' : 'Next Step'}
+                  {currentStep === 12 ? 'Complete Workshop' : 'Next Step'}
                 </Button>
               </div>
             )}
