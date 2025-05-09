@@ -7,7 +7,6 @@ import { Button } from '../../ui/Button';
 import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
-import { ContextBox } from '../ContextBox';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
