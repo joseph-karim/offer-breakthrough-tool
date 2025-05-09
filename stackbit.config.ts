@@ -7,36 +7,24 @@ export default defineStackbitConfig({
   ssgName: 'custom',
   devCommand: 'npx vite --port {PORT}',
 
-  // Define sitemap with workshop steps
-  siteMap: () => {
-    // Create an array of workshop steps
-    const workshopSteps = [
-      { number: 1, title: 'Introduction' },
-      { number: 2, title: 'Define Your Big Idea' },
-      { number: 3, title: 'Clarify Your Underlying Goal' },
-      { number: 4, title: 'Identify Trigger Events' },
-      { number: 5, title: 'Define Customer Jobs' },
-      { number: 6, title: 'Target Buyers' },
-      { number: 7, title: 'Painstorming' },
-      { number: 8, title: 'Problem Up' },
-      { number: 9, title: 'Define Your Focused Target Market' },
-      { number: 10, title: 'Refine Your Idea' },
-      { number: 11, title: 'Summary' }
-    ];
-
-    // Map steps to sitemap entries
-    return workshopSteps.map(step => ({
-      urlPath: `/step/${step.number}`,
-      stableId: `step-${step.number}`,
-      label: `Step ${step.number}: ${step.title}`,
-      isHomePage: step.number === 1
-    })) as SiteMapEntry[];
-  },
-
   contentSources: [
     new GitContentSource({
       rootPath: __dirname,
-      contentDirs: ['src'],
+      contentDirs: ['src/content'],
+      models: [
+        // Workshop step model
+        {
+          name: 'WorkshopStep',
+          type: 'page',
+          label: 'Workshop Step',
+          urlPath: '/step/{stepNumber}',
+          fields: [
+            { name: 'title', type: 'string', label: 'Step Title', required: true },
+            { name: 'stepNumber', type: 'number', label: 'Step Number', required: true },
+            { name: 'description', type: 'markdown', label: 'Step Description' }
+          ]
+        }
+      ],
       assetsConfig: {
         referenceType: 'static',
         staticDir: 'public',
@@ -45,6 +33,56 @@ export default defineStackbitConfig({
       },
     }),
   ],
+
+  // Custom sitemap implementation
+  siteMap: ({ documents, models }) => {
+    // If no documents are found, create a static sitemap
+    if (!documents || documents.length === 0) {
+      // Create a static sitemap with predefined steps
+      return [
+        { urlPath: '/step/1', stableId: 'step-1', label: 'Step 1: Introduction', isHomePage: true },
+        { urlPath: '/step/2', stableId: 'step-2', label: 'Step 2: Define Your Big Idea', isHomePage: false },
+        { urlPath: '/step/3', stableId: 'step-3', label: 'Step 3: Clarify Your Underlying Goal', isHomePage: false },
+        { urlPath: '/step/4', stableId: 'step-4', label: 'Step 4: Identify Trigger Events', isHomePage: false },
+        { urlPath: '/step/5', stableId: 'step-5', label: 'Step 5: Define Customer Jobs', isHomePage: false },
+        { urlPath: '/step/6', stableId: 'step-6', label: 'Step 6: Target Buyers', isHomePage: false },
+        { urlPath: '/step/7', stableId: 'step-7', label: 'Step 7: Painstorming', isHomePage: false },
+        { urlPath: '/step/8', stableId: 'step-8', label: 'Step 8: Problem Up', isHomePage: false },
+        { urlPath: '/step/9', stableId: 'step-9', label: 'Step 9: Define Your Focused Target Market', isHomePage: false },
+        { urlPath: '/step/10', stableId: 'step-10', label: 'Step 10: Refine Your Idea', isHomePage: false },
+        { urlPath: '/step/11', stableId: 'step-11', label: 'Step 11: Summary', isHomePage: false }
+      ] as SiteMapEntry[];
+    }
+
+    // Filter for page models
+    const pageModels = models.filter(m => m.type === 'page').map(m => m.name);
+
+    // Map documents to sitemap entries
+    return documents
+      .filter(d => pageModels.includes(d.modelName))
+      .map(document => {
+        // For workshop steps
+        if (document.modelName === 'WorkshopStep') {
+          const stepNumber = document.fields.stepNumber?.value;
+          const title = document.fields.title?.value;
+
+          if (!stepNumber) {
+            return null;
+          }
+
+          return {
+            stableId: `step-${stepNumber}`,
+            urlPath: `/step/${stepNumber}`,
+            document,
+            label: title ? `Step ${stepNumber}: ${title}` : `Step ${stepNumber}`,
+            isHomePage: stepNumber === 1
+          };
+        }
+
+        return null;
+      })
+      .filter(Boolean) as SiteMapEntry[];
+  },
 
   // Add annotations to help Stackbit identify editable regions
   // This tells Stackbit to look for data-sb-field-path attributes in your HTML
