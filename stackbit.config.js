@@ -10,8 +10,18 @@ module.exports = {
 
   // Define model extensions for URL mapping
   modelExtensions: [
-    { name: 'page', type: 'page', urlPath: '/{slug}' },
-    { name: 'workshopStep', type: 'page', urlPath: '/step/{stepNumber}' }
+    {
+      name: 'page',
+      type: 'page',
+      urlPath: '/{slug}',
+      fields: [{ name: 'pageId', type: 'string', hidden: true }]
+    },
+    {
+      name: 'workshopStep',
+      type: 'page',
+      urlPath: '/step/{stepNumber}',
+      fields: [{ name: 'pageId', type: 'string', hidden: true }]
+    }
   ],
 
   models: {
@@ -54,11 +64,19 @@ module.exports = {
     return documents
       .filter(d => pageModels.includes(d.modelName))
       .map(document => {
-        // For pages
+        // For regular pages
         if (document.modelName === 'page') {
-          const slug = document.fields.slug?.value || '';
-          const pageId = document.fields.pageId?.value || `page-${Date.now()}`;
-          const urlPath = slug === 'index' ? '/' : `/${slug}`;
+          const slugField = document.fields.slug;
+          const pageIdField = document.fields.pageId;
+
+          if (!slugField || !pageIdField) return null;
+
+          const slug = slugField.value;
+          const pageId = pageIdField.value;
+
+          if (!slug || !pageId) return null;
+
+          const urlPath = slug === 'index' ? '/' : `/${slug.replace(/^\/+/, '')}`;
 
           return {
             stableId: pageId,
@@ -70,8 +88,16 @@ module.exports = {
 
         // For workshop steps
         if (document.modelName === 'workshopStep') {
-          const stepNumber = document.fields.stepNumber?.value || '';
-          const pageId = document.fields.pageId?.value || `step-${stepNumber}-${Date.now()}`;
+          const stepNumberField = document.fields.stepNumber;
+          const pageIdField = document.fields.pageId;
+
+          if (!stepNumberField || !pageIdField) return null;
+
+          const stepNumber = stepNumberField.value;
+          const pageId = pageIdField.value;
+
+          if (!stepNumber || !pageId) return null;
+
           const urlPath = `/step/${stepNumber}`;
 
           return {
@@ -93,8 +119,9 @@ module.exports = {
       return object;
     }
 
-    // Add pageId if it doesn't exist
-    if (!object.pageId) {
+    // For pages that already have a pageId field, use that value; if not, generate one
+    const hasPageIdField = !!model.fields && model.fields.some(field => field.name === 'pageId');
+    if (hasPageIdField && !object.pageId) {
       object.pageId = `${model.name}-${Date.now()}`;
     }
 

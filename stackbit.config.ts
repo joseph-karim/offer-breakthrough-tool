@@ -1,4 +1,4 @@
-import { defineStackbitConfig, SiteMapEntry } from '@stackbit/types';
+import { defineStackbitConfig, SiteMapEntry, getLocalizedFieldForLocale } from '@stackbit/types';
 import { GitContentSource } from '@stackbit/cms-git';
 
 export default defineStackbitConfig({
@@ -9,8 +9,18 @@ export default defineStackbitConfig({
 
   // Define model extensions for URL mapping
   modelExtensions: [
-    { name: 'page', type: 'page', urlPath: '/{slug}' },
-    { name: 'workshopStep', type: 'page', urlPath: '/step/{stepNumber}' }
+    {
+      name: 'page',
+      type: 'page',
+      urlPath: '/{slug}',
+      fields: [{ name: 'pageId', type: 'string', hidden: true }]
+    },
+    {
+      name: 'workshopStep',
+      type: 'page',
+      urlPath: '/step/{stepNumber}',
+      fields: [{ name: 'pageId', type: 'string', hidden: true }]
+    }
   ],
 
   contentSources: [
@@ -67,30 +77,46 @@ export default defineStackbitConfig({
     return documents
       .filter(d => pageModels.includes(d.modelName))
       .map(document => {
-        // For pages
+        // For regular pages
         if (document.modelName === 'page') {
-          const slug = document.fields.slug?.value || '';
-          const pageId = document.fields.pageId?.value || `page-${Date.now()}`;
-          const urlPath = slug === 'index' ? '/' : `/${slug}`;
+          const slugField = document.fields.slug?.type === 'string' ? document.fields.slug : undefined;
+          const pageIdField = document.fields.pageId?.type === 'string' ? document.fields.pageId : undefined;
+
+          if (!slugField || !pageIdField) return null;
+
+          const slug = getLocalizedFieldForLocale(slugField);
+          const pageId = getLocalizedFieldForLocale(pageIdField);
+
+          if (!slug.value || !pageId.value) return null;
+
+          const urlPath = slug.value === 'index' ? '/' : `/${slug.value.replace(/^\/+/, '')}`;
 
           return {
-            stableId: pageId,
-            urlPath: urlPath,
-            document: document,
+            stableId: pageId.value,
+            urlPath,
+            document,
             isHomePage: urlPath === '/'
           };
         }
 
         // For workshop steps
         if (document.modelName === 'workshopStep') {
-          const stepNumber = document.fields.stepNumber?.value || '';
-          const pageId = document.fields.pageId?.value || `step-${stepNumber}-${Date.now()}`;
-          const urlPath = `/step/${stepNumber}`;
+          const stepNumberField = document.fields.stepNumber?.type === 'number' ? document.fields.stepNumber : undefined;
+          const pageIdField = document.fields.pageId?.type === 'string' ? document.fields.pageId : undefined;
+
+          if (!stepNumberField || !pageIdField) return null;
+
+          const stepNumber = getLocalizedFieldForLocale(stepNumberField);
+          const pageId = getLocalizedFieldForLocale(pageIdField);
+
+          if (!stepNumber.value || !pageId.value) return null;
+
+          const urlPath = `/step/${stepNumber.value}`;
 
           return {
-            stableId: pageId,
-            urlPath: urlPath,
-            document: document,
+            stableId: pageId.value,
+            urlPath,
+            document,
             isHomePage: false
           };
         }
@@ -106,8 +132,9 @@ export default defineStackbitConfig({
       return object;
     }
 
-    // Add pageId if it doesn't exist
-    if (!object.pageId) {
+    // For pages that already have a pageId field, use that value; if not, generate one
+    const hasPageIdField = !!model.fields?.find(field => field.name === 'pageId');
+    if (hasPageIdField && !object.pageId) {
       object.pageId = `${model.name}-${Date.now()}`;
     }
 
