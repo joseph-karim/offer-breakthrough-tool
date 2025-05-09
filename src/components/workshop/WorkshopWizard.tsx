@@ -4,7 +4,6 @@ import { useWorkshopStore } from '../../store/workshopStore';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 // Import step components
-import { Step01_Intro } from './steps/Intro_LandingPage';
 import { Step01_BigIdea } from './steps/Step01_BigIdea';
 import { Step03_UnderlyingGoal } from './steps/Step02_UnderlyingGoal';
 import { Step04_TriggerEvents } from './steps/Step03_TriggerEvents';
