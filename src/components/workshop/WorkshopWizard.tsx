@@ -1,4 +1,5 @@
 import { useEffect, CSSProperties, useState, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useWorkshopStore } from '../../store/workshopStore';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
@@ -18,13 +19,24 @@ import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
 
 
 export const WorkshopWizard = () => {
+  const { stepNumber } = useParams<{ stepNumber: string }>();
+  const navigate = useNavigate();
   const {
-    currentStep,
     initializeSession,
     setCurrentStep,
     setValidationErrors,
   } = useWorkshopStore();
   const [isInitialized, setIsInitialized] = useState(false);
+
+  // Convert URL parameter to number
+  const currentStep = parseInt(stepNumber || '1', 10);
+
+  // Update the store when URL changes
+  useEffect(() => {
+    if (isInitialized && currentStep) {
+      setCurrentStep(currentStep);
+    }
+  }, [currentStep, isInitialized, setCurrentStep]);
 
   // Run initialization only once when component mounts
   useEffect(() => {
@@ -50,13 +62,15 @@ export const WorkshopWizard = () => {
 
   const goToPreviousStep = useCallback(() => {
     setValidationErrors(false); // Reset validation errors when going back
-    setCurrentStep(Math.max(1, currentStep - 1));
-  }, [currentStep, setCurrentStep, setValidationErrors]);
+    const prevStep = Math.max(1, currentStep - 1);
+    navigate(`/step/${prevStep}`);
+  }, [currentStep, navigate, setValidationErrors]);
 
   const goToNextStep = useCallback(() => {
     setValidationErrors(false); // Reset validation errors when successfully moving forward
-    setCurrentStep(Math.min(12, currentStep + 1));
-  }, [currentStep, setCurrentStep, setValidationErrors]);
+    const nextStep = Math.min(12, currentStep + 1);
+    navigate(`/step/${nextStep}`);
+  }, [currentStep, navigate, setValidationErrors]);
 
   // Don't render anything until initialization is complete
   if (!isInitialized) {
