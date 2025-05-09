@@ -13,7 +13,7 @@ export const Step01_Intro: React.FC = () => {
   };
 
   return (
-    <div className="workbook-container" style={{ backgroundColor: '#1E1E1E', color: 'white', padding: '20px' }} data-sb-object-id="intro">
+    <div className="workbook-container" style={{ backgroundColor: '#1E1E1E', color: 'white', padding: '20px' }} data-sb-object-id="content/workshop/steps/intro.md">
       {/* Main content grid */}
       <div style={{
         display: 'flex',
@@ -75,18 +75,14 @@ export const Step01_Intro: React.FC = () => {
               fontWeight: 'bold',
               color: 'white',
               marginBottom: '20px'
-            }}
-            data-sb-field-path="title"
-            >
+            }} data-sb-field-path="title">
               From Burnout to Breakthrough
             </h2>
             <p style={{
               fontSize: '18px',
               color: 'white',
               lineHeight: '1.6'
-            }}
-            data-sb-field-path="description"
-            >
+            }} data-sb-field-path="description">
               Find profitable problems worth solving and design a scalable offer idea that "actually" sells in this live 2.5-hour workshop
             </p>
           </div>

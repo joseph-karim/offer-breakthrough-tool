@@ -12,7 +12,7 @@ const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.trigger
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 
 
-export const Step04_TriggerEvents: React.FC = () => {
+export const Step03_TriggerEvents: React.FC = () => {
   const storeEvents = useWorkshopStore(selectTriggerEvents);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 

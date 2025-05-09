@@ -13,7 +13,7 @@ import * as styles from '../../../styles/stepStyles';
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 
-export const Step06_TargetBuyers: React.FC = () => {
+export const Step05_TargetBuyers: React.FC = () => {
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 

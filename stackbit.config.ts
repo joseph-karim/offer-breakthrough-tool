@@ -10,7 +10,7 @@ export default defineStackbitConfig({
   contentSources: [
     new GitContentSource({
       rootPath: __dirname,
-      contentDirs: ['src/content'],
+      contentDirs: ['content'],
       models: [
         // Workshop step model
         {
@@ -23,7 +23,7 @@ export default defineStackbitConfig({
             { name: 'stepNumber', type: 'number', label: 'Step Number', required: true },
             { name: 'description', type: 'string', label: 'Step Description' },
             { name: 'pageId', type: 'string', label: 'Page ID', hidden: true },
-            { name: 'infoBox', type: 'string', label: 'Info Box Content' },
+            { name: 'infoBoxContent', type: 'string', label: 'Info Box Content' },
             {
               name: 'placeholders',
               type: 'object',
@@ -53,19 +53,21 @@ export default defineStackbitConfig({
             },
             {
               name: 'examples',
-              type: 'list',
+              type: 'object',
               label: 'Examples',
-              items: { type: 'string' }
+              fields: [
+                {
+                  name: 'items',
+                  type: 'list',
+                  label: 'Example Items',
+                  items: { type: 'string' }
+                }
+              ]
             }
           ]
         }
       ],
-      assetsConfig: {
-        referenceType: 'static',
-        staticDir: 'public',
-        uploadDir: 'images',
-        publicPath: '/',
-      },
+      // Assets are handled separately
     }),
   ],
 
@@ -131,39 +133,5 @@ export default defineStackbitConfig({
       .filter(Boolean) as SiteMapEntry[];
   },
 
-  // Add annotations to help Stackbit identify editable regions
-  annotations: {
-    patterns: [
-      {
-        name: 'heading',
-        label: 'Heading',
-        selector: 'h1, h2, h3, h4, h5, h6',
-      },
-      {
-        name: 'paragraph',
-        label: 'Paragraph',
-        selector: 'p',
-      },
-      {
-        name: 'textarea',
-        label: 'Text Input',
-        selector: 'textarea',
-      },
-      {
-        name: 'input',
-        label: 'Input Field',
-        selector: 'input[type="text"]',
-      },
-      {
-        name: 'label',
-        label: 'Label',
-        selector: 'label',
-      },
-      {
-        name: 'tooltip',
-        label: 'Tooltip',
-        selector: '[data-tooltip], [data-floating-tooltip]',
-      }
-    ]
-  }
+  // Annotations are now handled through data-sb-field-path attributes
 });

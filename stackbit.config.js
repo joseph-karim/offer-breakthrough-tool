@@ -10,7 +10,13 @@ module.exports = {
   contentSources: [
     new GitContentSource({
       rootPath: __dirname,
-      contentDirs: ['src/content'],
+      contentDirs: ['content'],
+      assetsConfig: {
+        referenceType: 'static',
+        staticDir: 'public',
+        uploadDir: 'images',
+        publicPath: '/',
+      },
       models: [
         // Workshop step model
         {
@@ -19,11 +25,12 @@ module.exports = {
           label: 'Workshop Step',
           urlPath: '/step/{stepNumber}',
           fields: [
+            { name: 'id', type: 'string', label: 'ID', required: true },
             { name: 'title', type: 'string', label: 'Step Title', required: true },
             { name: 'stepNumber', type: 'number', label: 'Step Number', required: true },
             { name: 'description', type: 'string', label: 'Step Description' },
             { name: 'pageId', type: 'string', label: 'Page ID', hidden: true },
-            { name: 'infoBox', type: 'string', label: 'Info Box Content' },
+            { name: 'infoBoxContent', type: 'string', label: 'Info Box Content' },
             {
               name: 'placeholders',
               type: 'object',
@@ -53,19 +60,20 @@ module.exports = {
             },
             {
               name: 'examples',
-              type: 'list',
+              type: 'object',
               label: 'Examples',
-              items: { type: 'string' }
+              fields: [
+                {
+                  name: 'items',
+                  type: 'list',
+                  label: 'Example Items',
+                  items: { type: 'string' }
+                }
+              ]
             }
           ]
         }
       ],
-      assetsConfig: {
-        referenceType: 'static',
-        staticDir: 'public',
-        uploadDir: 'images',
-        publicPath: '/',
-      },
     }),
   ],
 
@@ -75,17 +83,17 @@ module.exports = {
     if (!documents || documents.length === 0) {
       // Create a static sitemap with predefined steps
       return [
-        { urlPath: '/intro', stableId: 'intro', label: 'Introduction', isHomePage: true },
-        { urlPath: '/step/1', stableId: 'step1', label: 'Step 1: Define Your Big Idea', isHomePage: false },
-        { urlPath: '/step/2', stableId: 'step2', label: 'Step 2: Clarify Your Underlying Goal', isHomePage: false },
-        { urlPath: '/step/3', stableId: 'step3', label: 'Step 3: Identify Trigger Events', isHomePage: false },
-        { urlPath: '/step/4', stableId: 'step4', label: 'Step 4: Define Customer Jobs', isHomePage: false },
-        { urlPath: '/step/5', stableId: 'step5', label: 'Step 5: Target Buyers', isHomePage: false },
-        { urlPath: '/step/6', stableId: 'step6', label: 'Step 6: Painstorming', isHomePage: false },
-        { urlPath: '/step/7', stableId: 'step7', label: 'Step 7: Problem Up', isHomePage: false },
-        { urlPath: '/step/8', stableId: 'step8', label: 'Step 8: Define Your Focused Target Market', isHomePage: false },
-        { urlPath: '/step/9', stableId: 'step9', label: 'Step 9: Refine Your Idea', isHomePage: false },
-        { urlPath: '/step/10', stableId: 'step10', label: 'Step 10: Summary', isHomePage: false }
+        { urlPath: '/intro', stableId: 'workshop-step-intro', label: 'Introduction', isHomePage: true },
+        { urlPath: '/step/1', stableId: 'workshop-step-1', label: 'Step 1: Define Your Big Idea', isHomePage: false },
+        { urlPath: '/step/2', stableId: 'workshop-step-2', label: 'Step 2: Clarify Your Underlying Goal', isHomePage: false },
+        { urlPath: '/step/3', stableId: 'workshop-step-3', label: 'Step 3: Identify Trigger Events', isHomePage: false },
+        { urlPath: '/step/4', stableId: 'workshop-step-4', label: 'Step 4: Define Customer Jobs', isHomePage: false },
+        { urlPath: '/step/5', stableId: 'workshop-step-5', label: 'Step 5: Target Buyers', isHomePage: false },
+        { urlPath: '/step/6', stableId: 'workshop-step-6', label: 'Step 6: Painstorming', isHomePage: false },
+        { urlPath: '/step/7', stableId: 'workshop-step-7', label: 'Step 7: Problem Up', isHomePage: false },
+        { urlPath: '/step/8', stableId: 'workshop-step-8', label: 'Step 8: Define Your Focused Target Market', isHomePage: false },
+        { urlPath: '/step/9', stableId: 'workshop-step-9', label: 'Step 9: Refine Your Idea', isHomePage: false },
+        { urlPath: '/step/10', stableId: 'workshop-step-10', label: 'Step 10: Summary', isHomePage: false }
       ];
     }
 
@@ -105,7 +113,7 @@ module.exports = {
           // Special case for intro page
           if (pageId === 'workshop-step-intro') {
             return {
-              stableId: 'intro',
+              stableId: 'workshop-step-intro',
               urlPath: '/intro',
               document,
               label: title || 'Introduction',
@@ -118,7 +126,7 @@ module.exports = {
           }
 
           return {
-            stableId: `step${stepNumber}`,
+            stableId: `workshop-step-${stepNumber}`,
             urlPath: `/step/${stepNumber}`,
             document,
             label: title ? `Step ${stepNumber}: ${title}` : `Step ${stepNumber}`,
@@ -131,46 +139,5 @@ module.exports = {
       .filter(Boolean);
   },
 
-  // Add annotations to help Stackbit identify editable regions
-  annotations: {
-    patterns: [
-      {
-        name: 'heading',
-        label: 'Heading',
-        selector: 'h1, h2, h3, h4, h5, h6',
-      },
-      {
-        name: 'paragraph',
-        label: 'Paragraph',
-        selector: 'p',
-      },
-      {
-        name: 'textarea',
-        label: 'Text Input',
-        selector: 'textarea',
-      },
-      {
-        name: 'input',
-        label: 'Input Field',
-        selector: 'input[type="text"]',
-      },
-      {
-        name: 'label',
-        label: 'Label',
-        selector: 'label',
-      },
-      {
-        name: 'tooltip',
-        label: 'Tooltip',
-        selector: '[data-tooltip], [data-floating-tooltip]',
-      }
-    ]
-  },
 
-  assets: {
-    referenceType: 'static',
-    staticDir: 'public',
-    uploadDir: 'images',
-    publicPath: '/'
-  }
 };

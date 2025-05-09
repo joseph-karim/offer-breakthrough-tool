@@ -11,7 +11,7 @@ import * as styles from '../../../styles/stepStyles';
 const selectUnderlyingGoal = (state: WorkshopStore) => state.workshopData.underlyingGoal;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 const selectValidationErrors = (state: WorkshopStore) => state.validationErrors;
-export const Step03_UnderlyingGoal: React.FC = () => {
+export const Step02_UnderlyingGoal: React.FC = () => {
   const underlyingGoal = useWorkshopStore(selectUnderlyingGoal);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);
@@ -65,7 +65,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
   };
 
   return (
-    <div style={styles.stepContainerStyle}>
+    <div style={styles.stepContainerStyle} data-sb-object-id="content/workshop/steps/step2.md">
       {/* Step indicator */}
       <div style={{
         display: 'flex',
@@ -83,7 +83,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
           fontWeight: 'bold',
           marginRight: '15px',
           marginTop: '3px'
-        }}>
+        }} data-sb-field-path="stepNumber">
           2
         </div>
         <h2 style={{
@@ -91,7 +91,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
           fontWeight: 'bold',
           color: '#333333',
           margin: 0
-        }}>
+        }} data-sb-field-path="title">
           Clarify Your Underlying Goal
         </h2>
       </div>
@@ -112,7 +112,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
           fontWeight: '500',
           fontSize: '14px',
           lineHeight: '1.5'
-        }}>
+        }} data-sb-field-path="infoBoxContent">
           Your underlying goal can relate to your business and/or personal life.
         </div>
 
@@ -159,28 +159,28 @@ export const Step03_UnderlyingGoal: React.FC = () => {
         </div>
 
         {/* Example Goals */}
-        <div style={styles.examplesContainerStyle}>
+        <div style={styles.examplesContainerStyle} data-sb-field-path="examples">
           <div style={styles.examplesLabelStyle}>
             EXAMPLES
           </div>
           <ul style={styles.examplesListStyle}>
-            <li style={styles.exampleItemStyle}>
+            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[0]">
               <span style={styles.exampleBulletStyle}>•</span>
               Create a new revenue stream that's less dependent on my time and expertise
             </li>
-            <li style={styles.exampleItemStyle}>
+            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[1]">
               <span style={styles.exampleBulletStyle}>•</span>
               Build a product that can generate passive income while I sleep
             </li>
-            <li style={styles.exampleItemStyle}>
+            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[2]">
               <span style={styles.exampleBulletStyle}>•</span>
               Create a lead generation tool that helps me attract higher-value clients
             </li>
-            <li style={styles.exampleItemStyle}>
+            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[3]">
               <span style={styles.exampleBulletStyle}>•</span>
               Develop an offer that complements my existing services and creates upsell opportunities
             </li>
-            <li style={styles.exampleItemStyle}>
+            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[4]">
               <span style={styles.exampleBulletStyle}>•</span>
               Build something that can eventually be sold or run by someone else
             </li>

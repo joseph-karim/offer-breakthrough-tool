@@ -27,7 +27,7 @@ interface PainstormingResults {
   ahaMoments: string;
 }
 
-export const Step07_Painstorming: React.FC = () => {
+export const Step06_Painstorming: React.FC = () => {
   const jobs = useWorkshopStore(selectJobs);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);

@@ -177,7 +177,7 @@ export const Step01_BigIdea: React.FC = () => {
           fontWeight: 'bold',
           marginRight: '15px',
           marginTop: '3px'
-        }}>
+        }} data-sb-field-path="stepNumber">
           1
         </div>
         <h2
@@ -217,7 +217,7 @@ export const Step01_BigIdea: React.FC = () => {
           fontSize: '14px',
           lineHeight: '1.5'
         }}
-        data-sb-field-path="infoBox"
+        data-sb-field-path="infoBoxContent"
       >
         Don't overthink it. This is just version 1.0 of your idea. You'll refine it as you dig deeper.
       </div>
@@ -309,7 +309,7 @@ export const Step01_BigIdea: React.FC = () => {
           backgroundColor: '#F0E6FF',
           borderRadius: '15px',
           padding: '20px'
-        }}>
+        }} data-sb-field-path="examples">
           <div style={{
             display: 'inline-block',
             fontSize: '14px',
@@ -329,23 +329,23 @@ export const Step01_BigIdea: React.FC = () => {
             color: '#333333',
             fontSize: '14px'
           }}>
-            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[0]">
               <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
               A 6-week group coaching program that helps bootstrapped startups fix their user onboarding experience
             </li>
-            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[1]">
               <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
               A SaaS tool that helps content creators repurpose their content across multiple platforms
             </li>
-            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[2]">
               <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
               A membership community that provides ongoing support and resources for freelance designers
             </li>
-            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[3]">
               <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
               A productized service that delivers monthly SEO audits and recommendations for e-commerce stores
             </li>
-            <li style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <li style={{ display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[4]">
               <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
               A course that teaches small business owners how to use AI tools to streamline their operations
             </li>

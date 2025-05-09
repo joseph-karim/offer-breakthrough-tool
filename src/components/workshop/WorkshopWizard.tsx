@@ -5,12 +5,12 @@ import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 // Import step components
 import { Step01_BigIdea } from './steps/Step01_BigIdea';
-import { Step03_UnderlyingGoal } from './steps/Step02_UnderlyingGoal';
-import { Step04_TriggerEvents } from './steps/Step03_TriggerEvents';
-import { Step05_Jobs } from './steps/Step04_Jobs';
-import { Step06_TargetBuyers } from './steps/Step05_TargetBuyers';
-import { Step07_Painstorming } from './steps/Step06_Painstorming';
-import { Step08_ProblemUp } from './steps/Step07_ProblemUp';
+import { Step02_UnderlyingGoal } from './steps/Step02_UnderlyingGoal';
+import { Step03_TriggerEvents } from './steps/Step03_TriggerEvents';
+import { Step04_Jobs } from './steps/Step04_Jobs';
+import { Step05_TargetBuyers } from './steps/Step05_TargetBuyers';
+import { Step06_Painstorming } from './steps/Step06_Painstorming';
+import { Step07_ProblemUp } from './steps/Step07_ProblemUp';
 import { Step08_TargetMarket } from './steps/Step08_TargetMarket';
 import { Step09_RefineIdea } from './steps/Step09_RefineIdea';
 import { Step10_Summary } from './steps/Step10_Summary';
@@ -108,17 +108,17 @@ export const WorkshopWizard = () => {
       case 1:
         return <Step01_BigIdea key="step1" />;
       case 2:
-        return <Step03_UnderlyingGoal key="step2" />;
+        return <Step02_UnderlyingGoal key="step2" />;
       case 3:
-        return <Step04_TriggerEvents key="step3" />;
+        return <Step03_TriggerEvents key="step3" />;
       case 4:
-        return <Step05_Jobs key="step4" />;
+        return <Step04_Jobs key="step4" />;
       case 5:
-        return <Step06_TargetBuyers key="step5" />;
+        return <Step05_TargetBuyers key="step5" />;
       case 6:
-        return <Step07_Painstorming key="step6" />;
+        return <Step06_Painstorming key="step6" />;
       case 7:
-        return <Step08_ProblemUp key="step7" />;
+        return <Step07_ProblemUp key="step7" />;
       case 8:
         return <Step08_TargetMarket key="step8" />;
       case 9:

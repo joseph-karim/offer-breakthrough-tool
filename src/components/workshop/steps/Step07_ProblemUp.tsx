@@ -17,7 +17,7 @@ const selectJobs = (state: WorkshopStore) => state.workshopData.jobs;
 const selectProblemUp = (state: WorkshopStore) => state.workshopData.problemUp;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 
-export const Step08_ProblemUp: React.FC = () => {
+export const Step07_ProblemUp: React.FC = () => {
   const pains = useWorkshopStore(selectPains);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const triggerEvents = useWorkshopStore(selectTriggerEvents);

@@ -15,7 +15,7 @@ const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 
 
-export const Step05_Jobs: React.FC = () => {
+export const Step04_Jobs: React.FC = () => {
   const storeJobs = useWorkshopStore(selectJobs);
   const triggerEvents = useWorkshopStore(selectTriggerEvents);
   const bigIdea = useWorkshopStore(selectBigIdea);
