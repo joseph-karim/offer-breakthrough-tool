@@ -1,0 +1,19 @@
+{
+  "type": "WorkshopStep",
+  "title": "Problem Up",
+  "stepNumber": 8,
+  "pageId": "workshop-step-8",
+  "description": "Now let's identify the core problem your offer will solve. This is the specific pain point or job that your solution will address most effectively.",
+  "placeholders": {
+    "coreProblemPlaceholder": "e.g., Small business owners struggle to identify which marketing activities actually drive revenue, leading to wasted time and resources"
+  },
+  "tooltips": {
+    "coreProblemTooltip": "What is the primary problem your offer will solve? Be specific about who experiences it and why it matters."
+  },
+  "examples": [
+    "Service providers struggle to maintain consistent income due to feast-or-famine client cycles",
+    "Course creators have low completion rates because students get overwhelmed and don't see quick results",
+    "Small business owners waste money on ineffective ads because they don't understand their target audience",
+    "Consultants spend too much time on administrative tasks instead of billable client work"
+  ]
+}

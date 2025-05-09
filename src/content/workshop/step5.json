@@ -1,0 +1,19 @@
+{
+  "type": "WorkshopStep",
+  "title": "Define Customer Jobs",
+  "stepNumber": 5,
+  "pageId": "workshop-step-5",
+  "description": "Customer jobs are the tasks, problems, or needs your customers are trying to address. Understanding these jobs helps you design an offer that truly helps them make progress.",
+  "placeholders": {
+    "jobStatementPlaceholder": "e.g., Help me find the right target audience for my product so I can stop wasting money on ineffective marketing"
+  },
+  "tooltips": {
+    "jobStatementTooltip": "What is your customer trying to accomplish? Frame it as 'Help me...' or 'I want to...'"
+  },
+  "examples": [
+    "Help me automate my client onboarding process so I can save time and create a better first impression",
+    "Help me generate consistent leads so I don't have to worry about where my next client is coming from",
+    "Help me create content more efficiently so I can maintain a consistent publishing schedule",
+    "Help me understand my financial metrics so I can make better business decisions"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "WorkshopStep",
+  "title": "Target Buyers",
+  "stepNumber": 6,
+  "pageId": "workshop-step-6",
+  "description": "Now let's identify the specific types of buyers who are most likely to hire your solution. These are the people who experience the jobs and trigger events you've identified.",
+  "placeholders": {
+    "buyerTypePlaceholder": "e.g., Overwhelmed agency owners who want to scale but are stuck doing client work"
+  },
+  "tooltips": {
+    "buyerTypeTooltip": "Describe a specific type of person who experiences the jobs and trigger events you've identified"
+  },
+  "examples": [
+    "Solopreneurs who are working 60+ hours a week and struggling to keep up with client demands",
+    "E-commerce store owners who are seeing high cart abandonment rates",
+    "Course creators who have expertise but struggle with marketing their offerings",
+    "Small business owners who are frustrated with inconsistent cash flow"
+  ]
+}

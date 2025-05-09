@@ -1,0 +1,19 @@
+{
+  "type": "WorkshopStep",
+  "title": "Summary",
+  "stepNumber": 11,
+  "pageId": "workshop-step-11",
+  "description": "Congratulations! You've completed the Buyer Breakthrough Workshop. Here's a summary of your work and the key insights you've developed.",
+  "placeholders": {
+    "nextStepsPlaceholder": "e.g., - Create a landing page for my refined offer\n- Develop a prototype or minimum viable version\n- Test with 3-5 potential customers\n- Gather feedback and iterate"
+  },
+  "tooltips": {
+    "nextStepsTooltip": "What specific actions will you take to bring your refined offer to market?"
+  },
+  "examples": [
+    "Validate your offer with potential customers through interviews or surveys",
+    "Create a simple landing page to gauge interest and collect email addresses",
+    "Develop a pilot version of your offer to test with a small group of customers",
+    "Map out the full customer journey from awareness to purchase and delivery"
+  ]
+}

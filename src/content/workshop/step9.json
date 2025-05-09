@@ -1,0 +1,21 @@
+{
+  "type": "WorkshopStep",
+  "title": "Define Your Focused Target Market",
+  "stepNumber": 9,
+  "pageId": "workshop-step-9",
+  "description": "Based on all the insights we've gathered, let's define a specific target market profile. This focused group will be the primary audience for your offer.",
+  "placeholders": {
+    "marketNamePlaceholder": "e.g., Plateaued Agency Owners Seeking Scalability",
+    "commonTraitsPlaceholder": "e.g., - Run small agencies (2-10 employees)\n- Have hit a revenue ceiling\n- Struggle with consistent lead generation\n- Want to scale without adding more service hours"
+  },
+  "tooltips": {
+    "marketNameTooltip": "Give this focused group a descriptive name",
+    "commonTraitsTooltip": "What characteristics do people in this market segment share?"
+  },
+  "examples": [
+    "Overwhelmed Solopreneurs Ready to Delegate",
+    "Tech Startups with Poor User Onboarding",
+    "Course Creators with Low Completion Rates",
+    "Service Providers Transitioning to Products"
+  ]
+}

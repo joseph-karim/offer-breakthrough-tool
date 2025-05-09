@@ -1,0 +1,19 @@
+{
+  "type": "WorkshopStep",
+  "title": "Identify Trigger Events",
+  "stepNumber": 4,
+  "pageId": "workshop-step-4",
+  "description": "Trigger events are specific moments when your customers become aware they have a problem that needs solving. Identifying these moments helps you understand when to position your offer.",
+  "placeholders": {
+    "triggerEventPlaceholder": "e.g., When a business owner realizes they're spending too much time on tasks that don't directly generate revenue"
+  },
+  "tooltips": {
+    "triggerEventTooltip": "What specific moments or events cause your target customers to realize they need a solution like yours?"
+  },
+  "examples": [
+    "When a freelancer misses a deadline because they're overwhelmed with admin tasks",
+    "When a business owner reviews their monthly financials and sees declining profits",
+    "When a marketing manager's campaign fails to generate expected results",
+    "When a startup founder realizes their product has a high churn rate"
+  ]
+}

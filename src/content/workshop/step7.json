@@ -1,0 +1,19 @@
+{
+  "type": "WorkshopStep",
+  "title": "Painstorming",
+  "stepNumber": 7,
+  "pageId": "workshop-step-7",
+  "description": "Let's identify the specific pains and frustrations your target buyers experience when trying to make progress on their jobs. These pains represent opportunities for your solution.",
+  "placeholders": {
+    "painPointPlaceholder": "e.g., Spending hours creating content that doesn't generate engagement or leads"
+  },
+  "tooltips": {
+    "painPointTooltip": "What specific frustrations, challenges, or negative emotions do your target buyers experience?"
+  },
+  "examples": [
+    "Feeling overwhelmed by constantly changing social media algorithms",
+    "Wasting time on proposals for prospects who aren't serious buyers",
+    "Struggling to find reliable freelancers who deliver quality work on time",
+    "Feeling isolated and unsupported when making important business decisions"
+  ]
+}

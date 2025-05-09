@@ -1,0 +1,19 @@
+{
+  "type": "WorkshopStep",
+  "title": "Refine Your Idea",
+  "stepNumber": 10,
+  "pageId": "workshop-step-10",
+  "description": "Now it's time to refine your original idea based on all the insights you've gathered. Your refined offer should directly address the core problem for your focused target market.",
+  "placeholders": {
+    "refinedIdeaPlaceholder": "e.g., A 6-week group program that helps agency owners implement systems and automation to reduce their direct client work by 50% while maintaining or increasing revenue"
+  },
+  "tooltips": {
+    "refinedIdeaTooltip": "Describe your refined offer, including what it is, who it's for, and the specific problem it solves"
+  },
+  "examples": [
+    "A done-for-you client onboarding system that helps service providers create a professional first impression and reduce admin time by 80%",
+    "A 30-day course that teaches e-commerce store owners how to optimize their product pages to increase conversion rates by at least 15%",
+    "A monthly membership that provides freelance designers with templates, scripts, and community support to help them find better clients and increase their rates",
+    "A software tool that helps course creators track student progress and automatically provide support when students get stuck, increasing completion rates by 40%"
+  ]
+}
