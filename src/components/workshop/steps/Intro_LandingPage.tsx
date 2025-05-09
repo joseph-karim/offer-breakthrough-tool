@@ -1,12 +1,19 @@
 import React from 'react';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
+import { useNavigate } from 'react-router-dom';
 
 export const Step01_Intro: React.FC = () => {
   const { setCurrentStep } = useWorkshopStore();
+  const navigate = useNavigate();
+
+  const handleStartWorkshop = () => {
+    setCurrentStep(2);
+    navigate('/step/2');
+  };
 
   return (
-    <div className="workbook-container" style={{ backgroundColor: '#1E1E1E', color: 'white', padding: '20px' }}>
+    <div className="workbook-container" style={{ backgroundColor: '#1E1E1E', color: 'white', padding: '20px' }} data-sb-object-id="step1">
       {/* Main content grid */}
       <div style={{
         display: 'flex',
@@ -68,14 +75,18 @@ export const Step01_Intro: React.FC = () => {
               fontWeight: 'bold',
               color: 'white',
               marginBottom: '20px'
-            }}>
+            }}
+            data-sb-field-path="title"
+            >
               From Burnout to Breakthrough
             </h2>
             <p style={{
               fontSize: '18px',
               color: 'white',
               lineHeight: '1.6'
-            }}>
+            }}
+            data-sb-field-path="description"
+            >
               Find profitable problems worth solving and design a scalable offer idea that "actually" sells in this live 2.5-hour workshop
             </p>
           </div>
@@ -173,7 +184,7 @@ export const Step01_Intro: React.FC = () => {
         margin: '20px auto',
       }}>
         <Button
-          onClick={() => setCurrentStep(2)}
+          onClick={handleStartWorkshop}
           style={{
             backgroundColor: '#fcf720',
             color: 'black',

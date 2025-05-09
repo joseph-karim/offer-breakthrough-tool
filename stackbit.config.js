@@ -21,7 +21,8 @@ module.exports = {
           fields: [
             { name: 'title', type: 'string', label: 'Step Title', required: true },
             { name: 'stepNumber', type: 'number', label: 'Step Number', required: true },
-            { name: 'description', type: 'markdown', label: 'Step Description' }
+            { name: 'description', type: 'string', label: 'Step Description' },
+            { name: 'pageId', type: 'string', label: 'Page ID', hidden: true }
           ]
         }
       ],
