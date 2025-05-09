@@ -2,7 +2,7 @@
   "type": "WorkshopStep",
   "title": "Define Your Focused Target Market",
   "stepNumber": 9,
-  "pageId": "workshop-step-9",
+  "pageId": "step9",
   "description": "Based on all the insights we've gathered, let's define a specific target market profile. This focused group will be the primary audience for your offer.",
   "placeholders": {
     "marketNamePlaceholder": "e.g., Plateaued Agency Owners Seeking Scalability",

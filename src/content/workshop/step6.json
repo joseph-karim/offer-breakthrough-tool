@@ -2,7 +2,7 @@
   "type": "WorkshopStep",
   "title": "Target Buyers",
   "stepNumber": 6,
-  "pageId": "workshop-step-6",
+  "pageId": "step6",
   "description": "Now let's identify the specific types of buyers who are most likely to hire your solution. These are the people who experience the jobs and trigger events you've identified.",
   "placeholders": {
     "buyerTypePlaceholder": "e.g., Overwhelmed agency owners who want to scale but are stuck doing client work"

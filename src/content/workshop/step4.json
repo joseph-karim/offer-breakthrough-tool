@@ -2,7 +2,7 @@
   "type": "WorkshopStep",
   "title": "Identify Trigger Events",
   "stepNumber": 4,
-  "pageId": "workshop-step-4",
+  "pageId": "step4",
   "description": "Trigger events are specific moments when your customers become aware they have a problem that needs solving. Identifying these moments helps you understand when to position your offer.",
   "placeholders": {
     "triggerEventPlaceholder": "e.g., When a business owner realizes they're spending too much time on tasks that don't directly generate revenue"

@@ -2,7 +2,7 @@
   "type": "WorkshopStep",
   "title": "Clarify Your Underlying Goal",
   "stepNumber": 2,
-  "pageId": "workshop-step-2",
+  "pageId": "step2",
   "description": "Let's get clear on why you're building a new offer. There are many ways to achieve a goal, but you must clarify where you're going in the first place.",
   "placeholders": {
     "businessGoalPlaceholder": "e.g., Use new offer to solve a small problem for ideal customers and deliver a quick win that both earns their trust and creates interest in our other products/services."

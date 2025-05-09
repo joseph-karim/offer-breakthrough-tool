@@ -18,7 +18,7 @@ const selectBrainstormBigIdeasWithContext = (state: WorkshopStore) => state.brai
 const selectIsAiLoading = (state: WorkshopStore) => state.isAiLoading;
 
 
-export const Step02_BigIdea: React.FC = () => {
+export const Step01_BigIdea: React.FC = () => {
   const bigIdea = useWorkshopStore(selectBigIdea);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const showErrors = useWorkshopStore(selectValidationErrors);

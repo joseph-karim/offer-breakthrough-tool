@@ -22,7 +22,41 @@ export default defineStackbitConfig({
             { name: 'title', type: 'string', label: 'Step Title', required: true },
             { name: 'stepNumber', type: 'number', label: 'Step Number', required: true },
             { name: 'description', type: 'string', label: 'Step Description' },
-            { name: 'pageId', type: 'string', label: 'Page ID', hidden: true }
+            { name: 'pageId', type: 'string', label: 'Page ID', hidden: true },
+            { name: 'infoBox', type: 'string', label: 'Info Box Content' },
+            {
+              name: 'placeholders',
+              type: 'object',
+              label: 'Placeholders',
+              fields: [
+                { name: 'bigIdeaPlaceholder', type: 'string', label: 'Big Idea Placeholder' },
+                { name: 'targetCustomersPlaceholder', type: 'string', label: 'Target Customers Placeholder' }
+              ]
+            },
+            {
+              name: 'tooltips',
+              type: 'object',
+              label: 'Tooltips',
+              fields: [
+                { name: 'bigIdeaTooltip', type: 'string', label: 'Big Idea Tooltip' },
+                { name: 'targetCustomersTooltip', type: 'string', label: 'Target Customers Tooltip' },
+                { name: 'businessGoalTooltip', type: 'string', label: 'Business Goal Tooltip' }
+              ]
+            },
+            {
+              name: 'labels',
+              type: 'object',
+              label: 'Labels',
+              fields: [
+                { name: 'bigIdeaLabel', type: 'string', label: 'Big Idea Label' }
+              ]
+            },
+            {
+              name: 'examples',
+              type: 'list',
+              label: 'Examples',
+              items: { type: 'string' }
+            }
           ]
         }
       ],

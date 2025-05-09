@@ -2,7 +2,7 @@
   "type": "WorkshopStep",
   "title": "Define Customer Jobs",
   "stepNumber": 5,
-  "pageId": "workshop-step-5",
+  "pageId": "step5",
   "description": "Customer jobs are the tasks, problems, or needs your customers are trying to address. Understanding these jobs helps you design an offer that truly helps them make progress.",
   "placeholders": {
     "jobStatementPlaceholder": "e.g., Help me find the right target audience for my product so I can stop wasting money on ineffective marketing"

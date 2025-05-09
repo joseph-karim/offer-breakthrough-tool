@@ -2,7 +2,7 @@
   "type": "WorkshopStep",
   "title": "Summary",
   "stepNumber": 11,
-  "pageId": "workshop-step-11",
+  "pageId": "step11",
   "description": "Congratulations! You've completed the Buyer Breakthrough Workshop. Here's a summary of your work and the key insights you've developed.",
   "placeholders": {
     "nextStepsPlaceholder": "e.g., - Create a landing page for my refined offer\n- Develop a prototype or minimum viable version\n- Test with 3-5 potential customers\n- Gather feedback and iterate"

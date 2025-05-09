@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 // Import step components
 import { Step01_Intro } from './steps/Intro_LandingPage';
-import { Step02_BigIdea } from './steps/Step01_BigIdea';
+import { Step01_BigIdea } from './steps/Step01_BigIdea';
 import { Step03_UnderlyingGoal } from './steps/Step02_UnderlyingGoal';
 import { Step04_TriggerEvents } from './steps/Step03_TriggerEvents';
 import { Step05_Jobs } from './steps/Step04_Jobs';
@@ -107,27 +107,25 @@ export const WorkshopWizard = () => {
   const currentStepComponent = (() => {
     switch (currentStep) {
       case 1:
-        return <Step01_Intro key="step1" />;
+        return <Step01_BigIdea key="step1" />;
       case 2:
-        return <Step02_BigIdea key="step2" />;
+        return <Step03_UnderlyingGoal key="step2" />;
       case 3:
-        return <Step03_UnderlyingGoal key="step3" />;
+        return <Step04_TriggerEvents key="step3" />;
       case 4:
-        return <Step04_TriggerEvents key="step4" />;
+        return <Step05_Jobs key="step4" />;
       case 5:
-        return <Step05_Jobs key="step5" />;
+        return <Step06_TargetBuyers key="step5" />;
       case 6:
-        return <Step06_TargetBuyers key="step6" />;
+        return <Step07_Painstorming key="step6" />;
       case 7:
-        return <Step07_Painstorming key="step7" />;
+        return <Step08_ProblemUp key="step7" />;
       case 8:
-        return <Step08_ProblemUp key="step8" />;
+        return <Step08_TargetMarket key="step8" />;
       case 9:
-        return <Step08_TargetMarket key="step9" />;
+        return <Step09_RefineIdea key="step9" />;
       case 10:
-        return <Step09_RefineIdea key="step10" />;
-      case 11:
-        return <Step10_Summary key="step11" />;
+        return <Step10_Summary key="step10" />;
       default:
         return <div key={`step${currentStep}`}>Step {currentStep} is under construction</div>;
     }

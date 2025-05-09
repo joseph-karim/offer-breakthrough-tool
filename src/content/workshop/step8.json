@@ -2,7 +2,7 @@
   "type": "WorkshopStep",
   "title": "Problem Up",
   "stepNumber": 8,
-  "pageId": "workshop-step-8",
+  "pageId": "step8",
   "description": "Now let's identify the core problem your offer will solve. This is the specific pain point or job that your solution will address most effectively.",
   "placeholders": {
     "coreProblemPlaceholder": "e.g., Small business owners struggle to identify which marketing activities actually drive revenue, leading to wasted time and resources"

@@ -2,7 +2,7 @@
   "type": "WorkshopStep",
   "title": "Painstorming",
   "stepNumber": 7,
-  "pageId": "workshop-step-7",
+  "pageId": "step7",
   "description": "Let's identify the specific pains and frustrations your target buyers experience when trying to make progress on their jobs. These pains represent opportunities for your solution.",
   "placeholders": {
     "painPointPlaceholder": "e.g., Spending hours creating content that doesn't generate engagement or leads"
