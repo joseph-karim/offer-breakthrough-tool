@@ -188,7 +188,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
       </div>
 
       {/* Description */}
-      <div style={styles.stepDescriptionStyle}>
+      <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>You've identified a bunch of problems you could solve with your new offer. But you don't need to solve all the problems with one product. Let's narrow down your options and find the specific problems you're best suited to solve.</p>
       </div>
 

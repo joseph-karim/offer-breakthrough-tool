@@ -180,7 +180,7 @@ export const Step08_ProblemUp: React.FC = () => {
       </div>
 
       {/* Description */}
-      <div style={styles.stepDescriptionStyle}>
+      <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>Now, let's narrow your focus to a specific pain-buyer combination and define your "Target Moment" - the specific scenario where your ideal buyer feels a key pain acutely and becomes ready to seek a solution.</p>
       </div>
 

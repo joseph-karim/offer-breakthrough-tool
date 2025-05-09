@@ -142,7 +142,7 @@ export const Step07_Painstorming: React.FC = () => {
       </div>
 
       {/* Description */}
-      <div style={styles.stepDescriptionStyle}>
+      <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>Let's do some rapid painstorming to identify the painful and expensive problems that your potential buyers might struggle with when trying to get the job done.</p>
       </div>
 

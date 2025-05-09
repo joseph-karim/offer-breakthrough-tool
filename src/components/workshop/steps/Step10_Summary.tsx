@@ -215,7 +215,7 @@ export const Step10_Summary: React.FC = () => {
       </div>
 
       {/* Description */}
-      <div style={styles.stepDescriptionStyle}>
+      <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>Reflect on your journey, capture key insights, and plan your next steps</p>
       </div>
 

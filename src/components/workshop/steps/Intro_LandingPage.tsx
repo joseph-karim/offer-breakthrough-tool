@@ -13,7 +13,7 @@ export const Step01_Intro: React.FC = () => {
   };
 
   return (
-    <div className="workbook-container" style={{ backgroundColor: '#1E1E1E', color: 'white', padding: '20px' }} data-sb-object-id="step1">
+    <div className="workbook-container" style={{ backgroundColor: '#1E1E1E', color: 'white', padding: '20px' }} data-sb-object-id="intro">
       {/* Main content grid */}
       <div style={{
         display: 'flex',

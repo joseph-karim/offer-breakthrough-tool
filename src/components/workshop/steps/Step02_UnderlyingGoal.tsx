@@ -97,7 +97,7 @@ export const Step03_UnderlyingGoal: React.FC = () => {
       </div>
 
       {/* Description */}
-      <div style={styles.stepDescriptionStyle}>
+      <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>Let's get clear on why you're building a new offer. There are many ways to achieve a goal, but you must clarify where you're going in the first place.</p>
       </div>
 

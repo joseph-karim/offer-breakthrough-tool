@@ -261,7 +261,7 @@ export const Step06_TargetBuyers: React.FC = () => {
       </div>
 
       {/* Description */}
-      <div style={styles.stepDescriptionStyle}>
+      <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>Let's identify high-potential target customers. These are specific types of people who are likely to need to get the job done and get value from your solution. This is a 3-part exercise.</p>
       </div>
 

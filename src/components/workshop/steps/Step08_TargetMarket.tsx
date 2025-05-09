@@ -190,7 +190,7 @@ export const Step08_TargetMarket: React.FC = () => {
       </div>
 
       {/* Description */}
-      <div style={styles.stepDescriptionStyle}>
+      <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>You're clear on the problems you aim to solve and the target moment. Now, let's crystallize the definition of your target market based on shared characteristics relevant to your upcoming offer.</p>
       </div>
 

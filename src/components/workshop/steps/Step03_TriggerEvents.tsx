@@ -86,7 +86,7 @@ export const Step04_TriggerEvents: React.FC = () => {
       </div>
 
       {/* Description */}
-      <div style={styles.stepDescriptionStyle}>
+      <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>Let's explore the specific moments in your prospective buyer's life that might trigger them to realize they need a solution like yours. These trigger events provide clues about what your customers really want to get done.</p>
         <p>Trigger events can be:<br />
         Situational (eg. losing a client, getting divorced, hiring a new team member, etc.)<br />

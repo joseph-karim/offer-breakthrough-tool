@@ -159,7 +159,7 @@ export const Step02_BigIdea: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: '#FFFFFF', color: '#333333', padding: '30px', borderRadius: '20px' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: '#FFFFFF', color: '#333333', padding: '30px', borderRadius: '20px' }} data-sb-object-id="step1">
       {/* Step indicator */}
       <div style={{
         display: 'flex',

@@ -100,7 +100,7 @@ export const Step09_RefineIdea: React.FC = () => {
   );
 
   return (
-    <div style={styles.stepContainerStyle}>
+    <div style={styles.stepContainerStyle} data-sb-object-id="step10">
       {/* Step indicator */}
       <div style={{
         display: 'flex',
@@ -126,14 +126,16 @@ export const Step09_RefineIdea: React.FC = () => {
           fontWeight: 'bold',
           color: '#333333',
           margin: 0
-        }}>
+        }}
+        data-sb-field-path="title"
+        >
           Refine Your Idea
         </h2>
       </div>
 
       {/* Description */}
       <div style={styles.stepDescriptionStyle}>
-        <p>Revise your initial idea based on the insights from the workshop</p>
+        <p data-sb-field-path="description">Revise your initial idea based on the insights from the workshop</p>
       </div>
 
       {/* Main content area */}
