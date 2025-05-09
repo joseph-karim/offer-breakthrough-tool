@@ -23,5 +23,5 @@
 
 # Stackbit configuration
 [stackbit]
-  # Use the stackbit-dev script to start the development server
-  dev_command = "npm run stackbit-dev"
+  # Use the direct vite command to start the development server
+  dev_command = "node_modules/.bin/vite dev --port {PORT} --host 127.0.0.1"
