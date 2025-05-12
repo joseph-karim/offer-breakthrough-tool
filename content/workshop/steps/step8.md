@@ -1,7 +1,7 @@
 ---
 type: WorkshopStep
-title: Define Your Focused Target Market
+title: Choose Target Market
 stepNumber: 8
-description: Now that you understand the problems you're solving, define the specific market segment you'll target. This helps you create messaging that resonates with your ideal customers.
-infoBoxContent: Your target market is the specific group of people who will benefit most from your offer and are most likely to purchase it.
+description: You're clear on the problems you aim to solve. Before you begin brainstorming offer ideas, let's first refine your target market. You'll choose a market that shares common traits, common triggers, and/or common transformation.
+infoBoxContent: Choosing a specific target market inspires product differentiation and makes marketing easier.
 ---

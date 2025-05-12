@@ -6,53 +6,58 @@ import { Plus, X } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import * as styles from '../../../styles/stepStyles';
-import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
-import { ContextBox } from '../ContextBox';
+import { InfoBox } from '../../ui/InfoBox';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectProblemUp = (state: WorkshopStore) => state.workshopData.problemUp;
 const selectTargetMarketProfile = (state: WorkshopStore) => state.workshopData.targetMarketProfile;
-const selectPains = (state: WorkshopStore) => state.workshopData.pains;
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectJobs = (state: WorkshopStore) => state.workshopData.jobs;
-// const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.triggerEvents;
+const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.triggerEvents;
+const selectTargetProblems = (state: WorkshopStore) => state.workshopData.targetProblems;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-
-
 
 export const Step08_TargetMarket: React.FC = () => {
   const problemUp = useWorkshopStore(selectProblemUp);
   const targetMarketProfile = useWorkshopStore(selectTargetMarketProfile);
-  const pains = useWorkshopStore(selectPains);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const jobs = useWorkshopStore(selectJobs);
-  // const triggerEvents = useWorkshopStore(selectTriggerEvents);
+  const triggerEvents = useWorkshopStore(selectTriggerEvents);
+  const targetProblems = useWorkshopStore(selectTargetProblems) || [];
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
 
+  // Get selected problems from previous step
+  const selectedProblems = targetProblems.filter(problem => problem.selected);
 
+  // Get the primary buyer (top-rated buyer)
+  const topBuyers = targetBuyers.filter(buyer => buyer.isTopThree).slice(0, 1);
+  const primaryBuyer = topBuyers.length > 0 ? topBuyers[0] : undefined;
 
-  // Get the primary pain, buyer, and job
-  const primaryPain = problemUp?.selectedPains && problemUp.selectedPains.length > 0
-    ? pains.find(pain => pain.id === problemUp.selectedPains[0])
-    : undefined;
-
-  const primaryBuyer = problemUp?.selectedBuyers && problemUp.selectedBuyers.length > 0
-    ? targetBuyers.find(buyer => buyer.id === problemUp.selectedBuyers[0])
+  // Get the primary pain (first selected problem)
+  const primaryPain = selectedProblems.length > 0
+    ? { description: selectedProblems[0].description }
     : undefined;
 
   const overarchingJob = jobs.find(job => job.isOverarching);
 
-  // const relevantTriggers = problemUp?.relevantTriggerIds
-  //   ? triggerEvents.filter(trigger => problemUp.relevantTriggerIds.includes(trigger.id))
-  //   : [];
+  // Get relevant trigger events
+  const relevantTriggers = problemUp?.relevantTriggerIds
+    ? triggerEvents.filter(trigger => problemUp.relevantTriggerIds?.includes(trigger.id))
+    : [];
+
+  // Get all selected pains and buyers for context
+  const selectedPains = selectedProblems.map(problem => ({
+    description: problem.description
+  }));
+
+  const selectedBuyers = targetBuyers.filter(buyer => buyer.isTopThree);
 
   // Local state for form values
   const [formData, setFormData] = useState<TargetMarketProfile>({
     name: targetMarketProfile?.name || '',
     commonTraits: targetMarketProfile?.commonTraits || [],
-    commonTriggers: targetMarketProfile?.commonTriggers || [],
-    coreTransformation: targetMarketProfile?.coreTransformation || ''
+    commonTriggers: targetMarketProfile?.commonTriggers || []
   });
 
   const [newTrait, setNewTrait] = useState('');
@@ -66,8 +71,7 @@ export const Step08_TargetMarket: React.FC = () => {
       setFormData({
         name: targetMarketProfile.name || '',
         commonTraits: targetMarketProfile.commonTraits || [],
-        commonTriggers: targetMarketProfile.commonTriggers || [],
-        coreTransformation: targetMarketProfile.coreTransformation || ''
+        commonTriggers: targetMarketProfile.commonTriggers || []
       });
     }
   }, [targetMarketProfile]);
@@ -155,8 +159,6 @@ export const Step08_TargetMarket: React.FC = () => {
     }
   }, []);
 
-
-
   return (
     <div style={styles.stepContainerStyle}>
       {/* Step indicator */}
@@ -184,113 +186,67 @@ export const Step08_TargetMarket: React.FC = () => {
           fontWeight: 'bold',
           color: '#333333',
           margin: 0
-        }}>
-          Define Your Focused Target Market
+        }} data-sb-field-path="title">
+          Choose Target Market
         </h2>
       </div>
 
       {/* Description */}
       <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
-        <p>You're clear on the problems you aim to solve and the target moment. Now, let's crystallize the definition of your target market based on shared characteristics relevant to your upcoming offer.</p>
+        <p>You're clear on the problems you aim to solve. Before you begin brainstorming offer ideas, let's first refine your target market. You'll choose a market that shares common traits, common triggers, and/or common transformation.</p>
       </div>
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={styles.yellowInfoBoxStyle}>
-          Defining your market by shared traits, triggers, and their desired transformation helps create differentiated offers and makes marketing much easier.
-        </div>
+        <InfoBox>
+          Choosing a specific target market inspires product differentiation and makes marketing easier.
+        </InfoBox>
 
-        {/* Context Display */}
-        <div style={{
-          padding: '16px',
-          backgroundColor: '#f8fafc',
-          borderRadius: '8px',
-          border: '1px solid #e2e8f0',
-          marginTop: '20px',
-          marginBottom: '20px'
-        }}>
+        {/* Step 1: Brainstorm with Sparky */}
+        <div style={{ marginBottom: '24px' }}>
           <h3 style={{
-            fontSize: '16px',
+            fontSize: '18px',
             fontWeight: 600,
             color: '#1e293b',
-            margin: '0 0 12px 0'
+            margin: '0 0 16px 0'
           }}>
-            Refining based on your Problem-Up Focus:
+            Step 1) Brainstorm Your Target Market with Sparky
           </h3>
 
-          <div style={{ display: 'grid', gap: '12px' }}>
-            <div>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Primary Target Buyer Segment Selected:</p>
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                {primaryBuyer?.description || "No primary buyer selected yet"}
-              </div>
-            </div>
+          <p style={{ marginBottom: '16px' }}>
+            Sparky will help you define a specific target market profile based on your selected buyers, pains, and other context.
+          </p>
 
-            <div>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Primary Pain Focused On:</p>
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                {primaryPain?.description || "No primary pain selected yet"}
-              </div>
-            </div>
-
-            <div>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Defined Target Moment:</p>
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                {problemUp?.targetMoment || "No target moment defined yet"}
-              </div>
-            </div>
-
-            <div>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Overarching Job Statement:</p>
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                {overarchingJob?.description || "No overarching job statement defined yet"}
-              </div>
-            </div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <ChatWithSparkyButton
+              exerciseKey="targetMarket"
+              exerciseTitle="Define Your Target Market with Sparky"
+              initialContext={{
+                primaryBuyer: primaryBuyer?.description,
+                allBuyers: selectedBuyers.map(b => b.description),
+                primaryPain: primaryPain?.description,
+                allPains: selectedPains.map(p => p.description),
+                targetMoment: problemUp?.targetMoment,
+                relevantTriggers: relevantTriggers.map(t => t.description),
+                overarchingJob: overarchingJob?.description || ""
+              }}
+              systemPromptKey="TARGET_MARKET_PROMPT"
+            />
           </div>
         </div>
 
-        <AccordionGroup>
-          {/* Step 1: Brainstorm with Sparky */}
-          <AccordionItem
-            title="Step 1: Brainstorm Market Descriptors with Sparky"
-            defaultExpanded={true}
-          >
-            <ContextBox>
-              <ul className="list-disc list-inside">
-                <li><strong>Primary Buyer:</strong> {primaryBuyer?.description || "Not selected yet"}</li>
-                <li><strong>Primary Pain:</strong> {primaryPain?.description || "Not selected yet"}</li>
-                <li><strong>Target Moment:</strong> {problemUp?.targetMoment || "Not defined yet"}</li>
-              </ul>
-            </ContextBox>
+        {/* Step 2: Define Target Market Profile */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 16px 0'
+          }}>
+            Step 2) Define Your Target Market Profile
+          </h3>
 
-            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-              Sparky can help you brainstorm common traits, relevant triggers, and the core transformation promise for the market segment you focused on in the previous step.
-            </p>
-
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-              <ChatWithSparkyButton
-                exerciseKey="targetMarket"
-                exerciseTitle="Define Your Target Market with Sparky"
-                initialContext={{
-                  primaryBuyer: primaryBuyer?.description,
-                  primaryPain: primaryPain?.description,
-                  targetMoment: problemUp?.targetMoment,
-                  overarchingJob: overarchingJob?.description
-                }}
-                systemPromptKey="TARGET_MARKET_PROMPT"
-              />
-            </div>
-          </AccordionItem>
-
-          {/* Step 2: Describe Target Market Profile */}
-          <AccordionItem
-            title="Step 2: Describe Your Focused Target Market Profile"
-          >
-            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-              Add the key descriptors for this specific market segment. Focus only on attributes most relevant for shaping your offer. You can use Sparky's suggestions as a starting point.
-            </p>
-
-          {/* Market Profile Name */}
+          {/* Market Name */}
           <div style={{ marginBottom: '20px' }}>
             <label
               htmlFor="market-name"
@@ -299,8 +255,25 @@ export const Step08_TargetMarket: React.FC = () => {
               What will you name this specific target market profile?
             </label>
             <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-              Give this focused group a descriptive name.
+              Create a descriptive name that captures the essence of your target market
             </p>
+
+            {/* Context for Market Name */}
+            <div style={{
+              padding: '12px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '6px',
+              marginBottom: '12px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>CONTEXT:</p>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px' }}>Buyer Information</p>
+              <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>Primary Target Buyer:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px', marginBottom: '8px' }}>
+                {primaryBuyer?.description || "No primary buyer selected yet"}
+              </div>
+            </div>
+
             <input
               id="market-name"
               type="text"
@@ -317,35 +290,46 @@ export const Step08_TargetMarket: React.FC = () => {
               htmlFor="common-traits"
               style={styles.labelStyle}
             >
-              Key Common Traits
+              COMMON TRAITS
             </label>
             <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-              List the most defining shared characteristics (demographic, firmographic, psychographic).
+              List the most defining shared characteristics (demographic, firmographic, psychographic)
             </p>
 
+            {/* Context for Common Traits */}
+            <div style={{
+              padding: '12px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '6px',
+              marginBottom: '12px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>CONTEXT:</p>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px' }}>Pain Points</p>
+              <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>Primary Pain Point:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {primaryPain?.description || "No primary pain selected yet"}
+              </div>
+            </div>
+
             {/* Add trait input */}
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
               <input
                 id="common-traits"
                 type="text"
                 value={newTrait}
                 onChange={(e) => setNewTrait(e.target.value)}
                 onKeyDown={(e) => handleKeyPress(e, handleAddTrait)}
-                placeholder="e.g., Runs a 5-10 person service agency, Revenue $500k-$2M, Feels overworked..."
-                style={styles.inputStyle}
+                placeholder="e.g., Senior consultants, fractional CMOs, solo strategists, brand architects, or marketing agency owners"
+                style={{
+                  ...styles.inputStyle,
+                  flex: 1
+                }}
               />
               <Button
                 onClick={handleAddTrait}
                 disabled={!newTrait.trim()}
                 variant="primary"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#fcf720',
-                  color: '#222222',
-                  borderRadius: '15px',
-                }}
               >
                 <Plus size={16} />
                 Add Trait
@@ -362,13 +346,13 @@ export const Step08_TargetMarket: React.FC = () => {
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      padding: '10px 16px',
-                      backgroundColor: '#f9fafb',
-                      borderRadius: '8px',
-                      border: '1px solid #e5e7eb',
+                      padding: '8px 12px',
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
                     }}
                   >
-                    <span style={{ fontSize: '14px', color: '#374151' }}>{trait}</span>
+                    <span style={{ fontSize: '14px' }}>{trait}</span>
                     <button
                       onClick={() => handleRemoveTrait(index)}
                       style={{
@@ -377,7 +361,7 @@ export const Step08_TargetMarket: React.FC = () => {
                         cursor: 'pointer',
                         color: '#6b7280',
                         display: 'flex',
-                        alignItems: 'center',
+                        padding: '4px',
                       }}
                       title="Remove trait"
                     >
@@ -389,14 +373,15 @@ export const Step08_TargetMarket: React.FC = () => {
             ) : (
               <div style={{
                 padding: '12px',
-                backgroundColor: '#f9fafb',
-                borderRadius: '8px',
-                border: '1px solid #e5e7eb',
+                backgroundColor: '#f8fafc',
+                borderRadius: '6px',
+                border: '1px dashed #e2e8f0',
                 fontSize: '14px',
                 color: '#6b7280',
-                fontStyle: 'italic'
+                fontStyle: 'italic',
+                textAlign: 'center'
               }}>
-                No traits added yet. Add traits that define this market segment.
+                Add traits that define your target market (e.g., "Senior consultants", "Agency owners with 3-5 employees")
               </div>
             )}
           </div>
@@ -407,35 +392,50 @@ export const Step08_TargetMarket: React.FC = () => {
               htmlFor="common-triggers"
               style={styles.labelStyle}
             >
-              Most Relevant Common Triggers
+              COMMON TRIGGERS
             </label>
             <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
               List the specific triggers most relevant to this group experiencing the target moment/pain.
             </p>
 
+            {/* Context for Common Triggers */}
+            <div style={{
+              padding: '12px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '6px',
+              marginBottom: '12px',
+              border: '1px solid #e2e8f0'
+            }}>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>CONTEXT:</p>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px' }}>Additional Context</p>
+              <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>Target Moment:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px', marginBottom: '8px' }}>
+                {problemUp?.targetMoment || "No target moment defined yet"}
+              </div>
+              <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>Overarching Job Statement:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {overarchingJob?.description || "No overarching job defined yet"}
+              </div>
+            </div>
+
             {/* Add trigger input */}
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
               <input
                 id="common-triggers"
                 type="text"
                 value={newTrigger}
                 onChange={(e) => setNewTrigger(e.target.value)}
                 onKeyDown={(e) => handleKeyPress(e, handleAddTrigger)}
-                placeholder="e.g., Lost a major client recently, Competitor launched superior offer..."
-                style={styles.inputStyle}
+                placeholder="e.g., They've hit a revenue plateau in their business"
+                style={{
+                  ...styles.inputStyle,
+                  flex: 1
+                }}
               />
               <Button
                 onClick={handleAddTrigger}
                 disabled={!newTrigger.trim()}
                 variant="primary"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#fcf720',
-                  color: '#222222',
-                  borderRadius: '15px',
-                }}
               >
                 <Plus size={16} />
                 Add Trigger
@@ -452,13 +452,13 @@ export const Step08_TargetMarket: React.FC = () => {
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      padding: '10px 16px',
-                      backgroundColor: '#f9fafb',
-                      borderRadius: '8px',
-                      border: '1px solid #e5e7eb',
+                      padding: '8px 12px',
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '6px',
+                      border: '1px solid #e2e8f0',
                     }}
                   >
-                    <span style={{ fontSize: '14px', color: '#374151' }}>{trigger}</span>
+                    <span style={{ fontSize: '14px' }}>{trigger}</span>
                     <button
                       onClick={() => handleRemoveTrigger(index)}
                       style={{
@@ -467,7 +467,7 @@ export const Step08_TargetMarket: React.FC = () => {
                         cursor: 'pointer',
                         color: '#6b7280',
                         display: 'flex',
-                        alignItems: 'center',
+                        padding: '4px',
                       }}
                       title="Remove trigger"
                     >
@@ -479,52 +479,23 @@ export const Step08_TargetMarket: React.FC = () => {
             ) : (
               <div style={{
                 padding: '12px',
-                backgroundColor: '#f9fafb',
-                borderRadius: '8px',
-                border: '1px solid #e5e7eb',
+                backgroundColor: '#f8fafc',
+                borderRadius: '6px',
+                border: '1px dashed #e2e8f0',
                 fontSize: '14px',
                 color: '#6b7280',
-                fontStyle: 'italic'
+                fontStyle: 'italic',
+                textAlign: 'center'
               }}>
-                No triggers added yet. Add triggers that are common for this market segment.
+                Add triggers that prompt your target market to seek solutions (e.g., "Revenue plateau", "Failed launch")
               </div>
             )}
           </div>
 
-          {/* Core Transformation */}
-          <div style={{ marginBottom: '20px' }}>
-            <label
-              htmlFor="core-transformation"
-              style={styles.labelStyle}
-            >
-              Core Transformation Promise (Derived from Job Statement)
-            </label>
-            <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-              Rephrase their Overarching Job Statement into a concise 'From X to Y' transformation they seek.
-            </p>
-            <textarea
-              id="core-transformation"
-              value={formData.coreTransformation}
-              onChange={(e) => handleInputChange('coreTransformation', e.target.value)}
-              placeholder="Sparky can help! e.g., Go from feeling stuck and overworked to having a clear, scalable growth plan."
-              style={styles.textareaStyle}
-              rows={3}
-            />
-            <p style={{
-              fontSize: '13px',
-              color: '#6b7280',
-              fontStyle: 'italic',
-              margin: '4px 0 0 0'
-            }}>
-              Based on Job: '{overarchingJob?.description || "No job statement defined yet"}'
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
             <SaveIndicator saving={isSaving} />
           </div>
-          </AccordionItem>
-        </AccordionGroup>
+        </div>
       </div>
     </div>
   );

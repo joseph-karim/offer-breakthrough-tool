@@ -81,7 +81,7 @@ export interface TargetMarketProfile {
   name: string;
   commonTraits: string[];
   commonTriggers: string[];
-  coreTransformation: string;
+  coreTransformation?: string;
 }
 
 export interface TargetMarket {
