@@ -25,6 +25,11 @@ export class SparkyService {
   private openai: OpenAIService;
   private model: string;
   private useMockResponses: boolean;
+  private hasReceivedFirstResponse: boolean = false;
+  private hasReceivedSecondResponse: boolean = false;
+  private currentUserSolutionInput: string = '';
+  private pastBuyerPushPointsInput: string = '';
+  private additionalNewOfferContextInput: string = '';
 
   constructor(openaiService: OpenAIService, model: string = 'gpt-4.1-2025-04-14', useMockResponses: boolean = true) {
     this.openai = openaiService;
@@ -44,7 +49,7 @@ export class SparkyService {
     try {
       // If using mock responses, generate a contextual response based on the step and message
       if (this.useMockResponses) {
-        return this.generateMockResponse(message, currentStep, workshopData);
+        return this.generateMockResponse(message, currentStep, workshopData, chatHistory);
       }
 
       // Get the appropriate system prompt for the current step
@@ -83,7 +88,7 @@ export class SparkyService {
       console.error('Error generating Sparky response:', error);
 
       // Fall back to mock response if API fails
-      return this.generateMockResponse(message, currentStep, workshopData);
+      return this.generateMockResponse(message, currentStep, workshopData, chatHistory);
     }
   }
 
@@ -93,9 +98,31 @@ export class SparkyService {
   private generateMockResponse(
     message: string,
     currentStep: number,
-    workshopData: WorkshopData
+    workshopData: WorkshopData,
+    chatHistory: SparkyMessage[] = []
   ): SparkyMessage {
     let responseContent = '';
+
+    // For trigger events step, analyze the chat history to determine conversation state
+    if (currentStep === 4 && workshopData.triggerEvents.length === 0) {
+      // Count user messages in the chat history to determine which question we're on
+      const userMessageCount = chatHistory.filter(msg => msg.role === 'user').length;
+
+      // If this is the first user message (including the current one)
+      if (userMessageCount === 1) {
+        this.hasReceivedFirstResponse = true;
+        this.currentUserSolutionInput = message;
+      }
+      // If this is the second user message
+      else if (userMessageCount === 2) {
+        this.hasReceivedSecondResponse = true;
+        this.pastBuyerPushPointsInput = message;
+      }
+      // If this is the third user message
+      else if (userMessageCount === 3) {
+        this.additionalNewOfferContextInput = message;
+      }
+    }
 
     // Generate a contextual response based on the step
     switch (currentStep) {
@@ -175,53 +202,12 @@ export class SparkyService {
   /**
    * Mock response for Trigger Events step
    * Implements the revised guided questioning flow for broader trigger event brainstorming
+   * Following the exact script provided
    */
   private getMockTriggerEventsResponse(message: string, workshopData: WorkshopData): string {
     const lowerMessage = message.toLowerCase();
 
-    // Store user responses for the guided questioning flow
-    // In a real implementation, these would be stored in state
-    // For mock purposes, we'll infer from the message content
-
-    // Check if this is the first question about business description
-    if (workshopData.triggerEvents.length === 0 &&
-        !lowerMessage.includes('example') &&
-        !lowerMessage.includes('suggestion') &&
-        !lowerMessage.includes('type') &&
-        !lowerMessage.includes('kind')) {
-
-      // Store the business description (in a real implementation)
-      // For now, just respond with the next question
-      return "Thanks! Now, thinking about the kinds of customers you've worked with, or the types of problems your expertise typically solves:\n\nLooking back, what kind of specific situations, events, or acute frustrations have you noticed that seem to *push* people to finally reach out or start searching for a solution related to what you do?\n\n(For example: Did they miss a deadline? Did a competitor make a move? Did they get some tough feedback? Did a system break?)";
-    }
-
-    // Check if this is the second question about observed situations
-    if (workshopData.triggerEvents.length === 0 &&
-        lowerMessage.includes('miss') ||
-        lowerMessage.includes('deadline') ||
-        lowerMessage.includes('competitor') ||
-        lowerMessage.includes('feedback') ||
-        lowerMessage.includes('system')) {
-
-      // Store the observed situations (in a real implementation)
-      // For now, just respond with the optional third question
-      return "That's helpful! And in those situations, what kind of feelings do you think these potential customers are experiencing?\n\n(e.g., Overwhelmed? Anxious? Embarrassed? Pressured? FOMO?) You can list a few, or I can also draw on common patterns.";
-    }
-
-    // Check if this is the third question about feelings
-    if (workshopData.triggerEvents.length === 0 &&
-        lowerMessage.includes('overwhelm') ||
-        lowerMessage.includes('anxious') ||
-        lowerMessage.includes('embarrass') ||
-        lowerMessage.includes('pressure') ||
-        lowerMessage.includes('fomo')) {
-
-      // Store the feelings (in a real implementation)
-      // For now, just respond with the transition to AI generation
-      return "Excellent! Based on your business and those situations/frustrations you've seen, I'm going to brainstorm a broader range of potential Buying Triggers. This might include common feelings and pressures people experience in such scenarios.\n\nThis will give us a good list to start with. Give me a moment to generate these...";
-    }
-
-    // Standard responses for common questions
+    // Check for common questions that should bypass the guided flow
     if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
       return `Here are some example trigger events that might prompt customers to seek solutions in your field:\n\n1. Launched a DIY social media ad campaign for a seasonal promotion, only to see it get zero engagement and generate no new customers, leading to a feeling of wasted money and frustration.\n\n2. A new, slick competitor opened up down the street and immediately started running targeted online ads, making the business owner feel invisible and anxious about losing market share.\n\n3. Received a scathing 1-star online review from a customer that specifically mentioned how hard it was to find information about their services online, causing public embarrassment and immediate concern for their reputation.\n\n4. Spent an entire weekend trying to update their outdated website themselves, only to break something crucial and realize they are completely out of their depth and overwhelmed.\n\n5. Attended a local business networking event and felt a pang of jealousy as peers discussed successful online marketing strategies, highlighting their own lack of a clear plan.`;
     }
@@ -230,8 +216,56 @@ export class SparkyService {
       return "There are several types of trigger events to consider:\n\n1. Situational triggers: External events like deadlines, launches, or new opportunities\n\n2. Internal/Emotional triggers: Internal feelings like frustration, overwhelm, or FOMO\n\n3. Social triggers: Comparisons to peers, client expectations, or industry standards\n\n4. Performance Gaps/Physical triggers: When systems break down, metrics drop, or physical evidence of a problem appears\n\nA good brainstorming session includes a mix of all these types to capture the full range of potential buying triggers.";
     }
 
-    // Default response
-    return "I'm here to help you brainstorm buying triggers! These are those specific moments or 'final straw' situations that shift a potential customer from just having a problem to actively looking for a solution.\n\nTo give you the most helpful suggestions, I'd like to understand:\n1. Your business or area of expertise\n2. Situations you've observed that push people to seek solutions\n3. Feelings customers might experience in those moments\n\nWould you like to start by telling me about your business?";
+    // Check if this is the first message from the user (response to the initial question about current solution)
+    if (workshopData.triggerEvents.length === 0 && !this.hasReceivedFirstResponse) {
+      // Store the user's response about their current solution
+      this.currentUserSolutionInput = message;
+
+      // Set flag that we've received the first response (about current solution)
+      this.hasReceivedFirstResponse = true;
+
+      // Return the second question exactly as specified in the script
+      return "Thanks! That helps me understand your current offering.\n\nNow, thinking about your *existing* customers for that solution ('" + this.currentUserSolutionInput + "'):\n\nWhat specific situations, frustrations, or events have typically pushed *them* to reach out and purchase or engage with your solution in the past? What was usually going on in their world right *before* they decided they needed what you offer?\n\nTry to recall a few distinct examples or common scenarios if you can.";
+    }
+
+    // Check if this is the second message (response about past buyer push points)
+    if (workshopData.triggerEvents.length === 0 && this.hasReceivedFirstResponse && !this.hasReceivedSecondResponse) {
+      // Store the user's response about past buyer push points
+      this.pastBuyerPushPointsInput = message;
+
+      // Set flag that we've received the second response
+      this.hasReceivedSecondResponse = true;
+
+      // Return the third question exactly as specified in the script
+      return "That's really insightful! Understanding why people buy from you now is a great starting point.\n\nNow, for the *new scalable offer idea* you're considering ('" + (workshopData.bigIdea?.description || "your new offer idea") + "'):\n\nIs there anything distinctly different about this new idea (perhaps the type of customer it might attract, the core problem it aims to solve differently, or how it's delivered) that might lead to *different* or *additional* buying triggers compared to your current solution?\n\n(This is optional, but any details help. If it's closely related, we can lean on what you've already told me.)";
+    }
+
+    // Check if this is the third message (response about additional context for new offer)
+    if (workshopData.triggerEvents.length === 0 && this.hasReceivedFirstResponse && this.hasReceivedSecondResponse) {
+      // Store the user's response about additional context for the new offer
+      this.additionalNewOfferContextInput = message;
+
+      // Generate the final response exactly as specified in the script
+      const finalResponse = "Excellent! Based on:\n" +
+        "1. Your current solution ('" + this.currentUserSolutionInput + "')\n" +
+        "2. What has pushed your past buyers to seek it out ('" + this.pastBuyerPushPointsInput + "')\n" +
+        "3. And your thoughts on the new idea ('" + (workshopData.bigIdea?.description || "your new offer idea") + "'" +
+        (this.additionalNewOfferContextInput ? " and '" + this.additionalNewOfferContextInput + "'" : "") + ")\n\n" +
+        "I'm going to generate a list of 10-15 potential Buying Triggers. These will explore a range of reasons why someone might look for solutions in your broader field, which could be relevant for your new scalable offer.\n\n" +
+        "Generating those ideas now...";
+
+      // Reset the flags and stored inputs for future conversations
+      this.hasReceivedFirstResponse = false;
+      this.hasReceivedSecondResponse = false;
+      this.currentUserSolutionInput = '';
+      this.pastBuyerPushPointsInput = '';
+      this.additionalNewOfferContextInput = '';
+
+      return finalResponse;
+    }
+
+    // Default response if none of the above conditions are met
+    return "Let's explore Buying Triggers for your potential new offer! These are the specific events or 'final straw' moments that make someone realize they need *a* solution.\n\nSince you're already in business, to start, could you briefly describe the main solution (product or service) you *currently* offer and the typical customers or businesses you provide it to?";
   }
 
   /**

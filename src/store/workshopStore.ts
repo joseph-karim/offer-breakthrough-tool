@@ -5,6 +5,7 @@ import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
 import { OpenAIService } from '../services/openai';
 import { BrainstormService, BrainstormContext, BrainstormIdea } from '../services/brainstormService';
+import { SparkyService } from '../services/sparkyService';
 
 export interface WorkshopStore {
   // Session state
@@ -882,9 +883,16 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
     // If there are no messages yet, add an initial assistant message
     if (existingMessages.length === 0 && config?.initialContext) {
+      let initialContent = `I'm here to help you with ${config.exerciseTitle}. Let's get started!`;
+
+      // Special handling for trigger events brainstorming - using exact script provided
+      if (config.exerciseKey === 'triggerBrainstorm') {
+        initialContent = "Let's explore Buying Triggers for your potential new offer! These are the specific events or 'final straw' moments that make someone realize they need *a* solution.\n\nSince you're already in business, to start, could you briefly describe the main solution (product or service) you *currently* offer and the typical customers or businesses you provide it to?";
+      }
+
       const initialMessage: AIMessage = {
         id: Date.now().toString(),
-        content: `I'm here to help you with ${config.exerciseTitle}. Let's get started!`,
+        content: initialContent,
         role: 'assistant',
         timestamp: new Date().toISOString(),
       };
@@ -909,6 +917,7 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   sendSparkyModalMessage: async (userMessage: string) => {
     const { sparkyModalConfig, addChatMessage } = get();
     const stepNumber = sparkyModalConfig?.stepNumber || get().currentStep;
+    const { workshopData } = get();
 
     // Create user message
     const userMsg: AIMessage = {
@@ -929,20 +938,27 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
     set({ isAiLoading: true });
 
     try {
-      // Generate AI response using existing answerFollowUpQuestion
-      const { workshopData, answerFollowUpQuestion } = get();
-      await answerFollowUpQuestion(stepNumber, userMessage);
+      // Create a new SparkyService instance with mock responses enabled
+      const mockSparkyService = new SparkyService(openaiService, 'gpt-4.1-2025-04-14', true);
 
-      // Get the latest message that was just added to the step chat
-      const stepChat = workshopData.stepChats[stepNumber];
-      const latestMessage = stepChat?.messages[stepChat.messages.length - 1];
+      // Pass the current chat history to maintain conversation state
+      const currentChatHistory = get().currentModalChatMessages;
 
-      if (latestMessage && latestMessage.role === 'assistant') {
-        // Add to modal messages
-        set(state => ({
-          currentModalChatMessages: [...state.currentModalChatMessages, latestMessage]
-        }));
-      }
+      // Generate a mock response directly using the SparkyService
+      const assistantMessage = await mockSparkyService.generateResponse(
+        userMessage,
+        stepNumber,
+        workshopData,
+        currentChatHistory
+      );
+
+      // Add the assistant message to the chat
+      addChatMessage(stepNumber, assistantMessage);
+
+      // Add to modal messages
+      set(state => ({
+        currentModalChatMessages: [...state.currentModalChatMessages, assistantMessage]
+      }));
     } catch (error) {
       console.error('Error sending modal message:', error);
 

@@ -1,11 +1,12 @@
 export interface AIMessage {
   id: string;
-  content: string | Record<string, unknown>;
+  content: string;
   role: 'user' | 'assistant' | 'system';
   suggestions?: ChatSuggestion[];
   timestamp: string;
   step?: number; // The step this message is associated with
   field?: string; // The field this message is related to
+  stepContext?: number; // For compatibility with SparkyMessage
 }
 
 export interface StepChat {
