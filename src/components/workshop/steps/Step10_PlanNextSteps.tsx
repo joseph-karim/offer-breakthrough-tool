@@ -463,7 +463,7 @@ export const Step10_PlanNextSteps: React.FC = () => {
             marginTop: '24px'
           }} data-sb-field-path="testimonialSection">
             <img
-              src="../../../../../../dist/testimonial.png"
+              src="https://raw.githubusercontent.com/joseph-karim/offer-breakthrough-tool/main/public/assets/testimonial.png"
               alt="Customer testimonial"
               style={{
                 maxWidth: '100%',
