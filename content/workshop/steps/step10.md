@@ -1,7 +1,7 @@
 ---
 type: WorkshopStep
-title: Summary & Next Steps
+title: Plan Next Steps
 stepNumber: 10
-description: Congratulations! You've completed the Buyer Breakthrough Workshop. This summary shows your journey from initial idea to refined offer concept.
-infoBoxContent: This summary captures all the key insights from your workshop journey.
+description: You have a shiny new idea to explore. Now it's time to plan how you'll validate that you're on the right track—so you don't spend months building the wrong thing.
+infoBoxContent: Pre-selling your offer is the best way to validate market demand
 ---

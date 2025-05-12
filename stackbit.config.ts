@@ -87,7 +87,7 @@ export default defineStackbitConfig({
         { urlPath: '/step/7', stableId: 'step7', label: 'Step 7: Problem Up', isHomePage: false },
         { urlPath: '/step/8', stableId: 'step8', label: 'Step 8: Define Your Focused Target Market', isHomePage: false },
         { urlPath: '/step/9', stableId: 'step9', label: 'Step 9: Refine Your Idea', isHomePage: false },
-        { urlPath: '/step/10', stableId: 'step10', label: 'Step 10: Summary', isHomePage: false }
+        { urlPath: '/step/10', stableId: 'step10', label: 'Step 10: Plan Next Steps', isHomePage: false }
       ] as SiteMapEntry[];
     }
 

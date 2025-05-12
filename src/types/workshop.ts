@@ -119,6 +119,11 @@ export interface Reflections {
   personalReflection?: string;
 }
 
+export interface NextSteps {
+  preSellPlan: string;
+  workshopReflections: string;
+}
+
 // New interface for Painstorming Results
 export interface PainstormingResults {
   buyer1Pains: string;
@@ -130,40 +135,41 @@ export interface PainstormingResults {
 
 // This interface defines the data structure for the 10-step workshop flow
 export interface WorkshopData {
-  // Step 2: Big Idea
+  // Step 1: Big Idea
   bigIdea?: BigIdea;
 
-  // Step 3: Underlying Goal
+  // Step 2: Underlying Goal
   underlyingGoal?: UnderlyingGoal;
 
-  // Step 4: Trigger Events
+  // Step 3: Trigger Events
   triggerEvents: TriggerEvent[];
 
-  // Step 5: Jobs
+  // Step 4: Jobs
   jobs: Job[];
 
-  // Step 6: Target Buyers
+  // Step 5: Target Buyers
   targetBuyers: TargetBuyer[];
 
-  // Step 7: Painstorming
+  // Step 6: Painstorming
   pains: Pain[];
   painstormingResults?: PainstormingResults;
 
-  // Step 8: Choose Target Problems
+  // Step 7: Problem Up
+  problemUp?: ProblemUp;
   targetProblems?: TargetProblem[];
 
-  // Step 9: Problem Up
-  problemUp?: ProblemUp;
-
-  // Step 10: Target Market
+  // Step 8: Target Market
   targetMarketProfile?: TargetMarketProfile;
   targetMarket?: TargetMarket;
 
-  // Step 11: Refine Idea
+  // Step 9: Refine Idea
   refinedIdea?: BigIdea;
   offer?: Offer;
 
-  // Step 12: Summary
+  // Step 10: Plan Next Steps
+  nextSteps?: NextSteps;
+
+  // Summary (for PDF export)
   reflections?: Reflections;
 
   // Chat messages for each step

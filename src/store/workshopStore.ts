@@ -114,6 +114,10 @@ const initialWorkshopData: WorkshopData = {
     painsSolved: [],
     version: 'refined'
   },
+  nextSteps: {
+    preSellPlan: '',
+    workshopReflections: ''
+  },
   stepChats: {},
   reflections: {
     keyInsights: '',
@@ -318,13 +322,15 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
       `;
       break;
 
-    case 10: // Refine Idea
+    case 10: // Plan Next Steps
       context = `
-        Workshop Progress: Step 10 - Refine Your Idea
+        Workshop Progress: Step 10 - Plan Next Steps
 
-        Initial Big Idea:
-        ${workshopData.bigIdea ? `${workshopData.bigIdea.description}` : ''}
-        ${workshopData.bigIdea ? `Target Customers: ${workshopData.bigIdea.targetCustomers}` : ''}
+        Refined Idea:
+        ${workshopData.refinedIdea ? `${workshopData.refinedIdea.description}` : ''}
+        ${workshopData.refinedIdea ? `Target Customers: ${workshopData.refinedIdea.targetCustomers}` : ''}
+        ${workshopData.offer ? `Offer Name: ${workshopData.offer.name}` : ''}
+        ${workshopData.offer ? `Offer Format: ${workshopData.offer.format}` : ''}
 
         Selected Pains:
         ${workshopData.problemUp?.selectedPains.map(id => {
@@ -344,9 +350,6 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
         Target Market Profile:
         ${workshopData.targetMarketProfile ? `Name: ${workshopData.targetMarketProfile.name}` : ''}
         ${workshopData.targetMarketProfile ? `Core Transformation: ${workshopData.targetMarketProfile.coreTransformation}` : ''}
-
-        Notes:
-        ${workshopData.problemUp ? workshopData.problemUp.notes : ''}
       `;
       break;
 

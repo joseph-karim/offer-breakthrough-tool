@@ -13,7 +13,7 @@ import { Step06_Painstorming } from './steps/Step06_Painstorming';
 import { Step07_ProblemUp } from './steps/Step07_ProblemUp';
 import { Step08_TargetMarket } from './steps/Step08_TargetMarket';
 import { Step09_RefineIdea } from './steps/Step09_RefineIdea';
-import { Step10_Summary } from './steps/Step10_Summary';
+import { Step10_PlanNextSteps } from './steps/Step10_PlanNextSteps';
 import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
 
 
@@ -133,7 +133,7 @@ export const WorkshopWizard = () => {
       case 9:
         return <Step09_RefineIdea key="step9" />;
       case 10:
-        return <Step10_Summary key="step10" />;
+        return <Step10_PlanNextSteps key="step10" />;
       default:
         return <div key={`step${currentStep}`}>Step {currentStep} is under construction</div>;
     }
