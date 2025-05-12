@@ -282,9 +282,9 @@ export const Step10_PlanNextSteps: React.FC = () => {
             justifyContent: 'center',
             marginTop: '24px'
           }} data-sb-field-path="testimonialSection">
-            <img 
-              src="/assets/testimonial.png" 
-              alt="Customer testimonial" 
+            <img
+              src="../../../../../../dist/testimonial.png"
+              alt="Customer testimonial"
               style={{
                 maxWidth: '100%',
                 borderRadius: '8px'

@@ -158,6 +158,136 @@ export const Step09_RefineIdea: React.FC = () => {
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
+        {/* Context Display */}
+        <div style={{
+          padding: '16px',
+          backgroundColor: '#f8fafc',
+          borderRadius: '8px',
+          border: '1px solid #e2e8f0',
+          marginBottom: '24px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 12px 0'
+          }}>
+            Your Workshop Context from Previous Steps:
+          </h3>
+
+          <div style={{ display: 'grid', gap: '12px' }}>
+            {/* Big Idea */}
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Initial Big Idea:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {initialBigIdea?.description || "No big idea defined yet"}
+              </div>
+            </div>
+
+            {/* Underlying Goal */}
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Underlying Goal:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {useWorkshopStore.getState().workshopData.underlyingGoal?.businessGoal || "No underlying goal defined yet"}
+              </div>
+            </div>
+
+            {/* Overarching Job */}
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Overarching Job Statement:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {useWorkshopStore.getState().workshopData.jobs.find(job => job.isOverarching)?.description || "No overarching job defined yet"}
+              </div>
+            </div>
+
+            {/* Target Market */}
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Market:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {useWorkshopStore.getState().workshopData.targetMarketProfile?.name || "No target market defined yet"}
+              </div>
+            </div>
+
+            {/* Primary Buyer */}
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Primary Target Buyer:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {selectedBuyers.length > 0 ? selectedBuyers[0].description : "No primary buyer selected yet"}
+              </div>
+            </div>
+
+            {/* Common Traits */}
+            {useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTraits.length > 0 && (
+              <div>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Common Traits:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                    {useWorkshopStore.getState().workshopData.targetMarketProfile.commonTraits.map((trait, index) => (
+                      <li key={index}>{trait}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Common Triggers */}
+            {useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTriggers.length > 0 && (
+              <div>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Common Triggers:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                    {useWorkshopStore.getState().workshopData.targetMarketProfile.commonTriggers.map((trigger, index) => (
+                      <li key={index}>{trigger}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Primary Pain */}
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Primary Pain Point:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {selectedPains.length > 0 ? selectedPains[0].description : "No primary pain selected yet"}
+              </div>
+            </div>
+
+            {/* Target Problems */}
+            {useWorkshopStore.getState().workshopData.targetProblems?.filter(problem => problem.selected).length > 0 && (
+              <div>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Problems:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                    {useWorkshopStore.getState().workshopData.targetProblems
+                      .filter(problem => problem.selected)
+                      .map((problem, index) => (
+                        <li key={index}>{problem.description}</li>
+                      ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* Target Moment */}
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Moment:</p>
+              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {problemUp?.targetMoment || "No target moment defined yet"}
+              </div>
+            </div>
+
+            {/* Aha Moments */}
+            {useWorkshopStore.getState().workshopData.painstormingResults?.ahaMoments && (
+              <div>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your 'Aha!' Moments & Reflections on Pains:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {useWorkshopStore.getState().workshopData.painstormingResults.ahaMoments}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div style={{ display: 'grid', gap: '24px' }}>
 
           {/* Step 1: Sparky will help you brainstorm */}
