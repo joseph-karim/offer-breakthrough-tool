@@ -19,7 +19,7 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
   // Generate HTML content for the PDF
   container.innerHTML = `
     <div style="text-align: center; margin-bottom: 20px;">
-      <h1 style="color: #333; font-size: 24px; margin-bottom: 5px;">Buyer Breakthrough Workshop Summary</h1>
+      <h1 style="color: #333; font-size: 24px; margin-bottom: 5px;">Offer Breakthrough Workshop Summary</h1>
       <p style="color: #666; font-size: 14px;">Generated on ${new Date().toLocaleDateString()}</p>
     </div>
 
@@ -93,8 +93,16 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
 
     <div style="margin-bottom: 30px;">
       <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Refined Offer</h2>
+      <p><strong>Offer Name:</strong> ${workshopData.offer?.name || workshopData.refinedIdea?.name || 'Not defined'}</p>
       <p><strong>Description:</strong> ${workshopData.refinedIdea?.description || 'Not defined'}</p>
       <p><strong>Target Customers:</strong> ${workshopData.refinedIdea?.targetCustomers || 'Not defined'}</p>
+      <p><strong>Format:</strong> ${workshopData.offer?.format || 'Not defined'}</p>
+    </div>
+
+    <div style="margin-bottom: 30px;">
+      <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Next Steps</h2>
+      <p><strong>Pre-Sell Plan:</strong> ${workshopData.nextSteps?.preSellPlan || 'Not defined'}</p>
+      <p><strong>Workshop Reflections:</strong> ${workshopData.nextSteps?.workshopReflections || 'Not defined'}</p>
     </div>
 
     <div style="margin-bottom: 30px;">
@@ -139,7 +147,7 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
     }
 
     // Save the PDF
-    pdf.save('buyer-breakthrough-workshop-summary.pdf');
+    pdf.save('offer-breakthrough-workshop-summary.pdf');
   } catch (error) {
     console.error('Error generating PDF:', error);
   } finally {

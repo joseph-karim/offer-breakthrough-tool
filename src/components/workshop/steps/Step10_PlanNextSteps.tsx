@@ -1,10 +1,11 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, FileText, Download } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 import { SaveIndicator } from '../../ui/SaveIndicator';
+import { exportWorkshopToPdf } from '../../../utils/pdfExporter';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectWorkshopData = (state: WorkshopStore) => state.workshopData;
@@ -14,6 +15,7 @@ export const Step10_PlanNextSteps: React.FC = () => {
   const workshopData = useWorkshopStore(selectWorkshopData);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [formData, setFormData] = useState({
     preSellPlan: workshopData.nextSteps?.preSellPlan || '',
     workshopReflections: workshopData.nextSteps?.workshopReflections || ''
@@ -50,6 +52,18 @@ export const Step10_PlanNextSteps: React.FC = () => {
 
     return () => clearTimeout(timeoutId);
   }, [updateWorkshopData, workshopData.nextSteps]);
+
+  // Download summary as PDF
+  const downloadPdfSummary = useCallback(async () => {
+    setIsExporting(true);
+    try {
+      await exportWorkshopToPdf(workshopData);
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [workshopData]);
 
   return (
     <div style={styles.stepContainerStyle} data-sb-field-path="content">
@@ -94,6 +108,172 @@ export const Step10_PlanNextSteps: React.FC = () => {
           {/* Info box */}
           <div style={styles.yellowInfoBoxStyle} data-sb-field-path="infoBox">
             💡 Pre-selling your offer is the best way to validate market demand
+          </div>
+
+          {/* Workshop Summary */}
+          <div style={{
+            padding: '24px',
+            backgroundColor: '#f8fafc',
+            borderRadius: '8px',
+            border: '1px solid #e2e8f0',
+            marginBottom: '24px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{
+                fontSize: '18px',
+                fontWeight: 600,
+                color: '#1e293b',
+                margin: 0
+              }}>
+                Your Workshop Summary
+              </h3>
+              <Button
+                onClick={downloadPdfSummary}
+                variant="outline"
+                size="sm"
+                rightIcon={<Download size={16} />}
+                disabled={isExporting}
+              >
+                {isExporting ? 'Generating PDF...' : 'Download as PDF'}
+              </Button>
+            </div>
+
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {/* Refined Offer Idea */}
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  margin: '0 0 12px 0',
+                  borderBottom: '1px solid #e2e8f0',
+                  paddingBottom: '8px'
+                }}>
+                  Your Refined Offer Idea
+                </h4>
+
+                <div style={{ display: 'grid', gap: '12px' }}>
+                  {/* Offer Name */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Offer Name:
+                    </h5>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#4b5563',
+                      margin: '0'
+                    }}>
+                      {workshopData.offer?.name || workshopData.refinedIdea?.name || "Not defined yet"}
+                    </p>
+                  </div>
+
+                  {/* High-Level Description */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      High-Level Description:
+                    </h5>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#4b5563',
+                      margin: '0'
+                    }}>
+                      {workshopData.refinedIdea?.description || workshopData.bigIdea?.description || "Not defined yet"}
+                    </p>
+                  </div>
+
+                  {/* Target Market */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Target Market:
+                    </h5>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#4b5563',
+                      margin: '0'
+                    }}>
+                      {workshopData.targetMarketProfile?.name || "Not defined yet"}
+                    </p>
+                  </div>
+
+                  {/* Core Problem Solved */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Core Problem Solved:
+                    </h5>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#4b5563',
+                      margin: '0'
+                    }}>
+                      {workshopData.pains.find(pain =>
+                        workshopData.problemUp?.selectedPains[0] === pain.id
+                      )?.description || "Not defined yet"}
+                    </p>
+                  </div>
+
+                  {/* Format */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Format:
+                    </h5>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#4b5563',
+                      margin: '0'
+                    }}>
+                      {workshopData.offer?.format || "Not defined yet"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Key Takeaways */}
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  margin: '0 0 12px 0',
+                  borderBottom: '1px solid #e2e8f0',
+                  paddingBottom: '8px'
+                }}>
+                  Your Key Takeaways
+                </h4>
+                <p style={{
+                  fontSize: '14px',
+                  color: '#4b5563',
+                  margin: '0',
+                  fontStyle: formData.workshopReflections ? 'normal' : 'italic'
+                }}>
+                  {formData.workshopReflections || "Complete the workshop reflections below to see your key takeaways here"}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Step 1: Define Pre-Sell Plan */}
