@@ -63,6 +63,51 @@ Provide exactly 8-10 distinct potential buyer segment options. Do not include an
 ... (up to 10)`,
 
   /**
+   * Prompt for job brainstorming (Workshop Step 4)
+   */
+  JOB_BRAINSTORM_PROMPT: `You are an expert in Jobs-to-be-Done (JTBD) framework and customer needs analysis. Your task is to help the user brainstorm potential job statements for their offer. These should be clear, specific statements that describe what progress the customer is trying to make.
+
+# Task Description
+Generate 8-10 distinct, specific job statements that might be relevant for the user's business and target customers. These should follow the format: "Help me [verb] + [object of verb] + [added context]"
+
+# Input Context
+- User's Business/Expertise: "\${bigIdea}"
+- Potential Buying Triggers: "\${triggerEvents.join(', ')}"
+
+# Methodology & Constraints
+- Format: Each job statement should follow the "Help me [verb] + [object of verb] + [added context]" format
+- Specificity: Each job should be concrete and specific, not vague
+- Diversity: Include a mix of overarching jobs (high-level objectives) and supporting jobs (more specific tasks)
+- Relevance: All jobs should directly relate to the user's business/expertise and the potential buying triggers
+- Customer Perspective: Focus on what the customer wants to accomplish, not what the user's product/service does
+
+# Output Format
+Provide exactly 8-10 distinct job statement options, divided into Overarching Jobs and Supporting Jobs. Do not include any introductory or concluding text, only the list of options.
+
+## Overarching Jobs
+1. [Job statement - high level objective]
+2. [Job statement - high level objective]
+3. [Job statement - high level objective]
+
+## Supporting Jobs
+4. [Job statement - more specific task]
+5. [Job statement - more specific task]
+...
+
+# Example Output (for a marketing consultant)
+## Overarching Jobs
+1. Help me build a sustainable business that doesn't depend on my constant presence
+2. Help me generate predictable revenue from my existing audience without spending more on ads
+3. Help me transform my expertise into a scalable solution that serves more people
+
+## Supporting Jobs
+4. Help me stay top-of-mind with my audience between launches
+5. Help me convert more email subscribers into paying customers
+6. Help me feel confident my marketing systems are working
+7. Help me maximize the value of each email subscriber
+8. Help me segment new leads and identify high-intent prospects`,
+
+  /**
    * Prompt for painstorming (Workshop Step 7)
    */
   PAINSTORMING_PROMPT: `You are an expert in Jobs-to-be-Done and customer pain point analysis. Your task is to help the user identify specific pain points experienced by their target buyer segments when trying to make progress on their chosen job statement.

@@ -124,37 +124,46 @@ export class SparkyService {
       }
     }
 
-    // Generate a contextual response based on the step
-    switch (currentStep) {
-      case 2: // Big Idea
-        responseContent = this.getMockBigIdeaResponse(message, workshopData);
-        break;
-      case 3: // Underlying Goal
-        responseContent = this.getMockUnderlyingGoalResponse(message, workshopData);
-        break;
-      case 4: // Trigger Events
-        responseContent = this.getMockTriggerEventsResponse(message, workshopData);
-        break;
-      case 5: // Jobs
-        responseContent = this.getMockJobsResponse(message, workshopData);
-        break;
-      case 6: // Target Buyers
-        responseContent = this.getMockTargetBuyersResponse(message, workshopData);
-        break;
-      case 7: // Painstorming
-        responseContent = this.getMockPainstormingResponse(message, workshopData);
-        break;
-      case 8: // Problem-Up
-        responseContent = this.getMockProblemUpResponse(message, workshopData);
-        break;
-      case 9: // Refine Idea
-        responseContent = this.getMockRefineIdeaResponse(message, workshopData);
-        break;
-      case 10: // Summary & Next Steps
-        responseContent = this.getMockSummaryResponse(message, workshopData);
-        break;
-      default:
-        responseContent = "I'm here to help with your workshop! What specific questions do you have about this step?";
+    // Check for special exercise keys in the chat history
+    const firstAssistantMessage = chatHistory.find(msg => msg.role === 'assistant');
+    const exerciseKey = firstAssistantMessage?.content?.includes('jobBrainstorm') ? 'jobBrainstorm' : '';
+
+    // Handle special exercise keys
+    if (exerciseKey === 'jobBrainstorm') {
+      responseContent = this.getMockJobBrainstormResponse(message, workshopData);
+    } else {
+      // Generate a contextual response based on the step
+      switch (currentStep) {
+        case 2: // Big Idea
+          responseContent = this.getMockBigIdeaResponse(message, workshopData);
+          break;
+        case 3: // Underlying Goal
+          responseContent = this.getMockUnderlyingGoalResponse(message, workshopData);
+          break;
+        case 4: // Trigger Events
+          responseContent = this.getMockTriggerEventsResponse(message, workshopData);
+          break;
+        case 5: // Jobs
+          responseContent = this.getMockJobsResponse(message, workshopData);
+          break;
+        case 6: // Target Buyers
+          responseContent = this.getMockTargetBuyersResponse(message, workshopData);
+          break;
+        case 7: // Painstorming
+          responseContent = this.getMockPainstormingResponse(message, workshopData);
+          break;
+        case 8: // Problem-Up
+          responseContent = this.getMockProblemUpResponse(message, workshopData);
+          break;
+        case 9: // Refine Idea
+          responseContent = this.getMockRefineIdeaResponse(message, workshopData);
+          break;
+        case 10: // Summary & Next Steps
+          responseContent = this.getMockSummaryResponse(message, workshopData);
+          break;
+        default:
+          responseContent = "I'm here to help with your workshop! What specific questions do you have about this step?";
+      }
     }
 
     return {
@@ -266,6 +275,38 @@ export class SparkyService {
 
     // Default response if none of the above conditions are met
     return "Let's explore Buying Triggers for your potential new offer! These are the specific events or 'final straw' moments that make someone realize they need *a* solution.\n\nSince you're already in business, to start, could you briefly describe the main solution (product or service) you *currently* offer and the typical customers or businesses you provide it to?";
+  }
+
+  /**
+   * Mock response for Job Brainstorming exercise
+   */
+  private getMockJobBrainstormResponse(message: string, workshopData: WorkshopData): string {
+    const lowerMessage = message.toLowerCase();
+    const triggerEvents = workshopData.triggerEvents || [];
+    const bigIdea = workshopData.bigIdea?.description || "your business";
+
+    if (lowerMessage.includes('example') || lowerMessage.includes('suggestion')) {
+      return `Here are some example job statements in the proper format:\n\n## Overarching Jobs\n1. Help me generate predictable revenue from my existing audience without spending more on ads\n2. Help me build a sustainable business that doesn't depend on my constant presence\n3. Help me transform my expertise into a scalable solution that serves more people\n\n## Supporting Jobs\n4. Help me stay top-of-mind with my audience between launches\n5. Help me convert more email subscribers into paying customers\n6. Help me feel confident my marketing systems are working\n7. Help me maximize the value of each email subscriber\n8. Help me segment new leads and identify high-intent prospects`;
+    }
+
+    if (lowerMessage.includes('format') || lowerMessage.includes('structure')) {
+      return "The job statement should follow this format: 'Help me [VERB] + [OBJECT OF VERB] + [ADDED CONTEXT]'\n\nFor example: 'Help me generate [verb] predictable revenue [object of verb] from my email list without constantly creating new content [added context]'\n\n- VERB: Use active verbs like generate, build, transform, establish, etc.\n- OBJECT: What they're trying to improve or change\n- CONTEXT: The specific situation, constraints, or emotional state\n\nThis format captures the fundamental progress your customers are trying to make.";
+    }
+
+    if (lowerMessage.includes('difference') || lowerMessage.includes('overarching') || lowerMessage.includes('supporting')) {
+      return "There are two main types of job statements:\n\n1. Overarching Jobs: These describe the customer's high-level objective - the big picture progress they want to make. For example: 'Help me to scale my service-based business without hiring more team members or working more hours.'\n\n2. Supporting Jobs: These are more specific jobs that the customer may also need to do to get their overarching job done. For example: 'Help me identify the specific buyers I should target to grow sales for an underperforming product.'\n\nBoth types are valuable, and small supporting jobs can sometimes be big business opportunities.";
+    }
+
+    if (lowerMessage.includes('so that') || lowerMessage.includes('technique')) {
+      return "The 'so that' technique is a powerful way to refine job statements and dig deeper into the true job your customers want to get done.\n\nStart with what customers think they want, then keep asking 'so that...' to dig deeper:\n\n'I want email sequences... so that... I can sell to my list... so that... I can generate revenue... so that... I can have predictable income without constantly chasing new leads.'\n\nThis reveals the true job: 'Help me generate predictable revenue from my existing audience without spending more on ads or constantly creating new content.'\n\nThis shifts perspective from focusing on the craft (writing emails) to solving the actual business problem—reliable revenue generation.";
+    }
+
+    // Based on the user's business and trigger events, generate some job statements
+    if (triggerEvents.length > 0 && bigIdea) {
+      return `Based on your business (${bigIdea}) and the trigger events you've identified, here are some potential job statements your customers might have:\n\n## Overarching Jobs\n1. Help me build a sustainable business that doesn't depend on my constant presence\n2. Help me generate predictable revenue from my existing audience without spending more on ads\n3. Help me transform my expertise into a scalable solution that serves more people\n\n## Supporting Jobs\n4. Help me stay top-of-mind with my audience between launches\n5. Help me convert more email subscribers into paying customers\n6. Help me feel confident my marketing systems are working\n7. Help me maximize the value of each email subscriber\n8. Help me segment new leads and identify high-intent prospects`;
+    }
+
+    return "I'd be happy to help you brainstorm job statements for your offer! These should describe what progress your customers are trying to make, not what your product does.\n\nTo give you the most helpful suggestions, could you tell me a bit about your business or the offer you're developing? What problems do you solve for your customers?";
   }
 
   /**

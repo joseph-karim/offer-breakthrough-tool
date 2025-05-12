@@ -6,6 +6,7 @@ import type { Job } from '../../../types/workshop';
 import { Plus, X, Info, ChevronDown, ChevronUp } from 'lucide-react';
 import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import * as styles from '../../../styles/stepStyles';
+import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
 
 
 // Separate selectors to prevent unnecessary re-renders
@@ -135,21 +136,20 @@ export const Step04_Jobs: React.FC = () => {
           color: '#333333',
           margin: 0
         }}>
-          Uncover Jobs To Be Done (JTBD)
+          Uncover Jobs-to-be-done
         </h2>
       </div>
 
       {/* Description */}
       <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>People don't buy products or services because of who they are. They buy things because they have a specific job they're trying to get done. Let's explore the 'job' your customer is trying to get done as it relates to your solution.</p>
+        <p>A job statement describes the progress the customer seeks to make and the specific context. It's not about describing what your product does—it's about what your customer wants to get done.</p>
+        <p>Format: "Help me [verb] + [object of verb] + [added context]"</p>
+        <p>Example: "Help me generate [verb] predictable revenue [object of verb] from my email list without constantly creating new content [added context]"</p>
       </div>
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={styles.yellowInfoBoxStyle}>
-          A 'job' describes the progress that the customer seeks to make in a specific context.
-        </div>
-
         {/* Context from previous steps */}
         <div style={{
           padding: '16px',
@@ -195,9 +195,127 @@ export const Step04_Jobs: React.FC = () => {
           </div>
         </div>
 
-        <div style={styles.yellowInfoBoxStyle}>
-          Think beyond features. Focus on the underlying need or goal. Why are they really looking for a solution?
+        {/* Step 1: Job Brainstorming */}
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 16px 0'
+          }}>
+            Step 1) Job Brainstorming
+          </h3>
+
+          <p style={{ marginBottom: '16px' }}>
+            What jobs might your customers want to get done?
+          </p>
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <ChatWithSparkyButton
+              exerciseKey="jobBrainstorm"
+              exerciseTitle="Job Brainstorming"
+              initialContext="Let's brainstorm different jobs your customer may need to get done"
+            />
+          </div>
         </div>
+
+        {/* Step 2: Make Shortlist of Job Statements */}
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 16px 0'
+          }}>
+            Step 2) Make Shortlist of Job Statements
+          </h3>
+
+          <p style={{ marginBottom: '16px' }}>
+            Which jobs align with your unique capabilities or interests?
+          </p>
+
+          <p style={{ marginBottom: '16px' }}>
+            Make a short list of the top 2-5 jobs.
+          </p>
+
+          <div style={{ marginBottom: '16px' }}>
+            <textarea
+              placeholder="e.g., Help me create strategic lead magnet offers that attract high-intent leads and prime them for my paid offer"
+              style={{
+                width: '100%',
+                minHeight: '120px',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid #e2e8f0',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                resize: 'vertical'
+              }}
+            />
+          </div>
+
+          {/* Job Statement Help Box */}
+          <div style={{
+            backgroundColor: '#feffb7',
+            padding: '16px',
+            borderRadius: '8px',
+            fontSize: '14px',
+            marginBottom: '20px'
+          }}>
+            <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: 600 }}>JOB STATEMENT HELP</h4>
+            <p style={{ margin: '0 0 12px 0' }}>
+              A 'job' describes <strong>what</strong> the customer is trying to get done — it's action-driven, specific, and contextual. 'Desired outcomes' describe <strong>why</strong> they're doing it — it's the underlying motivation.
+            </p>
+            <p style={{ margin: '0 0 12px 0' }}>
+              An 'overarching job' describes the customer's high-level objective. A 'supporting job' is a more specific job that the customer may also need to do to get their overarching job done. Small jobs can be big business opportunities.
+            </p>
+            <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Overarching Job:</p>
+            <p style={{ margin: '0 0 12px 0' }}>
+              "Help me to scale my service-based business without hiring more team members or working more hours."
+            </p>
+            <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Supporting Jobs:</p>
+            <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
+              <li>"Help me identify the specific buyers I should target to grow sales for an underperforming product"</li>
+              <li>"Help me validate demand for my new product before I waste time creating the wrong thing"</li>
+              <li>"Help me develop a new, scalable revenue stream for my existing online business that sells"</li>
+              <li>"Help me to build an audience that trusts me before I launch a new offer"</li>
+            </ul>
+            <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Using 'So that..." Technique to Refine Job Statement</p>
+            <p style={{ margin: '0 0 12px 0' }}>
+              If you're unsure what the customer's true motivation is, try using the "so that" technique to dig deeper into the true job your customers want to get done.
+            </p>
+            <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Example Refinement:</p>
+            <p style={{ margin: '0 0 12px 0' }}>
+              "I want email sequences... so that... I can sell to my list... so that... I can generate revenue... so that... I can have predictable income without constantly chasing new leads"
+            </p>
+            <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Final Job Statement:</p>
+            <p style={{ margin: '0 0 12px 0' }}>
+              "Help me generate predictable revenue from my existing audience without spending more on ads or constantly creating new content"
+            </p>
+            <p style={{ margin: '0' }}>
+              This job statement exercise shifts perspective from focusing on the craft (writing emails) to solving the actual business problem—reliable revenue generation.
+            </p>
+          </div>
+        </div>
+
+        {/* Step 3: Choose ONE job to focus on */}
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 16px 0'
+          }}>
+            Step 3) Choose ONE job to focus on building your offer around
+          </h3>
+
+          <p style={{ marginBottom: '16px' }}>
+            Narrow it down to ONE for now.
+          </p>
+
+          <p style={{ marginBottom: '16px' }}>
+            You can choose an overarching or supporting job. You can revise your job statement as you better understand buyers for your offer.
+          </p>
 
         {/* Job Hierarchy Framework - ACCORDION */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '20px' }}>
@@ -328,43 +446,114 @@ export const Step04_Jobs: React.FC = () => {
           )}
         </div>
 
-        {/* Overarching Job */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '24px' }}>
+          {/* Input for the chosen job */}
+          <div>
+            <label
+              htmlFor="chosenJob"
+              style={styles.labelStyle}
+            >
+              Your chosen job statement:
+            </label>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <input
+                id="chosenJob"
+                value={newOverarchingJob}
+                onChange={(e) => setNewOverarchingJob(e.target.value)}
+                onKeyPress={handleKeyPressOverarching}
+                placeholder="e.g., Help me generate more revenue from my existing customers without constantly creating new content"
+                style={styles.inputStyle}
+              />
+              <Button
+                variant="primary"
+                onClick={handleAddOverarchingJob}
+                disabled={!newOverarchingJob.trim()}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#fcf720',
+                  color: '#222222',
+                  borderRadius: '15px',
+                }}
+              >
+                <Plus size={20} />
+                Add
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Examples section */}
+        <div style={{ marginTop: '32px' }}>
           <h3 style={{
             fontSize: '18px',
             fontWeight: 600,
             color: '#1e293b',
-            margin: 0
+            margin: '0 0 16px 0'
           }}>
-            Your Overarching Job Statement
+            EXAMPLES
           </h3>
 
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
-            <label
-              style={{
-                fontSize: '16px',
-                fontWeight: 600,
-                color: '#1e293b',
-                display: 'inline-flex',
-                alignItems: 'center',
-                margin: 0
-              }}
-            >
-              Overarching Job Statement
-            </label>
-            <ResponsiveFloatingTooltip
-              content="This is the main, high-level 'job' or 'progress' a customer is trying to make. Think big picture here."
-              placement="right"
-              maxWidth={300}
-            >
-              <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
-                <Info size={16} style={{ color: '#6b7280' }} />
-              </div>
-            </ResponsiveFloatingTooltip>
+          <div style={{
+            backgroundColor: '#F0E6FF', // Purple background
+            borderRadius: '15px',
+            padding: '20px'
+          }}>
+            <ul style={{
+              listStyle: 'none',
+              padding: 0,
+              margin: 0,
+              color: '#333333',
+              fontSize: '14px'
+            }}>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Help me generate predictable revenue from my existing audience
+              </li>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Help me attract new high-intent leads profitably and on autopilot
+              </li>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Help me stay top-of-mind with my audience between launches
+              </li>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Help me convert more email subscribers into paying customers
+              </li>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Help me feel confident my marketing systems are working
+              </li>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Help me maximize the value of each email subscriber
+              </li>
+              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Help me segment new leads and identify high-intent prospects
+              </li>
+              <li style={{ display: 'flex', alignItems: 'flex-start' }}>
+                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
+                Help me ensure my campaigns are being seen by my subscribers
+              </li>
+            </ul>
           </div>
+        </div>
 
-          {/* Display existing overarching job if it exists */}
-          {overarchingJob && (
+        {/* Display existing job if it exists */}
+        {overarchingJob && (
+          <div style={{ marginTop: '32px' }}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1e293b',
+              margin: '0 0 16px 0'
+            }}>
+              Your Selected Job Statement
+            </h3>
+
             <div
               style={{
                 display: 'flex',
@@ -396,253 +585,8 @@ export const Step04_Jobs: React.FC = () => {
                 <X size={16} />
               </button>
             </div>
-          )}
-
-          {/* Add overarching job input */}
-          {!overarchingJob && (
-            <div>
-              <label
-                htmlFor="newOverarchingJob"
-                style={styles.labelStyle}
-              >
-                Add Overarching Job Statement:
-              </label>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <input
-                  id="newOverarchingJob"
-                  value={newOverarchingJob}
-                  onChange={(e) => setNewOverarchingJob(e.target.value)}
-                  onKeyPress={handleKeyPressOverarching}
-                  placeholder="e.g., Help me generate predictable revenue from my existing audience"
-                  style={styles.inputStyle}
-                />
-                <Button
-                  variant="primary"
-                  onClick={handleAddOverarchingJob}
-                  disabled={!newOverarchingJob.trim()}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    backgroundColor: '#fcf720',
-                    color: '#222222',
-                    borderRadius: '15px',
-                  }}
-                >
-                  <Plus size={20} />
-                  Add
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Example overarching jobs */}
-          {!overarchingJob && (
-            <div style={{
-              backgroundColor: '#F0E6FF', // Purple background
-              borderRadius: '15px',
-              padding: '20px'
-            }}>
-              <div style={{
-                display: 'inline-block',
-                fontSize: '14px',
-                color: '#FFFFFF',
-                fontWeight: 'bold',
-                marginBottom: '15px',
-                backgroundColor: '#6B46C1',
-                padding: '4px 12px',
-                borderRadius: '20px'
-              }}>
-                EXAMPLES
-              </div>
-              <ul style={{
-                listStyle: 'none',
-                padding: 0,
-                margin: 0,
-                color: '#333333',
-                fontSize: '14px'
-              }}>
-                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me generate predictable revenue from my existing audience
-                </li>
-                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me build a sustainable business that doesn't depend on my constant presence
-                </li>
-                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me transform my expertise into a scalable solution that serves more people
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
-
-        {/* Supporting Jobs */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '24px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: 0
-          }}>
-            Your Supporting Job Statements
-          </h3>
-
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
-            <label
-              style={{
-                fontSize: '16px',
-                fontWeight: 600,
-                color: '#1e293b',
-                display: 'inline-flex',
-                alignItems: 'center',
-                margin: 0
-              }}
-            >
-              Supporting Job Statements
-            </label>
-            <ResponsiveFloatingTooltip
-              content="These are the smaller, more specific 'jobs' that help achieve the Overarching Job."
-              placement="right"
-              maxWidth={300}
-            >
-              <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
-                <Info size={16} style={{ color: '#6b7280' }} />
-              </div>
-            </ResponsiveFloatingTooltip>
           </div>
-
-          {/* List of existing supporting jobs */}
-          {supportingJobs.length > 0 && (
-            <div style={{ display: 'grid', gap: '12px' }}>
-              {supportingJobs.map(job => (
-                <div
-                  key={job.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '12px 16px',
-                    backgroundColor: '#f9fafb',
-                    borderRadius: '8px',
-                    border: '1px solid #e5e7eb',
-                  }}
-                >
-                  <span style={{ flex: 1, color: '#374151' }}>{job.description}</span>
-                  <button
-                    onClick={() => handleDeleteJob(job.id)}
-                    onMouseEnter={() => setHoveredId(job.id)}
-                    onMouseLeave={() => setHoveredId(null)}
-                    style={{
-                      padding: '4px',
-                      borderRadius: '4px',
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      color: hoveredId === job.id ? '#ef4444' : '#6b7280',
-                      transition: 'color 0.2s ease'
-                    }}
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Add supporting job input */}
-          <div>
-            <label
-              htmlFor="newSupportingJob"
-              style={styles.labelStyle}
-            >
-              Add Supporting Job:
-            </label>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <input
-                id="newSupportingJob"
-                value={newSupportingJob}
-                onChange={(e) => setNewSupportingJob(e.target.value)}
-                onKeyPress={handleKeyPressSupporting}
-                placeholder="e.g., Help me stay top-of-mind with my audience between launches"
-                style={styles.inputStyle}
-              />
-              <Button
-                variant="primary"
-                onClick={handleAddSupportingJob}
-                disabled={!newSupportingJob.trim()}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#fcf720',
-                  color: '#222222',
-                  borderRadius: '15px',
-                }}
-              >
-                <Plus size={20} />
-                Add
-              </Button>
-            </div>
-          </div>
-
-          {/* Example supporting jobs */}
-          {supportingJobs.length === 0 && (
-            <div style={{
-              backgroundColor: '#F0E6FF', // Purple background
-              borderRadius: '15px',
-              padding: '20px'
-            }}>
-              <div style={{
-                display: 'inline-block',
-                fontSize: '14px',
-                color: '#FFFFFF',
-                fontWeight: 'bold',
-                marginBottom: '15px',
-                backgroundColor: '#6B46C1',
-                padding: '4px 12px',
-                borderRadius: '20px'
-              }}>
-                EXAMPLES
-              </div>
-              <ul style={{
-                listStyle: 'none',
-                padding: 0,
-                margin: 0,
-                color: '#333333',
-                fontSize: '14px'
-              }}>
-                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me stay top-of-mind with my audience between launches
-                </li>
-                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me convert more subscribers into paying customers
-                </li>
-                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me feel confident my marketing systems are working
-                </li>
-                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me maximize the value of each email subscriber
-                </li>
-                <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me segment new leads and identify high-intent prospects
-                </li>
-                <li style={{ display: 'flex', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                  Help me ensure my campaigns are being seen by my subscribers
-                </li>
-              </ul>
-            </div>
-          )}
+        )}
         </div>
       </div>
     </div>
