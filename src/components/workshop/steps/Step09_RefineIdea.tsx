@@ -217,32 +217,38 @@ export const Step09_RefineIdea: React.FC = () => {
             </div>
 
             {/* Common Traits */}
-            {useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTraits.length > 0 && (
-              <div>
-                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Common Traits:</p>
-                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    {useWorkshopStore.getState().workshopData.targetMarketProfile.commonTraits.map((trait, index) => (
-                      <li key={index}>{trait}</li>
-                    ))}
-                  </ul>
+            {(() => {
+              const traits = useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTraits;
+              return traits && traits.length > 0 ? (
+                <div>
+                  <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Common Traits:</p>
+                  <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                      {traits.map((trait, index) => (
+                        <li key={index}>{trait}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : null;
+            })()}
 
             {/* Common Triggers */}
-            {useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTriggers.length > 0 && (
-              <div>
-                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Common Triggers:</p>
-                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    {useWorkshopStore.getState().workshopData.targetMarketProfile.commonTriggers.map((trigger, index) => (
-                      <li key={index}>{trigger}</li>
-                    ))}
-                  </ul>
+            {(() => {
+              const triggers = useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTriggers;
+              return triggers && triggers.length > 0 ? (
+                <div>
+                  <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Common Triggers:</p>
+                  <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                      {triggers.map((trigger, index) => (
+                        <li key={index}>{trigger}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : null;
+            })()}
 
             {/* Primary Pain */}
             <div>
@@ -253,20 +259,22 @@ export const Step09_RefineIdea: React.FC = () => {
             </div>
 
             {/* Target Problems */}
-            {useWorkshopStore.getState().workshopData.targetProblems?.filter(problem => problem.selected).length > 0 && (
-              <div>
-                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Problems:</p>
-                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                  <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                    {useWorkshopStore.getState().workshopData.targetProblems
-                      .filter(problem => problem.selected)
-                      .map((problem, index) => (
+            {(() => {
+              const problems = useWorkshopStore.getState().workshopData.targetProblems;
+              const selectedProblems = problems?.filter(problem => problem.selected);
+              return selectedProblems && selectedProblems.length > 0 ? (
+                <div>
+                  <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Problems:</p>
+                  <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                      {selectedProblems.map((problem, index) => (
                         <li key={index}>{problem.description}</li>
                       ))}
-                  </ul>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : null;
+            })()}
 
             {/* Target Moment */}
             <div>
@@ -281,7 +289,7 @@ export const Step09_RefineIdea: React.FC = () => {
               <div>
                 <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your 'Aha!' Moments & Reflections on Pains:</p>
                 <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                  {useWorkshopStore.getState().workshopData.painstormingResults.ahaMoments}
+                  {useWorkshopStore.getState().workshopData.painstormingResults?.ahaMoments}
                 </div>
               </div>
             )}
