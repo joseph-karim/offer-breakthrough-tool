@@ -2,12 +2,10 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { BigIdea } from '../../../types/workshop';
-import { AlertCircle, HelpCircle, ArrowRight } from 'lucide-react';
+import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
-import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
-import { ContextBox } from '../ContextBox';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -129,344 +127,387 @@ export const Step09_RefineIdea: React.FC = () => {
         }}
         data-sb-field-path="title"
         >
-          Refine Your Idea
+          Refine Your Big Idea
         </h2>
       </div>
 
       {/* Description */}
       <div style={styles.stepDescriptionStyle}>
-        <p data-sb-field-path="description">Revise your initial idea based on the insights from the workshop</p>
+        <p data-sb-field-path="description">We're nearing the finish line! It's time for the fuuuuunn part—let's brainstorm painkiller offer ideas. Sparky is here to help you, but remember that the most original ideas will likely come from your own brain.</p>
+      </div>
+
+      {/* Info box with lightbulb icon */}
+      <div style={{
+        backgroundColor: '#feffb7',
+        padding: '12px 16px',
+        borderRadius: '8px',
+        marginBottom: '24px',
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '12px'
+      }}>
+        <span style={{ fontSize: '16px' }}>💡</span>
+        <p style={{
+          margin: 0,
+          fontSize: '14px',
+          color: '#333333'
+        }}>
+          A painkiller offer solve profitable problems that buyers will pay to solve
+        </p>
       </div>
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
         <div style={{ display: 'grid', gap: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
-            <label
-              style={{
-                fontSize: '16px',
-                fontWeight: 600,
-                color: '#1e293b',
-                display: 'inline-flex',
-                alignItems: 'center',
-                margin: 0
-              }}
-            >
-              Refine Your Idea
-            </label>
-            <ResponsiveFloatingTooltip
-              content="Now it's time to refine your initial idea based on the insights you've gained throughout the workshop."
-              placement="right"
-              maxWidth={300}
-            >
-              <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
-                <HelpCircle size={16} style={{ color: '#6b7280' }} />
-              </div>
-            </ResponsiveFloatingTooltip>
+
+          {/* Step 1: Sparky will help you brainstorm */}
+          <div style={{ marginBottom: '32px' }}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1e293b',
+              margin: '0 0 16px 0'
+            }}>
+              Step 1) Sparky will help you brainstorm
+            </h3>
+
+            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+              You'll use the work you've done so far as the foundation for your new offer.
+            </p>
+
+            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+              Answer a few questions and let Sparky generate ideas to kick-off the creative process.
+            </p>
+
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', marginBottom: '20px' }}>
+              <ChatWithSparkyButton
+                exerciseKey="refineIdea"
+                exerciseTitle="Refine Your Idea with Sparky"
+                initialContext={{
+                  initialIdea: initialBigIdea?.description,
+                  initialTargetCustomers: initialBigIdea?.targetCustomers,
+                  selectedPains: selectedPains.map(pain => pain.description),
+                  selectedBuyers: selectedBuyers.map(buyer => buyer.description),
+                  targetMoment: problemUp?.targetMoment
+                }}
+                systemPromptKey="REFINE_IDEA_PROMPT"
+              />
+            </div>
           </div>
 
-          <AccordionGroup>
-            {/* Workshop Context */}
-            <AccordionItem
-              title="Workshop Context"
-              defaultExpanded={true}
-            >
-              {/* Initial Big Idea */}
-              <div style={{
-                padding: '16px',
-                backgroundColor: '#f9fafb',
-                borderRadius: '8px',
-                border: '1px solid #e5e7eb',
-                marginBottom: '16px'
-              }}>
-                <h3 style={{
+          {/* Step 2: Revamp Your Big Idea */}
+          <div style={{ marginBottom: '32px' }}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1e293b',
+              margin: '0 0 16px 0'
+            }}>
+              Step 2) Revamp Your Big Idea
+            </h3>
+
+            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+              Ask yourself:
+            </p>
+
+            <ul style={{
+              listStyle: 'disc',
+              paddingLeft: '24px',
+              color: '#4b5563',
+              fontSize: '15px',
+              margin: '0 0 24px 0'
+            }}>
+              <li>Does this offer solve a sharp pain?</li>
+              <li>Is the solution context-specific? (ie. helps buyers who share common traits or triggers)</li>
+              <li>Will this offer deliver a dream outcome?</li>
+              <li>Does it feel effortless for customers? (or makes work feel rewarding or playful)</li>
+              <li>How might this offer delight buyers</li>
+              <li>Does this offer feel fresh yet familiar?</li>
+            </ul>
+
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
+              <label
+                htmlFor="refined-idea-description"
+                style={{
                   fontSize: '16px',
                   fontWeight: 600,
                   color: '#1e293b',
-                  margin: '0 0 12px 0'
-                }}>
-                  Your Initial Big Idea
-                </h3>
-                <p style={{
-                  fontSize: '14px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  margin: 0
+                }}
+              >
+                Your Refined Big Idea
+              </label>
+              <ResponsiveFloatingTooltip
+                content="Describe your refined product or service idea based on the insights from the workshop"
+                placement="right"
+                maxWidth={300}
+              >
+                <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
+                  <HelpCircle size={16} style={{ color: '#6b7280' }} />
+                </div>
+              </ResponsiveFloatingTooltip>
+            </div>
+            <textarea
+              id="refined-idea-description"
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              placeholder="e.g., An interactive portal with custom GPT tools and battle-tested templates to help consultants brainstorm, validate, and outline scalable product ideas. New tools added monthly."
+              style={isFieldEmpty('description') ? styles.errorTextareaStyle : styles.textareaStyle}
+            />
+            {isFieldEmpty('description') && (
+              <div style={{
+                color: '#ef4444',
+                fontSize: '14px',
+                marginTop: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <AlertCircle size={14} />
+                {getErrorMessage('description')}
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
+              <SaveIndicator saving={isSaving} />
+            </div>
+          </div>
+
+          {/* Example Offer Idea */}
+          <div style={{
+            backgroundColor: '#f3e8ff',
+            padding: '20px',
+            borderRadius: '8px',
+            marginBottom: '32px'
+          }}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1e293b',
+              margin: '0 0 16px 0'
+            }}>
+              EXAMPLE OFFER IDEA
+            </h3>
+
+            <div style={{ display: 'grid', gap: '12px' }}>
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
                   color: '#4b5563',
-                  margin: '0 0 8px 0'
+                  margin: '0 0 4px 0'
                 }}>
-                  {initialBigIdea?.description || 'No initial idea defined'}
-                </p>
+                  Offer Name:
+                </h4>
                 <p style={{
-                  fontSize: '14px',
-                  color: '#6b7280',
-                  fontStyle: 'italic',
+                  fontSize: '15px',
+                  color: '#4b5563',
                   margin: '0'
                 }}>
-                  Target customers: {initialBigIdea?.targetCustomers || 'None specified'}
+                  The AI Copy Sprint System™
                 </p>
               </div>
 
-              {/* Workshop Insights */}
-              <div style={{
-                padding: '16px',
-                backgroundColor: '#f9fafb',
-                borderRadius: '8px',
-                border: '1px solid #e5e7eb'
-              }}>
-                <h3 style={{
+              <div>
+                <h4 style={{
                   fontSize: '16px',
                   fontWeight: 600,
-                  color: '#1e293b',
-                  margin: '0 0 12px 0'
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
                 }}>
-                  Workshop Insights
-                </h3>
-
-                <div style={{ display: 'grid', gap: '12px' }}>
-                  {/* Selected Pains */}
-                  <div>
-                    <h4 style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#4b5563',
-                      margin: '0 0 8px 0'
-                    }}>
-                      Selected Painful Problems:
-                    </h4>
-                    {selectedPains.length > 0 ? (
-                      <ul style={{
-                        listStyle: 'disc',
-                        paddingLeft: '24px',
-                        color: '#4b5563',
-                        fontSize: '14px',
-                        margin: '0'
-                      }}>
-                        {selectedPains.map(pain => (
-                          <li key={pain.id}>{pain.description}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p style={{
-                        fontSize: '14px',
-                        color: '#6b7280',
-                        fontStyle: 'italic',
-                        margin: '0'
-                      }}>
-                        No pains selected
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Selected Buyers */}
-                  <div>
-                    <h4 style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#4b5563',
-                      margin: '0 0 8px 0'
-                    }}>
-                      Selected Target Buyers:
-                    </h4>
-                    {selectedBuyers.length > 0 ? (
-                      <ul style={{
-                        listStyle: 'disc',
-                        paddingLeft: '24px',
-                        color: '#4b5563',
-                        fontSize: '14px',
-                        margin: '0'
-                      }}>
-                        {selectedBuyers.map(buyer => (
-                          <li key={buyer.id}>{buyer.description}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p style={{
-                        fontSize: '14px',
-                        color: '#6b7280',
-                        fontStyle: 'italic',
-                        margin: '0'
-                      }}>
-                        No buyers selected
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Target Moment */}
-                  <div>
-                    <h4 style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#4b5563',
-                      margin: '0 0 8px 0'
-                    }}>
-                      Target Moment:
-                    </h4>
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#4b5563',
-                      margin: '0'
-                    }}>
-                      {problemUp?.targetMoment || 'No target moment defined'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </AccordionItem>
-
-            {/* Get Refinement Ideas */}
-            <AccordionItem
-              title="Get Refinement Ideas with Sparky"
-            >
-              <ContextBox>
-                <ul className="list-disc list-inside">
-                  <li><strong>Initial Idea:</strong> {initialBigIdea?.description || 'No initial idea defined'}</li>
-                  <li><strong>Target Buyers:</strong> {selectedBuyers.map(buyer => buyer.description).join(', ') || 'None selected'}</li>
-                  <li><strong>Key Pains:</strong> {selectedPains.map(pain => pain.description).join(', ') || 'None selected'}</li>
-                  <li><strong>Target Moment:</strong> {problemUp?.targetMoment || 'Not defined'}</li>
-                </ul>
-              </ContextBox>
-
-              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-                Sparky can help you refine your initial idea based on the insights you've gained throughout the workshop.
-              </p>
-
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <ChatWithSparkyButton
-                  exerciseKey="refineIdea"
-                  exerciseTitle="Refine Your Idea with Sparky"
-                  initialContext={{
-                    initialIdea: initialBigIdea?.description,
-                    initialTargetCustomers: initialBigIdea?.targetCustomers,
-                    selectedPains: selectedPains.map(pain => pain.description),
-                    selectedBuyers: selectedBuyers.map(buyer => buyer.description),
-                    targetMoment: problemUp?.targetMoment
-                  }}
-                  systemPromptKey="REFINE_IDEA_PROMPT"
-                />
-              </div>
-            </AccordionItem>
-
-            {/* Refined Big Idea */}
-            <AccordionItem
-              title="Define Your Refined Idea"
-            >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
-                <label
-                  htmlFor="refined-idea-description"
-                  style={{
-                    fontSize: '16px',
-                    fontWeight: 600,
-                    color: '#1e293b',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    margin: 0
-                  }}
-                >
-                  Your Refined Big Idea
-                </label>
-                <ResponsiveFloatingTooltip
-                  content="Describe your refined product or service idea based on the insights from the workshop"
-                  placement="right"
-                  maxWidth={300}
-                >
-                  <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
-                    <HelpCircle size={16} style={{ color: '#6b7280' }} />
-                  </div>
-                </ResponsiveFloatingTooltip>
-              </div>
-              <textarea
-                id="refined-idea-description"
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="e.g., A 6-week group coaching program that helps marketing consultants create systems to scale their business without working more hours"
-                style={isFieldEmpty('description') ? styles.errorTextareaStyle : styles.textareaStyle}
-              />
-              {isFieldEmpty('description') && (
-                <div style={{
-                  color: '#ef4444',
-                  fontSize: '14px',
-                  marginTop: '4px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px'
+                  High-Level Description:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
                 }}>
-                  <AlertCircle size={14} />
-                  {getErrorMessage('description')}
-                </div>
-              )}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-                <SaveIndicator saving={isSaving} />
+                  A high-ticket hybrid program teaching copywriters how to harness AI (custom GPTs) to produce high-converting, brand-aligned copy at lightning speed. Includes your proprietary Voice Lock™ Framework, a library of custom GPTs trained for sales pages, emails, and ads, plus bite-sized tutorials under 15 minutes each.
+                </p>
               </div>
 
-              <div style={{ marginTop: '24px' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
-                  <label
-                    htmlFor="refined-target-customers"
-                    style={{
-                      fontSize: '16px',
-                      fontWeight: 600,
-                      color: '#1e293b',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      margin: 0
-                    }}
-                  >
-                    Refined Target Customers
-                  </label>
-                  <ResponsiveFloatingTooltip
-                    content="Describe your refined target customers based on the insights from the workshop"
-                    placement="right"
-                    maxWidth={300}
-                  >
-                    <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
-                      <HelpCircle size={16} style={{ color: '#6b7280' }} />
-                    </div>
-                  </ResponsiveFloatingTooltip>
-                </div>
-                <textarea
-                  id="refined-target-customers"
-                  value={formData.targetCustomers}
-                  onChange={(e) => handleInputChange('targetCustomers', e.target.value)}
-                  placeholder="e.g., Marketing consultants with 3+ years experience who have hit a revenue ceiling and can't take on more clients without working more hours"
-                  style={isFieldEmpty('targetCustomers') ? styles.errorTextareaStyle : styles.textareaStyle}
-                />
-                {isFieldEmpty('targetCustomers') && (
-                  <div style={{
-                    color: '#ef4444',
-                    fontSize: '14px',
-                    marginTop: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    <AlertCircle size={14} />
-                    {getErrorMessage('targetCustomers')}
-                  </div>
-                )}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-                  <SaveIndicator saving={isSaving} />
-                </div>
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
+                }}>
+                  Target Market:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
+                }}>
+                  Mid-level to seasoned freelance copywriters earning $7K+/month, burned out and afraid of AI-driven obsolescence.
+                </p>
               </div>
-            </AccordionItem>
 
-            {/* Next Steps */}
-            <AccordionItem
-              title="Next Steps"
-            >
-              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-                In the next step, you'll review your workshop journey and plan your next actions.
-              </p>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
-                <ResponsiveFloatingTooltip
-                  content="In the next step, you'll review your workshop journey and plan your next actions."
-                  placement="right"
-                  maxWidth={300}
-                >
-                  <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
-                    <ArrowRight size={16} style={{ color: '#6b7280' }} />
-                  </div>
-                </ResponsiveFloatingTooltip>
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
+                }}>
+                  Core Problem Solved:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
+                }}>
+                  Inefficient copy processes, brand voice inconsistency, costly revision cycles, and fear of AI replacing their work.
+                </p>
               </div>
-            </AccordionItem>
-          </AccordionGroup>
+
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
+                }}>
+                  Painkilling Value:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
+                }}>
+                  Go from burned out and falling behind to producing polished, high-converting copy in under 4 hours, while confidently positioning themselves as AI-augmented premium copywriters.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
+                }}>
+                  Pricing:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
+                }}>
+                  $2,500 one-time or $500/month for 6 months.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
+                }}>
+                  Unique Mechanism:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
+                }}>
+                  Voice Lock™ Framework + Done-for-You AI Agents.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
+                }}>
+                  Effortless Experience:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
+                }}>
+                  Plug-and-play GPT agents, templates, and short video lessons.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
+                }}>
+                  Scalability:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
+                }}>
+                  Digital product with optional recurring subscription for new templates and agents.
+                </p>
+              </div>
+
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#4b5563',
+                  margin: '0 0 4px 0'
+                }}>
+                  Potential Challenges:
+                </h4>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#4b5563',
+                  margin: '0'
+                }}>
+                  Convincing copywriters AI can enhance their value, not replace them.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Takeaways */}
+          <div style={{ marginBottom: '32px' }}>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1e293b',
+              margin: '0 0 16px 0'
+            }}>
+              What are your big takeaways from this exercise?
+            </h3>
+
+            <textarea
+              id="refined-target-customers"
+              value={formData.targetCustomers}
+              onChange={(e) => handleInputChange('targetCustomers', e.target.value)}
+              placeholder="e.g., I should focus on building a productized service rather than a course. This will bring more money in the door and I can use AI and automation to make it scalable."
+              style={isFieldEmpty('targetCustomers') ? styles.errorTextareaStyle : styles.textareaStyle}
+            />
+            {isFieldEmpty('targetCustomers') && (
+              <div style={{
+                color: '#ef4444',
+                fontSize: '14px',
+                marginTop: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <AlertCircle size={14} />
+                {getErrorMessage('targetCustomers')}
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
+              <SaveIndicator saving={isSaving} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
