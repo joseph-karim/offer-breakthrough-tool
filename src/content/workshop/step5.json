@@ -1,19 +1,20 @@
 {
   "type": "WorkshopStep",
-  "title": "Define Customer Jobs",
+  "title": "Identify Potential Buyers",
   "stepNumber": 5,
   "pageId": "step5",
-  "description": "Customer jobs are the tasks, problems, or needs your customers are trying to address. Understanding these jobs helps you design an offer that truly helps them make progress.",
+  "description": "Let's identify high-potential target customers. These are specific types of people who are likely to need to get the job done and get value from your solution. This is a 3-part exercise.",
   "placeholders": {
-    "jobStatementPlaceholder": "e.g., Help me find the right target audience for my product so I can stop wasting money on ineffective marketing"
+    "buyerPlaceholder": "e.g., Serial online entrepreneurs building a new venture"
   },
   "tooltips": {
-    "jobStatementTooltip": "What is your customer trying to accomplish? Frame it as 'Help me...' or 'I want to...'"
+    "buyerTooltip": "Think contextually about who might need to get the job done. Consider specific life factors, business models, industries, job titles, etc."
   },
   "examples": [
-    "Help me automate my client onboarding process so I can save time and create a better first impression",
-    "Help me generate consistent leads so I don't have to worry about where my next client is coming from",
-    "Help me create content more efficiently so I can maintain a consistent publishing schedule",
-    "Help me understand my financial metrics so I can make better business decisions"
+    "Solo marketers for hire (eg. Marketing consultants, freelancers, fractionals)",
+    "Traditional marketing service agency owners (eg. ads, SEO, content, brand strategy, positioning, etc.)",
+    "Serial online entrepreneurs building a new venture",
+    "E-commerce store owners with 50-200 products and $500K+ annual revenue",
+    "SaaS founders who recently raised seed funding"
   ]
 }

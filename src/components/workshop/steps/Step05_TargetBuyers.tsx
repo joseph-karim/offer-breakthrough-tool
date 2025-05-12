@@ -2,9 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetBuyer } from '../../../types/workshop';
-import { HelpCircle, Plus, X, Star } from 'lucide-react';
+import { Plus, X, Star } from 'lucide-react';
 import { Button } from '../../ui/Button';
-import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
 import * as styles from '../../../styles/stepStyles';
@@ -25,7 +24,6 @@ export const Step05_TargetBuyers: React.FC = () => {
   const [shortlistedBuyers, setShortlistedBuyers] = useState<string[]>([]);
   const [topThreeBuyers, setTopThreeBuyers] = useState<string[]>([]);
   const [newTopBuyer, setNewTopBuyer] = useState('');
-  // const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   // Accordion states
   const [isStep1Expanded, setIsStep1Expanded] = useState(true);
@@ -267,30 +265,6 @@ export const Step05_TargetBuyers: React.FC = () => {
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
-          <label
-            style={{
-              fontSize: '16px',
-              fontWeight: 600,
-              color: '#1e293b',
-              display: 'inline-flex',
-              alignItems: 'center',
-              margin: 0
-            }}
-          >
-            Identify Potential Buyers
-          </label>
-          <ResponsiveFloatingTooltip
-            content="Think contextually about who might need to get the job done. Consider specific life factors, business models, industries, job titles, etc."
-            placement="right"
-            maxWidth={300}
-          >
-            <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
-              <HelpCircle size={16} style={{ color: '#6b7280' }} />
-            </div>
-          </ResponsiveFloatingTooltip>
-        </div>
-
         <AccordionGroup>
           {/* Step 1: Buyer Brainstorm */}
           <AccordionItem
@@ -298,12 +272,21 @@ export const Step05_TargetBuyers: React.FC = () => {
             isExpanded={isStep1Expanded}
             onToggle={toggleStep1}
           >
-            <div style={{ marginBottom: '20px' }}>
-              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px', textAlign: 'center' }}>
-                Your trusty pal Sparky is here to help you brainstorm potential buyers.
+            <div style={{ marginBottom: '24px' }}>
+              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+                Who might have an urgent need to get the job done?
               </p>
 
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+                Work with Sparky to brainstorm and make a long list of potential buyers.
+              </p>
+
+              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+                Remember to think contextually about who might need to get the job done.
+                Consider specific life factors, business models, industries, job titles, etc.
+              </p>
+
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <ChatWithSparkyButton
                   exerciseKey="buyerBrainstorm"
                   exerciseTitle="Brainstorm Potential Buyers"
@@ -313,13 +296,6 @@ export const Step05_TargetBuyers: React.FC = () => {
                   systemPromptKey="BUYER_BRAINSTORM_PROMPT"
                 />
               </div>
-            </div>
-
-            <div style={{ marginBottom: '24px' }}>
-              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-                Who might have an urgent need to get the job done? Do a brain dump and make a long list of potential buyers.
-              </p>
-
               <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
                 <input
                   type="text"
@@ -434,31 +410,314 @@ export const Step05_TargetBuyers: React.FC = () => {
             </div>
           </AccordionItem>
 
-        {/* Step 2: Make Shortlist & Rate Buyers */}
-        <AccordionItem
-          title="Step 2: Make Shortlist & Rate Buyers"
-          isExpanded={isStep2Expanded}
-          onToggle={toggleStep2}
-        >
-          <div style={{ marginBottom: '24px' }}>
-            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-              Which 5 potential buyers do you think have the most potential? Narrow your list down to your top 5 potential buyers.
-            </p>
+          {/* Step 2: Make Shortlist & Rate Buyers */}
+          <AccordionItem
+            title="Step 2: Make Shortlist & Rate Buyers"
+            isExpanded={isStep2Expanded}
+            onToggle={toggleStep2}
+          >
+            <div style={{ marginBottom: '24px' }}>
+              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+                Which 5 potential buyers do you think have the most potential?
+                Narrow your list down to your top 5 potential buyers.
+              </p>
 
-            {/* Add shortlisted buyer */}
-            <div style={{ marginBottom: '20px' }}>
+              {/* Add shortlisted buyer */}
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                  <input
+                    type="text"
+                    value={newBuyer}
+                    onChange={(e) => setNewBuyer(e.target.value)}
+                    onKeyDown={(e) => handleKeyPress(e, handleAddBuyer)}
+                    placeholder="e.g., Serial online entrepreneurs building a new venture"
+                    style={styles.inputStyle}
+                  />
+                  <Button
+                    onClick={handleAddBuyer}
+                    disabled={!newBuyer.trim()}
+                    variant="primary"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      backgroundColor: '#fcf720',
+                      color: '#222222',
+                      borderRadius: '15px',
+                    }}
+                  >
+                    <Plus size={16} />
+                    Add
+                  </Button>
+                </div>
+
+                {/* Spreadsheet-style table for rating buyers */}
+                <div style={{ marginTop: '24px', overflowX: 'auto' }}>
+                  <table style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    border: '1px solid #e5e7eb',
+                    fontSize: '14px'
+                  }}>
+                    <thead>
+                      <tr>
+                        <th style={{
+                          padding: '12px 16px',
+                          textAlign: 'left',
+                          backgroundColor: '#f8fafc',
+                          borderBottom: '1px solid #e5e7eb',
+                          fontWeight: 600,
+                          width: '30%'
+                        }}>
+                          ADD YOUR POTENTIAL BUYERS BELOW<br />
+                          AND RATE EACH 1-5
+                        </th>
+                        <th style={{
+                          padding: '12px 8px',
+                          textAlign: 'center',
+                          backgroundColor: '#f8fafc',
+                          borderBottom: '1px solid #e5e7eb',
+                          borderLeft: '1px solid #e5e7eb',
+                          fontWeight: 600,
+                          width: '12%'
+                        }}>
+                          Buyer's<br />urgency to<br />get job done<br />
+                          <span style={{ fontWeight: 400, fontSize: '12px' }}>(1-5)</span>
+                        </th>
+                        <th style={{
+                          padding: '12px 8px',
+                          textAlign: 'center',
+                          backgroundColor: '#f8fafc',
+                          borderBottom: '1px solid #e5e7eb',
+                          borderLeft: '1px solid #e5e7eb',
+                          fontWeight: 600,
+                          width: '12%'
+                        }}>
+                          Buyers'<br />willingness<br />to pay<br />
+                          <span style={{ fontWeight: 400, fontSize: '12px' }}>(1-5)</span>
+                        </th>
+                        <th style={{
+                          padding: '12px 8px',
+                          textAlign: 'center',
+                          backgroundColor: '#f8fafc',
+                          borderBottom: '1px solid #e5e7eb',
+                          borderLeft: '1px solid #e5e7eb',
+                          fontWeight: 600,
+                          width: '12%'
+                        }}>
+                          Long-<br />term value<br /><br />
+                          <span style={{ fontWeight: 400, fontSize: '12px' }}>(1-5)</span>
+                        </th>
+                        <th style={{
+                          padding: '12px 8px',
+                          textAlign: 'center',
+                          backgroundColor: '#f8fafc',
+                          borderBottom: '1px solid #e5e7eb',
+                          borderLeft: '1px solid #e5e7eb',
+                          fontWeight: 600,
+                          width: '12%'
+                        }}>
+                          Ability to<br />serve<br />buyers<br />
+                          <span style={{ fontWeight: 400, fontSize: '12px' }}>(1-5)</span>
+                        </th>
+                        <th style={{
+                          padding: '12px 8px',
+                          textAlign: 'center',
+                          backgroundColor: '#f8fafc',
+                          borderBottom: '1px solid #e5e7eb',
+                          borderLeft: '1px solid #e5e7eb',
+                          fontWeight: 600,
+                          width: '12%'
+                        }}>
+                          Your access<br />to these<br />buyers<br />
+                          <span style={{ fontWeight: 400, fontSize: '12px' }}>(1-5)</span>
+                        </th>
+                        <th style={{
+                          padding: '12px 8px',
+                          textAlign: 'center',
+                          backgroundColor: '#f8fafc',
+                          borderBottom: '1px solid #e5e7eb',
+                          borderLeft: '1px solid #e5e7eb',
+                          fontWeight: 600,
+                          width: '10%'
+                        }}>
+                          TOTAL<br />SCORE
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {buyers.filter(b => b.shortlisted).map((buyer, index) => (
+                        <tr key={buyer.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                          <td style={{
+                            padding: '12px 16px',
+                            position: 'relative',
+                            borderRight: '1px solid #e5e7eb'
+                          }}>
+                            <div style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              gap: '8px'
+                            }}>
+                              <span style={{ fontStyle: 'italic' }}>
+                                {index + 1}) {buyer.description}
+                              </span>
+                              <button
+                                onClick={() => handleDeleteBuyer(buyer.id)}
+                                style={{
+                                  background: 'none',
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  padding: '4px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                                aria-label="Delete buyer"
+                              >
+                                <X size={16} color="#6b7280" />
+                              </button>
+                            </div>
+                          </td>
+                          {[
+                            { key: 'urgency' as const },
+                            { key: 'willingness' as const },
+                            { key: 'longTermValue' as const },
+                            { key: 'solutionFit' as const },
+                            { key: 'accessibility' as const }
+                          ].map(({ key }) => (
+                            <td key={key} style={{
+                              padding: '12px 8px',
+                              textAlign: 'center',
+                              borderRight: '1px solid #e5e7eb'
+                            }}>
+                              <div style={{ display: 'flex', justifyContent: 'center', gap: '4px' }}>
+                                <select
+                                  value={buyer[key] || 0}
+                                  onChange={(e) => handleRateBuyer(buyer.id, key, parseInt(e.target.value))}
+                                  style={{
+                                    padding: '4px 8px',
+                                    borderRadius: '4px',
+                                    border: '1px solid #d1d5db',
+                                    backgroundColor: buyer[key] ? '#FFDD00' : 'white',
+                                    color: '#1e293b',
+                                    fontWeight: buyer[key] ? 600 : 400,
+                                    width: '50px',
+                                    textAlign: 'center'
+                                  }}
+                                >
+                                  <option value="0">-</option>
+                                  {[1, 2, 3, 4, 5].map(value => (
+                                    <option key={value} value={value}>{value}</option>
+                                  ))}
+                                </select>
+                              </div>
+                            </td>
+                          ))}
+                          <td style={{
+                            padding: '12px 8px',
+                            textAlign: 'center',
+                            fontWeight: 600,
+                            backgroundColor: '#f8fafc'
+                          }}>
+                            {(buyer.urgency || 0) +
+                             (buyer.willingness || 0) +
+                             (buyer.longTermValue || 0) +
+                             (buyer.solutionFit || 0) +
+                             (buyer.accessibility || 0)}
+                          </td>
+                        </tr>
+                      ))}
+                      {shortlistedBuyers.length === 0 && (
+                        <tr>
+                          <td colSpan={7} style={{ padding: '16px', textAlign: 'center', color: '#6b7280' }}>
+                            Add your potential buyers above to rate them
+                          </td>
+                        </tr>
+                      )}
+                      {/* Example row */}
+                      {shortlistedBuyers.length === 0 && (
+                        <tr style={{ backgroundColor: '#f9fafb' }}>
+                          <td style={{
+                            padding: '12px 16px',
+                            borderRight: '1px solid #e5e7eb',
+                            fontStyle: 'italic',
+                            color: '#6b7280'
+                          }}>
+                            e.g., Serial online entrepreneurs building a new venture
+                          </td>
+                          <td style={{
+                            padding: '12px 8px',
+                            textAlign: 'center',
+                            borderRight: '1px solid #e5e7eb',
+                            color: '#6b7280'
+                          }}>4</td>
+                          <td style={{
+                            padding: '12px 8px',
+                            textAlign: 'center',
+                            borderRight: '1px solid #e5e7eb',
+                            color: '#6b7280'
+                          }}>4</td>
+                          <td style={{
+                            padding: '12px 8px',
+                            textAlign: 'center',
+                            borderRight: '1px solid #e5e7eb',
+                            color: '#6b7280'
+                          }}>3</td>
+                          <td style={{
+                            padding: '12px 8px',
+                            textAlign: 'center',
+                            borderRight: '1px solid #e5e7eb',
+                            color: '#6b7280'
+                          }}>4</td>
+                          <td style={{
+                            padding: '12px 8px',
+                            textAlign: 'center',
+                            borderRight: '1px solid #e5e7eb',
+                            color: '#6b7280'
+                          }}>5</td>
+                          <td style={{
+                            padding: '12px 8px',
+                            textAlign: 'center',
+                            fontWeight: 600,
+                            backgroundColor: '#f8fafc',
+                            color: '#6b7280'
+                          }}>20</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </AccordionItem>
+
+          {/* Step 3: Choose 3 Buyers to Explore Further */}
+          <AccordionItem
+            title="Step 3: Choose 3 buyers to explore further"
+            isExpanded={isStep3Expanded}
+            onToggle={toggleStep3}
+          >
+            <div>
+              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+                Which 3 specific buyer segments will you explore further?
+              </p>
+
+              <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
+                Choose your top 3.
+              </p>
+
+              {/* Add top 3 buyer */}
               <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
                 <input
                   type="text"
-                  value={newBuyer}
-                  onChange={(e) => setNewBuyer(e.target.value)}
-                  onKeyDown={(e) => handleKeyPress(e, handleAddBuyer)}
-                  placeholder="e.g., Serial online entrepreneurs building a new venture"
+                  value={newTopBuyer}
+                  onChange={(e) => setNewTopBuyer(e.target.value)}
+                  placeholder="e.g., Solo marketers for hire (eg. Marketing consultants, freelancers, fractionals)"
                   style={styles.inputStyle}
                 />
                 <Button
-                  onClick={handleAddBuyer}
-                  disabled={!newBuyer.trim()}
+                  onClick={handleAddTopBuyer}
+                  disabled={!newTopBuyer.trim() || topThreeBuyers.length >= 3}
                   variant="primary"
                   style={{
                     display: 'flex',
@@ -474,313 +733,113 @@ export const Step05_TargetBuyers: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Shortlisted buyers */}
-              {shortlistedBuyers.length > 0 && (
-                <div style={{ display: 'grid', gap: '16px' }}>
-                    {buyers.filter(b => b.shortlisted).map(buyer => (
+              {/* Display top 3 buyers */}
+              {topThreeBuyers.length > 0 ? (
+                <div style={{ marginBottom: '24px' }}>
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    {topThreeBuyers.map((description, index) => (
                       <div
-                        key={buyer.id}
+                        key={index}
                         style={{
-                          backgroundColor: '#F2F2F2',
-                          borderRadius: '15px',
-                          border: '1px solid #DDDDDD',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <div style={{
                           display: 'flex',
                           justifyContent: 'space-between',
                           alignItems: 'center',
                           padding: '12px 16px',
-                          borderBottom: '1px solid #e5e7eb',
-                        }}>
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            fontSize: '15px',
-                            fontWeight: 500,
-                            color: '#1e293b',
-                          }}>
-                            <span style={{
-                              display: 'inline-block',
-                              width: '24px',
-                              height: '24px',
-                              borderRadius: '50%',
-                              backgroundColor: buyer.source === 'assistant' ? '#FFDD00' : '#e5e7eb',
-                              color: '#1e293b',
-                              textAlign: 'center',
-                              lineHeight: '24px',
-                              fontSize: '12px',
-                              fontWeight: 600,
-                            }}>
-                              {buyer.source === 'assistant' ? 'AI' : '👤'}
-                            </span>
-                            {buyer.description}
-                          </div>
-
-                          <button
-                            onClick={() => handleDeleteBuyer(buyer.id)}
-                            style={{
-                              background: 'none',
-                              border: 'none',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              padding: '4px',
-                            }}
-                            aria-label="Delete buyer"
-                          >
-                            <X size={16} color="#6b7280" />
-                          </button>
-                        </div>
-
-                        <div style={{ padding: '12px 16px' }}>
-                          <h4 style={{
-                            fontSize: '14px',
-                            fontWeight: 600,
-                            color: '#1e293b',
-                            margin: '0 0 8px 0'
-                          }}>
-                            Rate this buyer segment (1-5):
-                          </h4>
-
-                          <div style={{ display: 'grid', gap: '8px' }}>
-                            {[
-                              { key: 'urgency' as const, label: 'Urgency to get job done' },
-                              { key: 'willingness' as const, label: 'Willingness to pay' },
-                              { key: 'longTermValue' as const, label: 'Long-term value' },
-                              { key: 'solutionFit' as const, label: 'Your ability to serve them' },
-                              { key: 'accessibility' as const, label: 'Your access to this market' }
-                            ].map(({ key, label }) => (
-                              <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{
-                                  fontSize: '14px',
-                                  color: '#4b5563',
-                                  width: '180px',
-                                  flexShrink: 0
-                                }}>
-                                  {label}:
-                                </span>
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                  {[1, 2, 3, 4, 5].map(value => (
-                                    <button
-                                      key={value}
-                                      onClick={() => handleRateBuyer(buyer.id, key, value)}
-                                      style={{
-                                        width: '28px',
-                                        height: '28px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        borderRadius: '4px',
-                                        border: '1px solid',
-                                        borderColor: buyer[key] === value ? '#FFDD00' : '#d1d5db',
-                                        backgroundColor: buyer[key] === value ? '#FFDD00' : 'transparent',
-                                        color: buyer[key] === value ? '#1e293b' : '#6b7280',
-                                        cursor: 'pointer',
-                                        fontSize: '14px',
-                                        fontWeight: buyer[key] === value ? 600 : 400,
-                                      }}
-                                    >
-                                      {value}
-                                    </button>
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-
-                          <div style={{
-                            marginTop: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            fontSize: '14px',
-                            color: '#6b7280'
-                          }}>
-                            <Star size={16} color="#FFDD00" fill="#FFDD00" />
-                            Total score: {
-                              (buyer.urgency || 0) +
-                              (buyer.willingness || 0) +
-                              (buyer.longTermValue || 0) +
-                              (buyer.solutionFit || 0) +
-                              (buyer.accessibility || 0)
-                            } / 25
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </AccordionItem>
-
-        {/* Step 3: Choose 3 Buyers to Explore Further */}
-        <AccordionItem
-          title="Step 3: Choose 3 Buyers to Explore Further"
-          isExpanded={isStep3Expanded}
-          onToggle={toggleStep3}
-        >
-          <div>
-            <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-              Which 3 specific buyer segments will you explore further? Choose your top 3.
-            </p>
-
-            {/* Add top 3 buyer */}
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-              <select
-                value={newTopBuyer}
-                onChange={(e) => setNewTopBuyer(e.target.value)}
-                style={styles.inputStyle}
-              >
-                <option value="">Select a buyer from your shortlist</option>
-                {shortlistedBuyers.map((buyer, index) => (
-                  <option
-                    key={index}
-                    value={buyer}
-                    disabled={topThreeBuyers.includes(buyer)}
-                  >
-                    {buyer} {topThreeBuyers.includes(buyer) ? '(Already selected)' : ''}
-                  </option>
-                ))}
-              </select>
-              <Button
-                onClick={handleAddTopBuyer}
-                disabled={!newTopBuyer.trim() || topThreeBuyers.length >= 3}
-                variant="primary"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#fcf720',
-                  color: '#222222',
-                  borderRadius: '15px',
-                }}
-              >
-                <Plus size={16} />
-                Add
-              </Button>
-            </div>
-
-            {/* Display top 3 buyers */}
-            {topThreeBuyers.length > 0 ? (
-              <div style={{ marginBottom: '24px' }}>
-                <h4 style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: '#1e293b',
-                  margin: '0 0 12px 0'
-                }}>
-                  Your Top 3 Buyers:
-                </h4>
-
-                <div style={{ display: 'grid', gap: '12px' }}>
-                  {topThreeBuyers.map((description, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '12px 16px',
-                        backgroundColor: '#f0fdf4',
-                        borderRadius: '8px',
-                        border: '1px solid #bbf7d0',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
-                          backgroundColor: '#22c55e',
-                          color: 'white',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '14px',
-                          fontWeight: 600,
-                        }}>
-                          {index + 1}
-                        </div>
-                        <span style={{ color: '#166534', fontWeight: 500 }}>{description}</span>
-                      </div>
-
-                      <button
-                        onClick={() => handleRemoveTopBuyer(description)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          color: '#6b7280',
+                          backgroundColor: '#f0fdf4',
+                          borderRadius: '8px',
+                          border: '1px solid #bbf7d0',
                         }}
                       >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ))}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            backgroundColor: '#22c55e',
+                            color: 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                          }}>
+                            {index + 1}
+                          </div>
+                          <span style={{ color: '#166534', fontWeight: 500 }}>{description}</span>
+                        </div>
 
-                  {topThreeBuyers.length < 3 && (
-                    <div style={{
-                      padding: '12px 16px',
-                      backgroundColor: '#f9fafb',
-                      borderRadius: '8px',
-                      border: '1px dashed #d1d5db',
-                      color: '#6b7280',
-                      fontSize: '14px',
-                      textAlign: 'center',
-                    }}>
-                      {3 - topThreeBuyers.length} more buyer{3 - topThreeBuyers.length > 1 ? 's' : ''} needed
-                    </div>
-                  )}
+                        <button
+                          onClick={() => handleRemoveTopBuyer(description)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#6b7280',
+                          }}
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ))}
+
+                    {topThreeBuyers.length < 3 && (
+                      <div style={{
+                        padding: '12px 16px',
+                        backgroundColor: '#f9fafb',
+                        borderRadius: '8px',
+                        border: '1px dashed #d1d5db',
+                        color: '#6b7280',
+                        fontSize: '14px',
+                        textAlign: 'center',
+                      }}>
+                        {3 - topThreeBuyers.length} more buyer{3 - topThreeBuyers.length > 1 ? 's' : ''} needed
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div style={{
-                backgroundColor: '#F0E6FF', // Purple background
-                borderRadius: '15px',
-                padding: '20px',
-                marginTop: '8px'
-              }}>
+              ) : (
                 <div style={{
-                  display: 'inline-block',
-                  fontSize: '14px',
-                  color: '#FFFFFF',
-                  fontWeight: 'bold',
-                  marginBottom: '15px',
-                  backgroundColor: '#6B46C1',
-                  padding: '4px 12px',
-                  borderRadius: '20px'
+                  backgroundColor: '#F0E6FF', // Purple background
+                  borderRadius: '15px',
+                  padding: '20px',
+                  marginTop: '8px'
                 }}>
-                  TOP 3 EXAMPLE
+                  <div style={{
+                    display: 'inline-block',
+                    fontSize: '14px',
+                    color: '#FFFFFF',
+                    fontWeight: 'bold',
+                    marginBottom: '15px',
+                    backgroundColor: '#6B46C1',
+                    padding: '4px 12px',
+                    borderRadius: '20px'
+                  }}>
+                    EXAMPLE OF TOP 3 BUYERS
+                  </div>
+                  <ul style={{
+                    listStyle: 'none',
+                    padding: 0,
+                    margin: 0,
+                    color: '#333333',
+                    fontSize: '14px'
+                  }}>
+                    <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                      <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>1.</span>
+                      Solo marketers for hire (eg. Marketing consultants, freelancers, fractionals)
+                    </li>
+                    <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
+                      <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>2.</span>
+                      Traditional marketing service agency owners (eg. ads, SEO, content, brand strategy, positioning, etc.)
+                    </li>
+                    <li style={{ display: 'flex', alignItems: 'flex-start' }}>
+                      <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>3.</span>
+                      Serial online entrepreneurs building a new venture
+                    </li>
+                  </ul>
                 </div>
-                <ul style={{
-                  listStyle: 'none',
-                  padding: 0,
-                  margin: 0,
-                  color: '#333333',
-                  fontSize: '14px'
-                }}>
-                  <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                    <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                    Solo marketers for hire (eg. Marketing consultants, freelancers, fractionals)
-                  </li>
-                  <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                    <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                    Traditional marketing service agency owners (eg. ads, SEO, content, brand strategy, positioning, etc.)
-                  </li>
-                  <li style={{ display: 'flex', alignItems: 'flex-start' }}>
-                    <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                    Serial online entrepreneurs building a new venture
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </AccordionItem>
+              )}
+            </div>
+          </AccordionItem>
         </AccordionGroup>
       </div>
     </div>
