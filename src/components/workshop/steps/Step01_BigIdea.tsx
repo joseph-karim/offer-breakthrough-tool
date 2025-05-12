@@ -5,6 +5,7 @@ import type { BigIdea } from '../../../types/workshop';
 import { AlertCircle, Lightbulb } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { Button } from '../../ui/Button';
+import { InfoBox } from '../../ui/InfoBox';
 import { URLInputModal } from '../chat/URLInputModal';
 import { BrainstormContext } from '../../../services/brainstormService';
 
@@ -205,22 +206,10 @@ export const Step01_BigIdea: React.FC = () => {
         <p>Describe your idea using this simple framework: <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[What it is]</span> + <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[what will it help customers do]</span></p>
       </div>
 
-      {/* Info box - UPDATED TO USE BRAND YELLOW */}
-      <div
-        style={{
-          backgroundColor: '#feffb7',
-          padding: '12px 15px',
-          borderRadius: '10px',
-          marginBottom: '20px',
-          color: '#222222',
-          fontWeight: '500',
-          fontSize: '14px',
-          lineHeight: '1.5'
-        }}
-        data-sb-field-path="infoBoxContent"
-      >
+      {/* Info box with lightbulb icon */}
+      <InfoBox data-sb-field-path="infoBoxContent">
         Don't overthink it. This is just version 1.0 of your idea. You'll refine it as you dig deeper.
-      </div>
+      </InfoBox>
 
       {/* Main content area */}
       <div style={{

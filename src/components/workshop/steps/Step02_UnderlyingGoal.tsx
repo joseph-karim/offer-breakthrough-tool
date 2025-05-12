@@ -5,6 +5,7 @@ import type { UnderlyingGoal } from '../../../types/workshop';
 import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { FloatingTooltip } from '../../ui/FloatingTooltip';
+import { InfoBox } from '../../ui/InfoBox';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -103,18 +104,9 @@ export const Step02_UnderlyingGoal: React.FC = () => {
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={{
-          backgroundColor: '#feffb7',
-          padding: '12px 15px',
-          borderRadius: '10px',
-          marginBottom: '20px',
-          color: '#222222',
-          fontWeight: '500',
-          fontSize: '14px',
-          lineHeight: '1.5'
-        }} data-sb-field-path="infoBoxContent">
+        <InfoBox data-sb-field-path="infoBoxContent">
           Your underlying goal can relate to your business and/or personal life.
-        </div>
+        </InfoBox>
 
         {/* Business Goal */}
         <div style={styles.formGroupStyle}>

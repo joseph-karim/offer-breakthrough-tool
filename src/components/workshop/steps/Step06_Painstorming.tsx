@@ -1,18 +1,21 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { AlertCircle } from 'lucide-react';
+import type { Pain } from '../../../types/workshop';
+import { AlertCircle, Plus, X, Flame } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { PainstormingModal } from '../chat/PainstormingModal';
 import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
 import { ContextBox } from '../ContextBox';
+import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectJobs = (state: WorkshopStore) => state.workshopData.jobs;
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
+const selectPains = (state: WorkshopStore) => state.workshopData.pains;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
 const selectIsPainstormingModalOpen = (state: WorkshopStore) => state.isPainstormingModalOpen;
 const selectPainstormingOutput = (state: WorkshopStore) => state.painstormingOutput;
@@ -30,20 +33,19 @@ interface PainstormingResults {
 export const Step06_Painstorming: React.FC = () => {
   const jobs = useWorkshopStore(selectJobs);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
+  const pains = useWorkshopStore(selectPains);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const isPainstormingModalOpen = useWorkshopStore(selectIsPainstormingModalOpen);
   const painstormingOutput = useWorkshopStore(selectPainstormingOutput);
   const closePainstormingModal = useWorkshopStore(selectClosePainstormingModal);
   const setFocusedProblems = useWorkshopStore(selectSetFocusedProblems);
 
-  // Local state for form values
-  const [formData, setFormData] = useState<PainstormingResults>({
-    buyer1Pains: '',
-    buyer2Pains: '',
-    buyer3Pains: '',
-    overlappingPains: '',
-    ahaMoments: ''
-  });
+  // Local state for pain entry
+  const [newPain, setNewPain] = useState('');
+  const [selectedBuyerSegment, setSelectedBuyerSegment] = useState<string>('');
+  const [selectedPainType, setSelectedPainType] = useState<'functional' | 'emotional' | 'social' | 'anticipated'>('functional');
+  const [isFire, setIsFire] = useState(false);
+  const [ahaMoments, setAhaMoments] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
 
@@ -55,22 +57,184 @@ export const Step06_Painstorming: React.FC = () => {
   // Get selected job
   const selectedJob = jobs.find(job => job.isOverarching || job.selected);
 
+  // Group pains by buyer segment
+  const buyerPains = topBuyers.map(buyer => ({
+    buyer,
+    pains: pains.filter(pain => pain.buyerSegment === buyer.description)
+  }));
+
+  // Get overlapping pains
+  const overlappingPains = pains.filter(pain =>
+    pain.buyerSegment === 'All segments' ||
+    pain.buyerSegment === 'Overlapping' ||
+    pain.buyerSegment.toLowerCase().includes('overlap')
+  );
+
+  // Get FIRE pains
+  const firePains = pains.filter(pain =>
+    pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7)
+  );
+
   // Load initial data if available
   useEffect(() => {
     const currentData = useWorkshopStore.getState().workshopData.painstormingResults;
     if (currentData) {
-      setFormData({
-        buyer1Pains: currentData.buyer1Pains || '',
-        buyer2Pains: currentData.buyer2Pains || '',
-        buyer3Pains: currentData.buyer3Pains || '',
-        overlappingPains: currentData.overlappingPains || '',
-        ahaMoments: currentData.ahaMoments || ''
+      setAhaMoments(currentData.ahaMoments || '');
+
+      // If we have text-based pain data but no structured pains, convert them
+      if (currentData.buyer1Pains || currentData.buyer2Pains || currentData.buyer3Pains || currentData.overlappingPains) {
+        if (pains.length === 0) {
+          convertTextPainsToStructured(currentData);
+        }
+      }
+    }
+
+    // Set default buyer segment if none selected
+    if (topBuyers.length > 0 && !selectedBuyerSegment) {
+      setSelectedBuyerSegment(topBuyers[0].description);
+    }
+  }, [topBuyers]);
+
+  // Convert text-based pains to structured pains
+  const convertTextPainsToStructured = useCallback((data: PainstormingResults) => {
+    const newPains: Pain[] = [];
+
+    // Process buyer 1 pains
+    if (data.buyer1Pains && topBuyers[0]) {
+      const buyer1Lines = data.buyer1Pains.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      buyer1Lines.forEach((line, index) => {
+        // Remove bullet points or dashes
+        const cleanLine = line.replace(/^[\s•\-–—*]+|^\d+[\s.)\]]+/, '').trim();
+        if (cleanLine.length < 5 || cleanLine.endsWith(':')) return;
+
+        newPains.push({
+          id: `converted_b1_${index}_${Date.now()}`,
+          description: cleanLine,
+          buyerSegment: topBuyers[0].description,
+          type: 'functional',
+          source: 'user',
+          isFire: line.toLowerCase().includes('fire')
+        });
       });
     }
-  }, []);
 
-  const handleInputChange = useCallback((field: keyof PainstormingResults, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    // Process buyer 2 pains
+    if (data.buyer2Pains && topBuyers[1]) {
+      const buyer2Lines = data.buyer2Pains.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      buyer2Lines.forEach((line, index) => {
+        const cleanLine = line.replace(/^[\s•\-–—*]+|^\d+[\s.)\]]+/, '').trim();
+        if (cleanLine.length < 5 || cleanLine.endsWith(':')) return;
+
+        newPains.push({
+          id: `converted_b2_${index}_${Date.now()}`,
+          description: cleanLine,
+          buyerSegment: topBuyers[1].description,
+          type: 'functional',
+          source: 'user',
+          isFire: line.toLowerCase().includes('fire')
+        });
+      });
+    }
+
+    // Process buyer 3 pains
+    if (data.buyer3Pains && topBuyers[2]) {
+      const buyer3Lines = data.buyer3Pains.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      buyer3Lines.forEach((line, index) => {
+        const cleanLine = line.replace(/^[\s•\-–—*]+|^\d+[\s.)\]]+/, '').trim();
+        if (cleanLine.length < 5 || cleanLine.endsWith(':')) return;
+
+        newPains.push({
+          id: `converted_b3_${index}_${Date.now()}`,
+          description: cleanLine,
+          buyerSegment: topBuyers[2].description,
+          type: 'functional',
+          source: 'user',
+          isFire: line.toLowerCase().includes('fire')
+        });
+      });
+    }
+
+    // Process overlapping pains
+    if (data.overlappingPains) {
+      const overlapLines = data.overlappingPains.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      overlapLines.forEach((line, index) => {
+        const cleanLine = line.replace(/^[\s•\-–—*]+|^\d+[\s.)\]]+/, '').trim();
+        if (cleanLine.length < 5 || cleanLine.endsWith(':')) return;
+
+        newPains.push({
+          id: `converted_overlap_${index}_${Date.now()}`,
+          description: cleanLine,
+          buyerSegment: 'Overlapping',
+          type: 'functional',
+          source: 'user',
+          isFire: line.toLowerCase().includes('fire')
+        });
+      });
+    }
+
+    // Add the new pains to the store
+    if (newPains.length > 0) {
+      updateWorkshopData({ pains: newPains });
+    }
+  }, [topBuyers, updateWorkshopData]);
+
+  // Handle adding a new pain
+  const handleAddPain = useCallback(() => {
+    if (newPain.trim() !== '' && selectedBuyerSegment) {
+      const pain: Pain = {
+        id: `user-${Date.now()}`,
+        description: newPain.trim(),
+        buyerSegment: selectedBuyerSegment,
+        type: selectedPainType,
+        isFire,
+        source: 'user'
+      };
+
+      updateWorkshopData({
+        pains: [...pains, pain]
+      });
+
+      setNewPain(''); // Clear input
+    }
+  }, [newPain, selectedBuyerSegment, selectedPainType, isFire, pains, updateWorkshopData]);
+
+  // Handle deleting a pain
+  const handleDeletePain = useCallback((id: string) => {
+    const updatedPains = pains.filter(pain => pain.id !== id);
+    updateWorkshopData({ pains: updatedPains });
+  }, [pains, updateWorkshopData]);
+
+  // Handle key press (Enter) for adding a pain
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleAddPain();
+    }
+  }, [handleAddPain]);
+
+  // Toggle FIRE status
+  const toggleFireStatus = useCallback((id: string) => {
+    const updatedPains = pains.map(pain =>
+      pain.id === id ? { ...pain, isFire: !pain.isFire } : pain
+    );
+    updateWorkshopData({ pains: updatedPains });
+  }, [pains, updateWorkshopData]);
+
+  // Handle aha moments text change
+  const handleAhaMomentsChange = useCallback((value: string) => {
+    setAhaMoments(value);
 
     if (saveTimer) {
       clearTimeout(saveTimer);
@@ -78,36 +242,52 @@ export const Step06_Painstorming: React.FC = () => {
 
     setIsSaving(true);
     const timer = setTimeout(() => {
+      // Get current painstorming results
+      const currentResults = useWorkshopStore.getState().workshopData.painstormingResults || {
+        buyer1Pains: '',
+        buyer2Pains: '',
+        buyer3Pains: '',
+        overlappingPains: '',
+        ahaMoments: ''
+      };
+
       updateWorkshopData({
         painstormingResults: {
-          ...formData,
-          [field]: value
+          ...currentResults,
+          ahaMoments: value
         }
       });
       setIsSaving(false);
     }, 500);
     setSaveTimer(timer);
-  }, [formData, updateWorkshopData, saveTimer]);
+  }, [updateWorkshopData, saveTimer]);
 
+  // Handle confirmation of selected problems from modal
   const handleConfirmSelection = useCallback((selectedProblems: string[]) => {
     // Save the selected problems to store
     setFocusedProblems(selectedProblems);
 
-    // Also update the overlapping pains in our local form
-    const formattedProblems = selectedProblems.map(p => `- ${p}`).join('\n');
-    setFormData(prev => ({
-      ...prev,
-      overlappingPains: formattedProblems
-    }));
+    // Process each problem and add it as a structured pain
+    selectedProblems.forEach((problem, index) => {
+      // Check if this problem already exists
+      const exists = pains.some(p => p.description.toLowerCase() === problem.toLowerCase());
 
-    // Update workshopData
-    updateWorkshopData({
-      painstormingResults: {
-        ...formData,
-        overlappingPains: formattedProblems
+      if (!exists) {
+        const newPain: Pain = {
+          id: `modal_${Date.now()}_${index}`,
+          description: problem,
+          buyerSegment: 'Overlapping', // Default to overlapping since we don't know the segment
+          type: 'functional',
+          source: 'assistant',
+          isFire: true // Mark as important by default
+        };
+
+        updateWorkshopData({
+          pains: [...pains, newPain]
+        });
       }
     });
-  }, [setFocusedProblems, formData, updateWorkshopData]);
+  }, [setFocusedProblems, pains, updateWorkshopData]);
 
   return (
     <div style={styles.stepContainerStyle}>
@@ -253,96 +433,353 @@ export const Step06_Painstorming: React.FC = () => {
             title="Step 2: Record Identified Problems"
           >
             <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-              Copy the lists generated by Sparky (from the chat modal) and paste them into the corresponding fields below. Feel free to add any other problems you think of!
+              Add individual problems for each buyer segment. You can add problems from Sparky's analysis or your own insights.
             </p>
 
-            {/* Form fields for each buyer */}
-            <div style={{ display: 'grid', gap: '20px' }}>
-              {/* Buyer 1 */}
-              <div>
-                <label
-                  htmlFor="buyer1-pains"
-                  style={styles.labelStyle}
-                >
-                  Potential Buyer #1: {topBuyers[0]?.description || "First Buyer"}
-                </label>
-                <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-                  What problems did you identify for this segment?
-                </p>
-                <textarea
-                  id="buyer1-pains"
-                  value={formData.buyer1Pains}
-                  onChange={(e) => handleInputChange('buyer1Pains', e.target.value)}
-                  placeholder={`Paste the list of pains Sparky identified for ${topBuyers[0]?.description || "this buyer"} here. e.g.,\n- Spending weeks stuck on tasks...\n- Fear that a DIY look will hurt credibility...\n- Feeling overwhelmed by...`}
-                  style={styles.textareaStyle}
-                  rows={6}
-                />
-              </div>
+            {/* Add new pain form */}
+            <div style={{
+              backgroundColor: '#f8fafc',
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0',
+              padding: '16px',
+              marginBottom: '24px'
+            }}>
+              <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '16px', color: '#1e293b' }}>
+                Add a New Problem:
+              </h4>
 
-              {/* Buyer 2 */}
-              <div>
-                <label
-                  htmlFor="buyer2-pains"
-                  style={styles.labelStyle}
-                >
-                  Potential Buyer #2: {topBuyers[1]?.description || "Second Buyer"}
-                </label>
-                <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-                  What problems did you identify for this segment?
-                </p>
-                <textarea
-                  id="buyer2-pains"
-                  value={formData.buyer2Pains}
-                  onChange={(e) => handleInputChange('buyer2Pains', e.target.value)}
-                  placeholder={`Paste the list of pains Sparky identified for ${topBuyers[1]?.description || "this buyer"} here.`}
-                  style={styles.textareaStyle}
-                  rows={6}
-                />
-              </div>
+              <div style={{ display: 'grid', gap: '16px' }}>
+                {/* Buyer segment selection */}
+                <div>
+                  <label style={styles.labelStyle}>
+                    Buyer Segment:
+                  </label>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {topBuyers.map(buyer => (
+                      <button
+                        key={buyer.id}
+                        onClick={() => setSelectedBuyerSegment(buyer.description)}
+                        style={{
+                          padding: '8px 12px',
+                          borderRadius: '6px',
+                          border: '1px solid',
+                          borderColor: selectedBuyerSegment === buyer.description ? '#3b82f6' : '#d1d5db',
+                          backgroundColor: selectedBuyerSegment === buyer.description ? '#eff6ff' : 'transparent',
+                          color: selectedBuyerSegment === buyer.description ? '#3b82f6' : '#6b7280',
+                          fontSize: '14px',
+                          fontWeight: selectedBuyerSegment === buyer.description ? 600 : 400,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {buyer.description}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setSelectedBuyerSegment('Overlapping')}
+                      style={{
+                        padding: '8px 12px',
+                        borderRadius: '6px',
+                        border: '1px solid',
+                        borderColor: selectedBuyerSegment === 'Overlapping' ? '#3b82f6' : '#d1d5db',
+                        backgroundColor: selectedBuyerSegment === 'Overlapping' ? '#eff6ff' : 'transparent',
+                        color: selectedBuyerSegment === 'Overlapping' ? '#3b82f6' : '#6b7280',
+                        fontSize: '14px',
+                        fontWeight: selectedBuyerSegment === 'Overlapping' ? 600 : 400,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Overlapping
+                    </button>
+                  </div>
+                </div>
 
-              {/* Buyer 3 */}
-              <div>
-                <label
-                  htmlFor="buyer3-pains"
-                  style={styles.labelStyle}
-                >
-                  Potential Buyer #3: {topBuyers[2]?.description || "Third Buyer"}
-                </label>
-                <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-                  What problems did you identify for this segment?
-                </p>
-                <textarea
-                  id="buyer3-pains"
-                  value={formData.buyer3Pains}
-                  onChange={(e) => handleInputChange('buyer3Pains', e.target.value)}
-                  placeholder={`Paste the list of pains Sparky identified for ${topBuyers[2]?.description || "this buyer"} here.`}
-                  style={styles.textareaStyle}
-                  rows={6}
-                />
-              </div>
+                {/* Pain type selection */}
+                <div>
+                  <label style={styles.labelStyle}>
+                    Pain Type:
+                  </label>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {(['functional', 'emotional', 'social', 'anticipated'] as const).map(type => (
+                      <button
+                        key={type}
+                        onClick={() => setSelectedPainType(type)}
+                        style={{
+                          padding: '8px 12px',
+                          borderRadius: '6px',
+                          border: '1px solid',
+                          borderColor: selectedPainType === type ? '#3b82f6' : '#d1d5db',
+                          backgroundColor: selectedPainType === type ? '#eff6ff' : 'transparent',
+                          color: selectedPainType === type ? '#3b82f6' : '#6b7280',
+                          fontSize: '14px',
+                          fontWeight: selectedPainType === type ? 600 : 400,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-              {/* Overlapping Problems */}
-              <div>
-                <label
-                  htmlFor="overlapping-pains"
-                  style={styles.labelStyle}
-                >
-                  Overlapping Problems Across Segments
-                </label>
-                <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-                  What overlapping problems did Sparky identify (especially FIRE ones)?
-                </p>
-                <textarea
-                  id="overlapping-pains"
-                  value={formData.overlappingPains}
-                  onChange={(e) => handleInputChange('overlappingPains', e.target.value)}
-                  placeholder={`Paste the list of overlapping problems identified by Sparky here. e.g.,\n- FIRE Problem: 'I don't have the time or expertise...'\n- Problem: 'Struggle to make materials look consistent...'`}
-                  style={styles.textareaStyle}
-                  rows={6}
-                />
+                {/* FIRE toggle */}
+                <div>
+                  <button
+                    onClick={() => setIsFire(!isFire)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 12px',
+                      borderRadius: '6px',
+                      border: '1px solid',
+                      borderColor: isFire ? '#ef4444' : '#d1d5db',
+                      backgroundColor: isFire ? '#fef2f2' : 'transparent',
+                      color: isFire ? '#ef4444' : '#6b7280',
+                      fontSize: '14px',
+                      fontWeight: isFire ? 600 : 400,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <Flame size={16} />
+                    {isFire ? 'FIRE Problem (Frequent, Intense, Recurring, Expensive)' : 'Mark as FIRE Problem'}
+                  </button>
+                </div>
+
+                {/* Problem description */}
+                <div>
+                  <label style={styles.labelStyle}>
+                    Problem Description:
+                  </label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <input
+                      type="text"
+                      value={newPain}
+                      onChange={(e) => setNewPain(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                      placeholder="e.g., Struggles to find time to create content consistently"
+                      style={{
+                        flex: 1,
+                        padding: '12px',
+                        borderRadius: '6px',
+                        border: '1px solid #d1d5db',
+                        fontSize: '14px',
+                      }}
+                    />
+                    <Button
+                      onClick={handleAddPain}
+                      disabled={!newPain.trim() || !selectedBuyerSegment}
+                      style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                    >
+                      <Plus size={16} />
+                      Add
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
 
+            {/* Display problems by segment */}
+            <div style={{ display: 'grid', gap: '24px' }}>
+              {/* FIRE Problems */}
+              {firePains.length > 0 && (
+                <div>
+                  <h4 style={{
+                    fontSize: '16px',
+                    fontWeight: 600,
+                    marginBottom: '12px',
+                    color: '#1e293b',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <Flame size={18} style={{ color: '#ef4444' }} />
+                    FIRE Problems:
+                  </h4>
+                  <div style={{ display: 'grid', gap: '8px' }}>
+                    {firePains.map(pain => (
+                      <div
+                        key={pain.id}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          padding: '10px 12px',
+                          backgroundColor: '#fff1f2',
+                          borderRadius: '6px',
+                          border: '1px solid #fecdd3',
+                        }}
+                      >
+                        <div style={{ flex: 1, fontSize: '15px', color: '#1e293b' }}>
+                          <strong>{pain.buyerSegment}:</strong> {pain.description}
+                          <div style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
+                            Type: {pain.type.charAt(0).toUpperCase() + pain.type.slice(1)}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => toggleFireStatus(pain.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#ef4444',
+                            display: 'flex',
+                            padding: '4px',
+                          }}
+                        >
+                          <Flame size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDeletePain(pain.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#94a3b8',
+                            display: 'flex',
+                            padding: '4px',
+                          }}
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Overlapping Problems */}
+              {overlappingPains.length > 0 && (
+                <div>
+                  <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px', color: '#1e293b' }}>
+                    Overlapping Problems:
+                  </h4>
+                  <div style={{ display: 'grid', gap: '8px' }}>
+                    {overlappingPains.map(pain => (
+                      <div
+                        key={pain.id}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          padding: '10px 12px',
+                          backgroundColor: '#f8fafc',
+                          borderRadius: '6px',
+                          border: '1px solid #e2e8f0',
+                        }}
+                      >
+                        <div style={{ flex: 1, fontSize: '15px', color: '#1e293b' }}>
+                          {pain.description}
+                          <div style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
+                            Type: {pain.type.charAt(0).toUpperCase() + pain.type.slice(1)}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => toggleFireStatus(pain.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: pain.isFire ? '#ef4444' : '#94a3b8',
+                            display: 'flex',
+                            padding: '4px',
+                          }}
+                        >
+                          <Flame size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDeletePain(pain.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#94a3b8',
+                            display: 'flex',
+                            padding: '4px',
+                          }}
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Buyer-specific problems */}
+              {buyerPains.map(({ buyer, pains: buyerSpecificPains }) =>
+                buyerSpecificPains.length > 0 ? (
+                  <div key={buyer.id}>
+                    <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px', color: '#1e293b' }}>
+                      {buyer.description} Problems:
+                    </h4>
+                    <div style={{ display: 'grid', gap: '8px' }}>
+                      {buyerSpecificPains.map(pain => (
+                        <div
+                          key={pain.id}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '10px 12px',
+                            backgroundColor: '#f9fafb',
+                            borderRadius: '6px',
+                            border: '1px solid #e5e7eb',
+                          }}
+                        >
+                          <div style={{ flex: 1, fontSize: '15px', color: '#1e293b' }}>
+                            {pain.description}
+                            <div style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>
+                              Type: {pain.type.charAt(0).toUpperCase() + pain.type.slice(1)}
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => toggleFireStatus(pain.id)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              color: pain.isFire ? '#ef4444' : '#94a3b8',
+                              display: 'flex',
+                              padding: '4px',
+                            }}
+                          >
+                            <Flame size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDeletePain(pain.id)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              color: '#94a3b8',
+                              display: 'flex',
+                              padding: '4px',
+                            }}
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null
+              )}
+
+              {/* No problems message */}
+              {pains.length === 0 && (
+                <div style={{
+                  padding: '16px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '8px',
+                  border: '1px dashed #d1d5db',
+                  color: '#6b7280',
+                  fontSize: '14px',
+                  textAlign: 'center'
+                }}>
+                  No problems added yet. Use Sparky to generate problems or add them manually above.
+                </div>
+              )}
+            </div>
           </AccordionItem>
 
           {/* Step 3: Make Note of Any 'Aha!' Moments */}
@@ -373,8 +810,8 @@ export const Step06_Painstorming: React.FC = () => {
             </label>
             <textarea
               id="aha-moments"
-              value={formData.ahaMoments}
-              onChange={(e) => handleInputChange('ahaMoments', e.target.value)}
+              value={ahaMoments}
+              onChange={(e) => handleAhaMomentsChange(e.target.value)}
               placeholder="Jot down any key insights, surprising patterns, or problems that stand out most to you after reviewing the painstorming analysis."
               style={styles.textareaStyle}
               rows={5}

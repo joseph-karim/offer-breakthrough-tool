@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { Lightbulb } from 'lucide-react';
 
 interface ContextBoxProps {
   title?: string;
@@ -14,7 +15,7 @@ export const ContextBox: React.FC<ContextBoxProps> = ({
   style = {}
 }) => {
   return (
-    <div 
+    <div
       className={`bg-yellow-100 p-3 rounded border border-yellow-300 mb-4 ${className}`}
       style={{
         backgroundColor: '#feffb7',
@@ -22,7 +23,13 @@ export const ContextBox: React.FC<ContextBoxProps> = ({
         ...style
       }}
     >
-      <h4 className="font-semibold text-sm text-yellow-800 mb-2" style={{ color: '#6b5900' }}>
+      <h4 className="font-semibold text-sm text-yellow-800 mb-2" style={{
+        color: '#6b5900',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px'
+      }}>
+        <Lightbulb size={16} style={{ color: '#6b5900' }} />
         {title}
       </h4>
       <div className="text-sm text-yellow-700" style={{ color: '#6b5900' }}>

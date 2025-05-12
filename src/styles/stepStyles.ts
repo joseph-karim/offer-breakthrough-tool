@@ -169,6 +169,8 @@ export const yellowHighlightStyle: CSSProperties = {
   fontWeight: 'bold'
 };
 
+// This style is kept for backward compatibility
+// Use the InfoBox component for new implementations
 export const yellowInfoBoxStyle: CSSProperties = {
   backgroundColor: '#feffb7',
   padding: '12px 15px',

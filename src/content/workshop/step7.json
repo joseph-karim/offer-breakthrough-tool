@@ -1,19 +1,20 @@
 {
   "type": "WorkshopStep",
-  "title": "Painstorming",
+  "title": "Choose Target Problems",
   "stepNumber": 7,
   "pageId": "step7",
-  "description": "Let's identify the specific pains and frustrations your target buyers experience when trying to make progress on their jobs. These pains represent opportunities for your solution.",
+  "description": "You've identified a bunch of problems you could solve with your new offer. But you don't need to solve all the problems with one product. Let's narrow down your options and find the specific problems you're best suited to solve.",
   "placeholders": {
-    "painPointPlaceholder": "e.g., Spending hours creating content that doesn't generate engagement or leads"
+    "problemPlaceholder": "e.g., Marketers running service based businesses likely already know they want to launch a new offer to scale their business. They've likely already tried and past attempts have fizzled."
   },
   "tooltips": {
-    "painPointTooltip": "What specific frustrations, challenges, or negative emotions do your target buyers experience?"
+    "problemTooltip": "Consider both buyer segment specific problems and overlapping problems identified in the pain storming step."
   },
   "examples": [
-    "Feeling overwhelmed by constantly changing social media algorithms",
-    "Wasting time on proposals for prospects who aren't serious buyers",
-    "Struggling to find reliable freelancers who deliver quality work on time",
-    "Feeling isolated and unsupported when making important business decisions"
+    "Struggles to find time to create content consistently",
+    "Feels overwhelmed by the constant pressure to stay visible online",
+    "Worries about being perceived as irrelevant by peers and clients",
+    "Fears their service business will be disrupted by AI",
+    "Can't scale their business without working more hours"
   ]
 }
