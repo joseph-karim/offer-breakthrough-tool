@@ -184,11 +184,29 @@ export const Step09_RefineIdea: React.FC = () => {
                 exerciseKey="refineIdea"
                 exerciseTitle="Refine Your Idea with Sparky"
                 initialContext={{
+                  // Big Idea
                   initialIdea: initialBigIdea?.description,
                   initialTargetCustomers: initialBigIdea?.targetCustomers,
-                  selectedPains: selectedPains.map(pain => pain.description),
+
+                  // Underlying Goal
+                  underlyingGoal: useWorkshopStore.getState().workshopData.underlyingGoal?.businessGoal,
+
+                  // Overarching Job
+                  overarchingJob: useWorkshopStore.getState().workshopData.jobs.find(job => job.isOverarching)?.description,
+
+                  // Target Market
                   selectedBuyers: selectedBuyers.map(buyer => buyer.description),
-                  targetMoment: problemUp?.targetMoment
+                  targetMarketName: useWorkshopStore.getState().workshopData.targetMarketProfile?.name,
+                  commonTraits: useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTraits,
+                  commonTriggers: useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTriggers,
+
+                  // Target Problems
+                  selectedPains: selectedPains.map(pain => pain.description),
+                  targetProblems: useWorkshopStore.getState().workshopData.targetProblems?.filter(problem => problem.selected).map(problem => problem.description),
+
+                  // Additional Context
+                  targetMoment: problemUp?.targetMoment,
+                  painstormingResults: useWorkshopStore.getState().workshopData.painstormingResults?.ahaMoments
                 }}
                 systemPromptKey="REFINE_IDEA_PROMPT"
               />
