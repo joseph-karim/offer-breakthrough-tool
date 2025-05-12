@@ -3,8 +3,9 @@ import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Job } from '../../../types/workshop';
-import { Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, X, ChevronDown, ChevronUp, Lightbulb } from 'lucide-react';
 import * as styles from '../../../styles/stepStyles';
+import { InfoBox } from '../../ui/InfoBox';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
 
 
@@ -236,7 +237,7 @@ export const Step04_Jobs: React.FC = () => {
                 padding: '10px 16px',
                 backgroundColor: '#feffb7',
                 borderRadius: '8px',
-                border: '1px solid #e2e8f0'
+                border: '1px solid #e5e0a3'
               }}
               onClick={toggleJobStatementHelp}
             >
@@ -244,8 +245,12 @@ export const Step04_Jobs: React.FC = () => {
                 fontSize: '16px',
                 fontWeight: 600,
                 color: '#1e293b',
-                margin: 0
+                margin: 0,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}>
+                <Lightbulb size={16} style={{ color: '#222222' }} />
                 JOB STATEMENT HELP
               </h4>
               {isJobStatementHelpOpen ? (
@@ -256,13 +261,13 @@ export const Step04_Jobs: React.FC = () => {
             </div>
 
             {isJobStatementHelpOpen && (
-              <div style={{
-                padding: '16px',
-                backgroundColor: '#feffb7',
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0',
-                fontSize: '14px'
-              }}>
+              <InfoBox
+                showIcon={false}
+                style={{
+                  padding: '16px',
+                  fontSize: '14px',
+                  borderRadius: '8px'
+                }}>
                 <p style={{ margin: '0 0 12px 0' }}>
                   A 'job' describes <strong>what</strong> the customer is trying to get done — it's action-driven, specific, and contextual. 'Desired outcomes' describe <strong>why</strong> they're doing it — it's the underlying motivation.
                 </p>
@@ -295,7 +300,7 @@ export const Step04_Jobs: React.FC = () => {
                 <p style={{ margin: '0' }}>
                   This job statement exercise shifts perspective from focusing on the craft (writing emails) to solving the actual business problem—reliable revenue generation.
                 </p>
-              </div>
+              </InfoBox>
             )}
           </div>
         </div>

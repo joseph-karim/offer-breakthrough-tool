@@ -5,6 +5,7 @@ import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TriggerEvent } from '../../../types/workshop';
 import { Plus, X } from 'lucide-react';
 import * as styles from '../../../styles/stepStyles';
+import { InfoBox } from '../../ui/InfoBox';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
 
 
@@ -102,9 +103,9 @@ export const Step03_TriggerEvents: React.FC = () => {
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={styles.yellowInfoBoxStyle}>
-          <p style={{ margin: 0 }}>Focus on the *moment* that triggered them to begin the buying journey.</p>
-        </div>
+        <InfoBox>
+          Focus on the *moment* that triggered them to begin the buying journey.
+        </InfoBox>
 
         {/* Context from previous steps */}
         <div style={{
