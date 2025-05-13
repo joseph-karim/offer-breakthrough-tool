@@ -7,6 +7,7 @@ import { Button } from '../../ui/Button';
 import { InfoBox } from '../../ui/InfoBox';
 import * as styles from '../../../styles/stepStyles';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
+import { ExampleBox } from '../../ui/ExampleBox';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectTargetProblems = (state: WorkshopStore) => state.workshopData.targetProblems;
@@ -627,19 +628,18 @@ export const Step07_ProblemUp: React.FC = () => {
         </AccordionGroup>
 
         {/* Examples */}
-        <div style={styles.examplesContainerStyle}>
-          <div style={styles.examplesLabelStyle}>
-            EXAMPLE PROBLEMS
-          </div>
-          <div style={{ padding: '16px' }}>
-            <ul style={{ margin: 0, paddingLeft: '20px' }} data-sb-field-path="examples">
-              <li style={{ marginBottom: '8px' }}>Struggles to find time to create content consistently</li>
-              <li style={{ marginBottom: '8px' }}>Feels overwhelmed by the constant pressure to stay visible online</li>
-              <li style={{ marginBottom: '8px' }}>Worries about being perceived as irrelevant by peers and clients</li>
-              <li style={{ marginBottom: '8px' }}>Fears their service business will be disrupted by AI</li>
-              <li style={{ marginBottom: '8px' }}>Can't scale their business without working more hours</li>
-            </ul>
-          </div>
+        <div data-sb-field-path="examples">
+          <ExampleBox
+            examples={[
+              "Struggles to find time to create content consistently",
+              "Feels overwhelmed by the constant pressure to stay visible online",
+              "Worries about being perceived as irrelevant by peers and clients",
+              "Fears their service business will be disrupted by AI",
+              "Can't scale their business without working more hours"
+            ]}
+            title="EXAMPLE PROBLEMS"
+            initiallyVisible={true}
+          />
         </div>
       </div>
     </div>

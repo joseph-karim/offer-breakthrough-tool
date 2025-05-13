@@ -7,6 +7,8 @@ import { Plus, X, ChevronDown, ChevronUp, Lightbulb } from 'lucide-react';
 import * as styles from '../../../styles/stepStyles';
 import { InfoBox } from '../../ui/InfoBox';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
+import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
+import { ExampleBox } from '../../ui/ExampleBox';
 
 
 // Separate selectors to prevent unnecessary re-renders
@@ -29,6 +31,24 @@ export const Step04_Jobs: React.FC = () => {
 
   // Accordion state
   const [isJobStatementHelpOpen, setIsJobStatementHelpOpen] = useState(false);
+
+  // State for step accordions
+  const [isStep1Expanded, setIsStep1Expanded] = useState(true);
+  const [isStep2Expanded, setIsStep2Expanded] = useState(false);
+  const [isStep3Expanded, setIsStep3Expanded] = useState(false);
+
+  // Toggle functions for accordions
+  const toggleStep1 = useCallback(() => {
+    setIsStep1Expanded(!isStep1Expanded);
+  }, [isStep1Expanded]);
+
+  const toggleStep2 = useCallback(() => {
+    setIsStep2Expanded(!isStep2Expanded);
+  }, [isStep2Expanded]);
+
+  const toggleStep3 = useCallback(() => {
+    setIsStep3Expanded(!isStep3Expanded);
+  }, [isStep3Expanded]);
 
   // Get the overarching job
   const overarchingJob = jobs.find(job => job.isOverarching);
@@ -167,201 +187,186 @@ export const Step04_Jobs: React.FC = () => {
           </div>
         </div>
 
-        {/* Step 1: Job Brainstorming */}
-        <div style={{ marginBottom: '32px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 16px 0'
-          }}>
-            Step 1) Job Brainstorming
-          </h3>
+        <AccordionGroup>
+          {/* Step 1: Job Brainstorming */}
+          <AccordionItem
+            title="Step 1: Job Brainstorming"
+            isExpanded={isStep1Expanded}
+            onToggle={toggleStep1}
+          >
+            <p style={{ marginBottom: '16px' }}>
+              What jobs might your customers want to get done?
+            </p>
 
-          <p style={{ marginBottom: '16px' }}>
-            What jobs might your customers want to get done?
-          </p>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <ChatWithSparkyButton
+                exerciseKey="jobBrainstorm"
+                exerciseTitle="Job Brainstorming"
+                initialContext={{ message: "Let's brainstorm different jobs your customer may need to get done" }}
+              />
+            </div>
+          </AccordionItem>
 
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-            <ChatWithSparkyButton
-              exerciseKey="jobBrainstorm"
-              exerciseTitle="Job Brainstorming"
-              initialContext={{ message: "Let's brainstorm different jobs your customer may need to get done" }}
-            />
-          </div>
-        </div>
+          {/* Step 2: Make Shortlist of Job Statements */}
+          <AccordionItem
+            title="Step 2: Make Shortlist of Job Statements"
+            isExpanded={isStep2Expanded}
+            onToggle={toggleStep2}
+          >
+            <p style={{ marginBottom: '16px' }}>
+              Which jobs align with your unique capabilities or interests?
+            </p>
 
-        {/* Step 2: Make Shortlist of Job Statements */}
-        <div style={{ marginBottom: '32px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 16px 0'
-          }}>
-            Step 2) Make Shortlist of Job Statements
-          </h3>
+            <p style={{ marginBottom: '16px' }}>
+              Make a short list of the top 2-5 jobs.
+            </p>
 
-          <p style={{ marginBottom: '16px' }}>
-            Which jobs align with your unique capabilities or interests?
-          </p>
-
-          <p style={{ marginBottom: '16px' }}>
-            Make a short list of the top 2-5 jobs.
-          </p>
-
-          <div style={{ marginBottom: '16px' }}>
-            <textarea
-              placeholder="e.g., Help me create strategic lead magnet offers that attract high-intent leads and prime them for my paid offer"
-              style={{
-                width: '100%',
-                minHeight: '120px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical'
-              }}
-            />
-          </div>
-
-          {/* Job Statement Help Box - ACCORDION */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                cursor: 'pointer',
-                padding: '10px 16px',
-                backgroundColor: '#feffb7',
-                borderRadius: '8px',
-                border: '1px solid #e5e0a3'
-              }}
-              onClick={toggleJobStatementHelp}
-            >
-              <h4 style={{
-                fontSize: '16px',
-                fontWeight: 600,
-                color: '#1e293b',
-                margin: 0,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <Lightbulb size={16} style={{ color: '#222222' }} />
-                JOB STATEMENT HELP
-              </h4>
-              {isJobStatementHelpOpen ? (
-                <ChevronUp size={20} color="#1e293b" />
-              ) : (
-                <ChevronDown size={20} color="#1e293b" />
-              )}
+            <div style={{ marginBottom: '16px' }}>
+              <textarea
+                placeholder="e.g., Help me create strategic lead magnet offers that attract high-intent leads and prime them for my paid offer"
+                style={{
+                  width: '100%',
+                  minHeight: '120px',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '14px',
+                  lineHeight: '1.5',
+                  resize: 'vertical'
+                }}
+              />
             </div>
 
-            {isJobStatementHelpOpen && (
-              <InfoBox
-                showIcon={false}
-                style={{
-                  padding: '16px',
-                  fontSize: '14px',
-                  borderRadius: '8px'
-                }}>
-                <p style={{ margin: '0 0 12px 0' }}>
-                  A 'job' describes <strong>what</strong> the customer is trying to get done — it's action-driven, specific, and contextual. 'Desired outcomes' describe <strong>why</strong> they're doing it — it's the underlying motivation.
-                </p>
-                <p style={{ margin: '0 0 12px 0' }}>
-                  An 'overarching job' describes the customer's high-level objective. A 'supporting job' is a more specific job that the customer may also need to do to get their overarching job done. Small jobs can be big business opportunities.
-                </p>
-                <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Overarching Job:</p>
-                <p style={{ margin: '0 0 12px 0' }}>
-                  "Help me to scale my service-based business without hiring more team members or working more hours."
-                </p>
-                <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Supporting Jobs:</p>
-                <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
-                  <li>"Help me identify the specific buyers I should target to grow sales for an underperforming product"</li>
-                  <li>"Help me validate demand for my new product before I waste time creating the wrong thing"</li>
-                  <li>"Help me develop a new, scalable revenue stream for my existing online business that sells"</li>
-                  <li>"Help me to build an audience that trusts me before I launch a new offer"</li>
-                </ul>
-                <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Using 'So that..." Technique to Refine Job Statement</p>
-                <p style={{ margin: '0 0 12px 0' }}>
-                  If you're unsure what the customer's true motivation is, try using the "so that" technique to dig deeper into the true job your customers want to get done.
-                </p>
-                <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Example Refinement:</p>
-                <p style={{ margin: '0 0 12px 0' }}>
-                  "I want email sequences... so that... I can sell to my list... so that... I can generate revenue... so that... I can have predictable income without constantly chasing new leads"
-                </p>
-                <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Final Job Statement:</p>
-                <p style={{ margin: '0 0 12px 0' }}>
-                  "Help me generate predictable revenue from my existing audience without spending more on ads or constantly creating new content"
-                </p>
-                <p style={{ margin: '0' }}>
-                  This job statement exercise shifts perspective from focusing on the craft (writing emails) to solving the actual business problem—reliable revenue generation.
-                </p>
-              </InfoBox>
-            )}
-          </div>
-        </div>
-
-        {/* Step 3: Choose ONE job to focus on */}
-        <div style={{ marginBottom: '32px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 16px 0'
-          }}>
-            Step 3) Choose ONE job to focus on building your offer around
-          </h3>
-
-          <p style={{ marginBottom: '16px' }}>
-            Narrow it down to ONE for now.
-          </p>
-
-          <p style={{ marginBottom: '16px' }}>
-            You can choose an overarching or supporting job. You can revise your job statement as you better understand buyers for your offer.
-          </p>
-
-
-
-          {/* Input for the chosen job */}
-          <div>
-            <label
-              htmlFor="chosenJob"
-              style={styles.labelStyle}
-            >
-              Your chosen job statement:
-            </label>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <input
-                id="chosenJob"
-                value={newOverarchingJob}
-                onChange={(e) => setNewOverarchingJob(e.target.value)}
-                onKeyPress={handleKeyPressOverarching}
-                placeholder="e.g., Help me generate more revenue from my existing customers without constantly creating new content"
-                style={styles.inputStyle}
-              />
-              <Button
-                variant="primary"
-                onClick={handleAddOverarchingJob}
-                disabled={!newOverarchingJob.trim()}
+            {/* Job Statement Help Box - ACCORDION */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
+              <div
                 style={{
                   display: 'flex',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#fcf720',
-                  color: '#222222',
-                  borderRadius: '15px',
+                  cursor: 'pointer',
+                  padding: '10px 16px',
+                  backgroundColor: '#feffb7',
+                  borderRadius: '8px',
+                  border: '1px solid #e5e0a3'
                 }}
+                onClick={toggleJobStatementHelp}
               >
-                <Plus size={20} />
-                Add
-              </Button>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  margin: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <Lightbulb size={16} style={{ color: '#222222' }} />
+                  JOB STATEMENT HELP
+                </h4>
+                {isJobStatementHelpOpen ? (
+                  <ChevronUp size={20} color="#1e293b" />
+                ) : (
+                  <ChevronDown size={20} color="#1e293b" />
+                )}
+              </div>
+
+              {isJobStatementHelpOpen && (
+                <InfoBox
+                  showIcon={false}
+                  style={{
+                    padding: '16px',
+                    fontSize: '14px',
+                    borderRadius: '8px'
+                  }}>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    A 'job' describes <strong>what</strong> the customer is trying to get done — it's action-driven, specific, and contextual. 'Desired outcomes' describe <strong>why</strong> they're doing it — it's the underlying motivation.
+                  </p>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    An 'overarching job' describes the customer's high-level objective. A 'supporting job' is a more specific job that the customer may also need to do to get their overarching job done. Small jobs can be big business opportunities.
+                  </p>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Overarching Job:</p>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    "Help me to scale my service-based business without hiring more team members or working more hours."
+                  </p>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Supporting Jobs:</p>
+                  <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
+                    <li>"Help me identify the specific buyers I should target to grow sales for an underperforming product"</li>
+                    <li>"Help me validate demand for my new product before I waste time creating the wrong thing"</li>
+                    <li>"Help me develop a new, scalable revenue stream for my existing online business that sells"</li>
+                    <li>"Help me to build an audience that trusts me before I launch a new offer"</li>
+                  </ul>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Using 'So that..." Technique to Refine Job Statement</p>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    If you're unsure what the customer's true motivation is, try using the "so that" technique to dig deeper into the true job your customers want to get done.
+                  </p>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Example Refinement:</p>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    "I want email sequences... so that... I can sell to my list... so that... I can generate revenue... so that... I can have predictable income without constantly chasing new leads"
+                  </p>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Final Job Statement:</p>
+                  <p style={{ margin: '0 0 12px 0' }}>
+                    "Help me generate predictable revenue from my existing audience without spending more on ads or constantly creating new content"
+                  </p>
+                  <p style={{ margin: '0' }}>
+                    This job statement exercise shifts perspective from focusing on the craft (writing emails) to solving the actual business problem—reliable revenue generation.
+                  </p>
+                </InfoBox>
+              )}
             </div>
-          </div>
-        </div>
+          </AccordionItem>
+
+          {/* Step 3: Choose ONE job to focus on */}
+          <AccordionItem
+            title="Step 3: Choose ONE job to focus on building your offer around"
+            isExpanded={isStep3Expanded}
+            onToggle={toggleStep3}
+          >
+            <p style={{ marginBottom: '16px' }}>
+              Narrow it down to ONE for now.
+            </p>
+
+            <p style={{ marginBottom: '16px' }}>
+              You can choose an overarching or supporting job. You can revise your job statement as you better understand buyers for your offer.
+            </p>
+
+            {/* Input for the chosen job */}
+            <div>
+              <label
+                htmlFor="chosenJob"
+                style={styles.labelStyle}
+              >
+                Your chosen job statement:
+              </label>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <input
+                  id="chosenJob"
+                  value={newOverarchingJob}
+                  onChange={(e) => setNewOverarchingJob(e.target.value)}
+                  onKeyPress={handleKeyPressOverarching}
+                  placeholder="e.g., Help me generate more revenue from my existing customers without constantly creating new content"
+                  style={styles.inputStyle}
+                />
+                <Button
+                  variant="primary"
+                  onClick={handleAddOverarchingJob}
+                  disabled={!newOverarchingJob.trim()}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: '#fcf720',
+                    color: '#222222',
+                    borderRadius: '15px',
+                  }}
+                >
+                  <Plus size={20} />
+                  Add
+                </Button>
+              </div>
+            </div>
+          </AccordionItem>
+        </AccordionGroup>
 
         {/* Examples section */}
         <div style={{ marginTop: '32px' }}>
@@ -374,64 +379,20 @@ export const Step04_Jobs: React.FC = () => {
             EXAMPLES
           </h3>
 
-          <div style={{
-            backgroundColor: '#F0E6FF', // Purple background
-            borderRadius: '15px',
-            padding: '20px'
-          }}>
-            <div style={{
-              display: 'inline-block',
-              fontSize: '14px',
-              color: '#FFFFFF',
-              fontWeight: 'bold',
-              marginBottom: '15px',
-              backgroundColor: '#6B46C1',
-              padding: '4px 12px',
-              borderRadius: '20px'
-            }}>
-              JOB STATEMENT EXAMPLES
-            </div>
-            <ul style={{
-              listStyle: 'none',
-              padding: 0,
-              margin: 0,
-              color: '#333333',
-              fontSize: '14px'
-            }}>
-              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                Help me generate predictable revenue from my existing audience
-              </li>
-              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                Help me attract new high-intent leads profitably and on autopilot
-              </li>
-              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                Help me stay top-of-mind with my audience between launches
-              </li>
-              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                Help me convert more email subscribers into paying customers
-              </li>
-              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                Help me feel confident my marketing systems are working
-              </li>
-              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                Help me maximize the value of each email subscriber
-              </li>
-              <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                Help me segment new leads and identify high-intent prospects
-              </li>
-              <li style={{ display: 'flex', alignItems: 'flex-start' }}>
-                <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-                Help me ensure my campaigns are being seen by my subscribers
-              </li>
-            </ul>
-          </div>
+          <ExampleBox
+            examples={[
+              "Help me generate predictable revenue from my existing audience",
+              "Help me attract new high-intent leads profitably and on autopilot",
+              "Help me stay top-of-mind with my audience between launches",
+              "Help me convert more email subscribers into paying customers",
+              "Help me feel confident my marketing systems are working",
+              "Help me maximize the value of each email subscriber",
+              "Help me segment new leads and identify high-intent prospects",
+              "Help me ensure my campaigns are being seen by my subscribers"
+            ]}
+            title="JOB STATEMENT EXAMPLES"
+            initiallyVisible={true}
+          />
         </div>
 
         {/* Display existing job if it exists */}

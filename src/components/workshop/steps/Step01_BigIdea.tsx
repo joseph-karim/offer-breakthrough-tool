@@ -8,6 +8,7 @@ import { Button } from '../../ui/Button';
 import { InfoBox } from '../../ui/InfoBox';
 import { URLInputModal } from '../chat/URLInputModal';
 import { BrainstormContext } from '../../../services/brainstormService';
+import { ExampleBox } from '../../ui/ExampleBox';
 
 
 // Separate selectors to prevent unnecessary re-renders
@@ -294,51 +295,18 @@ export const Step01_BigIdea: React.FC = () => {
         </div>
 
         {/* Example Ideas */}
-        <div style={{
-          backgroundColor: '#F0E6FF',
-          borderRadius: '15px',
-          padding: '20px'
-        }} data-sb-field-path="examples">
-          <div style={{
-            display: 'inline-block',
-            fontSize: '14px',
-            color: '#FFFFFF',
-            fontWeight: 'bold',
-            marginBottom: '15px',
-            backgroundColor: '#6B46C1',
-            padding: '4px 12px',
-            borderRadius: '20px'
-          }}>
-            EXAMPLES
-          </div>
-          <ul style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0,
-            color: '#333333',
-            fontSize: '14px'
-          }}>
-            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[0]">
-              <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-              A 6-week group coaching program that helps bootstrapped startups fix their user onboarding experience
-            </li>
-            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[1]">
-              <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-              A SaaS tool that helps content creators repurpose their content across multiple platforms
-            </li>
-            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[2]">
-              <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-              A membership community that provides ongoing support and resources for freelance designers
-            </li>
-            <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[3]">
-              <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-              A productized service that delivers monthly SEO audits and recommendations for e-commerce stores
-            </li>
-            <li style={{ display: 'flex', alignItems: 'flex-start' }} data-sb-field-path="examples.items[4]">
-              <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>•</span>
-              A course that teaches small business owners how to use AI tools to streamline their operations
-            </li>
-          </ul>
+        <div data-sb-field-path="examples">
+          <ExampleBox
+            examples={[
+              "A 6-week group coaching program that helps bootstrapped startups fix their user onboarding experience",
+              "A SaaS tool that helps content creators repurpose their content across multiple platforms",
+              "A membership community that provides ongoing support and resources for freelance designers",
+              "A productized service that delivers monthly SEO audits and recommendations for e-commerce stores",
+              "A course that teaches small business owners how to use AI tools to streamline their operations"
+            ]}
+            title="EXAMPLES"
+            initiallyVisible={true}
+          />
         </div>
       </div>
 

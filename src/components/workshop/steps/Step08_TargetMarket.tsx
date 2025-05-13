@@ -8,6 +8,7 @@ import { SaveIndicator } from '../../ui/SaveIndicator';
 import * as styles from '../../../styles/stepStyles';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
 import { InfoBox } from '../../ui/InfoBox';
+import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectProblemUp = (state: WorkshopStore) => state.workshopData.problemUp;
@@ -64,6 +65,19 @@ export const Step08_TargetMarket: React.FC = () => {
   const [newTrigger, setNewTrigger] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
+
+  // State for accordion expansion
+  const [isStep1Expanded, setIsStep1Expanded] = useState(true);
+  const [isStep2Expanded, setIsStep2Expanded] = useState(false);
+
+  // Toggle functions for accordions
+  const toggleStep1 = useCallback(() => {
+    setIsStep1Expanded(!isStep1Expanded);
+  }, [isStep1Expanded]);
+
+  const toggleStep2 = useCallback(() => {
+    setIsStep2Expanded(!isStep2Expanded);
+  }, [isStep2Expanded]);
 
   // Update local state when store value changes
   useEffect(() => {
@@ -202,52 +216,43 @@ export const Step08_TargetMarket: React.FC = () => {
           Choosing a specific target market inspires product differentiation and makes marketing easier.
         </InfoBox>
 
-        {/* Step 1: Brainstorm with Sparky */}
-        <div style={{ marginBottom: '24px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 16px 0'
-          }}>
-            Step 1) Brainstorm Your Target Market with Sparky
-          </h3>
+        <AccordionGroup>
+          {/* Step 1: Brainstorm with Sparky */}
+          <AccordionItem
+            title="Step 1: Brainstorm Your Target Market with Sparky"
+            isExpanded={isStep1Expanded}
+            onToggle={toggleStep1}
+          >
+            <p style={{ marginBottom: '16px' }}>
+              Sparky will help you define a specific target market profile based on your selected buyers, pains, and other context.
+            </p>
 
-          <p style={{ marginBottom: '16px' }}>
-            Sparky will help you define a specific target market profile based on your selected buyers, pains, and other context.
-          </p>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <ChatWithSparkyButton
+                exerciseKey="targetMarket"
+                exerciseTitle="Define Your Target Market with Sparky"
+                initialContext={{
+                  primaryBuyer: primaryBuyer?.description,
+                  allBuyers: selectedBuyers.map(b => b.description),
+                  primaryPain: primaryPain?.description,
+                  allPains: selectedPains.map(p => p.description),
+                  targetMoment: problemUp?.targetMoment,
+                  relevantTriggers: relevantTriggers.map(t => t.description),
+                  overarchingJob: overarchingJob?.description || ""
+                }}
+                systemPromptKey="TARGET_MARKET_PROMPT"
+              />
+            </div>
+          </AccordionItem>
 
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-            <ChatWithSparkyButton
-              exerciseKey="targetMarket"
-              exerciseTitle="Define Your Target Market with Sparky"
-              initialContext={{
-                primaryBuyer: primaryBuyer?.description,
-                allBuyers: selectedBuyers.map(b => b.description),
-                primaryPain: primaryPain?.description,
-                allPains: selectedPains.map(p => p.description),
-                targetMoment: problemUp?.targetMoment,
-                relevantTriggers: relevantTriggers.map(t => t.description),
-                overarchingJob: overarchingJob?.description || ""
-              }}
-              systemPromptKey="TARGET_MARKET_PROMPT"
-            />
-          </div>
-        </div>
-
-        {/* Step 2: Define Target Market Profile */}
-        <div style={{ marginBottom: '24px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 16px 0'
-          }}>
-            Step 2) Define Your Target Market Profile
-          </h3>
-
-          {/* Market Name */}
-          <div style={{ marginBottom: '20px' }}>
+          {/* Step 2: Define Target Market Profile */}
+          <AccordionItem
+            title="Step 2: Define Your Target Market Profile"
+            isExpanded={isStep2Expanded}
+            onToggle={toggleStep2}
+          >
+            {/* Market Name */}
+            <div style={{ marginBottom: '20px' }}>
             <label
               htmlFor="market-name"
               style={styles.labelStyle}
@@ -495,7 +500,8 @@ export const Step08_TargetMarket: React.FC = () => {
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
             <SaveIndicator saving={isSaving} />
           </div>
-        </div>
+          </AccordionItem>
+        </AccordionGroup>
       </div>
     </div>
   );

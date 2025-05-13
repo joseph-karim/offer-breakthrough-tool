@@ -6,6 +6,7 @@ import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { FloatingTooltip } from '../../ui/FloatingTooltip';
 import { InfoBox } from '../../ui/InfoBox';
+import { ExampleBox } from '../../ui/ExampleBox';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -151,32 +152,18 @@ export const Step02_UnderlyingGoal: React.FC = () => {
         </div>
 
         {/* Example Goals */}
-        <div style={styles.examplesContainerStyle} data-sb-field-path="examples">
-          <div style={styles.examplesLabelStyle}>
-            EXAMPLES
-          </div>
-          <ul style={styles.examplesListStyle}>
-            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[0]">
-              <span style={styles.exampleBulletStyle}>•</span>
-              Create a new revenue stream that's less dependent on my time and expertise
-            </li>
-            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[1]">
-              <span style={styles.exampleBulletStyle}>•</span>
-              Build a product that can generate passive income while I sleep
-            </li>
-            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[2]">
-              <span style={styles.exampleBulletStyle}>•</span>
-              Create a lead generation tool that helps me attract higher-value clients
-            </li>
-            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[3]">
-              <span style={styles.exampleBulletStyle}>•</span>
-              Develop an offer that complements my existing services and creates upsell opportunities
-            </li>
-            <li style={styles.exampleItemStyle} data-sb-field-path="examples.items[4]">
-              <span style={styles.exampleBulletStyle}>•</span>
-              Build something that can eventually be sold or run by someone else
-            </li>
-          </ul>
+        <div data-sb-field-path="examples">
+          <ExampleBox
+            examples={[
+              "Create a new revenue stream that's less dependent on my time and expertise",
+              "Build a product that can generate passive income while I sleep",
+              "Create a lead generation tool that helps me attract higher-value clients",
+              "Develop an offer that complements my existing services and creates upsell opportunities",
+              "Build something that can eventually be sold or run by someone else"
+            ]}
+            title="EXAMPLES"
+            initiallyVisible={true}
+          />
         </div>
       </div>
     </div>

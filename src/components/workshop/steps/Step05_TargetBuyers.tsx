@@ -6,6 +6,7 @@ import { Plus, X, Star, Check } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
+import { ExampleBox } from '../../ui/ExampleBox';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -341,33 +342,17 @@ export const Step05_TargetBuyers: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div style={styles.examplesContainerStyle}>
-                  <div style={styles.examplesLabelStyle}>
-                    EXAMPLES
-                  </div>
-                  <ul style={styles.examplesListStyle}>
-                    <li style={styles.exampleItemStyle}>
-                      <span style={styles.exampleBulletStyle}>•</span>
-                      Burnt out marketing consultants with 3+ years experience
-                    </li>
-                    <li style={styles.exampleItemStyle}>
-                      <span style={styles.exampleBulletStyle}>•</span>
-                      E-commerce store owners with 50-200 products and $500K+ annual revenue
-                    </li>
-                    <li style={styles.exampleItemStyle}>
-                      <span style={styles.exampleBulletStyle}>•</span>
-                      SaaS founders who recently raised seed funding
-                    </li>
-                    <li style={styles.exampleItemStyle}>
-                      <span style={styles.exampleBulletStyle}>•</span>
-                      Freelance copywriters who want to stop trading time for money
-                    </li>
-                    <li style={styles.exampleItemStyle}>
-                      <span style={styles.exampleBulletStyle}>•</span>
-                      Marketing agencies with 5-15 employees struggling with client retention
-                    </li>
-                  </ul>
-                </div>
+                <ExampleBox
+                  examples={[
+                    "Burnt out marketing consultants with 3+ years experience",
+                    "E-commerce store owners with 50-200 products and $500K+ annual revenue",
+                    "SaaS founders who recently raised seed funding",
+                    "Freelance copywriters who want to stop trading time for money",
+                    "Marketing agencies with 5-15 employees struggling with client retention"
+                  ]}
+                  title="EXAMPLES"
+                  initiallyVisible={true}
+                />
               )}
             </div>
           </AccordionItem>
@@ -920,44 +905,16 @@ export const Step05_TargetBuyers: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div style={{
-                  backgroundColor: '#F0E6FF', // Purple background
-                  borderRadius: '15px',
-                  padding: '20px',
-                  marginTop: '8px'
-                }}>
-                  <div style={{
-                    display: 'inline-block',
-                    fontSize: '14px',
-                    color: '#FFFFFF',
-                    fontWeight: 'bold',
-                    marginBottom: '15px',
-                    backgroundColor: '#6B46C1',
-                    padding: '4px 12px',
-                    borderRadius: '20px'
-                  }}>
-                    EXAMPLE OF TOP 3 BUYERS
-                  </div>
-                  <ul style={{
-                    listStyle: 'none',
-                    padding: 0,
-                    margin: 0,
-                    color: '#333333',
-                    fontSize: '14px'
-                  }}>
-                    <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                      <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>1.</span>
-                      Solo marketers for hire (eg. Marketing consultants, freelancers, fractionals)
-                    </li>
-                    <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'flex-start' }}>
-                      <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>2.</span>
-                      Traditional marketing service agency owners (eg. ads, SEO, content, brand strategy, positioning, etc.)
-                    </li>
-                    <li style={{ display: 'flex', alignItems: 'flex-start' }}>
-                      <span style={{ color: '#6B46C1', marginRight: '10px', fontWeight: 'bold' }}>3.</span>
-                      Serial online entrepreneurs building a new venture
-                    </li>
-                  </ul>
+                <div style={{ marginTop: '8px' }}>
+                  <ExampleBox
+                    examples={[
+                      "Solo marketers for hire (eg. Marketing consultants, freelancers, fractionals)",
+                      "Traditional marketing service agency owners (eg. ads, SEO, content, brand strategy, positioning, etc.)",
+                      "Serial online entrepreneurs building a new venture"
+                    ]}
+                    title="EXAMPLE OF TOP 3 BUYERS"
+                    initiallyVisible={true}
+                  />
                 </div>
               )}
             </div>

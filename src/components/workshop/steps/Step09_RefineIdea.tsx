@@ -6,6 +6,8 @@ import { AlertCircle, HelpCircle } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
+import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
+import { ExampleBox } from '../../ui/ExampleBox';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -33,6 +35,19 @@ export const Step09_RefineIdea: React.FC = () => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
+
+  // State for accordion expansion
+  const [isStep1Expanded, setIsStep1Expanded] = useState(true);
+  const [isStep2Expanded, setIsStep2Expanded] = useState(false);
+
+  // Toggle functions for accordions
+  const toggleStep1 = useCallback(() => {
+    setIsStep1Expanded(!isStep1Expanded);
+  }, [isStep1Expanded]);
+
+  const toggleStep2 = useCallback(() => {
+    setIsStep2Expanded(!isStep2Expanded);
+  }, [isStep2Expanded]);
 
   // Update local state when store value changes
   useEffect(() => {
@@ -296,19 +311,13 @@ export const Step09_RefineIdea: React.FC = () => {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gap: '24px' }}>
-
+        <AccordionGroup>
           {/* Step 1: Sparky will help you brainstorm */}
-          <div style={{ marginBottom: '32px' }}>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              margin: '0 0 16px 0'
-            }}>
-              Step 1) Sparky will help you brainstorm
-            </h3>
-
+          <AccordionItem
+            title="Step 1: Sparky will help you brainstorm"
+            isExpanded={isStep1Expanded}
+            onToggle={toggleStep1}
+          >
             <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
               You'll use the work you've done so far as the foundation for your new offer.
             </p>
@@ -349,19 +358,14 @@ export const Step09_RefineIdea: React.FC = () => {
                 systemPromptKey="REFINE_IDEA_PROMPT"
               />
             </div>
-          </div>
+          </AccordionItem>
 
           {/* Step 2: Revamp Your Big Idea */}
-          <div style={{ marginBottom: '32px' }}>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              margin: '0 0 16px 0'
-            }}>
-              Step 2) Revamp Your Big Idea
-            </h3>
-
+          <AccordionItem
+            title="Step 2: Revamp Your Big Idea"
+            isExpanded={isStep2Expanded}
+            onToggle={toggleStep2}
+          >
             <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
               Ask yourself:
             </p>
@@ -428,25 +432,18 @@ export const Step09_RefineIdea: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
               <SaveIndicator saving={isSaving} />
             </div>
-          </div>
+          </AccordionItem>
 
-          {/* Example Offer Idea */}
+          {/* Example Offer Idea - Not in an accordion as it's just an example */}
           <div style={{
-            backgroundColor: '#f3e8ff',
-            padding: '20px',
-            borderRadius: '8px',
-            marginBottom: '32px'
+            marginBottom: '32px',
+            marginTop: '24px'
           }}>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              margin: '0 0 16px 0'
-            }}>
-              EXAMPLE OFFER IDEA
-            </h3>
-
-            <div style={{ display: 'grid', gap: '12px' }}>
+            <ExampleBox
+              title="EXAMPLE OFFER IDEA"
+              initiallyVisible={true}
+            >
+              <div style={{ display: 'grid', gap: '12px' }}>
               <div>
                 <h4 style={{
                   fontSize: '16px',
@@ -627,10 +624,11 @@ export const Step09_RefineIdea: React.FC = () => {
                 </p>
               </div>
             </div>
+            </ExampleBox>
           </div>
 
-          {/* Takeaways */}
-          <div style={{ marginBottom: '32px' }}>
+          {/* Takeaways - Part of Step 2 but outside the accordion for visibility */}
+          <div style={{ marginBottom: '32px', marginTop: '24px' }}>
             <h3 style={{
               fontSize: '18px',
               fontWeight: 600,
@@ -664,7 +662,7 @@ export const Step09_RefineIdea: React.FC = () => {
               <SaveIndicator saving={isSaving} />
             </div>
           </div>
-        </div>
+        </AccordionGroup>
       </div>
     </div>
   );
