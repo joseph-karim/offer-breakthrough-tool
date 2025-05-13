@@ -173,24 +173,6 @@ export const Step03_TriggerEvents: React.FC = () => {
                 systemPromptKey="TRIGGER_BRAINSTORM_PROMPT"
               />
             </div>
-
-            {/* Example trigger events */}
-            {events.length === 0 && (
-              <ExampleBox
-                examples={[
-                  "Hit a revenue plateau in business and feel stuck",
-                  "Missed family event due to work",
-                  "Spent weeks working on a new offer, launched it, and it didn't sell as hoped",
-                  "Rejected for promotion due to skills gap",
-                  "Team doubled in size in 3 months",
-                  "Received negative feedback about leadership style",
-                  "Missed quarterly targets for the first time",
-                  "New competitor entered the market with better features"
-                ]}
-                title="EXAMPLES"
-                initiallyVisible={true}
-              />
-            )}
           </AccordionItem>
 
           {/* Step 2: Add Your Trigger Events */}
@@ -199,46 +181,6 @@ export const Step03_TriggerEvents: React.FC = () => {
             isExpanded={isStep2Expanded}
             onToggle={toggleStep2}
           >
-            {/* List of existing events */}
-            {events.length > 0 && (
-              <div style={{ display: 'grid', gap: '12px', marginBottom: '20px' }}>
-                {events.map(event => (
-                  <div
-                    key={event.id}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px 16px',
-                      backgroundColor: '#F2F2F2',
-                      borderRadius: '15px',
-                      border: '1px solid #DDDDDD',
-                    }}
-                  >
-                    <span style={{ flex: 1, color: '#333333' }}>{event.description}</span>
-                    <button
-                      onClick={() => handleDeleteEvent(event.id)}
-                      onMouseEnter={() => setHoveredId(event.id)}
-                      onMouseLeave={() => setHoveredId(null)}
-                      style={{
-                        padding: '4px',
-                        borderRadius: '4px',
-                        border: 'none',
-                        backgroundColor: 'transparent',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        color: hoveredId === event.id ? '#ef4444' : '#6b7280',
-                        transition: 'color 0.2s ease'
-                      }}
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
             {/* Add new event input */}
             <div style={styles.formGroupStyle}>
               <label
@@ -281,6 +223,64 @@ export const Step03_TriggerEvents: React.FC = () => {
                   Add
                 </Button>
               </div>
+            </div>
+
+            {/* List of existing events */}
+            {events.length > 0 && (
+              <div style={{ display: 'grid', gap: '12px', marginTop: '20px', marginBottom: '20px' }}>
+                {events.map(event => (
+                  <div
+                    key={event.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px 16px',
+                      backgroundColor: '#F2F2F2',
+                      borderRadius: '15px',
+                      border: '1px solid #DDDDDD',
+                    }}
+                  >
+                    <span style={{ flex: 1, color: '#333333' }}>{event.description}</span>
+                    <button
+                      onClick={() => handleDeleteEvent(event.id)}
+                      onMouseEnter={() => setHoveredId(event.id)}
+                      onMouseLeave={() => setHoveredId(null)}
+                      style={{
+                        padding: '4px',
+                        borderRadius: '4px',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: hoveredId === event.id ? '#ef4444' : '#6b7280',
+                        transition: 'color 0.2s ease'
+                      }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Example trigger events - always shown at the bottom */}
+            <div style={{ marginTop: '20px' }}>
+              <ExampleBox
+                examples={[
+                  "Hit a revenue plateau in business and feel stuck",
+                  "Missed family event due to work",
+                  "Spent weeks working on a new offer, launched it, and it didn't sell as hoped",
+                  "Rejected for promotion due to skills gap",
+                  "Team doubled in size in 3 months",
+                  "Received negative feedback about leadership style",
+                  "Missed quarterly targets for the first time",
+                  "New competitor entered the market with better features"
+                ]}
+                title="EXAMPLES"
+                initiallyVisible={true}
+              />
             </div>
           </AccordionItem>
         </AccordionGroup>
