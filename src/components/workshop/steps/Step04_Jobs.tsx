@@ -368,33 +368,6 @@ export const Step04_Jobs: React.FC = () => {
           </AccordionItem>
         </AccordionGroup>
 
-        {/* Examples section */}
-        <div style={{ marginTop: '32px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 16px 0'
-          }}>
-            EXAMPLES
-          </h3>
-
-          <ExampleBox
-            examples={[
-              "Help me generate predictable revenue from my existing audience",
-              "Help me attract new high-intent leads profitably and on autopilot",
-              "Help me stay top-of-mind with my audience between launches",
-              "Help me convert more email subscribers into paying customers",
-              "Help me feel confident my marketing systems are working",
-              "Help me maximize the value of each email subscriber",
-              "Help me segment new leads and identify high-intent prospects",
-              "Help me ensure my campaigns are being seen by my subscribers"
-            ]}
-            title="JOB STATEMENT EXAMPLES"
-            initiallyVisible={true}
-          />
-        </div>
-
         {/* Display existing job if it exists */}
         {overarchingJob && (
           <div style={{ marginTop: '32px' }}>
@@ -440,6 +413,33 @@ export const Step04_Jobs: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Examples section */}
+        <div style={{ marginTop: '32px' }}>
+          <h3 style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            color: '#1e293b',
+            margin: '0 0 16px 0'
+          }}>
+            EXAMPLES
+          </h3>
+
+          <ExampleBox
+            examples={[
+              "Help me generate predictable revenue from my existing audience",
+              "Help me attract new high-intent leads profitably and on autopilot",
+              "Help me stay top-of-mind with my audience between launches",
+              "Help me convert more email subscribers into paying customers",
+              "Help me feel confident my marketing systems are working",
+              "Help me maximize the value of each email subscriber",
+              "Help me segment new leads and identify high-intent prospects",
+              "Help me ensure my campaigns are being seen by my subscribers"
+            ]}
+            title="JOB STATEMENT EXAMPLES"
+            initiallyVisible={true}
+          />
+        </div>
       </div>
     </div>
   );
