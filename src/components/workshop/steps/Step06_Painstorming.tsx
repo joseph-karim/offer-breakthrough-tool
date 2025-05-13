@@ -2,14 +2,14 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Pain } from '../../../types/workshop';
-import { AlertCircle, Plus, X, Flame } from 'lucide-react';
+import { Plus, X, Flame, Lightbulb } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { PainstormingModal } from '../chat/PainstormingModal';
 import { PainParsingModal } from '../chat/PainParsingModal';
-import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
+
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
-import { ContextBox } from '../ContextBox';
+
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 
@@ -337,7 +337,7 @@ export const Step06_Painstorming: React.FC = () => {
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
+        <div style={{ marginBottom: '16px' }}>
           <label
             style={{
               fontSize: '16px',
@@ -350,60 +350,29 @@ export const Step06_Painstorming: React.FC = () => {
           >
             Rapid Painstorming
           </label>
-          <ResponsiveFloatingTooltip
-            content="A good framework is to use FIRE; these problems are Frequent, Intense, Recurring (or Require Action), and Expensive. These are often the most valuable problems to solve."
-            placement="right"
-            maxWidth={300}
-          >
-            <div style={{ cursor: 'help', display: 'flex', marginTop: '3px' }}>
-              <AlertCircle size={16} style={{ color: '#6b7280' }} />
-            </div>
-          </ResponsiveFloatingTooltip>
         </div>
 
-        {/* Context Display */}
-        <div style={{
-          padding: '16px',
-          backgroundColor: '#f8fafc',
-          borderRadius: '8px',
-          border: '1px solid #e2e8f0',
-          marginTop: '20px',
-          marginBottom: '20px'
-        }}>
-          <h3 style={{
-            fontSize: '16px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 12px 0'
+        {/* FIRE Info Box */}
+        <div style={{ marginBottom: '20px' }}>
+          <div style={{
+            backgroundColor: '#feffb7',
+            borderColor: '#e5e0a3',
+            padding: '12px 15px',
+            borderRadius: '10px',
+            color: '#222222',
+            fontWeight: '500',
+            fontSize: '14px',
+            lineHeight: '1.5',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px'
           }}>
-            Context for Painstorming:
-          </h3>
-
-          <div style={{ marginBottom: '12px' }}>
-            <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Focus Job Statement:</p>
-            <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-              {selectedJob?.description || "No job statement selected yet"}
+            <div style={{ marginTop: '3px', flexShrink: 0 }}>
+              <Lightbulb size={16} style={{ color: '#222222' }} />
             </div>
-          </div>
-
-          <div>
-            <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Top 3 Target Buyer Segments:</p>
-            {topBuyers.length > 0 ? (
-              <ul style={{
-                margin: '0',
-                paddingLeft: '24px',
-                color: '#334155',
-                fontSize: '14px'
-              }}>
-                {topBuyers.map((buyer, index) => (
-                  <li key={index}>{buyer.description}</li>
-                ))}
-              </ul>
-            ) : (
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                No target buyers selected yet. Please go back to Step 5 to select your top 3 buyer segments.
-              </div>
-            )}
+            <div>
+              Remember: FIRE problems are <strong>Frequent</strong>, <strong>Intense</strong>, <strong>Require fast action</strong>, and <strong>Expensive</strong>
+            </div>
           </div>
         </div>
 
@@ -413,12 +382,50 @@ export const Step06_Painstorming: React.FC = () => {
             title="Step 1: Generate & Input Painstorming Analysis"
             defaultExpanded={true}
           >
-            <ContextBox>
-              <ul className="list-disc list-inside">
-                <li><strong>Your Focus Job:</strong> {selectedJob?.description || "No job statement selected yet"}</li>
-                <li><strong>Your Top Buyers:</strong> {topBuyers.map(buyer => buyer.description).join(', ') || "No buyers selected yet"}</li>
-              </ul>
-            </ContextBox>
+            {/* Context Display */}
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0',
+              marginBottom: '24px'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#1e293b',
+                margin: '0 0 12px 0'
+              }}>
+                Your Context
+              </h3>
+
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Focus Job Statement:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {selectedJob?.description || "No job statement selected yet"}
+                </div>
+              </div>
+
+              <div>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Top 3 Target Buyer Segments:</p>
+                {topBuyers.length > 0 ? (
+                  <ul style={{
+                    margin: '0',
+                    paddingLeft: '24px',
+                    color: '#334155',
+                    fontSize: '14px'
+                  }}>
+                    {topBuyers.map((buyer, index) => (
+                      <li key={index}>{buyer.description}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                    No target buyers selected yet. Please go back to Step 5 to select your top 3 buyer segments.
+                  </div>
+                )}
+              </div>
+            </div>
 
             <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
               Use Sparky to conduct a detailed painstorming analysis for your target buyer segments. Sparky will help identify Functional, Emotional, Social, and Perceived Risk problems, and also flag potential FIRE problems. Alternatively, if you have prepared a similar analysis, you can paste it below.
