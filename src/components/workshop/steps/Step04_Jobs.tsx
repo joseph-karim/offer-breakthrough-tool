@@ -142,50 +142,6 @@ export const Step04_Jobs: React.FC = () => {
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        {/* Context from previous steps */}
-        <div style={{
-          padding: '16px',
-          backgroundColor: '#f8fafc',
-          borderRadius: '8px',
-          border: '1px solid #e2e8f0',
-          marginTop: '20px',
-          marginBottom: '24px'  /* Added more bottom margin for spacing */
-        }}>
-          <h3 style={{
-            fontSize: '16px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 12px 0'
-          }}>
-            Your Context
-          </h3>
-
-          <div style={{ marginBottom: '12px' }}>
-            <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Business/Expertise:</p>
-            <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-              {bigIdea?.description || "Not specified yet"}
-            </div>
-          </div>
-
-          <div>
-            <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Some Potential Buying Triggers:</p>
-            <ul style={{
-              margin: '0',
-              paddingLeft: '16px',
-              listStyleType: 'disc',
-              color: '#334155',
-              fontSize: '14px'
-            }}>
-              {sampleTriggerEvents.length > 0 ? (
-                sampleTriggerEvents.map((trigger, index) => (
-                  <li key={index}>{trigger.description}</li>
-                ))
-              ) : (
-                <li>No trigger events specified yet</li>
-              )}
-            </ul>
-          </div>
-        </div>
 
         <AccordionGroup>
           {/* Step 1: Job Brainstorming */}
@@ -197,6 +153,50 @@ export const Step04_Jobs: React.FC = () => {
             <p style={{ marginBottom: '16px' }}>
               What jobs might your customers want to get done?
             </p>
+
+            {/* Context from previous steps */}
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0',
+              marginBottom: '20px'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#1e293b',
+                margin: '0 0 12px 0'
+              }}>
+                Your Context
+              </h3>
+
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Business/Expertise:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {bigIdea?.description || "Not specified yet"}
+                </div>
+              </div>
+
+              <div>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Some Potential Buying Triggers:</p>
+                <ul style={{
+                  margin: '0',
+                  paddingLeft: '16px',
+                  listStyleType: 'disc',
+                  color: '#334155',
+                  fontSize: '14px'
+                }}>
+                  {sampleTriggerEvents.length > 0 ? (
+                    sampleTriggerEvents.map((trigger, index) => (
+                      <li key={index}>{trigger.description}</li>
+                    ))
+                  ) : (
+                    <li>No trigger events specified yet</li>
+                  )}
+                </ul>
+              </div>
+            </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
               <ChatWithSparkyButton

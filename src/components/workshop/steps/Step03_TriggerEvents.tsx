@@ -107,7 +107,7 @@ export const Step03_TriggerEvents: React.FC = () => {
       {/* Description */}
       <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>Let's explore the specific moments in your prospective buyer's life that might trigger them to realize they need a solution like yours. These trigger events provide clues about what your customers really want to get done.</p>
-        <p>Trigger events can be:</p>
+        <p><strong>Trigger events can be:</strong></p>
         <ul style={{ paddingLeft: '20px', margin: '10px 0', listStyleType: 'disc' }}>
           <li style={{ marginBottom: '5px', display: 'list-item' }}>Situational (eg. losing a client, getting divorced, hiring a new team member, etc.)</li>
           <li style={{ marginBottom: '5px', display: 'list-item' }}>Physical (eg. being cold, hip pain, etc.)</li>
@@ -122,32 +122,6 @@ export const Step03_TriggerEvents: React.FC = () => {
           Focus on the *moment* that triggered them to begin the buying journey.
         </InfoBox>
 
-        {/* Context from previous steps */}
-        <div style={{
-          padding: '16px',
-          backgroundColor: '#f8fafc',
-          borderRadius: '8px',
-          border: '1px solid #e2e8f0',
-          marginTop: '20px',
-          marginBottom: '24px'
-        }}>
-          <h3 style={{
-            fontSize: '16px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 12px 0'
-          }}>
-            Your Context
-          </h3>
-
-          <div style={{ marginBottom: '12px' }}>
-            <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Big Idea:</p>
-            <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-              {workshopData.bigIdea?.description || "Not specified yet"}
-            </div>
-          </div>
-        </div>
-
         <AccordionGroup>
           {/* Step 1: Brainstorm with Sparky */}
           <AccordionItem
@@ -158,6 +132,31 @@ export const Step03_TriggerEvents: React.FC = () => {
             <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
               Your trusty pal Sparky is here to help you brainstorm buying triggers.
             </p>
+
+            {/* Context from previous steps */}
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0',
+              marginBottom: '20px'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#1e293b',
+                margin: '0 0 12px 0'
+              }}>
+                Your Context
+              </h3>
+
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Big Idea:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {workshopData.bigIdea?.description || "Not specified yet"}
+                </div>
+              </div>
+            </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
               <ChatWithSparkyButton
