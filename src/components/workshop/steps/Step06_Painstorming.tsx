@@ -5,6 +5,7 @@ import type { Pain } from '../../../types/workshop';
 import { AlertCircle, Plus, X, Flame } from 'lucide-react';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { PainstormingModal } from '../chat/PainstormingModal';
+import { PainParsingModal } from '../chat/PainParsingModal';
 import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
@@ -21,6 +22,10 @@ const selectIsPainstormingModalOpen = (state: WorkshopStore) => state.isPainstor
 const selectPainstormingOutput = (state: WorkshopStore) => state.painstormingOutput;
 const selectClosePainstormingModal = (state: WorkshopStore) => state.closePainstormingModal;
 const selectSetFocusedProblems = (state: WorkshopStore) => state.setFocusedProblems;
+const selectIsPainParsingModalOpen = (state: WorkshopStore) => state.isPainParsingModalOpen;
+const selectParsedPains = (state: WorkshopStore) => state.parsedPains;
+const selectClosePainParsingModal = (state: WorkshopStore) => state.closePainParsingModal;
+const selectSaveParsedPains = (state: WorkshopStore) => state.saveParsedPains;
 
 interface PainstormingResults {
   buyer1Pains: string;
@@ -39,6 +44,10 @@ export const Step06_Painstorming: React.FC = () => {
   const painstormingOutput = useWorkshopStore(selectPainstormingOutput);
   const closePainstormingModal = useWorkshopStore(selectClosePainstormingModal);
   const setFocusedProblems = useWorkshopStore(selectSetFocusedProblems);
+  const isPainParsingModalOpen = useWorkshopStore(selectIsPainParsingModalOpen);
+  const parsedPains = useWorkshopStore(selectParsedPains);
+  const closePainParsingModal = useWorkshopStore(selectClosePainParsingModal);
+  const saveParsedPains = useWorkshopStore(selectSaveParsedPains);
 
   // Local state for pain entry
   const [newPain, setNewPain] = useState('');
@@ -401,7 +410,7 @@ export const Step06_Painstorming: React.FC = () => {
         <AccordionGroup>
           {/* Step 1: Start Painstorming with Sparky */}
           <AccordionItem
-            title="Step 1: Generate Painstorming Analysis with Sparky"
+            title="Step 1: Generate & Input Painstorming Analysis"
             defaultExpanded={true}
           >
             <ContextBox>
@@ -412,7 +421,7 @@ export const Step06_Painstorming: React.FC = () => {
             </ContextBox>
 
             <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-              Sparky will analyze your Job Statement and Target Buyers to brainstorm potential pains, including Functional, Emotional, Social, and Perceived Risk types, and identify potential FIRE problems and overlaps.
+              Use Sparky to conduct a detailed painstorming analysis for your target buyer segments. Sparky will help identify Functional, Emotional, Social, and Perceived Risk problems, and also flag potential FIRE problems. Alternatively, if you have prepared a similar analysis, you can paste it below.
             </p>
 
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
@@ -425,6 +434,46 @@ export const Step06_Painstorming: React.FC = () => {
                 }}
                 systemPromptKey="PAINSTORMING_PROMPT"
               />
+            </div>
+
+            <div style={{
+              backgroundColor: '#f8fafc',
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0',
+              padding: '16px',
+              marginTop: '24px',
+              marginBottom: '16px'
+            }}>
+              <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px', color: '#1e293b' }}>
+                Paste your full Painstorming Analysis here:
+              </h4>
+              <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '16px' }}>
+                Paste the complete structured text output from Sparky or your own prepared analysis. It should include sections for each buyer segment (with Functional, Emotional, Social, Perceived problems, and FIRE problems listed under each) and a section for Overlapping FIRE Problems.
+              </p>
+              <textarea
+                style={{
+                  width: '100%',
+                  minHeight: '200px',
+                  padding: '12px',
+                  borderRadius: '6px',
+                  border: '1px solid #d1d5db',
+                  fontSize: '14px',
+                  lineHeight: 1.5,
+                  resize: 'vertical'
+                }}
+                placeholder="Paste your painstorming analysis here..."
+                value={useWorkshopStore.getState().rawPainstormingInput}
+                onChange={(e) => useWorkshopStore.getState().setRawPainstormingInput(e.target.value)}
+              />
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+                <Button
+                  variant="yellow"
+                  onClick={() => useWorkshopStore.getState().parseAndSavePains(useWorkshopStore.getState().rawPainstormingInput)}
+                  disabled={useWorkshopStore.getState().isParsing || !useWorkshopStore.getState().rawPainstormingInput.trim()}
+                >
+                  {useWorkshopStore.getState().isParsing ? 'Parsing...' : 'Save & Parse Pains'}
+                </Button>
+              </div>
             </div>
           </AccordionItem>
 
@@ -831,6 +880,16 @@ export const Step06_Painstorming: React.FC = () => {
         markdownContent={painstormingOutput}
         onConfirmSelection={handleConfirmSelection}
       />
+
+      {/* Pain Parsing Modal */}
+      {isPainParsingModalOpen && parsedPains && (
+        <PainParsingModal
+          isOpen={isPainParsingModalOpen}
+          onClose={closePainParsingModal}
+          parsedPains={parsedPains}
+          onConfirmSelection={saveParsedPains}
+        />
+      )}
     </div>
   );
 };

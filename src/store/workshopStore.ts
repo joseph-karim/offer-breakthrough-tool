@@ -1,11 +1,12 @@
 import { create } from 'zustand';
-import type { WorkshopData } from '../types/workshop';
+import type { WorkshopData, Pain } from '../types/workshop';
 import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
 import { OpenAIService } from '../services/openai';
 import { BrainstormService, BrainstormContext, BrainstormIdea } from '../services/brainstormService';
 import { SparkyService } from '../services/sparkyService';
+import { PainParsingService } from '../services/painParsingService';
 
 export interface WorkshopStore {
   // Session state
@@ -28,6 +29,17 @@ export interface WorkshopStore {
   isPainstormingModalOpen: boolean;
   painstormingOutput: string | null;
   focusedProblems: string[];
+
+  // Pain parsing state
+  isPainParsingModalOpen: boolean;
+  parsedPains: {
+    buyerSegmentPains: {
+      [buyerSegment: string]: Pain[];
+    };
+    overlappingPains: Pain[];
+  } | null;
+  isParsing: boolean;
+  rawPainstormingInput: string;
 
   // Sparky Chat Modal state
   isSparkyModalOpen: boolean;
@@ -73,6 +85,13 @@ export interface WorkshopStore {
   closePainstormingModal: () => void;
   setFocusedProblems: (problems: string[]) => void;
   generatePainstormingSuggestions: () => Promise<void>;
+
+  // Pain parsing actions
+  setRawPainstormingInput: (text: string) => void;
+  parseAndSavePains: (text: string) => Promise<void>;
+  openPainParsingModal: () => void;
+  closePainParsingModal: () => void;
+  saveParsedPains: (pains: Pain[]) => void;
 }
 
 const initialWorkshopData: WorkshopData = {
@@ -177,6 +196,12 @@ const brainstormService = new BrainstormService({
   openaiService: openaiService,
   model: 'gpt-4.1-2025-04-14'
 });
+
+// Create Pain Parsing service instance
+const painParsingService = new PainParsingService(
+  openaiService,
+  'gpt-4.1-2025-04-14'
+);
 
 // Helper function to extract relevant context for a step
 function getStepContext(step: number, workshopData: WorkshopData): string {
@@ -431,6 +456,12 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   isPainstormingModalOpen: false,
   painstormingOutput: null,
   focusedProblems: [],
+
+  // Pain parsing state
+  isPainParsingModalOpen: false,
+  parsedPains: null,
+  isParsing: false,
+  rawPainstormingInput: '',
 
   // Sparky Chat Modal state
   isSparkyModalOpen: false,
@@ -1271,5 +1302,92 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
     } finally {
       set({ isAiLoading: false });
     }
+  },
+
+  // Pain parsing actions
+  setRawPainstormingInput: (text: string) => {
+    set({ rawPainstormingInput: text });
+  },
+
+  parseAndSavePains: async (text: string) => {
+    const { workshopData, addChatMessage } = get();
+    set({ isParsing: true });
+
+    try {
+      // Get the selected job statement
+      const chosenJobStatement = workshopData.jobs.find(job => job.isOverarching || job.selected)?.description || '';
+
+      // Get the top 3 buyer segments
+      const topBuyerSegments = workshopData.targetBuyers
+        .filter(buyer => buyer.isTopThree)
+        .map(buyer => buyer.description);
+
+      // Save the raw input
+      set({ rawPainstormingInput: text });
+
+      // Parse the text using the PainParsingService
+      const parsedResult = await painParsingService.parsePainstormingText(
+        text,
+        chosenJobStatement,
+        topBuyerSegments
+      );
+
+      // Save the parsed pains
+      set({
+        parsedPains: {
+          buyerSegmentPains: parsedResult.buyerSegmentPains,
+          overlappingPains: parsedResult.overlappingPains
+        }
+      });
+
+      // Open the modal to let the user select which pains to save
+      set({ isPainParsingModalOpen: true });
+
+      // Add a chat message indicating the parsing was successful
+      addChatMessage(6, {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: "I've parsed your painstorming text and extracted the pain points. Please review and select the ones you want to save.",
+        timestamp: new Date().toISOString(),
+        step: 6
+      });
+
+    } catch (error) {
+      console.error("Error parsing painstorming text:", error);
+
+      // Add error message to chat
+      addChatMessage(6, {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: "I'm sorry, I encountered an error while parsing the painstorming text. Please try again or add pains manually.",
+        timestamp: new Date().toISOString(),
+        step: 6
+      });
+    } finally {
+      set({ isParsing: false });
+    }
+  },
+
+  openPainParsingModal: () => {
+    set({ isPainParsingModalOpen: true });
+  },
+
+  closePainParsingModal: () => {
+    set({ isPainParsingModalOpen: false });
+  },
+
+  saveParsedPains: (pains: Pain[]) => {
+    const { workshopData } = get();
+
+    // Update the workshop data with the selected pains
+    set({
+      workshopData: {
+        ...workshopData,
+        pains: [...workshopData.pains, ...pains]
+      }
+    });
+
+    // Close the modal
+    set({ isPainParsingModalOpen: false });
   },
 }));
