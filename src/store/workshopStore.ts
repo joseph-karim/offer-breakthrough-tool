@@ -135,7 +135,9 @@ const initialWorkshopData: WorkshopData = {
   },
   nextSteps: {
     preSellPlan: '',
-    workshopReflections: ''
+    workshopReflections: '',
+    preSellPlanItems: [],
+    workshopReflectionItems: []
   },
   stepChats: {},
   reflections: {

@@ -101,8 +101,18 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
 
     <div style="margin-bottom: 30px;">
       <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Next Steps</h2>
-      <p><strong>Pre-Sell Plan:</strong> ${workshopData.nextSteps?.preSellPlan || 'Not defined'}</p>
-      <p><strong>Workshop Reflections:</strong> ${workshopData.nextSteps?.workshopReflections || 'Not defined'}</p>
+
+      <p><strong>Pre-Sell Plan:</strong></p>
+      ${workshopData.nextSteps?.preSellPlanItems && workshopData.nextSteps.preSellPlanItems.length > 0
+        ? `<ul>${workshopData.nextSteps.preSellPlanItems.map(item => `<li>${item}</li>`).join('')}</ul>`
+        : `<p>${workshopData.nextSteps?.preSellPlan || 'Not defined'}</p>`
+      }
+
+      <p><strong>Workshop Reflections:</strong></p>
+      ${workshopData.nextSteps?.workshopReflectionItems && workshopData.nextSteps.workshopReflectionItems.length > 0
+        ? `<ul>${workshopData.nextSteps.workshopReflectionItems.map(item => `<li>${item}</li>`).join('')}</ul>`
+        : `<p>${workshopData.nextSteps?.workshopReflections || 'Not defined'}</p>`
+      }
     </div>
 
     <div style="margin-bottom: 30px;">

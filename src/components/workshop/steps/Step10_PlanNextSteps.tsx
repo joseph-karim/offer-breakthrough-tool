@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { ExternalLink, Download } from 'lucide-react';
+import { ExternalLink, Download, Plus, X } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 import { SaveIndicator } from '../../ui/SaveIndicator';
@@ -16,32 +16,117 @@ export const Step10_PlanNextSteps: React.FC = () => {
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [formData, setFormData] = useState({
-    preSellPlan: workshopData.nextSteps?.preSellPlan || '',
-    workshopReflections: workshopData.nextSteps?.workshopReflections || ''
-  });
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  // State for individual items
+  const [preSellPlanItems, setPreSellPlanItems] = useState<string[]>([]);
+  const [workshopReflectionItems, setWorkshopReflectionItems] = useState<string[]>([]);
+
+  // State for new item inputs
+  const [newPreSellItem, setNewPreSellItem] = useState('');
+  const [newReflectionItem, setNewReflectionItem] = useState('');
 
   // Initialize with data from the store
   useEffect(() => {
-    setFormData({
-      preSellPlan: workshopData.nextSteps?.preSellPlan || '',
-      workshopReflections: workshopData.nextSteps?.workshopReflections || ''
-    });
+    // Convert existing text to items if needed
+    const initPreSellItems = workshopData.nextSteps?.preSellPlanItems || [];
+    const initReflectionItems = workshopData.nextSteps?.workshopReflectionItems || [];
+
+    // If we have items already, use them
+    if (initPreSellItems.length > 0) {
+      setPreSellPlanItems(initPreSellItems);
+    }
+    // Otherwise, try to convert the old string format to items
+    else if (workshopData.nextSteps?.preSellPlan) {
+      const lines = workshopData.nextSteps.preSellPlan
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+      setPreSellPlanItems(lines);
+    }
+
+    // Same for reflection items
+    if (initReflectionItems.length > 0) {
+      setWorkshopReflectionItems(initReflectionItems);
+    } else if (workshopData.nextSteps?.workshopReflections) {
+      const lines = workshopData.nextSteps.workshopReflections
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+      setWorkshopReflectionItems(lines);
+    }
   }, [
     workshopData.nextSteps?.preSellPlan,
-    workshopData.nextSteps?.workshopReflections
+    workshopData.nextSteps?.workshopReflections,
+    workshopData.nextSteps?.preSellPlanItems,
+    workshopData.nextSteps?.workshopReflectionItems
   ]);
 
-  // Handle input changes
-  const handleInputChange = useCallback((field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    setIsSaving(true);
 
-    // Debounce saving to avoid too many updates
-    const timeoutId = setTimeout(() => {
+
+  // Handle adding a new pre-sell plan item
+  const handleAddPreSellItem = useCallback(() => {
+    if (newPreSellItem.trim()) {
+      const updatedItems = [...preSellPlanItems, newPreSellItem.trim()];
+      setPreSellPlanItems(updatedItems);
+      setNewPreSellItem('');
+
+      // Debounce saving
+      setIsSaving(true);
+      setTimeout(() => {
+        const updatedNextSteps = {
+          preSellPlanItems: updatedItems,
+          workshopReflectionItems: workshopReflectionItems,
+          preSellPlan: updatedItems.join('\n'),
+          workshopReflections: workshopReflectionItems.join('\n')
+        };
+
+        updateWorkshopData({
+          nextSteps: updatedNextSteps
+        });
+        setIsSaving(false);
+      }, 500);
+    }
+  }, [newPreSellItem, preSellPlanItems, workshopReflectionItems, updateWorkshopData]);
+
+  // Handle adding a new workshop reflection item
+  const handleAddReflectionItem = useCallback(() => {
+    if (newReflectionItem.trim()) {
+      const updatedItems = [...workshopReflectionItems, newReflectionItem.trim()];
+      setWorkshopReflectionItems(updatedItems);
+      setNewReflectionItem('');
+
+      // Debounce saving
+      setIsSaving(true);
+      setTimeout(() => {
+        const updatedNextSteps = {
+          preSellPlanItems: preSellPlanItems,
+          workshopReflectionItems: updatedItems,
+          preSellPlan: preSellPlanItems.join('\n'),
+          workshopReflections: updatedItems.join('\n')
+        };
+
+        updateWorkshopData({
+          nextSteps: updatedNextSteps
+        });
+        setIsSaving(false);
+      }, 500);
+    }
+  }, [newReflectionItem, preSellPlanItems, workshopReflectionItems, updateWorkshopData]);
+
+  // Handle removing a pre-sell plan item
+  const handleRemovePreSellItem = useCallback((index: number) => {
+    const updatedItems = preSellPlanItems.filter((_, i) => i !== index);
+    setPreSellPlanItems(updatedItems);
+
+    // Debounce saving
+    setIsSaving(true);
+    setTimeout(() => {
       const updatedNextSteps = {
-        preSellPlan: field === 'preSellPlan' ? value : (workshopData.nextSteps?.preSellPlan || ''),
-        workshopReflections: field === 'workshopReflections' ? value : (workshopData.nextSteps?.workshopReflections || '')
+        preSellPlanItems: updatedItems,
+        workshopReflectionItems: workshopReflectionItems,
+        preSellPlan: updatedItems.join('\n'),
+        workshopReflections: workshopReflectionItems.join('\n')
       };
 
       updateWorkshopData({
@@ -49,9 +134,37 @@ export const Step10_PlanNextSteps: React.FC = () => {
       });
       setIsSaving(false);
     }, 500);
+  }, [preSellPlanItems, workshopReflectionItems, updateWorkshopData]);
 
-    return () => clearTimeout(timeoutId);
-  }, [updateWorkshopData, workshopData.nextSteps]);
+  // Handle removing a workshop reflection item
+  const handleRemoveReflectionItem = useCallback((index: number) => {
+    const updatedItems = workshopReflectionItems.filter((_, i) => i !== index);
+    setWorkshopReflectionItems(updatedItems);
+
+    // Debounce saving
+    setIsSaving(true);
+    setTimeout(() => {
+      const updatedNextSteps = {
+        preSellPlanItems: preSellPlanItems,
+        workshopReflectionItems: updatedItems,
+        preSellPlan: preSellPlanItems.join('\n'),
+        workshopReflections: updatedItems.join('\n')
+      };
+
+      updateWorkshopData({
+        nextSteps: updatedNextSteps
+      });
+      setIsSaving(false);
+    }, 500);
+  }, [preSellPlanItems, workshopReflectionItems, updateWorkshopData]);
+
+  // Handle key press for adding items
+  const handleKeyPress = useCallback((e: React.KeyboardEvent, handler: () => void) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handler();
+    }
+  }, []);
 
   // Download summary as PDF
   const downloadPdfSummary = useCallback(async () => {
@@ -110,12 +223,233 @@ export const Step10_PlanNextSteps: React.FC = () => {
             💡 Pre-selling your offer is the best way to validate market demand
           </div>
 
+
+
+          {/* Step 1: Define Pre-Sell Plan */}
+          <div>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1e293b',
+              margin: '0 0 16px 0'
+            }} data-sb-field-path="section1Title">
+              Step 1) Define Pre-Sell Plan
+            </h3>
+
+            <p style={{
+              fontSize: '16px',
+              color: '#4b5563',
+              margin: '0 0 16px 0'
+            }} data-sb-field-path="section1Description">
+              How will you validate that there is demand for your new offer?
+            </p>
+
+            <p style={{
+              fontSize: '16px',
+              fontWeight: 600,
+              color: '#4b5563',
+              margin: '0 0 12px 0'
+            }} data-sb-field-path="section1Prompt">
+              Ask yourself:
+            </p>
+
+            <ul style={{
+              listStyle: 'disc',
+              paddingLeft: '24px',
+              color: '#4b5563',
+              fontSize: '16px',
+              margin: '0 0 16px 0'
+            }} data-sb-field-path="section1Questions">
+              <li>Who are the first 3-10 people you could approach about your offer?</li>
+              <li>What's the simplest version of your offer you could pre-sell?</li>
+              <li>What's a reasonable timeline for delivery?</li>
+              <li>What price point would make it irresistible for early adopters but still valuable to you?</li>
+            </ul>
+
+            {/* Display existing pre-sell plan items */}
+            {preSellPlanItems.length > 0 && (
+              <div style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
+                {preSellPlanItems.map((item, index) => (
+                  <div
+                    key={`presell-${index}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px 16px',
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0',
+                    }}
+                  >
+                    <span style={{ flex: 1, color: '#4b5563' }}>{item}</span>
+                    <button
+                      onClick={() => handleRemovePreSellItem(index)}
+                      onMouseEnter={() => setHoveredId(`presell-${index}`)}
+                      onMouseLeave={() => setHoveredId(null)}
+                      style={{
+                        padding: '4px',
+                        borderRadius: '4px',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: hoveredId === `presell-${index}` ? '#ef4444' : '#6b7280',
+                        transition: 'color 0.2s ease'
+                      }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Add new pre-sell plan item */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+              <input
+                type="text"
+                value={newPreSellItem}
+                onChange={(e) => setNewPreSellItem(e.target.value)}
+                onKeyDown={(e) => handleKeyPress(e, handleAddPreSellItem)}
+                placeholder="Add a new pre-sell plan item..."
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                  fontSize: '14px',
+                  backgroundColor: '#f8fafc',
+                }}
+              />
+              <Button
+                onClick={handleAddPreSellItem}
+                disabled={!newPreSellItem.trim()}
+                variant="primary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#fcf720',
+                  color: '#222222',
+                  borderRadius: '15px',
+                }}
+              >
+                <Plus size={16} />
+                Add
+              </Button>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
+              <SaveIndicator saving={isSaving} />
+            </div>
+          </div>
+
+          {/* Step 2: Workshop Reflections */}
+          <div>
+            <h3 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1e293b',
+              margin: '24px 0 16px 0'
+            }} data-sb-field-path="section2Title">
+              Step 2) Workshop Reflections
+            </h3>
+
+            <p style={{
+              fontSize: '16px',
+              color: '#4b5563',
+              margin: '0 0 16px 0'
+            }} data-sb-field-path="section2Description">
+              What are your top learnings or key insights from this workshop?
+            </p>
+
+            {/* Display existing workshop reflection items */}
+            {workshopReflectionItems.length > 0 && (
+              <div style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
+                {workshopReflectionItems.map((item, index) => (
+                  <div
+                    key={`reflection-${index}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px 16px',
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '8px',
+                      border: '1px solid #e2e8f0',
+                    }}
+                  >
+                    <span style={{ flex: 1, color: '#4b5563' }}>{item}</span>
+                    <button
+                      onClick={() => handleRemoveReflectionItem(index)}
+                      onMouseEnter={() => setHoveredId(`reflection-${index}`)}
+                      onMouseLeave={() => setHoveredId(null)}
+                      style={{
+                        padding: '4px',
+                        borderRadius: '4px',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: hoveredId === `reflection-${index}` ? '#ef4444' : '#6b7280',
+                        transition: 'color 0.2s ease'
+                      }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Add new workshop reflection item */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+              <input
+                type="text"
+                value={newReflectionItem}
+                onChange={(e) => setNewReflectionItem(e.target.value)}
+                onKeyDown={(e) => handleKeyPress(e, handleAddReflectionItem)}
+                placeholder="Add a new workshop reflection or key takeaway..."
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                  fontSize: '14px',
+                  backgroundColor: '#f8fafc',
+                }}
+              />
+              <Button
+                onClick={handleAddReflectionItem}
+                disabled={!newReflectionItem.trim()}
+                variant="primary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#fcf720',
+                  color: '#222222',
+                  borderRadius: '15px',
+                }}
+              >
+                <Plus size={16} />
+                Add
+              </Button>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
+              <SaveIndicator saving={isSaving} />
+            </div>
+          </div>
+
           {/* Workshop Summary */}
           <div style={{
             padding: '24px',
             backgroundColor: '#f8fafc',
             borderRadius: '8px',
             border: '1px solid #e2e8f0',
+            marginTop: '32px',
             marginBottom: '24px'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -252,7 +586,43 @@ export const Step10_PlanNextSteps: React.FC = () => {
                 </div>
               </div>
 
-              {/* Key Takeaways */}
+              {/* Pre-Sell Plan */}
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  margin: '0 0 12px 0',
+                  borderBottom: '1px solid #e2e8f0',
+                  paddingBottom: '8px'
+                }}>
+                  Your Pre-Sell Plan
+                </h4>
+                {preSellPlanItems.length > 0 ? (
+                  <ul style={{
+                    listStyle: 'disc',
+                    paddingLeft: '24px',
+                    color: '#4b5563',
+                    fontSize: '14px',
+                    margin: '0'
+                  }}>
+                    {preSellPlanItems.map((item, index) => (
+                      <li key={`summary-presell-${index}`}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#4b5563',
+                    margin: '0',
+                    fontStyle: 'italic'
+                  }}>
+                    Add pre-sell plan items above to see them here
+                  </p>
+                )}
+              </div>
+
+              {/* Workshop Reflections */}
               <div>
                 <h4 style={{
                   fontSize: '16px',
@@ -264,117 +634,29 @@ export const Step10_PlanNextSteps: React.FC = () => {
                 }}>
                   Your Key Takeaways
                 </h4>
-                <p style={{
-                  fontSize: '14px',
-                  color: '#4b5563',
-                  margin: '0',
-                  fontStyle: formData.workshopReflections ? 'normal' : 'italic'
-                }}>
-                  {formData.workshopReflections || "Complete the workshop reflections below to see your key takeaways here"}
-                </p>
+                {workshopReflectionItems.length > 0 ? (
+                  <ul style={{
+                    listStyle: 'disc',
+                    paddingLeft: '24px',
+                    color: '#4b5563',
+                    fontSize: '14px',
+                    margin: '0'
+                  }}>
+                    {workshopReflectionItems.map((item, index) => (
+                      <li key={`summary-reflection-${index}`}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#4b5563',
+                    margin: '0',
+                    fontStyle: 'italic'
+                  }}>
+                    Add workshop reflections above to see them here
+                  </p>
+                )}
               </div>
-            </div>
-          </div>
-
-          {/* Step 1: Define Pre-Sell Plan */}
-          <div>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              margin: '0 0 16px 0'
-            }} data-sb-field-path="section1Title">
-              Step 1) Define Pre-Sell Plan
-            </h3>
-
-            <p style={{
-              fontSize: '16px',
-              color: '#4b5563',
-              margin: '0 0 16px 0'
-            }} data-sb-field-path="section1Description">
-              How will you validate that there is demand for your new offer?
-            </p>
-
-            <p style={{
-              fontSize: '16px',
-              fontWeight: 600,
-              color: '#4b5563',
-              margin: '0 0 12px 0'
-            }} data-sb-field-path="section1Prompt">
-              Ask yourself:
-            </p>
-
-            <ul style={{
-              listStyle: 'disc',
-              paddingLeft: '24px',
-              color: '#4b5563',
-              fontSize: '16px',
-              margin: '0 0 16px 0'
-            }} data-sb-field-path="section1Questions">
-              <li>Who are the first 3-10 people you could approach about your offer?</li>
-              <li>What's the simplest version of your offer you could pre-sell?</li>
-              <li>What's a reasonable timeline for delivery?</li>
-              <li>What price point would make it irresistible for early adopters but still valuable to you?</li>
-            </ul>
-
-            <textarea
-              value={formData.preSellPlan}
-              onChange={(e) => handleInputChange('preSellPlan', e.target.value)}
-              placeholder="(e.g., I will start with competitor research and do some review mining. I'll get clear on my positioning and create a messaging strategy. Then I will craft a succinct pitch for my new solution and email a few of my best clients to share the idea and invite them to a discovery call to discuss it further)"
-              style={{
-                width: '100%',
-                minHeight: '150px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid #d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: '#f8fafc',
-              }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator saving={isSaving} />
-            </div>
-          </div>
-
-          {/* Step 2: Workshop Reflections */}
-          <div>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              margin: '24px 0 16px 0'
-            }} data-sb-field-path="section2Title">
-              Step 2) Workshop Reflections
-            </h3>
-
-            <p style={{
-              fontSize: '16px',
-              color: '#4b5563',
-              margin: '0 0 16px 0'
-            }} data-sb-field-path="section2Description">
-              What are your top learnings or key insights from this workshop?
-            </p>
-
-            <textarea
-              value={formData.workshopReflections}
-              onChange={(e) => handleInputChange('workshopReflections', e.target.value)}
-              placeholder="(e.g., I never thought about the power of targeting specific moments before. Now that I know what I want to build and feel confident that it solves a real problem, I need to figure out how to talk about it in a persuasive way.)"
-              style={{
-                width: '100%',
-                minHeight: '150px',
-                padding: '12px',
-                borderRadius: '8px',
-                border: '1px solid #d1d5db',
-                fontSize: '14px',
-                lineHeight: '1.5',
-                resize: 'vertical',
-                backgroundColor: '#f8fafc',
-              }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator saving={isSaving} />
             </div>
           </div>
 
