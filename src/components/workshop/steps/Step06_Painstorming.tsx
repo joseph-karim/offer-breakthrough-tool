@@ -614,11 +614,9 @@ export const Step06_Painstorming: React.FC = () => {
                       onKeyDown={handleKeyPress}
                       placeholder="e.g., Struggles to find time to create content consistently"
                       style={{
+                        ...styles.inputStyle,
                         flex: 1,
-                        padding: '12px',
                         borderRadius: '6px',
-                        border: '1px solid #d1d5db',
-                        fontSize: '14px',
                       }}
                     />
                     <Button
@@ -660,9 +658,9 @@ export const Step06_Painstorming: React.FC = () => {
                           alignItems: 'center',
                           gap: '8px',
                           padding: '10px 12px',
-                          backgroundColor: '#fff1f2',
-                          borderRadius: '6px',
-                          border: '1px solid #fecdd3',
+                          backgroundColor: '#F2F2F2',
+                          borderRadius: '15px',
+                          border: '1px solid #DDDDDD',
                         }}
                       >
                         <div style={{ flex: 1, fontSize: '15px', color: '#1e293b' }}>
@@ -718,9 +716,9 @@ export const Step06_Painstorming: React.FC = () => {
                           alignItems: 'center',
                           gap: '8px',
                           padding: '10px 12px',
-                          backgroundColor: '#f8fafc',
-                          borderRadius: '6px',
-                          border: '1px solid #e2e8f0',
+                          backgroundColor: '#F2F2F2',
+                          borderRadius: '15px',
+                          border: '1px solid #DDDDDD',
                         }}
                       >
                         <div style={{ flex: 1, fontSize: '15px', color: '#1e293b' }}>
@@ -777,9 +775,9 @@ export const Step06_Painstorming: React.FC = () => {
                             alignItems: 'center',
                             gap: '8px',
                             padding: '10px 12px',
-                            backgroundColor: '#f9fafb',
-                            borderRadius: '6px',
-                            border: '1px solid #e5e7eb',
+                            backgroundColor: '#F2F2F2',
+                            borderRadius: '15px',
+                            border: '1px solid #DDDDDD',
                           }}
                         >
                           <div style={{ flex: 1, fontSize: '15px', color: '#1e293b' }}>

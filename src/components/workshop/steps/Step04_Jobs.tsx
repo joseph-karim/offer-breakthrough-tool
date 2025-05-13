@@ -386,12 +386,12 @@ export const Step04_Jobs: React.FC = () => {
                 alignItems: 'center',
                 gap: '12px',
                 padding: '12px 16px',
-                backgroundColor: '#e0f2fe',
-                borderRadius: '8px',
-                border: '1px solid #bae6fd',
+                backgroundColor: '#F2F2F2',
+                borderRadius: '15px',
+                border: '1px solid #DDDDDD',
               }}
             >
-              <span style={{ flex: 1, color: '#0c4a6e', fontWeight: 500 }}>{overarchingJob.description}</span>
+              <span style={{ flex: 1, color: '#333333', fontWeight: 500 }}>{overarchingJob.description}</span>
               <button
                 onClick={() => handleDeleteJob(overarchingJob.id)}
                 onMouseEnter={() => setHoveredId(overarchingJob.id)}

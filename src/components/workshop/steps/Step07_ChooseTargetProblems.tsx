@@ -508,16 +508,16 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
           {/* Display selected problems */}
           {selectedProblems.length > 0 && (
             <div style={{
-              backgroundColor: '#f0fdf4',
-              borderRadius: '8px',
-              border: '1px solid #bbf7d0',
+              backgroundColor: '#F2F2F2',
+              borderRadius: '15px',
+              border: '1px solid #DDDDDD',
               padding: '16px',
               marginTop: '20px'
             }}>
               <h4 style={{
                 fontSize: '16px',
                 fontWeight: 600,
-                color: '#166534',
+                color: '#333333',
                 margin: '0 0 12px 0'
               }}>
                 Your Selected Problems ({selectedProblems.length}/5):
@@ -525,7 +525,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
               <ul style={{
                 margin: '0',
                 paddingLeft: '24px',
-                color: '#166534',
+                color: '#333333',
                 fontSize: '14px'
               }}>
                 {selectedProblems.map(painId => {

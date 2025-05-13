@@ -196,13 +196,8 @@ export const Step03_TriggerEvents: React.FC = () => {
                   onKeyPress={handleKeyPress}
                   placeholder="e.g., Lost a major client and realized need for stable income."
                   style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '15px',
-                    border: '1px solid #DDDDDD',
-                    fontSize: '14px',
-                    backgroundColor: '#F2F2F2',
-                    color: '#333333',
+                    ...styles.inputStyle,
+                    flex: 1
                   }}
                 />
                 <Button
