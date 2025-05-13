@@ -21,7 +21,6 @@ export const Step05_TargetBuyers: React.FC = () => {
   const [buyers, setBuyers] = useState<TargetBuyer[]>(targetBuyers || []);
   const [newBuyer, setNewBuyer] = useState('');
   const [potentialBuyers, setPotentialBuyers] = useState<string[]>([]);
-  const [newPotentialBuyer, setNewPotentialBuyer] = useState('');
   const [shortlistedBuyers, setShortlistedBuyers] = useState<string[]>([]);
   const [topThreeBuyers, setTopThreeBuyers] = useState<string[]>([]);
 
@@ -49,32 +48,7 @@ export const Step05_TargetBuyers: React.FC = () => {
     setPotentialBuyers(allBuyerDescriptions);
   }, [targetBuyers]);
 
-  // Handle adding a new potential buyer (Step 1)
-  const handleAddPotentialBuyer = useCallback(() => {
-    if (newPotentialBuyer.trim() !== '') {
-      // Add to potential buyers list
-      setPotentialBuyers(prev => [...prev, newPotentialBuyer.trim()]);
 
-      // Also add to formal buyers list
-      const buyer: TargetBuyer = {
-        id: `user-${Date.now()}`,
-        description: newPotentialBuyer.trim(),
-        source: 'user',
-        urgency: 0,
-        willingness: 0,
-        longTermValue: 0,
-        solutionFit: 0,
-        accessibility: 0,
-        shortlisted: false,
-        isTopThree: false
-      };
-
-      const updatedBuyers = [...buyers, buyer];
-      setBuyers(updatedBuyers);
-      updateWorkshopData({ targetBuyers: updatedBuyers });
-      setNewPotentialBuyer(''); // Clear input
-    }
-  }, [newPotentialBuyer, buyers, updateWorkshopData]);
 
   // Handle adding a shortlisted buyer (Step 2)
   const handleAddBuyer = useCallback(() => {
@@ -258,32 +232,6 @@ export const Step05_TargetBuyers: React.FC = () => {
                   }}
                   systemPromptKey="BUYER_BRAINSTORM_PROMPT"
                 />
-              </div>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                <input
-                  type="text"
-                  value={newPotentialBuyer}
-                  onChange={(e) => setNewPotentialBuyer(e.target.value)}
-                  onKeyDown={(e) => handleKeyPress(e, handleAddPotentialBuyer)}
-                  placeholder="e.g., Burnt out marketing consultants who feel stuck"
-                  style={styles.inputStyle}
-                />
-                <Button
-                  onClick={handleAddPotentialBuyer}
-                  disabled={!newPotentialBuyer.trim()}
-                  variant="primary"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    backgroundColor: '#fcf720',
-                    color: '#222222',
-                    borderRadius: '15px',
-                  }}
-                >
-                  <Plus size={16} />
-                  Add
-                </Button>
               </div>
 
               {/* List of potential buyers */}
