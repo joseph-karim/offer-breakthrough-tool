@@ -122,6 +122,8 @@ export interface Reflections {
 export interface NextSteps {
   preSellPlan: string;
   workshopReflections: string;
+  preSellPlanItems: string[];
+  workshopReflectionItems: string[];
 }
 
 // New interface for Painstorming Results
