@@ -8,6 +8,7 @@ import { ResponsiveFloatingTooltip } from '../../ui/FloatingTooltip';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ExampleBox } from '../../ui/ExampleBox';
+import { InfoBox } from '../../ui/InfoBox';
 import * as styles from '../../../styles/stepStyles';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -152,24 +153,9 @@ export const Step09_RefineIdea: React.FC = () => {
       </div>
 
       {/* Info box with lightbulb icon */}
-      <div style={{
-        backgroundColor: '#feffb7',
-        padding: '12px 16px',
-        borderRadius: '8px',
-        marginBottom: '24px',
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: '12px'
-      }}>
-        <span style={{ fontSize: '16px' }}>💡</span>
-        <p style={{
-          margin: 0,
-          fontSize: '14px',
-          color: '#333333'
-        }}>
-          A painkiller offer solve profitable problems that buyers will pay to solve
-        </p>
-      </div>
+      <InfoBox>
+        A painkiller offer solves profitable problems that buyers will pay to solve
+      </InfoBox>
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>

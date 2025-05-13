@@ -416,15 +416,6 @@ export const Step04_Jobs: React.FC = () => {
 
         {/* Examples section */}
         <div style={{ marginTop: '32px' }}>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: 600,
-            color: '#1e293b',
-            margin: '0 0 16px 0'
-          }}>
-            EXAMPLES
-          </h3>
-
           <ExampleBox
             examples={[
               "Help me generate predictable revenue from my existing audience",
@@ -436,7 +427,7 @@ export const Step04_Jobs: React.FC = () => {
               "Help me segment new leads and identify high-intent prospects",
               "Help me ensure my campaigns are being seen by my subscribers"
             ]}
-            title="JOB STATEMENT EXAMPLES"
+            title="EXAMPLES"
             initiallyVisible={true}
           />
         </div>
