@@ -128,6 +128,9 @@ export interface NextSteps {
 
 // New interface for Painstorming Results
 export interface PainstormingResults {
+  buyerSegment1: string;
+  buyerSegment2: string;
+  buyerSegment3: string;
   buyer1Pains: string;
   buyer2Pains: string;
   buyer3Pains: string;

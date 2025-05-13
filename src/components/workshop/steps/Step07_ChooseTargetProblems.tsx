@@ -11,17 +11,18 @@ const selectPains = (state: WorkshopStore) => state.workshopData.pains || [];
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectProblemUp = (state: WorkshopStore) => state.workshopData.problemUp;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectPainstormingResults = (state: WorkshopStore) => state.workshopData.painstormingResults;
 
 export const Step07_ChooseTargetProblems: React.FC = () => {
   const pains = useWorkshopStore(selectPains);
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const problemUp = useWorkshopStore(selectProblemUp);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const painstormingResults = useWorkshopStore(selectPainstormingResults);
 
   // State for selected problems to solve
   const [selectedProblems, setSelectedProblems] = useState<string[]>(problemUp?.selectedPains || []);
   const [newProblem, setNewProblem] = useState('');
-  const [isInsightsExpanded, setIsInsightsExpanded] = useState(true);
   const [isGuideExpanded, setIsGuideExpanded] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -29,6 +30,101 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
 
   // Ref for the selected problems section for scrolling
   const selectedProblemsSectionRef = useRef<HTMLDivElement>(null);
+
+  // Generate problems from painstorming results
+  const generateProblemsFromPainstorming = useCallback(() => {
+    if (!painstormingResults) return [];
+
+    const problems: Pain[] = [];
+    let problemId = 0;
+
+    // Process buyer segment 1 problems
+    if (painstormingResults.buyerSegment1 && painstormingResults.buyer1Pains) {
+      const lines = painstormingResults.buyer1Pains.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      lines.forEach(line => {
+        // Remove bullet points or dashes
+        const cleanLine = line.replace(/^[\s•\-–—*]+|^\d+[\s.)\]]+/, '').trim();
+        if (cleanLine.length < 5 || cleanLine.endsWith(':')) return;
+
+        problems.push({
+          id: `painstorming_b1_${problemId++}`,
+          description: cleanLine,
+          buyerSegment: painstormingResults.buyerSegment1,
+          type: 'functional',
+          source: 'user',
+          isFire: false
+        });
+      });
+    }
+
+    // Process buyer segment 2 problems
+    if (painstormingResults.buyerSegment2 && painstormingResults.buyer2Pains) {
+      const lines = painstormingResults.buyer2Pains.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      lines.forEach(line => {
+        const cleanLine = line.replace(/^[\s•\-–—*]+|^\d+[\s.)\]]+/, '').trim();
+        if (cleanLine.length < 5 || cleanLine.endsWith(':')) return;
+
+        problems.push({
+          id: `painstorming_b2_${problemId++}`,
+          description: cleanLine,
+          buyerSegment: painstormingResults.buyerSegment2,
+          type: 'functional',
+          source: 'user',
+          isFire: false
+        });
+      });
+    }
+
+    // Process buyer segment 3 problems
+    if (painstormingResults.buyerSegment3 && painstormingResults.buyer3Pains) {
+      const lines = painstormingResults.buyer3Pains.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      lines.forEach(line => {
+        const cleanLine = line.replace(/^[\s•\-–—*]+|^\d+[\s.)\]]+/, '').trim();
+        if (cleanLine.length < 5 || cleanLine.endsWith(':')) return;
+
+        problems.push({
+          id: `painstorming_b3_${problemId++}`,
+          description: cleanLine,
+          buyerSegment: painstormingResults.buyerSegment3,
+          type: 'functional',
+          source: 'user',
+          isFire: false
+        });
+      });
+    }
+
+    // Process overlapping problems
+    if (painstormingResults.overlappingPains) {
+      const lines = painstormingResults.overlappingPains.split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+
+      lines.forEach(line => {
+        const cleanLine = line.replace(/^[\s•\-–—*]+|^\d+[\s.)\]]+/, '').trim();
+        if (cleanLine.length < 5 || cleanLine.endsWith(':')) return;
+
+        problems.push({
+          id: `painstorming_overlap_${problemId++}`,
+          description: cleanLine,
+          buyerSegment: 'Overlapping',
+          type: 'functional',
+          source: 'user',
+          isFire: false
+        });
+      });
+    }
+
+    return problems;
+  }, [painstormingResults]);
 
   // Get FIRE pains - the most critical problems
   const firePains = pains.filter(pain => pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7));
@@ -42,6 +138,17 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
       setSelectedProblems(problemUp.selectedPains);
     }
   }, [problemUp]);
+
+  // Generate problems from painstorming results
+  useEffect(() => {
+    if (painstormingResults && pains.length === 0) {
+      const problems = generateProblemsFromPainstorming();
+      if (problems.length > 0) {
+        updateWorkshopData({ pains: problems });
+        displayToast(`Generated ${problems.length} problems from painstorming results`);
+      }
+    }
+  }, [painstormingResults, pains.length, generateProblemsFromPainstorming, updateWorkshopData]);
 
   // Toast notification effect
   useEffect(() => {
@@ -250,100 +357,118 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
 
       {/* Main content area */}
       <div style={styles.contentContainerStyle}>
-        {/* Workshop Insights */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            cursor: 'pointer',
-            padding: '12px 16px',
-            backgroundColor: isInsightsExpanded ? '#fcf720' : '#f9fafb',
-            borderRadius: '8px',
-            border: '1px solid #e5e7eb',
-            marginBottom: '16px',
-            fontWeight: 600
-          }}
-          onClick={() => setIsInsightsExpanded(!isInsightsExpanded)}
-        >
-          Workshop Insights
-          {isInsightsExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        <div style={styles.yellowInfoBoxStyle}>
+          <p style={{ margin: 0 }}>You can choose overlapping problems or focus on problems that are specific to one buyer segment.</p>
         </div>
 
-        {isInsightsExpanded && (
+        {/* Problems from Painstorming */}
+        {painstormingResults && (
           <div style={{
             backgroundColor: '#f8fafc',
             borderRadius: '8px',
             padding: '16px',
             border: '1px solid #e2e8f0',
+            marginTop: '16px',
             marginBottom: '20px'
           }}>
-            {/* Problems Identified */}
-            <div style={{ marginBottom: '16px' }}>
-              <h4 style={{
-                fontSize: '16px',
-                fontWeight: 600,
-                color: '#1e293b',
-                margin: '0 0 8px 0'
-              }}>
-                Problems Identified:
-              </h4>
-              {pains.length > 0 ? (
-                <ul style={{
-                  margin: '0',
-                  paddingLeft: '24px',
-                  color: '#334155',
-                  fontSize: '14px'
-                }}>
-                  {pains.slice(0, Math.min(pains.length, 5)).map((pain, index) => (
-                    <li key={index}>{pain.description} {pain.isFire ? '(FIRE)' : ''}</li>
-                  ))}
-                  {pains.length > 5 && <li>...and {pains.length - 5} more.</li>}
-                </ul>
-              ) : (
-                <p style={{
-                  fontSize: '14px',
-                  color: '#6b7280',
-                  margin: 0
-                }}>No problems identified yet.</p>
-              )}
-            </div>
+            <h4 style={{
+              fontSize: '16px',
+              fontWeight: 600,
+              color: '#1e293b',
+              margin: '0 0 12px 0'
+            }}>
+              Your Problems from Previous Step:
+            </h4>
 
-            {/* Top 3 Buyer Segments */}
-            <div>
-              <h4 style={{
-                fontSize: '16px',
-                fontWeight: 600,
-                color: '#1e293b',
-                margin: '0 0 8px 0'
+            <details style={{ marginBottom: '12px' }}>
+              <summary style={{
+                fontWeight: 500,
+                fontSize: '14px',
+                cursor: 'pointer',
+                padding: '4px 0',
+                color: '#1e293b'
               }}>
-                Your Top 3 Buyer Segments:
-              </h4>
-              {topBuyers.length > 0 ? (
-                <ul style={{
-                  margin: '0',
-                  paddingLeft: '24px',
-                  color: '#334155',
-                  fontSize: '14px'
-                }}>
-                  {topBuyers.map((buyer, index) => (
-                    <li key={index}>{buyer.description}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p style={{
-                  fontSize: '14px',
-                  color: '#6b7280',
-                  margin: 0
-                }}>No top buyer segments selected yet.</p>
-              )}
-            </div>
+                Problems for {painstormingResults.buyerSegment1 || 'Buyer Segment 1'} (Click to expand)
+              </summary>
+              <div style={{
+                padding: '8px 12px',
+                backgroundColor: '#f1f5f9',
+                borderRadius: '6px',
+                fontSize: '14px',
+                marginTop: '4px',
+                whiteSpace: 'pre-line'
+              }}>
+                {painstormingResults.buyer1Pains || 'No problems recorded yet.'}
+              </div>
+            </details>
+
+            <details style={{ marginBottom: '12px' }}>
+              <summary style={{
+                fontWeight: 500,
+                fontSize: '14px',
+                cursor: 'pointer',
+                padding: '4px 0',
+                color: '#1e293b'
+              }}>
+                Problems for {painstormingResults.buyerSegment2 || 'Buyer Segment 2'} (Click to expand)
+              </summary>
+              <div style={{
+                padding: '8px 12px',
+                backgroundColor: '#f1f5f9',
+                borderRadius: '6px',
+                fontSize: '14px',
+                marginTop: '4px',
+                whiteSpace: 'pre-line'
+              }}>
+                {painstormingResults.buyer2Pains || 'No problems recorded yet.'}
+              </div>
+            </details>
+
+            <details style={{ marginBottom: '12px' }}>
+              <summary style={{
+                fontWeight: 500,
+                fontSize: '14px',
+                cursor: 'pointer',
+                padding: '4px 0',
+                color: '#1e293b'
+              }}>
+                Problems for {painstormingResults.buyerSegment3 || 'Buyer Segment 3'} (Click to expand)
+              </summary>
+              <div style={{
+                padding: '8px 12px',
+                backgroundColor: '#f1f5f9',
+                borderRadius: '6px',
+                fontSize: '14px',
+                marginTop: '4px',
+                whiteSpace: 'pre-line'
+              }}>
+                {painstormingResults.buyer3Pains || 'No problems recorded yet.'}
+              </div>
+            </details>
+
+            <details style={{ marginBottom: '12px' }}>
+              <summary style={{
+                fontWeight: 500,
+                fontSize: '14px',
+                cursor: 'pointer',
+                padding: '4px 0',
+                color: '#1e293b'
+              }}>
+                Overlapping Problems (Click to expand)
+              </summary>
+              <div style={{
+                padding: '8px 12px',
+                backgroundColor: '#f1f5f9',
+                borderRadius: '6px',
+                fontSize: '14px',
+                marginTop: '4px',
+                whiteSpace: 'pre-line'
+              }}>
+                {painstormingResults.overlappingPains || 'No overlapping problems recorded yet.'}
+              </div>
+            </details>
           </div>
         )}
-
-        <div style={styles.yellowInfoBoxStyle}>
-          <p style={{ margin: 0 }}>You can choose overlapping problems or focus on problems that are specific to one buyer segment.</p>
-        </div>
 
         {/* Step 1: Analyze Your Problem Lists - ACCORDION */}
         <div style={{ marginTop: '24px' }}>
