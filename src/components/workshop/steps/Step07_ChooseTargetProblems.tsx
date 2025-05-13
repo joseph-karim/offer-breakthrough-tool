@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { Pain } from '../../../types/workshop';
-import { Plus, ChevronUp, ChevronDown, Check } from 'lucide-react';
+import { Plus, ChevronUp, ChevronDown, Check, AlertCircle } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 
@@ -21,9 +21,14 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
   // State for selected problems to solve
   const [selectedProblems, setSelectedProblems] = useState<string[]>(problemUp?.selectedPains || []);
   const [newProblem, setNewProblem] = useState('');
-  // const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [isInsightsExpanded, setIsInsightsExpanded] = useState(true);
   const [isGuideExpanded, setIsGuideExpanded] = useState(true);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [lastAddedProblemId, setLastAddedProblemId] = useState<string | null>(null);
+
+  // Ref for the selected problems section for scrolling
+  const selectedProblemsSectionRef = useRef<HTMLDivElement>(null);
 
   // Get FIRE pains - the most critical problems
   const firePains = pains.filter(pain => pain.isFire || (pain.calculatedFireScore && pain.calculatedFireScore >= 7));
@@ -37,6 +42,22 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
       setSelectedProblems(problemUp.selectedPains);
     }
   }, [problemUp]);
+
+  // Toast notification effect
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
+  // Display toast notification
+  const displayToast = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+  };
 
   // Handle selecting a problem
   const toggleProblemSelection = useCallback((painId: string) => {
@@ -61,6 +82,10 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
           }
         });
 
+        // Show toast notification for removal
+        displayToast("Problem removed from your list");
+        setLastAddedProblemId(null);
+
         return newSelection;
       }
       // If not selected and we have less than 5 selections, add it
@@ -81,13 +106,31 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
           }
         });
 
+        // Show toast notification for addition
+        const pain = pains.find(p => p.id === painId);
+        const painDesc = pain?.description || '';
+        displayToast(`Problem added: ${painDesc.substring(0, 30)}${painDesc.length > 30 ? '...' : ''}`);
+        setLastAddedProblemId(painId);
+
+        // Scroll to the selected problems section
+        setTimeout(() => {
+          if (selectedProblemsSectionRef.current) {
+            selectedProblemsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+
         return newSelection;
+      }
+
+      // If we already have 5 selections, show a toast notification
+      if (prev.length >= 5) {
+        displayToast("You can select a maximum of 5 problems");
       }
 
       // Otherwise, just return the current selection
       return prev;
     });
-  }, [problemUp, updateWorkshopData]);
+  }, [problemUp, updateWorkshopData, pains, displayToast]);
 
   // Handle adding a custom problem
   const handleAddProblem = useCallback(() => {
@@ -124,9 +167,22 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
         }
       });
 
+      // Show toast notification
+      displayToast(`Problem added: ${newProblem.substring(0, 30)}${newProblem.length > 30 ? '...' : ''}`);
+      setLastAddedProblemId(newPain.id);
+
+      // Scroll to the selected problems section
+      setTimeout(() => {
+        if (selectedProblemsSectionRef.current) {
+          selectedProblemsSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+
       setNewProblem(''); // Clear input
+    } else if (selectedProblems.length >= 5) {
+      displayToast("You can select a maximum of 5 problems");
     }
-  }, [newProblem, selectedProblems, pains, topBuyers, problemUp, updateWorkshopData]);
+  }, [newProblem, selectedProblems, pains, topBuyers, problemUp, updateWorkshopData, displayToast]);
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -331,6 +387,28 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
               <p style={{ margin: '0', fontSize: '14px', fontStyle: 'italic', color: '#6b7280' }}>
                 Considering these questions will help you identify the problems you're best positioned to solve with your offer.
               </p>
+
+              <div style={{
+                backgroundColor: '#feffb7',
+                borderColor: '#e5e0a3',
+                padding: '12px 15px',
+                borderRadius: '10px',
+                color: '#222222',
+                fontWeight: '500',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '8px',
+                marginTop: '16px'
+              }}>
+                <div style={{ marginTop: '3px', flexShrink: 0 }}>
+                  <AlertCircle size={16} style={{ color: '#222222' }} />
+                </div>
+                <div>
+                  <strong>Important:</strong> Select problems from the lists below by clicking on them. Selected problems will appear in the "Your Selected Problems" section below. You can select up to 5 problems.
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -371,7 +449,7 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                 }}
               >
                 <Plus size={16} />
-                Add
+                Add +
               </Button>
             </div>
             <p style={{
@@ -409,6 +487,9 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                       border: '1px solid',
                       borderColor: selectedProblems.includes(pain.id) ? '#22c55e' : '#e5e7eb',
                       cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      position: 'relative',
+                      overflow: 'hidden'
                     }}
                     onClick={() => toggleProblemSelection(pain.id)}
                   >
@@ -472,6 +553,9 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
                         border: '1px solid',
                         borderColor: selectedProblems.includes(pain.id) ? '#22c55e' : '#e5e7eb',
                         cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        position: 'relative',
+                        overflow: 'hidden'
                       }}
                       onClick={() => toggleProblemSelection(pain.id)}
                     >
@@ -507,13 +591,18 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
 
           {/* Display selected problems */}
           {selectedProblems.length > 0 && (
-            <div style={{
-              backgroundColor: '#F2F2F2',
-              borderRadius: '15px',
-              border: '1px solid #DDDDDD',
-              padding: '16px',
-              marginTop: '20px'
-            }}>
+            <div
+              ref={selectedProblemsSectionRef}
+              id="selected-problems-section"
+              style={{
+                backgroundColor: '#F2F2F2',
+                borderRadius: '15px',
+                border: '1px solid #DDDDDD',
+                padding: '16px',
+                marginTop: '20px',
+                transition: 'background-color 0.3s ease'
+              }}
+            >
               <h4 style={{
                 fontSize: '16px',
                 fontWeight: 600,
@@ -530,8 +619,17 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
               }}>
                 {selectedProblems.map(painId => {
                   const painDetails = getPainDetails(painId);
+                  const isNewlyAdded = painId === lastAddedProblemId;
+
                   return painDetails ? (
-                    <li key={painId} style={{ marginBottom: '8px' }}>
+                    <li key={painId} style={{
+                      marginBottom: '8px',
+                      padding: '8px',
+                      backgroundColor: isNewlyAdded ? '#FFFDE7' : 'transparent',
+                      borderRadius: '8px',
+                      transition: 'background-color 0.5s ease',
+                      animation: isNewlyAdded ? 'highlight 2s ease' : 'none'
+                    }}>
                       <strong>{painDetails.description}</strong>
                       {painDetails.isFire && <span style={{ color: '#dc2626', fontWeight: 'bold' }}> (FIRE)</span>}
                       <div style={{
@@ -600,6 +698,45 @@ export const Step07_ChooseTargetProblems: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          backgroundColor: '#333333',
+          color: 'white',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          maxWidth: '400px',
+          animation: 'fadeIn 0.3s ease'
+        }}>
+          <AlertCircle size={20} />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* CSS for animations */}
+      <style>
+        {`
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+
+          @keyframes highlight {
+            0% { background-color: #FFFDE7; }
+            70% { background-color: #FFFDE7; }
+            100% { background-color: transparent; }
+          }
+        `}
+      </style>
     </div>
   );
 };
