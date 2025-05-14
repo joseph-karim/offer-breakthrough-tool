@@ -37,7 +37,7 @@ function App() {
         ) : (
           <WorkshopLayout>
             <Routes>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={<Navigate to="/intro" replace />} />
 
               {/* Auth routes */}
               <Route path="/login" element={<Login />} />
@@ -77,7 +77,7 @@ function App() {
               />
 
               {/* Fallback route */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              <Route path="*" element={<Navigate to="/intro" replace />} />
             </Routes>
           </WorkshopLayout>
         )}
