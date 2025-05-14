@@ -217,87 +217,65 @@ export const Step09_RefineIdea: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Target Market */}
+                {/* Target Market with Common Traits and Triggers */}
                 <div>
                   <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Market:</p>
                   <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                    {useWorkshopStore.getState().workshopData.targetMarketProfile?.name || "No target market defined yet"}
-                  </div>
-                </div>
+                    <div style={{ marginBottom: '8px' }}>
+                      {useWorkshopStore.getState().workshopData.targetMarketProfile?.name || "No target market defined yet"}
+                    </div>
 
-                {/* Primary Buyer */}
-                <div>
-                  <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Primary Target Buyer:</p>
-                  <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                    {selectedBuyers.length > 0 ? selectedBuyers[0].description : "No primary buyer selected yet"}
-                  </div>
-                </div>
-
-                {/* Common Traits */}
-                {(() => {
-                  const traits = useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTraits;
-                  return traits && traits.length > 0 ? (
-                    <div>
+                    {/* Common Traits */}
+                    <div style={{ marginTop: '8px' }}>
                       <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Common Traits:</p>
-                      <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                        <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                          {traits.map((trait, index) => (
-                            <li key={index}>{trait}</li>
-                          ))}
-                        </ul>
-                      </div>
+                      {(() => {
+                        const traits = useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTraits;
+                        return traits && traits.length > 0 ? (
+                          <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                            {traits.map((trait, index) => (
+                              <li key={index}>{trait}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div style={{ fontStyle: 'italic', fontSize: '14px' }}>No common traits defined yet</div>
+                        );
+                      })()}
                     </div>
-                  ) : null;
-                })()}
 
-                {/* Common Triggers */}
-                {(() => {
-                  const triggers = useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTriggers;
-                  return triggers && triggers.length > 0 ? (
-                    <div>
+                    {/* Common Triggers */}
+                    <div style={{ marginTop: '8px' }}>
                       <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Common Triggers:</p>
-                      <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                        <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                          {triggers.map((trigger, index) => (
-                            <li key={index}>{trigger}</li>
-                          ))}
-                        </ul>
-                      </div>
+                      {(() => {
+                        const triggers = useWorkshopStore.getState().workshopData.targetMarketProfile?.commonTriggers;
+                        return triggers && triggers.length > 0 ? (
+                          <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                            {triggers.map((trigger, index) => (
+                              <li key={index}>{trigger}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div style={{ fontStyle: 'italic', fontSize: '14px' }}>No common triggers defined yet</div>
+                        );
+                      })()}
                     </div>
-                  ) : null;
-                })()}
-
-                {/* Primary Pain */}
-                <div>
-                  <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Primary Pain Point:</p>
-                  <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                    {selectedPains.length > 0 ? selectedPains[0].description : "No primary pain selected yet"}
                   </div>
                 </div>
 
-                {/* Target Problems */}
-                {(() => {
-                  const problems = useWorkshopStore.getState().workshopData.targetProblems;
-                  const selectedProblems = problems?.filter(problem => problem.selected);
-                  return selectedProblems && selectedProblems.length > 0 ? (
-                    <div>
-                      <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Problems:</p>
-                      <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                {/* Focus Problems */}
+                <div>
+                  <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Focus Problems:</p>
+                  <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                    {(() => {
+                      const problems = useWorkshopStore.getState().workshopData.targetProblems;
+                      const selectedProblems = problems?.filter(problem => problem.selected);
+                      return selectedProblems && selectedProblems.length > 0 ? (
                         <ul style={{ margin: 0, paddingLeft: '20px' }}>
                           {selectedProblems.map((problem, index) => (
                             <li key={index}>{problem.description}</li>
                           ))}
                         </ul>
-                      </div>
-                    </div>
-                  ) : null;
-                })()}
-
-                {/* Target Moment */}
-                <div>
-                  <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Moment:</p>
-                  <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                    {problemUp?.targetMoment || "No target moment defined yet"}
+                      ) : "No focus problems selected yet";
+                    })()}
                   </div>
                 </div>
 
@@ -401,7 +379,10 @@ export const Step09_RefineIdea: React.FC = () => {
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="e.g., An interactive portal with custom GPT tools and battle-tested templates to help consultants brainstorm, validate, and outline scalable product ideas. New tools added monthly."
-              style={isFieldEmpty('description') ? styles.errorTextareaStyle : styles.textareaStyle}
+              style={{
+                ...(isFieldEmpty('description') ? styles.errorTextareaStyle : styles.textareaStyle),
+                minHeight: '200px' // Increased height from default 100px
+              }}
             />
             {isFieldEmpty('description') && (
               <div style={{
@@ -630,7 +611,10 @@ export const Step09_RefineIdea: React.FC = () => {
               value={formData.targetCustomers}
               onChange={(e) => handleInputChange('targetCustomers', e.target.value)}
               placeholder="e.g., I should focus on building a productized service rather than a course. This will bring more money in the door and I can use AI and automation to make it scalable."
-              style={isFieldEmpty('targetCustomers') ? styles.errorTextareaStyle : styles.textareaStyle}
+              style={{
+                ...(isFieldEmpty('targetCustomers') ? styles.errorTextareaStyle : styles.textareaStyle),
+                minHeight: '200px' // Increased height from default 100px
+              }}
             />
             {isFieldEmpty('targetCustomers') && (
               <div style={{
