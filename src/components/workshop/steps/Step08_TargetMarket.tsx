@@ -270,12 +270,9 @@ export const Step08_TargetMarket: React.FC = () => {
                 <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
                   {selectedProblems.length > 0 ? (
                     <ul style={{ margin: '0', paddingLeft: '16px' }}>
-                      {selectedProblems.slice(0, 3).map((problem, index) => (
+                      {selectedProblems.map((problem, index) => (
                         <li key={index}>{problem.description}</li>
                       ))}
-                      {selectedProblems.length > 3 && (
-                        <li>...and {selectedProblems.length - 3} more</li>
-                      )}
                     </ul>
                   ) : (
                     "No focus problems selected yet"

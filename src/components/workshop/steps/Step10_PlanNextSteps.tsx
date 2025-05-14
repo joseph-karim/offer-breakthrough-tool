@@ -7,6 +7,7 @@ import * as styles from '../../../styles/stepStyles';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { InfoBox } from '../../ui/InfoBox';
 import { exportWorkshopToPdf } from '../../../utils/pdfExporter';
+import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectWorkshopData = (state: WorkshopStore) => state.workshopData;
@@ -18,6 +19,14 @@ export const Step10_PlanNextSteps: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  // Accordion state
+  const [isStep1Expanded, setIsStep1Expanded] = useState(true);
+  const [isStep2Expanded, setIsStep2Expanded] = useState(false);
+
+  // Toggle functions for accordions
+  const toggleStep1 = useCallback(() => setIsStep1Expanded(prev => !prev), []);
+  const toggleStep2 = useCallback(() => setIsStep2Expanded(prev => !prev), []);
 
   // State for individual items
   const [preSellPlanItems, setPreSellPlanItems] = useState<string[]>([]);
@@ -224,225 +233,215 @@ export const Step10_PlanNextSteps: React.FC = () => {
             Pre-selling your offer is the best way to validate market demand
           </InfoBox>
 
+          <AccordionGroup>
+            {/* Step 1: Define Pre-Sell Plan */}
+            <AccordionItem
+              title="Step 1) Define Pre-Sell Plan"
+              isExpanded={isStep1Expanded}
+              onToggle={toggleStep1}
+            >
+              <p style={{
+                fontSize: '16px',
+                color: '#4b5563',
+                margin: '0 0 16px 0'
+              }} data-sb-field-path="section1Description">
+                How will you validate that there is demand for your new offer?
+              </p>
 
+              <p style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#4b5563',
+                margin: '0 0 12px 0'
+              }} data-sb-field-path="section1Prompt">
+                Ask yourself:
+              </p>
 
-          {/* Step 1: Define Pre-Sell Plan */}
-          <div>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              margin: '0 0 16px 0'
-            }} data-sb-field-path="section1Title">
-              Step 1) Define Pre-Sell Plan
-            </h3>
+              <ul style={{
+                listStyle: 'disc',
+                paddingLeft: '24px',
+                color: '#4b5563',
+                fontSize: '16px',
+                margin: '0 0 16px 0'
+              }} data-sb-field-path="section1Questions">
+                <li>Who are the first 3-10 people you could approach about your offer?</li>
+                <li>What's the simplest version of your offer you could pre-sell?</li>
+                <li>What's a reasonable timeline for delivery?</li>
+                <li>What price point would make it irresistible for early adopters but still valuable to you?</li>
+              </ul>
 
-            <p style={{
-              fontSize: '16px',
-              color: '#4b5563',
-              margin: '0 0 16px 0'
-            }} data-sb-field-path="section1Description">
-              How will you validate that there is demand for your new offer?
-            </p>
+              {/* Add new pre-sell plan item - MOVED ABOVE the list */}
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                <input
+                  type="text"
+                  value={newPreSellItem}
+                  onChange={(e) => setNewPreSellItem(e.target.value)}
+                  onKeyDown={(e) => handleKeyPress(e, handleAddPreSellItem)}
+                  placeholder="Add a new pre-sell plan item..."
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '1px solid #d1d5db',
+                    fontSize: '14px',
+                    backgroundColor: '#f8fafc',
+                  }}
+                />
+                <Button
+                  onClick={handleAddPreSellItem}
+                  disabled={!newPreSellItem.trim()}
+                  variant="primary"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: '#fcf720',
+                    color: '#222222',
+                    borderRadius: '15px',
+                  }}
+                >
+                  <Plus size={16} />
+                  Add
+                </Button>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px', marginBottom: '16px' }}>
+                <SaveIndicator saving={isSaving} />
+              </div>
 
-            <p style={{
-              fontSize: '16px',
-              fontWeight: 600,
-              color: '#4b5563',
-              margin: '0 0 12px 0'
-            }} data-sb-field-path="section1Prompt">
-              Ask yourself:
-            </p>
-
-            <ul style={{
-              listStyle: 'disc',
-              paddingLeft: '24px',
-              color: '#4b5563',
-              fontSize: '16px',
-              margin: '0 0 16px 0'
-            }} data-sb-field-path="section1Questions">
-              <li>Who are the first 3-10 people you could approach about your offer?</li>
-              <li>What's the simplest version of your offer you could pre-sell?</li>
-              <li>What's a reasonable timeline for delivery?</li>
-              <li>What price point would make it irresistible for early adopters but still valuable to you?</li>
-            </ul>
-
-            {/* Display existing pre-sell plan items */}
-            {preSellPlanItems.length > 0 && (
-              <div style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
-                {preSellPlanItems.map((item, index) => (
-                  <div
-                    key={`presell-${index}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px 16px',
-                      backgroundColor: '#f8fafc',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0',
-                    }}
-                  >
-                    <span style={{ flex: 1, color: '#4b5563' }}>{item}</span>
-                    <button
-                      onClick={() => handleRemovePreSellItem(index)}
-                      onMouseEnter={() => setHoveredId(`presell-${index}`)}
-                      onMouseLeave={() => setHoveredId(null)}
+              {/* Display existing pre-sell plan items - MOVED BELOW the input */}
+              {preSellPlanItems.length > 0 && (
+                <div style={{ display: 'grid', gap: '8px' }}>
+                  {preSellPlanItems.map((item, index) => (
+                    <div
+                      key={`presell-${index}`}
                       style={{
-                        padding: '4px',
-                        borderRadius: '4px',
-                        border: 'none',
-                        backgroundColor: 'transparent',
-                        cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        color: hoveredId === `presell-${index}` ? '#ef4444' : '#6b7280',
-                        transition: 'color 0.2s ease'
+                        gap: '12px',
+                        padding: '12px 16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                        border: '1px solid #e2e8f0',
                       }}
                     >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
+                      <span style={{ flex: 1, color: '#4b5563' }}>{item}</span>
+                      <button
+                        onClick={() => handleRemovePreSellItem(index)}
+                        onMouseEnter={() => setHoveredId(`presell-${index}`)}
+                        onMouseLeave={() => setHoveredId(null)}
+                        style={{
+                          padding: '4px',
+                          borderRadius: '4px',
+                          border: 'none',
+                          backgroundColor: 'transparent',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          color: hoveredId === `presell-${index}` ? '#ef4444' : '#6b7280',
+                          transition: 'color 0.2s ease'
+                        }}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </AccordionItem>
+
+            {/* Step 2: Workshop Reflections */}
+            <AccordionItem
+              title="Step 2) Workshop Reflections"
+              isExpanded={isStep2Expanded}
+              onToggle={toggleStep2}
+            >
+              <p style={{
+                fontSize: '16px',
+                color: '#4b5563',
+                margin: '0 0 16px 0'
+              }} data-sb-field-path="section2Description">
+                What are your top learnings or key insights from this workshop?
+              </p>
+
+              {/* Add new workshop reflection item - MOVED ABOVE the list */}
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                <input
+                  type="text"
+                  value={newReflectionItem}
+                  onChange={(e) => setNewReflectionItem(e.target.value)}
+                  onKeyDown={(e) => handleKeyPress(e, handleAddReflectionItem)}
+                  placeholder="Add a new workshop reflection or key takeaway..."
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '1px solid #d1d5db',
+                    fontSize: '14px',
+                    backgroundColor: '#f8fafc',
+                  }}
+                />
+                <Button
+                  onClick={handleAddReflectionItem}
+                  disabled={!newReflectionItem.trim()}
+                  variant="primary"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: '#fcf720',
+                    color: '#222222',
+                    borderRadius: '15px',
+                  }}
+                >
+                  <Plus size={16} />
+                  Add
+                </Button>
               </div>
-            )}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px', marginBottom: '16px' }}>
+                <SaveIndicator saving={isSaving} />
+              </div>
 
-            {/* Add new pre-sell plan item */}
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-              <input
-                type="text"
-                value={newPreSellItem}
-                onChange={(e) => setNewPreSellItem(e.target.value)}
-                onKeyDown={(e) => handleKeyPress(e, handleAddPreSellItem)}
-                placeholder="Add a new pre-sell plan item..."
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: '1px solid #d1d5db',
-                  fontSize: '14px',
-                  backgroundColor: '#f8fafc',
-                }}
-              />
-              <Button
-                onClick={handleAddPreSellItem}
-                disabled={!newPreSellItem.trim()}
-                variant="primary"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#fcf720',
-                  color: '#222222',
-                  borderRadius: '15px',
-                }}
-              >
-                <Plus size={16} />
-                Add
-              </Button>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator saving={isSaving} />
-            </div>
-          </div>
-
-          {/* Step 2: Workshop Reflections */}
-          <div>
-            <h3 style={{
-              fontSize: '18px',
-              fontWeight: 600,
-              color: '#1e293b',
-              margin: '24px 0 16px 0'
-            }} data-sb-field-path="section2Title">
-              Step 2) Workshop Reflections
-            </h3>
-
-            <p style={{
-              fontSize: '16px',
-              color: '#4b5563',
-              margin: '0 0 16px 0'
-            }} data-sb-field-path="section2Description">
-              What are your top learnings or key insights from this workshop?
-            </p>
-
-            {/* Display existing workshop reflection items */}
-            {workshopReflectionItems.length > 0 && (
-              <div style={{ display: 'grid', gap: '8px', marginBottom: '16px' }}>
-                {workshopReflectionItems.map((item, index) => (
-                  <div
-                    key={`reflection-${index}`}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '12px 16px',
-                      backgroundColor: '#f8fafc',
-                      borderRadius: '8px',
-                      border: '1px solid #e2e8f0',
-                    }}
-                  >
-                    <span style={{ flex: 1, color: '#4b5563' }}>{item}</span>
-                    <button
-                      onClick={() => handleRemoveReflectionItem(index)}
-                      onMouseEnter={() => setHoveredId(`reflection-${index}`)}
-                      onMouseLeave={() => setHoveredId(null)}
+              {/* Display existing workshop reflection items - MOVED BELOW the input */}
+              {workshopReflectionItems.length > 0 && (
+                <div style={{ display: 'grid', gap: '8px' }}>
+                  {workshopReflectionItems.map((item, index) => (
+                    <div
+                      key={`reflection-${index}`}
                       style={{
-                        padding: '4px',
-                        borderRadius: '4px',
-                        border: 'none',
-                        backgroundColor: 'transparent',
-                        cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        color: hoveredId === `reflection-${index}` ? '#ef4444' : '#6b7280',
-                        transition: 'color 0.2s ease'
+                        gap: '12px',
+                        padding: '12px 16px',
+                        backgroundColor: '#f8fafc',
+                        borderRadius: '8px',
+                        border: '1px solid #e2e8f0',
                       }}
                     >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Add new workshop reflection item */}
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-              <input
-                type="text"
-                value={newReflectionItem}
-                onChange={(e) => setNewReflectionItem(e.target.value)}
-                onKeyDown={(e) => handleKeyPress(e, handleAddReflectionItem)}
-                placeholder="Add a new workshop reflection or key takeaway..."
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  borderRadius: '8px',
-                  border: '1px solid #d1d5db',
-                  fontSize: '14px',
-                  backgroundColor: '#f8fafc',
-                }}
-              />
-              <Button
-                onClick={handleAddReflectionItem}
-                disabled={!newReflectionItem.trim()}
-                variant="primary"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backgroundColor: '#fcf720',
-                  color: '#222222',
-                  borderRadius: '15px',
-                }}
-              >
-                <Plus size={16} />
-                Add
-              </Button>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
-              <SaveIndicator saving={isSaving} />
-            </div>
-          </div>
+                      <span style={{ flex: 1, color: '#4b5563' }}>{item}</span>
+                      <button
+                        onClick={() => handleRemoveReflectionItem(index)}
+                        onMouseEnter={() => setHoveredId(`reflection-${index}`)}
+                        onMouseLeave={() => setHoveredId(null)}
+                        style={{
+                          padding: '4px',
+                          borderRadius: '4px',
+                          border: 'none',
+                          backgroundColor: 'transparent',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          color: hoveredId === `reflection-${index}` ? '#ef4444' : '#6b7280',
+                          transition: 'color 0.2s ease'
+                        }}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </AccordionItem>
+          </AccordionGroup>
 
           {/* Workshop Summary */}
           <div style={{
@@ -473,7 +472,7 @@ export const Step10_PlanNextSteps: React.FC = () => {
               </Button>
             </div>
 
-            <div style={{ display: 'grid', gap: '16px' }}>
+            <div style={{ display: 'grid', gap: '24px' }}>
               {/* Refined Offer Idea */}
               <div>
                 <h4 style={{
@@ -488,39 +487,14 @@ export const Step10_PlanNextSteps: React.FC = () => {
                 </h4>
 
                 <div style={{ display: 'grid', gap: '12px' }}>
-                  {/* Offer Name */}
+                  {/* Refined Offer */}
                   <div>
-                    <h5 style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#4b5563',
-                      margin: '0 0 4px 0'
-                    }}>
-                      Offer Name:
-                    </h5>
                     <p style={{
                       fontSize: '14px',
                       color: '#4b5563',
-                      margin: '0'
-                    }}>
-                      {workshopData.offer?.name || workshopData.refinedIdea?.name || "Not defined yet"}
-                    </p>
-                  </div>
-
-                  {/* High-Level Description */}
-                  <div>
-                    <h5 style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#4b5563',
-                      margin: '0 0 4px 0'
-                    }}>
-                      High-Level Description:
-                    </h5>
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#4b5563',
-                      margin: '0'
+                      margin: '0',
+                      whiteSpace: 'pre-wrap',
+                      lineHeight: '1.5'
                     }}>
                       {workshopData.refinedIdea?.description || workshopData.bigIdea?.description || "Not defined yet"}
                     </p>
@@ -545,6 +519,56 @@ export const Step10_PlanNextSteps: React.FC = () => {
                     </p>
                   </div>
 
+                  {/* Common Traits */}
+                  {workshopData.targetMarketProfile?.commonTraits && workshopData.targetMarketProfile.commonTraits.length > 0 && (
+                    <div>
+                      <h5 style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: '#4b5563',
+                        margin: '0 0 4px 0'
+                      }}>
+                        Common Traits:
+                      </h5>
+                      <ul style={{
+                        listStyle: 'disc',
+                        paddingLeft: '24px',
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        margin: '0'
+                      }}>
+                        {workshopData.targetMarketProfile.commonTraits.map((trait, index) => (
+                          <li key={`trait-${index}`}>{trait}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Common Triggers */}
+                  {workshopData.targetMarketProfile?.commonTriggers && workshopData.targetMarketProfile.commonTriggers.length > 0 && (
+                    <div>
+                      <h5 style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: '#4b5563',
+                        margin: '0 0 4px 0'
+                      }}>
+                        Common Triggers:
+                      </h5>
+                      <ul style={{
+                        listStyle: 'disc',
+                        paddingLeft: '24px',
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        margin: '0'
+                      }}>
+                        {workshopData.targetMarketProfile.commonTriggers.map((trigger, index) => (
+                          <li key={`trigger-${index}`}>{trigger}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
                   {/* Core Problem Solved */}
                   <div>
                     <h5 style={{
@@ -555,18 +579,49 @@ export const Step10_PlanNextSteps: React.FC = () => {
                     }}>
                       Core Problem Solved:
                     </h5>
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#4b5563',
-                      margin: '0'
-                    }}>
-                      {workshopData.pains.find(pain =>
-                        workshopData.problemUp?.selectedPains[0] === pain.id
-                      )?.description || "Not defined yet"}
-                    </p>
+                    {workshopData.problemUp?.selectedPains && workshopData.problemUp.selectedPains.length > 0 ? (
+                      <ul style={{
+                        listStyle: 'disc',
+                        paddingLeft: '24px',
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        margin: '0'
+                      }}>
+                        {workshopData.problemUp.selectedPains.map((painId, index) => {
+                          const pain = workshopData.pains.find(p => p.id === painId);
+                          return pain ? (
+                            <li key={`pain-${index}`}>{pain.description}</li>
+                          ) : null;
+                        }).filter(Boolean)}
+                      </ul>
+                    ) : (
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#4b5563',
+                        margin: '0'
+                      }}>
+                        No core problems selected yet
+                      </p>
+                    )}
                   </div>
+                </div>
+              </div>
 
-                  {/* Format */}
+              {/* Workshop Journey */}
+              <div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  margin: '0 0 12px 0',
+                  borderBottom: '1px solid #e2e8f0',
+                  paddingBottom: '8px'
+                }}>
+                  Your Workshop Journey
+                </h4>
+
+                <div style={{ display: 'grid', gap: '16px' }}>
+                  {/* Initial Big Idea */}
                   <div>
                     <h5 style={{
                       fontSize: '14px',
@@ -574,16 +629,134 @@ export const Step10_PlanNextSteps: React.FC = () => {
                       color: '#4b5563',
                       margin: '0 0 4px 0'
                     }}>
-                      Format:
+                      Initial Big Idea:
                     </h5>
                     <p style={{
                       fontSize: '14px',
                       color: '#4b5563',
-                      margin: '0'
+                      margin: '0',
+                      whiteSpace: 'pre-wrap'
                     }}>
-                      {workshopData.offer?.format || "Not defined yet"}
+                      {workshopData.bigIdea?.description || "Not defined yet"}
                     </p>
                   </div>
+
+                  {/* Underlying Goal */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Underlying Goal:
+                    </h5>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#4b5563',
+                      margin: '0',
+                      whiteSpace: 'pre-wrap'
+                    }}>
+                      {workshopData.underlyingGoal?.businessGoal || "Not defined yet"}
+                    </p>
+                  </div>
+
+                  {/* Overarching Job */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Overarching Job:
+                    </h5>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#4b5563',
+                      margin: '0',
+                      whiteSpace: 'pre-wrap'
+                    }}>
+                      {workshopData.jobs.find(job => job.isOverarching)?.description || "Not defined yet"}
+                    </p>
+                  </div>
+
+                  {/* Key Trigger Events */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Key Trigger Events:
+                    </h5>
+                    {workshopData.triggerEvents.length > 0 ? (
+                      <ul style={{
+                        listStyle: 'disc',
+                        paddingLeft: '24px',
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        margin: '0'
+                      }}>
+                        {workshopData.triggerEvents.map((event, index) => (
+                          <li key={`event-${index}`}>{event.description}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#4b5563',
+                        margin: '0'
+                      }}>
+                        No trigger events defined yet
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Target Moment */}
+                  {workshopData.problemUp?.targetMoment && (
+                    <div>
+                      <h5 style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: '#4b5563',
+                        margin: '0 0 4px 0'
+                      }}>
+                        Target Moment:
+                      </h5>
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#4b5563',
+                        margin: '0',
+                        whiteSpace: 'pre-wrap'
+                      }}>
+                        {workshopData.problemUp.targetMoment}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Aha Moments */}
+                  {workshopData.painstormingResults?.ahaMoments && (
+                    <div>
+                      <h5 style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: '#4b5563',
+                        margin: '0 0 4px 0'
+                      }}>
+                        'Aha!' Moments & Reflections:
+                      </h5>
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#4b5563',
+                        margin: '0',
+                        whiteSpace: 'pre-wrap'
+                      }}>
+                        {workshopData.painstormingResults.ahaMoments}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 

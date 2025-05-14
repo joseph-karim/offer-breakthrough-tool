@@ -26,8 +26,8 @@ export const Step05_TargetBuyers: React.FC = () => {
   // Get the overarching job
   const overarchingJob = jobs.find(job => job.isOverarching);
 
-  // Get a sample of trigger events to display (max 3)
-  const sampleTriggerEvents = triggerEvents.slice(0, 3);
+  // Get all trigger events to display
+  const sampleTriggerEvents = triggerEvents;
 
   // Use local state for the buyers
   const [buyers, setBuyers] = useState<TargetBuyer[]>(targetBuyers || []);

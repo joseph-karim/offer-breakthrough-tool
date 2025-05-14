@@ -53,8 +53,8 @@ export const Step04_Jobs: React.FC = () => {
   // Get the overarching job
   const overarchingJob = jobs.find(job => job.isOverarching);
 
-  // Get a sample of trigger events to display (max 3)
-  const sampleTriggerEvents = triggerEvents.slice(0, 3);
+  // Get all trigger events to display
+  const sampleTriggerEvents = triggerEvents;
 
   // Update local state when store value changes
   useEffect(() => {

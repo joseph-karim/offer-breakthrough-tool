@@ -25,14 +25,14 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
 
     <div style="margin-bottom: 30px;">
       <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Big Idea</h2>
-      <p><strong>Initial Concept:</strong> ${workshopData.bigIdea?.description || 'Not defined'}</p>
-      <p><strong>Target Customers:</strong> ${workshopData.bigIdea?.targetCustomers || 'Not defined'}</p>
+      <p><strong>Initial Concept:</strong> ${workshopData.bigIdea?.description?.replace(/\n/g, '<br>') || 'Not defined'}</p>
+      <p><strong>Target Customers:</strong> ${workshopData.bigIdea?.targetCustomers?.replace(/\n/g, '<br>') || 'Not defined'}</p>
     </div>
 
     <div style="margin-bottom: 30px;">
       <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Underlying Goal</h2>
-      <p><strong>Business Goal:</strong> ${workshopData.underlyingGoal?.businessGoal || 'Not defined'}</p>
-      <p><strong>Constraints:</strong> ${workshopData.underlyingGoal?.constraints || 'Not defined'}</p>
+      <p><strong>Business Goal:</strong> ${workshopData.underlyingGoal?.businessGoal?.replace(/\n/g, '<br>') || 'Not defined'}</p>
+      <p><strong>Constraints:</strong> ${workshopData.underlyingGoal?.constraints?.replace(/\n/g, '<br>') || 'Not defined'}</p>
     </div>
 
     <div style="margin-bottom: 30px;">
@@ -73,7 +73,7 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
 
     <div style="margin-bottom: 30px;">
       <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Problem Focus</h2>
-      <p><strong>Target Moment:</strong> ${workshopData.problemUp?.targetMoment || 'Not defined'}</p>
+      <p><strong>Target Moment:</strong> ${workshopData.problemUp?.targetMoment?.replace(/\n/g, '<br>') || 'Not defined'}</p>
       <p><strong>Selected Pains:</strong></p>
       <ul>
         ${(workshopData.problemUp?.selectedPains || []).map(id => {
@@ -88,15 +88,15 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
           return buyer ? `<li>${buyer.description}</li>` : '';
         }).join('')}
       </ul>
-      <p><strong>Notes:</strong> ${workshopData.problemUp?.notes || 'None'}</p>
+      <p><strong>Notes:</strong> ${workshopData.problemUp?.notes?.replace(/\n/g, '<br>') || 'None'}</p>
+      ${workshopData.painstormingResults?.ahaMoments ? `<p><strong>'Aha!' Moments & Reflections:</strong> ${workshopData.painstormingResults.ahaMoments.replace(/\n/g, '<br>')}</p>` : ''}
     </div>
 
     <div style="margin-bottom: 30px;">
       <h2 style="color: #333; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">Refined Offer</h2>
-      <p><strong>Offer Name:</strong> ${workshopData.offer?.name || workshopData.refinedIdea?.name || 'Not defined'}</p>
-      <p><strong>Description:</strong> ${workshopData.refinedIdea?.description || 'Not defined'}</p>
-      <p><strong>Target Customers:</strong> ${workshopData.refinedIdea?.targetCustomers || 'Not defined'}</p>
-      <p><strong>Format:</strong> ${workshopData.offer?.format || 'Not defined'}</p>
+      <div style="white-space: pre-wrap; line-height: 1.5; margin-bottom: 15px;">
+        ${workshopData.refinedIdea?.description?.replace(/\n/g, '<br>') || 'Not defined'}
+      </div>
     </div>
 
     <div style="margin-bottom: 30px;">
