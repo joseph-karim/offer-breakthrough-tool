@@ -12,10 +12,22 @@ import * as styles from '../../../styles/stepStyles';
 // Separate selectors to prevent unnecessary re-renders
 const selectTargetBuyers = (state: WorkshopStore) => state.workshopData.targetBuyers;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectJobs = (state: WorkshopStore) => state.workshopData.jobs;
+const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.triggerEvents;
+const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
 
 export const Step05_TargetBuyers: React.FC = () => {
   const targetBuyers = useWorkshopStore(selectTargetBuyers);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const jobs = useWorkshopStore(selectJobs);
+  const triggerEvents = useWorkshopStore(selectTriggerEvents);
+  const bigIdea = useWorkshopStore(selectBigIdea);
+
+  // Get the overarching job
+  const overarchingJob = jobs.find(job => job.isOverarching);
+
+  // Get a sample of trigger events to display (max 3)
+  const sampleTriggerEvents = triggerEvents.slice(0, 3);
 
   // Use local state for the buyers
   const [buyers, setBuyers] = useState<TargetBuyer[]>(targetBuyers || []);
@@ -196,6 +208,59 @@ export const Step05_TargetBuyers: React.FC = () => {
                 Remember to think contextually about who might need to get the job done.
                 Consider specific life factors, business models, industries, job titles, etc.
               </p>
+
+              {/* Context from previous steps */}
+              <div style={{
+                padding: '16px',
+                backgroundColor: '#f8fafc',
+                borderRadius: '8px',
+                border: '1px solid #e2e8f0',
+                marginBottom: '20px'
+              }}>
+                <h3 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  margin: '0 0 12px 0'
+                }}>
+                  Your Context
+                </h3>
+
+                {bigIdea && (
+                  <div style={{ marginBottom: '12px' }}>
+                    <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Big Idea:</p>
+                    <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                      {bigIdea.description}
+                    </div>
+                  </div>
+                )}
+
+                {overarchingJob && (
+                  <div style={{ marginBottom: '12px' }}>
+                    <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Overarching Job-to-be-Done:</p>
+                    <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                      {overarchingJob.description}
+                    </div>
+                  </div>
+                )}
+
+                {sampleTriggerEvents.length > 0 && (
+                  <div>
+                    <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Some Potential Buying Triggers:</p>
+                    <ul style={{
+                      margin: '0',
+                      paddingLeft: '16px',
+                      listStyleType: 'disc',
+                      color: '#334155',
+                      fontSize: '14px'
+                    }}>
+                      {sampleTriggerEvents.map((trigger, index) => (
+                        <li key={index}>{trigger.description}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
 
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <ChatWithSparkyButton

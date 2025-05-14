@@ -18,6 +18,8 @@ const selectJobs = (state: WorkshopStore) => state.workshopData.jobs;
 const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.triggerEvents;
 const selectTargetProblems = (state: WorkshopStore) => state.workshopData.targetProblems;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
+const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
+const selectPainstormingResults = (state: WorkshopStore) => state.workshopData.painstormingResults;
 
 export const Step08_TargetMarket: React.FC = () => {
   const problemUp = useWorkshopStore(selectProblemUp);
@@ -27,6 +29,8 @@ export const Step08_TargetMarket: React.FC = () => {
   const triggerEvents = useWorkshopStore(selectTriggerEvents);
   const targetProblems = useWorkshopStore(selectTargetProblems) || [];
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const bigIdea = useWorkshopStore(selectBigIdea);
+  const painstormingResults = useWorkshopStore(selectPainstormingResults);
 
   // Get selected problems from previous step
   const selectedProblems = targetProblems.filter(problem => problem.selected);
@@ -227,6 +231,83 @@ export const Step08_TargetMarket: React.FC = () => {
               Sparky will help you define a specific target market profile based on your selected buyers, pains, and other context.
             </p>
 
+            {/* Context Window */}
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0',
+              marginBottom: '20px'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#1e293b',
+                margin: '0 0 12px 0'
+              }}>
+                Your Context
+              </h3>
+
+              {/* Big Idea */}
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Big Idea:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {bigIdea?.description || "No big idea defined yet"}
+                </div>
+              </div>
+
+              {/* Overarching Job */}
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Overarching Job-to-be-Done:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {overarchingJob?.description || "No overarching job defined yet"}
+                </div>
+              </div>
+
+              {/* Focus Problems */}
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Focus Problems:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {selectedProblems.length > 0 ? (
+                    <ul style={{ margin: '0', paddingLeft: '16px' }}>
+                      {selectedProblems.slice(0, 3).map((problem, index) => (
+                        <li key={index}>{problem.description}</li>
+                      ))}
+                      {selectedProblems.length > 3 && (
+                        <li>...and {selectedProblems.length - 3} more</li>
+                      )}
+                    </ul>
+                  ) : (
+                    "No focus problems selected yet"
+                  )}
+                </div>
+              </div>
+
+              {/* Target Buyers */}
+              <div style={{ marginBottom: '12px' }}>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Target Buyers:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {selectedBuyers.length > 0 ? (
+                    <ul style={{ margin: '0', paddingLeft: '16px' }}>
+                      {selectedBuyers.map((buyer, index) => (
+                        <li key={index}>{buyer.description}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    "No target buyers selected yet"
+                  )}
+                </div>
+              </div>
+
+              {/* Aha Moments */}
+              <div>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your 'Aha!' Moments & Reflections:</p>
+                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
+                  {painstormingResults?.ahaMoments || "No aha moments recorded yet"}
+                </div>
+              </div>
+            </div>
+
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
               <ChatWithSparkyButton
                 exerciseKey="targetMarket"
@@ -263,21 +344,7 @@ export const Step08_TargetMarket: React.FC = () => {
               Create a descriptive name that captures the essence of your target market
             </p>
 
-            {/* Context for Market Name */}
-            <div style={{
-              padding: '12px',
-              backgroundColor: '#f8fafc',
-              borderRadius: '6px',
-              marginBottom: '12px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>CONTEXT:</p>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px' }}>Buyer Information</p>
-              <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>Primary Target Buyer:</p>
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px', marginBottom: '8px' }}>
-                {primaryBuyer?.description || "No primary buyer selected yet"}
-              </div>
-            </div>
+
 
             <input
               id="market-name"
@@ -301,21 +368,7 @@ export const Step08_TargetMarket: React.FC = () => {
               List the most defining shared characteristics (demographic, firmographic, psychographic)
             </p>
 
-            {/* Context for Common Traits */}
-            <div style={{
-              padding: '12px',
-              backgroundColor: '#f8fafc',
-              borderRadius: '6px',
-              marginBottom: '12px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>CONTEXT:</p>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px' }}>Pain Points</p>
-              <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>Primary Pain Point:</p>
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                {primaryPain?.description || "No primary pain selected yet"}
-              </div>
-            </div>
+
 
             {/* Add trait input */}
             <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
@@ -403,25 +456,7 @@ export const Step08_TargetMarket: React.FC = () => {
               List the specific triggers most relevant to this group experiencing the target moment/pain.
             </p>
 
-            {/* Context for Common Triggers */}
-            <div style={{
-              padding: '12px',
-              backgroundColor: '#f8fafc',
-              borderRadius: '6px',
-              marginBottom: '12px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>CONTEXT:</p>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 600, fontSize: '14px' }}>Additional Context</p>
-              <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>Target Moment:</p>
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px', marginBottom: '8px' }}>
-                {problemUp?.targetMoment || "No target moment defined yet"}
-              </div>
-              <p style={{ margin: '0 0 4px 0', fontSize: '14px' }}>Overarching Job Statement:</p>
-              <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                {overarchingJob?.description || "No overarching job defined yet"}
-              </div>
-            </div>
+
 
             {/* Add trigger input */}
             <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>

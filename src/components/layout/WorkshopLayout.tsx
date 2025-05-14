@@ -1,21 +1,12 @@
 import { ReactNode } from 'react';
 import { useWorkshopStore } from '../../store/workshopStore';
-import { SparkyChatModal } from '../workshop/chat/SparkyChatModal';
 
 interface WorkshopLayoutProps {
   children: ReactNode;
 }
 
 export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
-  const {
-    currentStep,
-    isSparkyModalOpen,
-    sparkyModalConfig,
-    currentModalChatMessages,
-    isAiLoading,
-    closeSparkyModal,
-    sendSparkyModalMessage
-  } = useWorkshopStore();
+  const { currentStep } = useWorkshopStore();
 
   // Total steps in the workshop
   const totalSteps = 10;
@@ -120,18 +111,6 @@ export const WorkshopLayout = ({ children }: WorkshopLayoutProps) => {
           {children}
         </main>
       </div>
-
-      {/* Sparky Chat Modal */}
-      {isSparkyModalOpen && sparkyModalConfig && (
-        <SparkyChatModal
-          isOpen={isSparkyModalOpen}
-          onClose={closeSparkyModal}
-          title={sparkyModalConfig.exerciseTitle || 'Chat with Sparky'}
-          messages={currentModalChatMessages}
-          isTyping={isAiLoading}
-          onSendMessage={sendSparkyModalMessage}
-        />
-      )}
     </div>
   );
 };
