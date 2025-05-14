@@ -24,7 +24,6 @@ export const WorkshopWizard = () => {
   const location = useLocation();
   const { user } = useAuth();
   const {
-    initializeSession,
     loadSession,
     sessionId,
     setCurrentStep,
@@ -60,10 +59,13 @@ export const WorkshopWizard = () => {
 
         if (sessionIdParam) {
           // Load existing session
+          console.log('Loading existing session from URL param:', sessionIdParam);
           await loadSession(sessionIdParam);
         } else if (!sessionId) {
-          // Initialize new session if no session ID is provided and no session is loaded
-          await initializeSession();
+          // If we're on a step page but don't have a session, redirect to dashboard
+          console.log('No session ID in URL and no active session, redirecting to dashboard');
+          navigate('/dashboard');
+          return;
         }
 
         if (mounted) {
@@ -74,6 +76,8 @@ export const WorkshopWizard = () => {
         console.error('Failed to initialize or load session:', error);
         if (mounted) {
           setIsLoading(false);
+          // If there's an error loading the session, redirect to dashboard
+          navigate('/dashboard');
         }
       }
     };
@@ -83,7 +87,7 @@ export const WorkshopWizard = () => {
     return () => {
       mounted = false;
     };
-  }, [user, location, loadSession, initializeSession, sessionId, navigate]);
+  }, [user, location, loadSession, sessionId, navigate]);
 
   const goToPreviousStep = useCallback(() => {
     setValidationErrors(false); // Reset validation errors when going back

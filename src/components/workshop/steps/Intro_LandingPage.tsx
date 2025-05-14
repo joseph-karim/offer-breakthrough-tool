@@ -26,13 +26,9 @@ export const Step01_Intro: React.FC = () => {
           console.error('Error loading session:', error);
           setLoading(false);
         });
-    } else if (user) {
-      // Initialize a new session if user is logged in but no session ID is provided
-      initializeSession().catch((error) => {
-        console.error('Error initializing session:', error);
-      });
     }
-  }, [location.search, user]);
+    // Removed the automatic session initialization to prevent duplicate sessions
+  }, [location.search]);
 
   const handleStartWorkshop = async () => {
     if (!user) {
@@ -42,8 +38,29 @@ export const Step01_Intro: React.FC = () => {
 
     setLoading(true);
     try {
-      setCurrentStep(1); // Set to step 1 (first actual step)
-      navigate('/step/1');
+      // Check if we already have a session ID from URL
+      const queryParams = new URLSearchParams(location.search);
+      const sessionIdParam = queryParams.get('session');
+
+      // If we don't have a session ID from URL or in the store, create a new one
+      if (!sessionIdParam && !useWorkshopStore.getState().sessionId) {
+        console.log('Creating new session for workshop start');
+        await initializeSession();
+      }
+
+      // Get the current session ID (either existing or newly created)
+      const currentSessionId = useWorkshopStore.getState().sessionId;
+
+      if (currentSessionId) {
+        setCurrentStep(1); // Set to step 1 (first actual step)
+        navigate(`/step/1?session=${currentSessionId}`);
+      } else {
+        console.error('No session ID available after initialization');
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error('Error starting workshop:', error);
+      navigate('/dashboard');
     } finally {
       setLoading(false);
     }
