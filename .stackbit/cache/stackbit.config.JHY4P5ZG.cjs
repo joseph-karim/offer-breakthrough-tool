@@ -85,7 +85,7 @@ module.exports = {
         { urlPath: "/step/4", stableId: "workshop-step-4", label: "Step 4: Define Customer Jobs", isHomePage: false },
         { urlPath: "/step/5", stableId: "workshop-step-5", label: "Step 5: Target Buyers", isHomePage: false },
         { urlPath: "/step/6", stableId: "workshop-step-6", label: "Step 6: Painstorming", isHomePage: false },
-        { urlPath: "/step/7", stableId: "workshop-step-7", label: "Step 7: Problem Up", isHomePage: false },
+        { urlPath: "/step/7", stableId: "workshop-step-7", label: "Step 7: Choose Target Problems", isHomePage: false },
         { urlPath: "/step/8", stableId: "workshop-step-8", label: "Step 8: Define Your Focused Target Market", isHomePage: false },
         { urlPath: "/step/9", stableId: "workshop-step-9", label: "Step 9: Refine Your Idea", isHomePage: false },
         { urlPath: "/step/10", stableId: "workshop-step-10", label: "Step 10: Summary", isHomePage: false }
@@ -121,4 +121,4 @@ module.exports = {
     }).filter(Boolean);
   }
 };
-//# sourceMappingURL=stackbit.config.N222ZBHJ.cjs.map
+//# sourceMappingURL=stackbit.config.JHY4P5ZG.cjs.map
