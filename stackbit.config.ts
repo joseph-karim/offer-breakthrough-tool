@@ -5,7 +5,7 @@ export default defineStackbitConfig({
   stackbitVersion: '~0.6.0',
   nodeVersion: '18',
   ssgName: 'custom',
-  devCommand: 'npx vite --port {PORT} --strictPort=false',
+  devCommand: 'npx vite --port {PORT} --strictPort=false --force',
 
   contentSources: [
     new GitContentSource({

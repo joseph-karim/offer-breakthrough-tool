@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000 --strictPort=false",
+    "dev:fast": "vite --port 3000 --strictPort=false --force",
     "build": "tsc -b && vite build",
+    "build:fast": "vite build --skipTypeCheck",
     "build:full": "npm install --force && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "netlify-dev": "netlify dev",
-    "stackbit": "vite --port 8000 --strictPort=false",
+    "stackbit": "vite --port 8000 --strictPort=false --force",
     "analyze": "vite build --mode analyze"
   },
   "dependencies": {

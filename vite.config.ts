@@ -84,7 +84,31 @@ export default defineConfig(({ mode }) => {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With'
+      },
+      // Improve startup performance
+      hmr: {
+        overlay: false // Disable the HMR overlay to reduce initial load time
+      },
+      // Optimize for faster startup
+      warmup: {
+        clientFiles: ['./src/main.tsx', './src/App.tsx']
       }
+    },
+    // Optimize for faster development
+    optimizeDeps: {
+      // Force include dependencies that might be missed in the scan
+      include: [
+        'react',
+        'react-dom',
+        'react-router-dom',
+        '@supabase/supabase-js'
+      ],
+      // Skip optimization of rarely used dependencies
+      exclude: [
+        'jspdf',
+        'html2canvas',
+        'react-confetti'
+      ]
     }
   };
 })
