@@ -22,74 +22,161 @@ export const saveWorkshopSession = async (
   step: number,
   name?: string
 ) => {
-  const user = supabase.auth.getUser();
-  const userId = (await user).data.user?.id;
+  try {
+    const user = await supabase.auth.getUser();
+    const userId = user.data.user?.id;
 
-  const { error } = await supabase
-    .from('workshop_sessions')
-    .upsert({
-      session_id: sessionId,
-      workshop_data: data,
-      current_step: step,
-      updated_at: new Date().toISOString(),
-      user_id: userId,
-      ...(name && { name }),
-    });
+    console.log('Saving workshop session with user ID:', userId);
 
-  if (error) throw error;
+    if (!userId) {
+      console.error('No user ID found when saving workshop session. Auth state:', user);
+      // Still attempt to save without user ID to maintain data
+    }
+
+    const { error } = await supabase
+      .from('workshop_sessions')
+      .upsert({
+        session_id: sessionId,
+        workshop_data: data,
+        current_step: step,
+        updated_at: new Date().toISOString(),
+        user_id: userId,
+        ...(name && { name }),
+      });
+
+    if (error) {
+      console.error('Error saving workshop session:', error);
+      throw error;
+    }
+
+    console.log('Workshop session saved successfully:', { sessionId, step });
+  } catch (err) {
+    console.error('Exception in saveWorkshopSession:', err);
+    throw err;
+  }
 };
 
 export const loadWorkshopSession = async (sessionId: string): Promise<WorkshopSession> => {
-  const { data, error } = await supabase
-    .from('workshop_sessions')
-    .select('*')
-    .eq('session_id', sessionId)
-    .single();
+  try {
+    console.log('Loading workshop session:', sessionId);
 
-  if (error) throw error;
-  return data;
+    const { data, error } = await supabase
+      .from('workshop_sessions')
+      .select('*')
+      .eq('session_id', sessionId)
+      .single();
+
+    if (error) {
+      console.error('Error loading workshop session:', error);
+      throw error;
+    }
+
+    if (!data) {
+      console.error('No data found for session:', sessionId);
+      throw new Error('Session not found');
+    }
+
+    console.log('Workshop session loaded successfully:', {
+      sessionId,
+      step: data.current_step,
+      dataKeys: data.workshop_data ? Object.keys(data.workshop_data) : []
+    });
+
+    return data;
+  } catch (err) {
+    console.error('Exception in loadWorkshopSession:', err);
+    throw err;
+  }
 };
 
 export const updateWorkshopStep = async (sessionId: string, step: number) => {
-  const { error } = await supabase
-    .from('workshop_sessions')
-    .update({ current_step: step, updated_at: new Date().toISOString() })
-    .eq('session_id', sessionId);
+  try {
+    console.log('Updating workshop step:', { sessionId, step });
 
-  if (error) throw error;
+    const { error } = await supabase
+      .from('workshop_sessions')
+      .update({ current_step: step, updated_at: new Date().toISOString() })
+      .eq('session_id', sessionId);
+
+    if (error) {
+      console.error('Error updating workshop step:', error);
+      throw error;
+    }
+
+    console.log('Workshop step updated successfully:', { sessionId, step });
+  } catch (err) {
+    console.error('Exception in updateWorkshopStep:', err);
+    throw err;
+  }
 };
 
 export const getUserSessions = async (): Promise<WorkshopSession[]> => {
-  const user = supabase.auth.getUser();
-  const userId = (await user).data.user?.id;
+  try {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
 
-  if (!userId) {
-    throw new Error('User not authenticated');
+    if (userError) {
+      console.error('Error getting user:', userError);
+      throw userError;
+    }
+
+    const userId = userData.user?.id;
+    console.log('Getting sessions for user ID:', userId);
+
+    if (!userId) {
+      console.error('No user ID found when getting user sessions');
+      throw new Error('User not authenticated');
+    }
+
+    const { data, error } = await supabase
+      .from('workshop_sessions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false });
+
+    if (error) {
+      console.error('Error getting user sessions:', error);
+      throw error;
+    }
+
+    console.log(`Found ${data?.length || 0} sessions for user`);
+    return data || [];
+  } catch (err) {
+    console.error('Exception in getUserSessions:', err);
+    throw err;
   }
-
-  const { data, error } = await supabase
-    .from('workshop_sessions')
-    .select('*')
-    .eq('user_id', userId)
-    .order('updated_at', { ascending: false });
-
-  if (error) throw error;
-  return data || [];
 };
 
 export const deleteWorkshopSession = async (sessionId: string) => {
-  const user = supabase.auth.getUser();
-  const userId = (await user).data.user?.id;
+  try {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
 
-  if (!userId) {
-    throw new Error('User not authenticated');
+    if (userError) {
+      console.error('Error getting user:', userError);
+      throw userError;
+    }
+
+    const userId = userData.user?.id;
+    console.log('Deleting session for user ID:', userId);
+
+    if (!userId) {
+      console.error('No user ID found when deleting workshop session');
+      throw new Error('User not authenticated');
+    }
+
+    const { error } = await supabase
+      .from('workshop_sessions')
+      .delete()
+      .eq('session_id', sessionId)
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error deleting workshop session:', error);
+      throw error;
+    }
+
+    console.log('Workshop session deleted successfully:', sessionId);
+  } catch (err) {
+    console.error('Exception in deleteWorkshopSession:', err);
+    throw err;
   }
-
-  const { error } = await supabase
-    .from('workshop_sessions')
-    .delete()
-    .eq('session_id', sessionId)
-    .eq('user_id', userId);
-
-  if (error) throw error;
 };

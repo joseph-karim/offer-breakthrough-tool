@@ -536,15 +536,29 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
   saveSession: async () => {
     const { sessionId, currentStep, workshopData } = get();
-    if (!sessionId) return;
+    if (!sessionId) {
+      console.error('Cannot save session: No sessionId available');
+      return;
+    }
 
     set({ isSaving: true });
     try {
+      // Make a deep copy of the workshop data to avoid any reference issues
+      const workshopDataCopy = JSON.parse(JSON.stringify(workshopData));
+
       // Save session to Supabase
-      await saveWorkshopSession(sessionId, workshopData, currentStep);
+      console.log('Saving session with data:', {
+        sessionId,
+        currentStep,
+        dataKeys: Object.keys(workshopDataCopy)
+      });
+
+      await saveWorkshopSession(sessionId, workshopDataCopy, currentStep);
       console.log('Session saved successfully:', { sessionId, currentStep });
     } catch (error) {
       console.error('Failed to save session:', error);
+      // Alert the user about the save failure
+      alert('Failed to save your progress. Please check your connection and try again.');
     } finally {
       set({ isSaving: false });
     }
@@ -570,9 +584,21 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
       // Update the step in Supabase
       if (sessionId) {
+        console.log('Updating current step to:', step);
+
+        // First update just the step number for quick navigation
         updateWorkshopStep(sessionId, step).catch(error => {
           console.error('Failed to update workshop step:', error);
         });
+
+        // Then save the full session data to ensure everything is up to date
+        const { saveSession } = get();
+        setTimeout(() => {
+          console.log('Saving full session after step change');
+          saveSession();
+        }, 200);
+      } else {
+        console.error('Cannot update step: No sessionId available');
       }
     }
   },
@@ -594,6 +620,15 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         workshopData: updatedData,
       };
     });
+
+    // Save the updated data to Supabase
+    const { saveSession } = get();
+
+    // Use setTimeout to ensure the state is updated before saving
+    setTimeout(() => {
+      console.log('Auto-saving after updateWorkshopData');
+      saveSession();
+    }, 100);
   },
 
   canProceedToNextStep: () => {
