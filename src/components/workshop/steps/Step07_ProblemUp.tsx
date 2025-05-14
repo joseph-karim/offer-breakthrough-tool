@@ -27,6 +27,7 @@ export const Step07_ProblemUp: React.FC = () => {
   const [newProblem, setNewProblem] = useState('');
   const [isStep1Expanded, setIsStep1Expanded] = useState(true);
   const [isStep2Expanded, setIsStep2Expanded] = useState(false);
+  const [activeTab, setActiveTab] = useState<'buyer1' | 'buyer2' | 'buyer3' | 'overlapping'>('buyer1');
 
   // Get top buyer segments
   const topBuyers = targetBuyers.filter(buyer => buyer.isTopThree).slice(0, 3);
@@ -216,6 +217,155 @@ export const Step07_ProblemUp: React.FC = () => {
               <li style={{ marginBottom: '8px' }}>Which problems, if solved well, can create a profitable domino effect in your business?</li>
             </ul>
 
+            {/* Painstorming Results in Tabs */}
+            {painstormingResults && (
+              <div style={{
+                backgroundColor: '#f8fafc',
+                borderRadius: '8px',
+                padding: '16px',
+                border: '1px solid #e2e8f0',
+                marginTop: '16px',
+                marginBottom: '20px'
+              }}>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: '#1e293b',
+                  margin: '0 0 12px 0'
+                }}>
+                  Review Your Painstorming Results:
+                </h4>
+
+                {/* Tabbed interface for painstorming results */}
+                <div>
+                  {/* Tab navigation */}
+                  <div style={{
+                    display: 'flex',
+                    borderBottom: '1px solid #e2e8f0',
+                    marginBottom: '12px'
+                  }}>
+                    <div
+                      onClick={() => setActiveTab('buyer1')}
+                      style={{
+                        padding: '8px 16px',
+                        cursor: 'pointer',
+                        fontWeight: activeTab === 'buyer1' ? 600 : 400,
+                        borderBottom: activeTab === 'buyer1' ? '2px solid #fcf720' : 'none',
+                        color: activeTab === 'buyer1' ? '#1e293b' : '#64748b',
+                        backgroundColor: activeTab === 'buyer1' ? '#fff' : 'transparent',
+                        borderTopLeftRadius: '6px',
+                        borderTopRightRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {painstormingResults?.buyerSegment1 || 'Buyer Segment 1'}
+                    </div>
+
+                    <div
+                      onClick={() => setActiveTab('buyer2')}
+                      style={{
+                        padding: '8px 16px',
+                        cursor: 'pointer',
+                        fontWeight: activeTab === 'buyer2' ? 600 : 400,
+                        borderBottom: activeTab === 'buyer2' ? '2px solid #fcf720' : 'none',
+                        color: activeTab === 'buyer2' ? '#1e293b' : '#64748b',
+                        backgroundColor: activeTab === 'buyer2' ? '#fff' : 'transparent',
+                        borderTopLeftRadius: '6px',
+                        borderTopRightRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {painstormingResults?.buyerSegment2 || 'Buyer Segment 2'}
+                    </div>
+
+                    <div
+                      onClick={() => setActiveTab('buyer3')}
+                      style={{
+                        padding: '8px 16px',
+                        cursor: 'pointer',
+                        fontWeight: activeTab === 'buyer3' ? 600 : 400,
+                        borderBottom: activeTab === 'buyer3' ? '2px solid #fcf720' : 'none',
+                        color: activeTab === 'buyer3' ? '#1e293b' : '#64748b',
+                        backgroundColor: activeTab === 'buyer3' ? '#fff' : 'transparent',
+                        borderTopLeftRadius: '6px',
+                        borderTopRightRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {painstormingResults?.buyerSegment3 || 'Buyer Segment 3'}
+                    </div>
+
+                    <div
+                      onClick={() => setActiveTab('overlapping')}
+                      style={{
+                        padding: '8px 16px',
+                        cursor: 'pointer',
+                        fontWeight: activeTab === 'overlapping' ? 600 : 400,
+                        borderBottom: activeTab === 'overlapping' ? '2px solid #fcf720' : 'none',
+                        color: activeTab === 'overlapping' ? '#1e293b' : '#64748b',
+                        backgroundColor: activeTab === 'overlapping' ? '#fff' : 'transparent',
+                        borderTopLeftRadius: '6px',
+                        borderTopRightRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    >
+                      Overlapping Problems
+                    </div>
+                  </div>
+
+                  {/* Tab content */}
+                  <div style={{
+                    backgroundColor: '#ffffff',
+                    padding: '16px',
+                    borderRadius: '6px',
+                    border: '1px solid #e2e8f0',
+                    maxHeight: '200px',
+                    overflowY: 'auto'
+                  }}>
+                    {activeTab === 'buyer1' && (
+                      <div style={{
+                        fontSize: '14px',
+                        whiteSpace: 'pre-line',
+                        lineHeight: '1.5'
+                      }}>
+                        {painstormingResults?.buyer1Pains || 'No problems recorded yet for this buyer segment. Complete the Painstorming step first.'}
+                      </div>
+                    )}
+
+                    {activeTab === 'buyer2' && (
+                      <div style={{
+                        fontSize: '14px',
+                        whiteSpace: 'pre-line',
+                        lineHeight: '1.5'
+                      }}>
+                        {painstormingResults?.buyer2Pains || 'No problems recorded yet for this buyer segment. Complete the Painstorming step first.'}
+                      </div>
+                    )}
+
+                    {activeTab === 'buyer3' && (
+                      <div style={{
+                        fontSize: '14px',
+                        whiteSpace: 'pre-line',
+                        lineHeight: '1.5'
+                      }}>
+                        {painstormingResults?.buyer3Pains || 'No problems recorded yet for this buyer segment. Complete the Painstorming step first.'}
+                      </div>
+                    )}
+
+                    {activeTab === 'overlapping' && (
+                      <div style={{
+                        fontSize: '14px',
+                        whiteSpace: 'pre-line',
+                        lineHeight: '1.5'
+                      }}>
+                        {painstormingResults?.overlappingPains || 'No overlapping problems recorded yet. Complete the Painstorming step first.'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Display problems from painstorming */}
             {pains.length > 0 && (
               <div style={{ marginBottom: '24px' }}>
@@ -284,7 +434,7 @@ export const Step07_ProblemUp: React.FC = () => {
                             }}
                           >
                             <Plus size={14} />
-                            Add
+                            Add this Problem to Review
                           </Button>
                         </div>
                       ))}
@@ -344,7 +494,7 @@ export const Step07_ProblemUp: React.FC = () => {
                             }}
                           >
                             <Plus size={14} />
-                            Add
+                            Add this Problem to Review
                           </Button>
                         </div>
                       ))}
@@ -405,7 +555,7 @@ export const Step07_ProblemUp: React.FC = () => {
                               }}
                             >
                               <Plus size={14} />
-                              Add
+                              Add this Problem to Review
                             </Button>
                           </div>
                         ))}
@@ -478,7 +628,7 @@ export const Step07_ProblemUp: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
               <Button onClick={handleAddProblem} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Plus size={16} />
-                Add Problem
+                Add this Problem to Review
               </Button>
             </div>
 
