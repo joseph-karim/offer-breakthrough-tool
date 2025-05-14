@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { Lightbulb } from 'lucide-react';
-import { SaveIndicator } from '../../ui/SaveIndicator';
+import { Lightbulb, Save, Edit, Check, Lock } from 'lucide-react';
+import { Button } from '../../ui/Button';
 
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
@@ -32,8 +32,21 @@ export const Step06_Painstorming: React.FC = () => {
   const [buyer3Pains, setBuyer3Pains] = useState('');
   const [overlappingPains, setOverlappingPains] = useState('');
   const [ahaMoments, setAhaMoments] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveTimer, setSaveTimer] = useState<NodeJS.Timeout | null>(null);
+
+  // Track which section is currently saving
+  const [savingSection, setSavingSection] = useState<string | null>(null);
+
+  // Track which sections are locked (saved and not editable)
+  const [lockedSections, setLockedSections] = useState({
+    buyer1: false,
+    buyer2: false,
+    buyer3: false,
+    overlapping: false,
+    ahaMoments: false
+  });
+
+  // For backward compatibility - keeping this to avoid breaking changes
+  const [saveTimer] = useState<NodeJS.Timeout | null>(null);
 
   // Get top selected buyers (up to 3)
   const topBuyers = targetBuyers
@@ -45,29 +58,123 @@ export const Step06_Painstorming: React.FC = () => {
 
   // Load initial data if available
   useEffect(() => {
-    // Initialize buyer segment titles from top buyers
-    if (topBuyers.length > 0) {
-      if (topBuyers[0]) setBuyerSegment1(topBuyers[0].description);
-      if (topBuyers[1]) setBuyerSegment2(topBuyers[1].description);
-      if (topBuyers[2]) setBuyerSegment3(topBuyers[2].description);
-    }
+    // This effect should only run once on mount or when topBuyers changes
+    // We'll use a ref to track if we've already loaded the data
+    const initialBuyerSegments = () => {
+      if (topBuyers.length > 0) {
+        // Only set buyer segments from topBuyers if we don't have painstorming results
+        if (!painstormingResults) {
+          if (topBuyers[0]) setBuyerSegment1(topBuyers[0].description);
+          if (topBuyers[1]) setBuyerSegment2(topBuyers[1].description);
+          if (topBuyers[2]) setBuyerSegment3(topBuyers[2].description);
+        }
+      }
+    };
 
     // Load painstorming results if available
-    if (painstormingResults) {
-      setBuyerSegment1(painstormingResults.buyerSegment1 || (topBuyers[0]?.description || ''));
-      setBuyerSegment2(painstormingResults.buyerSegment2 || (topBuyers[1]?.description || ''));
-      setBuyerSegment3(painstormingResults.buyerSegment3 || (topBuyers[2]?.description || ''));
-      setBuyer1Pains(painstormingResults.buyer1Pains || '');
-      setBuyer2Pains(painstormingResults.buyer2Pains || '');
-      setBuyer3Pains(painstormingResults.buyer3Pains || '');
-      setOverlappingPains(painstormingResults.overlappingPains || '');
-      setAhaMoments(painstormingResults.ahaMoments || '');
+    const loadPainstormingResults = () => {
+      if (painstormingResults) {
+        setBuyerSegment1(painstormingResults.buyerSegment1 || (topBuyers[0]?.description || ''));
+        setBuyerSegment2(painstormingResults.buyerSegment2 || (topBuyers[1]?.description || ''));
+        setBuyerSegment3(painstormingResults.buyerSegment3 || (topBuyers[2]?.description || ''));
+        setBuyer1Pains(painstormingResults.buyer1Pains || '');
+        setBuyer2Pains(painstormingResults.buyer2Pains || '');
+        setBuyer3Pains(painstormingResults.buyer3Pains || '');
+        setOverlappingPains(painstormingResults.overlappingPains || '');
+        setAhaMoments(painstormingResults.ahaMoments || '');
+
+        // Set sections with content as locked
+        setLockedSections({
+          buyer1: !!painstormingResults.buyer1Pains,
+          buyer2: !!painstormingResults.buyer2Pains,
+          buyer3: !!painstormingResults.buyer3Pains,
+          overlapping: !!painstormingResults.overlappingPains,
+          ahaMoments: !!painstormingResults.ahaMoments
+        });
+      }
+    };
+
+    initialBuyerSegments();
+    loadPainstormingResults();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Save a specific section
+  const saveSection = useCallback((section: 'buyer1' | 'buyer2' | 'buyer3' | 'overlapping' | 'ahaMoments') => {
+    // Set saving indicator for this section
+    setSavingSection(section);
+
+    // Get current painstorming results
+    const currentResults = painstormingResults || {
+      buyerSegment1: '',
+      buyerSegment2: '',
+      buyerSegment3: '',
+      buyer1Pains: '',
+      buyer2Pains: '',
+      buyer3Pains: '',
+      overlappingPains: '',
+      ahaMoments: ''
+    };
+
+    // Create updated results object
+    const updatedResults = { ...currentResults };
+
+    // Update the appropriate fields based on the section being saved
+    switch (section) {
+      case 'buyer1':
+        updatedResults.buyerSegment1 = buyerSegment1;
+        updatedResults.buyer1Pains = buyer1Pains;
+        break;
+      case 'buyer2':
+        updatedResults.buyerSegment2 = buyerSegment2;
+        updatedResults.buyer2Pains = buyer2Pains;
+        break;
+      case 'buyer3':
+        updatedResults.buyerSegment3 = buyerSegment3;
+        updatedResults.buyer3Pains = buyer3Pains;
+        break;
+      case 'overlapping':
+        updatedResults.overlappingPains = overlappingPains;
+        break;
+      case 'ahaMoments':
+        updatedResults.ahaMoments = ahaMoments;
+        break;
     }
-  }, [topBuyers, painstormingResults]);
+
+    // Save to store
+    updateWorkshopData({
+      painstormingResults: updatedResults
+    });
+
+    // Lock this section
+    setLockedSections(prev => ({ ...prev, [section]: true }));
+
+    // Clear saving indicator after a delay
+    setTimeout(() => {
+      setSavingSection(null);
+    }, 2000);
+  }, [
+    painstormingResults,
+    updateWorkshopData,
+    buyerSegment1,
+    buyerSegment2,
+    buyerSegment3,
+    buyer1Pains,
+    buyer2Pains,
+    buyer3Pains,
+    overlappingPains,
+    ahaMoments
+  ]);
+
+  // Unlock a section for editing
+  const unlockSection = useCallback((section: 'buyer1' | 'buyer2' | 'buyer3' | 'overlapping' | 'ahaMoments') => {
+    setLockedSections(prev => ({ ...prev, [section]: false }));
+  }, []);
 
   // Handle buyer segment title changes
   const handleBuyerSegmentChange = useCallback((index: number, value: string) => {
-    // Update local state
+    // Always update the title field regardless of lock state
     switch (index) {
       case 1:
         setBuyerSegment1(value);
@@ -80,158 +187,56 @@ export const Step06_Painstorming: React.FC = () => {
         break;
     }
 
-    // Clear any existing timer
+    // Cancel any auto-save functionality
     if (saveTimer) {
       clearTimeout(saveTimer);
     }
-
-    // Set saving indicator
-    setIsSaving(true);
-
-    // Save to store after a shorter delay (500ms) to match other steps
-    const timer = setTimeout(() => {
-      // Get current painstorming results
-      const currentResults = painstormingResults || {
-        buyerSegment1: '',
-        buyerSegment2: '',
-        buyerSegment3: '',
-        buyer1Pains: '',
-        buyer2Pains: '',
-        buyer3Pains: '',
-        overlappingPains: '',
-        ahaMoments: ''
-      };
-
-      // Update with new value
-      const updatedResults = { ...currentResults };
-      switch (index) {
-        case 1:
-          updatedResults.buyerSegment1 = value;
-          break;
-        case 2:
-          updatedResults.buyerSegment2 = value;
-          break;
-        case 3:
-          updatedResults.buyerSegment3 = value;
-          break;
-      }
-
-      // Save to store
-      updateWorkshopData({
-        painstormingResults: updatedResults
-      });
-
-      // Clear saving indicator
-      setIsSaving(false);
-    }, 500); // Reduced to 500ms to match other steps
-
-    // Save timer reference
-    setSaveTimer(timer);
-  }, [painstormingResults, saveTimer, updateWorkshopData]);
+  }, [saveTimer]);
 
   // Handle pain text changes
   const handlePainTextChange = useCallback((field: 'buyer1' | 'buyer2' | 'buyer3' | 'overlapping', value: string) => {
-    // Update local state
+    // Only update if the section is not locked
     switch (field) {
       case 'buyer1':
-        setBuyer1Pains(value);
+        if (!lockedSections.buyer1) {
+          setBuyer1Pains(value);
+        }
         break;
       case 'buyer2':
-        setBuyer2Pains(value);
+        if (!lockedSections.buyer2) {
+          setBuyer2Pains(value);
+        }
         break;
       case 'buyer3':
-        setBuyer3Pains(value);
+        if (!lockedSections.buyer3) {
+          setBuyer3Pains(value);
+        }
         break;
       case 'overlapping':
-        setOverlappingPains(value);
+        if (!lockedSections.overlapping) {
+          setOverlappingPains(value);
+        }
         break;
     }
 
-    // Clear any existing timer
+    // Cancel any auto-save functionality
     if (saveTimer) {
       clearTimeout(saveTimer);
     }
-
-    // Set saving indicator
-    setIsSaving(true);
-
-    // Save to store after a shorter delay (500ms) to match other steps
-    const timer = setTimeout(() => {
-      // Get current painstorming results
-      const currentResults = painstormingResults || {
-        buyerSegment1: buyerSegment1,
-        buyerSegment2: buyerSegment2,
-        buyerSegment3: buyerSegment3,
-        buyer1Pains: '',
-        buyer2Pains: '',
-        buyer3Pains: '',
-        overlappingPains: '',
-        ahaMoments: ''
-      };
-
-      // Update with new value
-      const updatedResults = { ...currentResults };
-      switch (field) {
-        case 'buyer1':
-          updatedResults.buyer1Pains = value;
-          break;
-        case 'buyer2':
-          updatedResults.buyer2Pains = value;
-          break;
-        case 'buyer3':
-          updatedResults.buyer3Pains = value;
-          break;
-        case 'overlapping':
-          updatedResults.overlappingPains = value;
-          break;
-      }
-
-      // Save to store
-      updateWorkshopData({
-        painstormingResults: updatedResults
-      });
-
-      // Clear saving indicator
-      setIsSaving(false);
-    }, 500); // Reduced to 500ms to match other steps
-
-    // Save timer reference
-    setSaveTimer(timer);
-  }, [painstormingResults, saveTimer, updateWorkshopData, buyerSegment1, buyerSegment2, buyerSegment3]);
+  }, [lockedSections, saveTimer]);
 
   // Handle aha moments text change
   const handleAhaMomentsChange = useCallback((value: string) => {
-    setAhaMoments(value);
+    // Only update if the section is not locked
+    if (!lockedSections.ahaMoments) {
+      setAhaMoments(value);
+    }
 
+    // Cancel any auto-save functionality
     if (saveTimer) {
       clearTimeout(saveTimer);
     }
-
-    setIsSaving(true);
-    const timer = setTimeout(() => {
-      // Get current painstorming results
-      const currentResults = painstormingResults || {
-        buyerSegment1: buyerSegment1,
-        buyerSegment2: buyerSegment2,
-        buyerSegment3: buyerSegment3,
-        buyer1Pains: '',
-        buyer2Pains: '',
-        buyer3Pains: '',
-        overlappingPains: '',
-        ahaMoments: ''
-      };
-
-      // Update with new aha moments
-      updateWorkshopData({
-        painstormingResults: {
-          ...currentResults,
-          ahaMoments: value
-        }
-      });
-      setIsSaving(false);
-    }, 500); // Reduced to 500ms to match other steps
-    setSaveTimer(timer);
-  }, [painstormingResults, saveTimer, updateWorkshopData]);
+  }, [lockedSections, saveTimer]);
 
 
 
@@ -402,9 +407,86 @@ export const Step06_Painstorming: React.FC = () => {
                   value={buyer1Pains}
                   onChange={(e) => handlePainTextChange('buyer1', e.target.value)}
                   placeholder="List the problems this buyer segment faces..."
-                  style={styles.textareaStyle}
+                  style={{
+                    ...styles.textareaStyle,
+                    backgroundColor: lockedSections.buyer1 ? '#f3f4f6' : 'white',
+                    borderColor: lockedSections.buyer1 ? '#d1d5db' : '#cbd5e1',
+                    cursor: lockedSections.buyer1 ? 'not-allowed' : 'text'
+                  }}
+                  disabled={lockedSections.buyer1}
                   rows={5}
                 />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px', gap: '8px' }}>
+                  {!lockedSections.buyer1 ? (
+                    <Button
+                      onClick={() => saveSection('buyer1')}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: '#fcf720', // Yellow
+                        color: '#222222',
+                        fontSize: '14px',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Save size={16} />
+                      Save Section
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => unlockSection('buyer1')}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: '#f3f4f6', // Light gray
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Edit size={16} />
+                      Edit Section
+                    </Button>
+                  )}
+
+                  {savingSection === 'buyer1' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      backgroundColor: '#10b981', // Emerald green
+                      color: 'white',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                      animation: 'fadeIn 0.3s ease'
+                    }}>
+                      <Check size={18} />
+                      Content Saved
+                    </div>
+                  )}
+
+                  {lockedSections.buyer1 && savingSection !== 'buyer1' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: '#4b5563',
+                      fontSize: '14px',
+                    }}>
+                      <Lock size={16} />
+                      Section Locked
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -430,9 +512,86 @@ export const Step06_Painstorming: React.FC = () => {
                   value={buyer2Pains}
                   onChange={(e) => handlePainTextChange('buyer2', e.target.value)}
                   placeholder="List the problems this buyer segment faces..."
-                  style={styles.textareaStyle}
+                  style={{
+                    ...styles.textareaStyle,
+                    backgroundColor: lockedSections.buyer2 ? '#f3f4f6' : 'white',
+                    borderColor: lockedSections.buyer2 ? '#d1d5db' : '#cbd5e1',
+                    cursor: lockedSections.buyer2 ? 'not-allowed' : 'text'
+                  }}
+                  disabled={lockedSections.buyer2}
                   rows={5}
                 />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px', gap: '8px' }}>
+                  {!lockedSections.buyer2 ? (
+                    <Button
+                      onClick={() => saveSection('buyer2')}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: '#fcf720', // Yellow
+                        color: '#222222',
+                        fontSize: '14px',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Save size={16} />
+                      Save Section
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => unlockSection('buyer2')}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: '#f3f4f6', // Light gray
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Edit size={16} />
+                      Edit Section
+                    </Button>
+                  )}
+
+                  {savingSection === 'buyer2' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      backgroundColor: '#10b981', // Emerald green
+                      color: 'white',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                      animation: 'fadeIn 0.3s ease'
+                    }}>
+                      <Check size={18} />
+                      Content Saved
+                    </div>
+                  )}
+
+                  {lockedSections.buyer2 && savingSection !== 'buyer2' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: '#4b5563',
+                      fontSize: '14px',
+                    }}>
+                      <Lock size={16} />
+                      Section Locked
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -458,9 +617,86 @@ export const Step06_Painstorming: React.FC = () => {
                   value={buyer3Pains}
                   onChange={(e) => handlePainTextChange('buyer3', e.target.value)}
                   placeholder="List the problems this buyer segment faces..."
-                  style={styles.textareaStyle}
+                  style={{
+                    ...styles.textareaStyle,
+                    backgroundColor: lockedSections.buyer3 ? '#f3f4f6' : 'white',
+                    borderColor: lockedSections.buyer3 ? '#d1d5db' : '#cbd5e1',
+                    cursor: lockedSections.buyer3 ? 'not-allowed' : 'text'
+                  }}
+                  disabled={lockedSections.buyer3}
                   rows={5}
                 />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px', gap: '8px' }}>
+                  {!lockedSections.buyer3 ? (
+                    <Button
+                      onClick={() => saveSection('buyer3')}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: '#fcf720', // Yellow
+                        color: '#222222',
+                        fontSize: '14px',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Save size={16} />
+                      Save Section
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => unlockSection('buyer3')}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: '#f3f4f6', // Light gray
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Edit size={16} />
+                      Edit Section
+                    </Button>
+                  )}
+
+                  {savingSection === 'buyer3' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      backgroundColor: '#10b981', // Emerald green
+                      color: 'white',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                      animation: 'fadeIn 0.3s ease'
+                    }}>
+                      <Check size={18} />
+                      Content Saved
+                    </div>
+                  )}
+
+                  {lockedSections.buyer3 && savingSection !== 'buyer3' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: '#4b5563',
+                      fontSize: '14px',
+                    }}>
+                      <Lock size={16} />
+                      Section Locked
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -474,14 +710,87 @@ export const Step06_Painstorming: React.FC = () => {
                   value={overlappingPains}
                   onChange={(e) => handlePainTextChange('overlapping', e.target.value)}
                   placeholder="List problems that are common across multiple buyer segments..."
-                  style={styles.textareaStyle}
+                  style={{
+                    ...styles.textareaStyle,
+                    backgroundColor: lockedSections.overlapping ? '#f3f4f6' : 'white',
+                    borderColor: lockedSections.overlapping ? '#d1d5db' : '#cbd5e1',
+                    cursor: lockedSections.overlapping ? 'not-allowed' : 'text'
+                  }}
+                  disabled={lockedSections.overlapping}
                   rows={5}
                 />
-              </div>
-            </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px', gap: '8px' }}>
+                  {!lockedSections.overlapping ? (
+                    <Button
+                      onClick={() => saveSection('overlapping')}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: '#fcf720', // Yellow
+                        color: '#222222',
+                        fontSize: '14px',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Save size={16} />
+                      Save Section
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => unlockSection('overlapping')}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: '#f3f4f6', // Light gray
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      <Edit size={16} />
+                      Edit Section
+                    </Button>
+                  )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-              <SaveIndicator saving={isSaving} />
+                  {savingSection === 'overlapping' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      backgroundColor: '#10b981', // Emerald green
+                      color: 'white',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                      animation: 'fadeIn 0.3s ease'
+                    }}>
+                      <Check size={18} />
+                      Content Saved
+                    </div>
+                  )}
+
+                  {lockedSections.overlapping && savingSection !== 'overlapping' && (
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: '#4b5563',
+                      fontSize: '14px',
+                    }}>
+                      <Lock size={16} />
+                      Section Locked
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </AccordionItem>
 
@@ -516,12 +825,86 @@ export const Step06_Painstorming: React.FC = () => {
               value={ahaMoments}
               onChange={(e) => handleAhaMomentsChange(e.target.value)}
               placeholder="Jot down any key insights, surprising patterns, or problems that stand out most to you after reviewing the painstorming analysis."
-              style={styles.textareaStyle}
+              style={{
+                ...styles.textareaStyle,
+                backgroundColor: lockedSections.ahaMoments ? '#f3f4f6' : 'white',
+                borderColor: lockedSections.ahaMoments ? '#d1d5db' : '#cbd5e1',
+                cursor: lockedSections.ahaMoments ? 'not-allowed' : 'text'
+              }}
+              disabled={lockedSections.ahaMoments}
               rows={5}
             />
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
-              <SaveIndicator saving={isSaving} />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px', gap: '8px' }}>
+              {!lockedSections.ahaMoments ? (
+                <Button
+                  onClick={() => saveSection('ahaMoments')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    backgroundColor: '#fcf720', // Yellow
+                    color: '#222222',
+                    fontSize: '14px',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  <Save size={16} />
+                  Save Section
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => unlockSection('ahaMoments')}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    backgroundColor: '#f3f4f6', // Light gray
+                    color: '#4b5563',
+                    fontSize: '14px',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  <Edit size={16} />
+                  Edit Section
+                </Button>
+              )}
+
+              {savingSection === 'ahaMoments' && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: '#10b981', // Emerald green
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                  animation: 'fadeIn 0.3s ease'
+                }}>
+                  <Check size={18} />
+                  Content Saved
+                </div>
+              )}
+
+              {lockedSections.ahaMoments && savingSection !== 'ahaMoments' && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  color: '#4b5563',
+                  fontSize: '14px',
+                }}>
+                  <Lock size={16} />
+                  Section Locked
+                </div>
+              )}
             </div>
           </AccordionItem>
         </AccordionGroup>
