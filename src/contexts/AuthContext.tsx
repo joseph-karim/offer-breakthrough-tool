@@ -28,7 +28,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Check if we're in Stackbit visual editor mode
+  const isStackbitEditor =
+    typeof window !== 'undefined' && (
+      window.location.hostname === 'create.netlify.com' ||
+      window.location.search.includes('stackbit-editor') ||
+      (window.location.hostname === 'localhost' && window.location.search.includes('stackbit'))
+    );
+
   useEffect(() => {
+    // If we're in Stackbit editor, bypass authentication
+    if (isStackbitEditor) {
+      console.log('Stackbit editor detected, bypassing authentication');
+      // Create a mock user for Stackbit editor
+      const mockUser = {
+        id: 'stackbit-editor-user',
+        email: 'stackbit-editor@example.com',
+        role: 'authenticated',
+      } as User;
+
+      setUser(mockUser);
+      setLoading(false);
+      return;
+    }
+
     // Get initial session
     const initializeAuth = async () => {
       try {
@@ -41,8 +64,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Listen for auth changes
         const {
           data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-          console.log('Auth state changed:', _event);
+        } = supabase.auth.onAuthStateChange((event, session) => {
+          console.log('Auth state changed:', event);
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
@@ -57,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     initializeAuth();
-  }, []);
+  }, [isStackbitEditor]);
 
   const signIn = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({

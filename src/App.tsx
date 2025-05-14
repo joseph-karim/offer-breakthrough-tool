@@ -18,6 +18,11 @@ function App() {
   // Check if we're on an auth page
   const isAuthPage = ['/login', '/register', '/forgot-password', '/reset-password', '/auth/callback'].includes(location.pathname);
 
+  // Check if we're in Stackbit visual editor mode
+  const isStackbitEditor = window.location.hostname === 'create.netlify.com' ||
+                          window.location.search.includes('stackbit-editor') ||
+                          window.location.hostname === 'localhost' && window.location.search.includes('stackbit');
+
   return (
     <AuthProvider>
       <div className="customercamp-theme">
@@ -40,29 +45,41 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
 
-              {/* Protected routes */}
+              {/* Protected routes - bypass protection in Stackbit editor */}
               <Route
                 path="/dashboard"
                 element={
-                  <ProtectedRoute>
+                  isStackbitEditor ? (
                     <Dashboard />
-                  </ProtectedRoute>
+                  ) : (
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  )
                 }
               />
               <Route
                 path="/intro"
                 element={
-                  <ProtectedRoute>
+                  isStackbitEditor ? (
                     <Step01_Intro />
-                  </ProtectedRoute>
+                  ) : (
+                    <ProtectedRoute>
+                      <Step01_Intro />
+                    </ProtectedRoute>
+                  )
                 }
               />
               <Route
                 path="/step/:stepNumber"
                 element={
-                  <ProtectedRoute>
+                  isStackbitEditor ? (
                     <WorkshopWizard />
-                  </ProtectedRoute>
+                  ) : (
+                    <ProtectedRoute>
+                      <WorkshopWizard />
+                    </ProtectedRoute>
+                  )
                 }
               />
 

@@ -1,20 +1,69 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { WorkshopData, WorkshopSession } from '../types/workshop';
 
 // Always use environment variables for Supabase credentials
 // For local development, these should be in .env.local file
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 console.log('Supabase URL:', supabaseUrl);
 console.log('Supabase Anon Key (first 10 chars):', supabaseAnonKey?.substring(0, 10));
 
+// Check if we're in Stackbit visual editor mode
+const isStackbitEditor =
+  typeof window !== 'undefined' && (
+    window.location.hostname === 'create.netlify.com' ||
+    window.location.search.includes('stackbit-editor') ||
+    (window.location.hostname === 'localhost' && window.location.search.includes('stackbit'))
+  );
+
+// Create a mock client for Stackbit editor that implements the SupabaseClient interface
+const mockClient = {
+  auth: {
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    signInWithPassword: () => Promise.resolve({ data: { session: null }, error: null }),
+    signUp: () => Promise.resolve({ data: { session: null }, error: null }),
+    signOut: () => Promise.resolve({ error: null }),
+    resetPasswordForEmail: () => Promise.resolve({ data: null, error: null }),
+    setSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    updateUser: () => Promise.resolve({ data: { user: null }, error: null })
+  },
+  from: () => ({
+    select: () => ({
+      eq: () => ({
+        single: () => Promise.resolve({ data: null, error: null }),
+        order: () => Promise.resolve({ data: [], error: null })
+      }),
+      order: () => Promise.resolve({ data: [], error: null })
+    }),
+    insert: () => Promise.resolve({ data: null, error: null }),
+    update: () => ({
+      eq: () => Promise.resolve({ data: null, error: null })
+    }),
+    delete: () => ({
+      eq: () => Promise.resolve({ data: null, error: null })
+    })
+  })
+} as unknown as SupabaseClient;
+
+// In Stackbit editor mode, use mock client if credentials are missing
+let supabase: SupabaseClient;
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase configuration');
-  throw new Error('Missing Supabase configuration');
+  if (isStackbitEditor) {
+    console.warn('Missing Supabase configuration, using mock client for Stackbit editor');
+    supabase = mockClient;
+  } else {
+    console.error('Missing Supabase configuration');
+    throw new Error('Missing Supabase configuration');
+  }
+} else {
+  // Create the real Supabase client
+  supabase = createClient(supabaseUrl, supabaseAnonKey);
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export { supabase };
 
 export const saveWorkshopSession = async (
   sessionId: string,
