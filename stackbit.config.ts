@@ -5,12 +5,12 @@ export default defineStackbitConfig({
   stackbitVersion: '~0.6.0',
   nodeVersion: '18',
   ssgName: 'custom',
-  devCommand: 'npx vite --port {PORT} --strictPort=false --force',
+  devCommand: 'npm run stackbit -- --port {PORT}',
 
   contentSources: [
     new GitContentSource({
       rootPath: __dirname,
-      contentDirs: ['content'],
+      contentDirs: ['src/content'],
       models: [
         // Workshop step model
         {
@@ -18,7 +18,9 @@ export default defineStackbitConfig({
           type: 'page',
           label: 'Workshop Step',
           urlPath: '/step/{stepNumber}',
+          filePath: 'workshop/{pageId}.json',
           fields: [
+            { name: 'type', type: 'string', label: 'Type', required: true, default: 'WorkshopStep', hidden: true },
             { name: 'title', type: 'string', label: 'Step Title', required: true },
             { name: 'stepNumber', type: 'number', label: 'Step Number', required: true },
             { name: 'description', type: 'string', label: 'Step Description' },
@@ -53,16 +55,9 @@ export default defineStackbitConfig({
             },
             {
               name: 'examples',
-              type: 'object',
+              type: 'list',
               label: 'Examples',
-              fields: [
-                {
-                  name: 'items',
-                  type: 'list',
-                  label: 'Example Items',
-                  items: { type: 'string' }
-                }
-              ]
+              items: { type: 'string' }
             }
           ]
         }
@@ -85,7 +80,7 @@ export default defineStackbitConfig({
         { urlPath: '/step/5', stableId: 'step5', label: 'Step 5: Target Buyers', isHomePage: false },
         { urlPath: '/step/6', stableId: 'step6', label: 'Step 6: Painstorming', isHomePage: false },
         { urlPath: '/step/7', stableId: 'step7', label: 'Step 7: Problem Up', isHomePage: false },
-        { urlPath: '/step/8', stableId: 'step8', label: 'Step 8: Define Your Focused Target Market', isHomePage: false },
+        { urlPath: '/step/8', stableId: 'step8', label: 'Step 8: Choose Target Market', isHomePage: false },
         { urlPath: '/step/9', stableId: 'step9', label: 'Step 9: Refine Your Idea', isHomePage: false },
         { urlPath: '/step/10', stableId: 'step10', label: 'Step 10: Plan Next Steps', isHomePage: false }
       ] as SiteMapEntry[];

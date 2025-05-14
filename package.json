@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "netlify-dev": "netlify dev",
-    "stackbit": "vite --port 8000 --strictPort=false --force",
+    "stackbit": "vite --port 8000 --strictPort=false --force --host --config vite.stackbit.config.ts",
+    "stackbit:dev": "vite --port 3000 --strictPort=false --force --host --config vite.stackbit.config.ts",
     "analyze": "vite build --mode analyze"
   },
   "dependencies": {

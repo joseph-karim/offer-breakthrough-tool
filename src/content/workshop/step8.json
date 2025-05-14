@@ -1,19 +1,23 @@
 {
   "type": "WorkshopStep",
-  "title": "Problem Up",
+  "title": "Choose Target Market",
   "stepNumber": 8,
   "pageId": "step8",
-  "description": "Now let's identify the core problem your offer will solve. This is the specific pain point or job that your solution will address most effectively.",
+  "description": "You're clear on the problems you aim to solve. Before you begin brainstorming offer ideas, let's first refine your target market. You'll choose a market that shares common traits, common triggers, and/or common transformation.",
   "placeholders": {
-    "coreProblemPlaceholder": "e.g., Small business owners struggle to identify which marketing activities actually drive revenue, leading to wasted time and resources"
+    "marketNamePlaceholder": "e.g., Plateaued Agency Owners Seeking Scalability",
+    "commonTraitsPlaceholder": "e.g., Senior consultants, fractional CMOs, solo strategists, brand architects, or marketing agency owners",
+    "commonTriggersPlaceholder": "e.g., They've hit a revenue plateau in their business"
   },
   "tooltips": {
-    "coreProblemTooltip": "What is the primary problem your offer will solve? Be specific about who experiences it and why it matters."
+    "marketNameTooltip": "Create a descriptive name that captures the essence of your target market",
+    "commonTraitsTooltip": "List the most defining shared characteristics (demographic, firmographic, psychographic)",
+    "commonTriggersTooltip": "List the specific triggers most relevant to this group experiencing the target moment/pain"
   },
   "examples": [
-    "Service providers struggle to maintain consistent income due to feast-or-famine client cycles",
-    "Course creators have low completion rates because students get overwhelmed and don't see quick results",
-    "Small business owners waste money on ineffective ads because they don't understand their target audience",
-    "Consultants spend too much time on administrative tasks instead of billable client work"
+    "Plateaued Agency Owners Seeking Scalability",
+    "Overwhelmed Solopreneurs Ready for Systems",
+    "First-Time Course Creators Needing Structure",
+    "Established Coaches Transitioning to Group Programs"
   ]
 }

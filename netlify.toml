@@ -4,7 +4,7 @@
   functions = "netlify/functions"
 
 [dev]
-  command = "npm run dev:fast"
+  command = "npm run stackbit:dev"
   port = 3000
   targetPort = 5173
   publish = "dist"
@@ -24,5 +24,13 @@
 
 # Stackbit configuration
 [stackbit]
-  # Use npx to run vite with optimizations
-  dev_command = "npx vite --port {PORT} --strictPort=false --force"
+  # Use npm script for Stackbit
+  dev_command = "npm run stackbit -- --port {PORT}"
+
+  # Improve Stackbit performance
+  [stackbit.pullRequestBranchName]
+    prefix = "preview"
+
+  [stackbit.contentSources]
+    # Specify the content source directory
+    contentDirectory = "src/content"
