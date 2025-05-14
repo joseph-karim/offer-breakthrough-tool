@@ -1,6 +1,7 @@
 import { useEffect, CSSProperties, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useWorkshopStore } from '../../store/workshopStore';
+import { useAuth } from '../../contexts/AuthContext';
 import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 // Import step components
@@ -20,12 +21,17 @@ import { Button } from '../ui/Button'; // Corrected path: ../ui/Button
 export const WorkshopWizard = () => {
   const { stepNumber } = useParams<{ stepNumber: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
   const {
     initializeSession,
+    loadSession,
+    sessionId,
     setCurrentStep,
     setValidationErrors,
   } = useWorkshopStore();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Convert URL parameter to number
   const currentStep = parseInt(stepNumber || '1', 10);
@@ -37,18 +43,38 @@ export const WorkshopWizard = () => {
     }
   }, [currentStep, isInitialized, setCurrentStep]);
 
-  // Run initialization only once when component mounts
+  // Check for session ID in URL query params and load session
   useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+
     let mounted = true;
+    setIsLoading(true);
 
     const init = async () => {
       try {
-        await initializeSession();
+        const queryParams = new URLSearchParams(location.search);
+        const sessionIdParam = queryParams.get('session');
+
+        if (sessionIdParam) {
+          // Load existing session
+          await loadSession(sessionIdParam);
+        } else if (!sessionId) {
+          // Initialize new session if no session ID is provided and no session is loaded
+          await initializeSession();
+        }
+
         if (mounted) {
           setIsInitialized(true);
+          setIsLoading(false);
         }
       } catch (error) {
-        console.error('Failed to initialize session:', error);
+        console.error('Failed to initialize or load session:', error);
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -57,7 +83,7 @@ export const WorkshopWizard = () => {
     return () => {
       mounted = false;
     };
-  }, [initializeSession]); // Add initializeSession as a dependency
+  }, [user, location, loadSession, initializeSession, sessionId, navigate]);
 
   const goToPreviousStep = useCallback(() => {
     setValidationErrors(false); // Reset validation errors when going back
@@ -81,31 +107,31 @@ export const WorkshopWizard = () => {
   }, [currentStep, navigate, setValidationErrors]);
 
   // Don't render anything until initialization is complete
-  if (!isInitialized) {
+  if (!isInitialized || isLoading) {
     return (
       <div style={{
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#1E1E1E',
         backgroundImage: 'none',
       }}>
         <div style={{
           fontSize: '20px',
-          color: '#222222',
+          color: '#FFFFFF',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
           padding: '16px 24px',
           borderRadius: '12px',
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #EEEEEE',
-          borderLeft: '3px solid #fcf720', // Updated to brand Yellow
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+          backgroundColor: '#222222',
+          border: '1px solid #333333',
+          borderLeft: '3px solid #fcf720', // Brand Yellow
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
         }}>
-          <Sparkles style={{ color: '#fcf720' }} /> {/* Updated to brand Yellow */}
-          ✨ Initializing workshop... ✨
+          <Sparkles style={{ color: '#fcf720' }} />
+          ✨ Loading your workshop... ✨
         </div>
       </div>
     );

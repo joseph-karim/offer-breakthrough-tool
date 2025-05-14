@@ -1,15 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../../ui/Button';
 import { useWorkshopStore } from '../../../store/workshopStore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
 
 export const Step01_Intro: React.FC = () => {
-  const { setCurrentStep } = useWorkshopStore();
+  const { setCurrentStep, initializeSession, loadSession } = useWorkshopStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  const handleStartWorkshop = () => {
-    setCurrentStep(1); // Set to step 1 (first actual step)
-    navigate('/step/1');
+  // Check for session ID in URL query params
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const sessionId = queryParams.get('session');
+
+    if (sessionId) {
+      setLoading(true);
+      loadSession(sessionId)
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error loading session:', error);
+          setLoading(false);
+        });
+    } else if (user) {
+      // Initialize a new session if user is logged in but no session ID is provided
+      initializeSession().catch((error) => {
+        console.error('Error initializing session:', error);
+      });
+    }
+  }, [location.search, user]);
+
+  const handleStartWorkshop = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      setCurrentStep(1); // Set to step 1 (first actual step)
+      navigate('/step/1');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -181,6 +218,8 @@ export const Step01_Intro: React.FC = () => {
       }}>
         <Button
           onClick={handleStartWorkshop}
+          isLoading={loading}
+          disabled={loading}
           style={{
             backgroundColor: '#fcf720',
             color: 'black',
@@ -189,15 +228,16 @@ export const Step01_Intro: React.FC = () => {
             fontWeight: 'bold',
             borderRadius: '10px',
             border: 'none',
-            cursor: 'pointer',
+            cursor: loading ? 'not-allowed' : 'pointer',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '10px',
             width: '100%',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            opacity: loading ? 0.7 : 1
           }}
         >
-          START WORKSHOP &gt;
+          {user ? 'START WORKSHOP >' : 'SIGN IN TO START >'}
         </Button>
       </div>
     </div>

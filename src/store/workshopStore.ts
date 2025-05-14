@@ -7,6 +7,7 @@ import { OpenAIService } from '../services/openai';
 import { BrainstormService, BrainstormContext, BrainstormIdea } from '../services/brainstormService';
 import { SparkyService } from '../services/sparkyService';
 import { PainParsingService } from '../services/painParsingService';
+import { saveWorkshopSession, loadWorkshopSession, updateWorkshopStep } from '../services/supabase';
 
 export interface WorkshopStore {
   // Session state
@@ -479,28 +480,55 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
       workshopData: { ...initialWorkshopData },
       isInitialized: true
     });
+
+    // Save the new session to Supabase
+    try {
+      await saveWorkshopSession(
+        newSessionId,
+        initialWorkshopData,
+        0,
+        'Untitled Workshop'
+      );
+    } catch (error) {
+      console.error('Failed to save new session:', error);
+    }
   },
 
   loadSession: async (sessionId: string) => {
     set({ isSaving: true });
     try {
-      // TODO: Implement actual session loading
-      set({ sessionId });
+      // Load session from Supabase
+      const sessionData = await loadWorkshopSession(sessionId);
+
+      if (sessionData) {
+        set({
+          sessionId: sessionData.session_id,
+          currentStep: sessionData.current_step,
+          workshopData: sessionData.workshop_data,
+          isInitialized: true
+        });
+      } else {
+        throw new Error('Session not found');
+      }
     } catch (error) {
       console.error('Failed to load session:', error);
+      // Initialize a new session if loading fails
+      const { initializeSession } = get();
+      await initializeSession();
     } finally {
       set({ isSaving: false });
     }
   },
 
   saveSession: async () => {
-    const { sessionId, currentStep } = get();
+    const { sessionId, currentStep, workshopData } = get();
     if (!sessionId) return;
 
     set({ isSaving: true });
     try {
-      // TODO: Implement actual session saving
-      console.log('Saving session:', { sessionId, currentStep });
+      // Save session to Supabase
+      await saveWorkshopSession(sessionId, workshopData, currentStep);
+      console.log('Session saved successfully:', { sessionId, currentStep });
     } catch (error) {
       console.error('Failed to save session:', error);
     } finally {
@@ -509,12 +537,12 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   setCurrentStep: (step: number) => {
-    if (step >= 1 && step <= 11) {
+    if (step >= 0 && step <= 11) {
       set({ currentStep: step });
 
       // Initialize step chat if it doesn't exist
-      const { workshopData } = get();
-      if (!workshopData.stepChats[step]) {
+      const { workshopData, sessionId } = get();
+      if (step > 0 && !workshopData.stepChats[step]) {
         set(state => ({
           workshopData: {
             ...state.workshopData,
@@ -524,6 +552,13 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
             }
           }
         }));
+      }
+
+      // Update the step in Supabase
+      if (sessionId) {
+        updateWorkshopStep(sessionId, step).catch(error => {
+          console.error('Failed to update workshop step:', error);
+        });
       }
     }
   },

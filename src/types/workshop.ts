@@ -189,4 +189,5 @@ export interface WorkshopSession {
   updated_at: string;
   current_step: number;
   workshop_data: WorkshopData;
+  name: string;
 }

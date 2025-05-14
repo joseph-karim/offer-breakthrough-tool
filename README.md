@@ -83,13 +83,14 @@ This application is built using:
 - Step completion validation
 - Market evaluation scoring system
 - Value proposition builder
+- User authentication with Supabase
+- Session persistence with database storage
+- User dashboard for managing workshop sessions
 
 ### Planned Features / Next Steps:
-- Implement session persistence (local storage)
 - Add example suggestions for each step
 - Enhance error handling and validation messages
 - Add export functionality for workshop results
-- Implement user accounts and data saving
 - Add collaborative features
 - Enhance accessibility
 - Add comprehensive testing suite
