@@ -88,7 +88,7 @@ export const Step06_Painstorming: React.FC = () => {
     // Set saving indicator
     setIsSaving(true);
 
-    // Save to store after a longer delay (2 seconds)
+    // Save to store after a shorter delay (500ms) to match other steps
     const timer = setTimeout(() => {
       // Get current painstorming results
       const currentResults = painstormingResults || {
@@ -123,7 +123,7 @@ export const Step06_Painstorming: React.FC = () => {
 
       // Clear saving indicator
       setIsSaving(false);
-    }, 2000); // Increased to 2 seconds
+    }, 500); // Reduced to 500ms to match other steps
 
     // Save timer reference
     setSaveTimer(timer);
@@ -155,7 +155,7 @@ export const Step06_Painstorming: React.FC = () => {
     // Set saving indicator
     setIsSaving(true);
 
-    // Save to store after a longer delay (3 seconds)
+    // Save to store after a shorter delay (500ms) to match other steps
     const timer = setTimeout(() => {
       // Get current painstorming results
       const currentResults = painstormingResults || {
@@ -193,7 +193,7 @@ export const Step06_Painstorming: React.FC = () => {
 
       // Clear saving indicator
       setIsSaving(false);
-    }, 3000); // Increased to 3 seconds for text areas
+    }, 500); // Reduced to 500ms to match other steps
 
     // Save timer reference
     setSaveTimer(timer);
@@ -229,9 +229,9 @@ export const Step06_Painstorming: React.FC = () => {
         }
       });
       setIsSaving(false);
-    }, 3000); // Increased to 3 seconds
+    }, 500); // Reduced to 500ms to match other steps
     setSaveTimer(timer);
-  }, [painstormingResults, saveTimer, updateWorkshopData, buyerSegment1, buyerSegment2, buyerSegment3]);
+  }, [painstormingResults, saveTimer, updateWorkshopData]);
 
 
 

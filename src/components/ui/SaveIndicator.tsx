@@ -25,25 +25,23 @@ export const SaveIndicator: React.FC<SaveIndicatorProps> = ({ saving, style }) =
 
   return (
     <div style={{
-      position: 'fixed',
-      bottom: '20px',
-      right: '20px',
-      padding: '8px 16px',
+      position: 'relative',
+      display: 'inline-flex',
+      padding: '6px 12px',
       backgroundColor: 'rgba(16, 185, 129, 0.9)', // Emerald color
       color: 'white',
       borderRadius: '9999px',
-      display: 'flex',
       alignItems: 'center',
-      gap: '8px',
-      fontSize: '14px',
+      gap: '6px',
+      fontSize: '13px',
       fontWeight: 500,
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
       transition: 'opacity 0.2s ease',
       opacity: showCheck ? 1 : 0,
       ...style
     }}>
-      <Check size={16} />
+      <Check size={14} />
       Saved
     </div>
   );
-}; 
+};
