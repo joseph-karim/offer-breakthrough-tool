@@ -76,8 +76,8 @@ export const Dashboard: React.FC = () => {
       setIsCreatingNew(false);
       setNewSessionName('');
 
-      // Navigate to the new session
-      navigate(`/intro?session=${sessionId}`);
+      // Navigate directly to Step 1 with the new session
+      navigate(`/step/1?session=${sessionId}`);
     } catch (err: any) {
       console.error('Error creating session:', err);
       setError('Failed to create new workshop session');
@@ -127,8 +127,9 @@ export const Dashboard: React.FC = () => {
   };
 
   const continueSession = (sessionId: string, currentStep: number) => {
-    const route = currentStep === 0 ? '/intro' : `/step/${currentStep}`;
-    navigate(`${route}?session=${sessionId}`);
+    // Always navigate to at least step 1, never to intro
+    const step = currentStep === 0 ? 1 : currentStep;
+    navigate(`/step/${step}?session=${sessionId}`);
   };
 
   return (
