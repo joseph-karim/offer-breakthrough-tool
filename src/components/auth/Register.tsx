@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useWorkshopStore } from '../../store/workshopStore';
 import { Button } from '../ui/Button';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 import * as styles from '../../styles/stepStyles';
@@ -14,6 +15,11 @@ export const Register: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { signUp } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { initializeSession } = useWorkshopStore();
+
+  // Get the return URL from location state or default to dashboard
+  const from = (location.state as any)?.from?.pathname || '/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,10 +63,28 @@ export const Register: React.FC = () => {
       }
 
       if (data) {
-        // If auto-confirm is enabled, redirect to dashboard after a short delay
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 500);
+        try {
+          // Create a new session
+          await initializeSession();
+          const currentSessionId = useWorkshopStore.getState().sessionId;
+
+          if (currentSessionId && from === '/step/1') {
+            // If we're coming from the intro page and going to step 1, navigate there
+            setTimeout(() => {
+              navigate(`/step/1?session=${currentSessionId}`);
+            }, 500);
+          } else {
+            // Otherwise, go to the dashboard
+            setTimeout(() => {
+              navigate('/dashboard');
+            }, 500);
+          }
+        } catch (error) {
+          console.error('Error initializing session after registration:', error);
+          setTimeout(() => {
+            navigate('/dashboard');
+          }, 500);
+        }
       } else {
         // If email confirmation is required
         setSuccessMessage('Registration successful! Please check your email to confirm your account.');

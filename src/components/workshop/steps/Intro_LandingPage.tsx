@@ -36,7 +36,9 @@ export const Step01_Intro: React.FC = () => {
 
   const handleStartWorkshop = async () => {
     if (!user) {
-      navigate('/login');
+      // Redirect to login with a return URL to step 1
+      // We'll create the session after login
+      navigate('/register', { state: { from: { pathname: '/step/1' } } });
       return;
     }
 

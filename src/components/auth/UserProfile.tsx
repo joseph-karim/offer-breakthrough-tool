@@ -37,14 +37,15 @@ export const UserProfile: React.FC = () => {
     return (
       <div className="flex space-x-2">
         <Button
-          variant="outline"
+          variant="white"
           size="sm"
           onClick={() => navigate('/login')}
+          style={{ color: '#222222', backgroundColor: '#FFFFFF' }}
         >
           Sign In
         </Button>
         <Button
-          variant="primary"
+          variant="yellow"
           size="sm"
           onClick={() => navigate('/register')}
         >

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useWorkshopStore } from '../../store/workshopStore';
 import { Button } from '../ui/Button';
 import { AlertCircle } from 'lucide-react';
 import * as styles from '../../styles/stepStyles';
@@ -13,6 +14,7 @@ export const Login: React.FC = () => {
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { initializeSession } = useWorkshopStore();
 
   // Get the return URL from location state or default to dashboard
   const from = (location.state as any)?.from?.pathname || '/dashboard';
@@ -26,7 +28,27 @@ export const Login: React.FC = () => {
       const { error } = await signIn(email, password);
       if (error) throw error;
 
-      // Add a small delay to ensure the session is properly set
+      // If we're going to step 1, create a new session first
+      if (from === '/step/1') {
+        try {
+          // Create a new session
+          await initializeSession();
+          const currentSessionId = useWorkshopStore.getState().sessionId;
+
+          if (currentSessionId) {
+            // Navigate to step 1 with the session ID
+            setTimeout(() => {
+              navigate(`/step/1?session=${currentSessionId}`, { replace: true });
+            }, 500);
+            return;
+          }
+        } catch (error) {
+          console.error('Error initializing session after login:', error);
+          // Continue with normal navigation if session creation fails
+        }
+      }
+
+      // For other destinations, just navigate normally
       setTimeout(() => {
         navigate(from, { replace: true });
       }, 500);

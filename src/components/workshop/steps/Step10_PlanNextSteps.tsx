@@ -1,13 +1,14 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
-import { ExternalLink, Download, Plus, X } from 'lucide-react';
+import { ExternalLink, Download, Plus, X, CheckCircle } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 import { SaveIndicator } from '../../ui/SaveIndicator';
 import { InfoBox } from '../../ui/InfoBox';
 import { exportWorkshopToPdf } from '../../../utils/pdfExporter';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
+import { useNavigate } from 'react-router-dom';
 
 // Separate selectors to prevent unnecessary re-renders
 const selectWorkshopData = (state: WorkshopStore) => state.workshopData;
@@ -16,8 +17,11 @@ const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopD
 export const Step10_PlanNextSteps: React.FC = () => {
   const workshopData = useWorkshopStore(selectWorkshopData);
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
+  const { saveSession } = useWorkshopStore();
+  const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   // Accordion state
@@ -187,6 +191,22 @@ export const Step10_PlanNextSteps: React.FC = () => {
       setIsExporting(false);
     }
   }, [workshopData]);
+
+  // Complete workshop and go to dashboard
+  const completeWorkshop = useCallback(async () => {
+    setIsCompleting(true);
+    try {
+      // Save the session one last time
+      await saveSession();
+      // Navigate to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error completing workshop:', error);
+      alert('There was an error saving your workshop. Please try again.');
+    } finally {
+      setIsCompleting(false);
+    }
+  }, [saveSession, navigate]);
 
   return (
     <div style={styles.stepContainerStyle} data-sb-field-path="content">
@@ -831,6 +851,31 @@ export const Step10_PlanNextSteps: React.FC = () => {
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Complete Workshop Button */}
+            <div style={{
+              marginTop: '32px',
+              display: 'flex',
+              justifyContent: 'center'
+            }}>
+              <Button
+                onClick={completeWorkshop}
+                variant="yellow"
+                size="lg"
+                leftIcon={<CheckCircle size={18} />}
+                isLoading={isCompleting}
+                disabled={isCompleting}
+                style={{
+                  padding: '12px 24px',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  width: '100%',
+                  maxWidth: '400px'
+                }}
+              >
+                {isCompleting ? 'Saving...' : 'Complete Workshop & Save'}
+              </Button>
             </div>
           </div>
 

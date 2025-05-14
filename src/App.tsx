@@ -58,17 +58,10 @@ function App() {
                   )
                 }
               />
+              {/* Intro page accessible without authentication */}
               <Route
                 path="/intro"
-                element={
-                  isStackbitEditor ? (
-                    <Step01_Intro />
-                  ) : (
-                    <ProtectedRoute>
-                      <Step01_Intro />
-                    </ProtectedRoute>
-                  )
-                }
+                element={<Step01_Intro />}
               />
               <Route
                 path="/step/:stepNumber"
