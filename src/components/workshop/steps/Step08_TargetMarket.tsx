@@ -18,8 +18,6 @@ const selectJobs = (state: WorkshopStore) => state.workshopData.jobs;
 const selectTriggerEvents = (state: WorkshopStore) => state.workshopData.triggerEvents;
 const selectTargetProblems = (state: WorkshopStore) => state.workshopData.targetProblems;
 const selectUpdateWorkshopData = (state: WorkshopStore) => state.updateWorkshopData;
-const selectBigIdea = (state: WorkshopStore) => state.workshopData.bigIdea;
-const selectPainstormingResults = (state: WorkshopStore) => state.workshopData.painstormingResults;
 
 export const Step08_TargetMarket: React.FC = () => {
   const problemUp = useWorkshopStore(selectProblemUp);
@@ -29,8 +27,6 @@ export const Step08_TargetMarket: React.FC = () => {
   const triggerEvents = useWorkshopStore(selectTriggerEvents);
   const targetProblems = useWorkshopStore(selectTargetProblems) || [];
   const updateWorkshopData = useWorkshopStore(selectUpdateWorkshopData);
-  const bigIdea = useWorkshopStore(selectBigIdea);
-  const painstormingResults = useWorkshopStore(selectPainstormingResults);
 
   // Get selected problems from previous step
   const selectedProblems = targetProblems.filter(problem => problem.selected);
@@ -248,14 +244,6 @@ export const Step08_TargetMarket: React.FC = () => {
                 Your Context
               </h3>
 
-              {/* Big Idea */}
-              <div style={{ marginBottom: '12px' }}>
-                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your Big Idea:</p>
-                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                  {bigIdea?.description || "No big idea defined yet"}
-                </div>
-              </div>
-
               {/* Overarching Job */}
               <div style={{ marginBottom: '12px' }}>
                 <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Overarching Job-to-be-Done:</p>
@@ -296,13 +284,6 @@ export const Step08_TargetMarket: React.FC = () => {
                 </div>
               </div>
 
-              {/* Aha Moments */}
-              <div>
-                <p style={{ margin: '0 0 4px 0', fontWeight: 500, fontSize: '14px' }}>Your 'Aha!' Moments & Reflections:</p>
-                <div style={{ padding: '8px 12px', backgroundColor: '#f1f5f9', borderRadius: '6px', fontSize: '14px' }}>
-                  {painstormingResults?.ahaMoments || "No aha moments recorded yet"}
-                </div>
-              </div>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
