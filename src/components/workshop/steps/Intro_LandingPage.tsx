@@ -21,14 +21,18 @@ export const Step01_Intro: React.FC = () => {
       loadSession(sessionId)
         .then(() => {
           setLoading(false);
+          console.log('Successfully loaded session in Intro page:', sessionId);
         })
         .catch((error) => {
-          console.error('Error loading session:', error);
+          console.error('Error loading session in Intro page:', error);
           setLoading(false);
+          // Show an error message to the user
+          alert('Could not load the requested workshop session. You will be redirected to the dashboard.');
+          navigate('/dashboard');
         });
     }
     // Removed the automatic session initialization to prevent duplicate sessions
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   const handleStartWorkshop = async () => {
     if (!user) {

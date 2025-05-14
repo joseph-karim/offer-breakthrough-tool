@@ -60,23 +60,42 @@ export const WorkshopWizard = () => {
         if (sessionIdParam) {
           // Load existing session
           console.log('Loading existing session from URL param:', sessionIdParam);
-          await loadSession(sessionIdParam);
+          try {
+            await loadSession(sessionIdParam);
+            if (mounted) {
+              setIsInitialized(true);
+              setIsLoading(false);
+            }
+          } catch (loadError) {
+            console.error('Failed to load session, redirecting to dashboard:', loadError);
+            if (mounted) {
+              setIsLoading(false);
+              // Show an error message to the user
+              alert('Could not load the requested workshop session. You will be redirected to the dashboard.');
+              navigate('/dashboard');
+            }
+            return;
+          }
         } else if (!sessionId) {
           // If we're on a step page but don't have a session, redirect to dashboard
           console.log('No session ID in URL and no active session, redirecting to dashboard');
-          navigate('/dashboard');
+          if (mounted) {
+            setIsLoading(false);
+            navigate('/dashboard');
+          }
           return;
-        }
-
-        if (mounted) {
-          setIsInitialized(true);
-          setIsLoading(false);
+        } else {
+          // We already have a session loaded in the store
+          if (mounted) {
+            setIsInitialized(true);
+            setIsLoading(false);
+          }
         }
       } catch (error) {
-        console.error('Failed to initialize or load session:', error);
+        console.error('Failed to initialize session:', error);
         if (mounted) {
           setIsLoading(false);
-          // If there's an error loading the session, redirect to dashboard
+          // If there's an error, redirect to dashboard
           navigate('/dashboard');
         }
       }

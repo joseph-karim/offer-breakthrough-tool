@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { WorkshopData, Pain } from '../types/workshop';
+import type { WorkshopData, Pain, WorkshopSession } from '../types/workshop';
 import type { AIMessage, ChatSuggestion } from '../types/chat';
 import { AIService } from '../services/aiService';
 import { STEP_QUESTIONS } from '../services/aiService';
@@ -56,7 +56,7 @@ export interface WorkshopStore {
 
   // Actions
   initializeSession: () => Promise<void>;
-  loadSession: (sessionId: string) => Promise<void>;
+  loadSession: (sessionId: string) => Promise<WorkshopSession | void>;
   saveSession: () => Promise<void>;
   setCurrentStep: (step: number) => void;
   updateWorkshopData: (data: Partial<WorkshopData>) => void;
@@ -522,14 +522,16 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
           workshopData: sessionData.workshop_data,
           isInitialized: true
         });
+        console.log('Successfully loaded session:', sessionData.session_id);
+        return sessionData;
       } else {
+        console.error('Session not found:', sessionId);
         throw new Error('Session not found');
       }
     } catch (error) {
       console.error('Failed to load session:', error);
-      // Initialize a new session if loading fails
-      const { initializeSession } = get();
-      await initializeSession();
+      // Don't automatically create a new session, just throw the error
+      throw error;
     } finally {
       set({ isSaving: false });
     }
