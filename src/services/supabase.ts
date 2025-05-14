@@ -33,20 +33,54 @@ export const saveWorkshopSession = async (
       // Still attempt to save without user ID to maintain data
     }
 
-    const { error } = await supabase
+    // First check if the session exists
+    const { data: existingSession, error: checkError } = await supabase
       .from('workshop_sessions')
-      .upsert({
-        session_id: sessionId,
-        workshop_data: data,
-        current_step: step,
-        updated_at: new Date().toISOString(),
-        user_id: userId,
-        ...(name && { name }),
-      });
+      .select('id')
+      .eq('session_id', sessionId)
+      .single();
 
-    if (error) {
-      console.error('Error saving workshop session:', error);
-      throw error;
+    if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is "not found" which is expected for new sessions
+      console.error('Error checking for existing session:', checkError);
+    }
+
+    let saveError;
+
+    if (existingSession) {
+      // Session exists, use update instead of upsert
+      console.log('Updating existing session:', sessionId);
+      const { error } = await supabase
+        .from('workshop_sessions')
+        .update({
+          workshop_data: data,
+          current_step: step,
+          updated_at: new Date().toISOString(),
+          ...(name && { name }),
+        })
+        .eq('session_id', sessionId);
+
+      saveError = error;
+    } else {
+      // Session doesn't exist, insert new
+      console.log('Creating new session:', sessionId);
+      const { error } = await supabase
+        .from('workshop_sessions')
+        .insert({
+          session_id: sessionId,
+          workshop_data: data,
+          current_step: step,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          user_id: userId,
+          name: name || 'Untitled Workshop',
+        });
+
+      saveError = error;
+    }
+
+    if (saveError) {
+      console.error('Error saving workshop session:', saveError);
+      throw saveError;
     }
 
     console.log('Workshop session saved successfully:', { sessionId, step });

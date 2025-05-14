@@ -17,6 +17,7 @@ export interface WorkshopStore {
   isAiLoading: boolean;
   validationErrors: boolean;
   isInitialized: boolean;
+  lastUpdateTimestamp?: number;
 
   // Workshop data
   workshopData: WorkshopData;
@@ -587,16 +588,25 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
         console.log('Updating current step to:', step);
 
         // First update just the step number for quick navigation
+        // This is a lightweight operation that doesn't update the whole session
         updateWorkshopStep(sessionId, step).catch(error => {
           console.error('Failed to update workshop step:', error);
         });
 
-        // Then save the full session data to ensure everything is up to date
-        const { saveSession } = get();
-        setTimeout(() => {
-          console.log('Saving full session after step change');
-          saveSession();
-        }, 200);
+        // Only save the full session if we're not already saving
+        const { saveSession, isSaving } = get();
+        if (!isSaving) {
+          // Use a longer delay for step changes to avoid conflicts with other saves
+          setTimeout(() => {
+            // Only proceed if we're still not saving
+            if (!get().isSaving) {
+              console.log('Saving full session after step change');
+              saveSession().catch(error => {
+                console.error('Failed to save session after step change:', error);
+              });
+            }
+          }, 1500); // 1.5 seconds
+        }
       } else {
         console.error('Cannot update step: No sessionId available');
       }
@@ -604,6 +614,9 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
   },
 
   updateWorkshopData: (data: Partial<WorkshopData>) => {
+    // Store the current timestamp to debounce save operations
+    const updateTimestamp = Date.now();
+
     set(state => {
       // Create a new workshopData object with the updates
       const updatedData = {
@@ -618,17 +631,30 @@ export const useWorkshopStore = create<WorkshopStore>((set, get) => ({
 
       return {
         workshopData: updatedData,
+        lastUpdateTimestamp: updateTimestamp,
       };
     });
 
-    // Save the updated data to Supabase
-    const { saveSession } = get();
+    // Debounce save operations to prevent too many API calls
+    const { saveSession, isSaving } = get();
 
-    // Use setTimeout to ensure the state is updated before saving
-    setTimeout(() => {
-      console.log('Auto-saving after updateWorkshopData');
-      saveSession();
-    }, 100);
+    // Only save if we're not already saving
+    if (!isSaving) {
+      // Use setTimeout to ensure the state is updated before saving
+      // and to debounce multiple rapid updates
+      const debounceTime = 1000; // 1 second debounce
+
+      setTimeout(() => {
+        // Check if this is still the most recent update
+        if (get().lastUpdateTimestamp === updateTimestamp) {
+          console.log('Auto-saving after updateWorkshopData');
+          saveSession().catch(error => {
+            console.error('Auto-save failed:', error);
+            // Don't show alert for auto-save failures to avoid annoying the user
+          });
+        }
+      }, debounceTime);
+    }
   },
 
   canProceedToNextStep: () => {
