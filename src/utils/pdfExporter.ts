@@ -19,143 +19,235 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
   // Generate HTML content for the PDF
   container.innerHTML = `
     <div style="background-color: #1E1E1E; padding: 20px; text-align: center; margin-bottom: 30px; border-radius: 10px;">
-      <img src="/assets/Buyer Breakthrough Logo.png" alt="Buyer Breakthrough Logo" style="max-width: 250px; height: auto; margin-bottom: 10px;" />
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <img src="/assets/Buyer Breakthrough Logo.png" alt="Buyer Breakthrough Logo" style="max-width: 250px; height: auto; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto;" />
+      </div>
       <h1 style="color: white; font-size: 24px; margin: 10px 0 5px 0;">Workshop Summary</h1>
       <p style="color: #fcf720; font-size: 14px; margin: 0;">Generated on ${new Date().toLocaleDateString()}</p>
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">1</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Big Idea</h2>
       </div>
       <p><strong>Initial Concept:</strong> ${workshopData.bigIdea?.description?.replace(/\n/g, '<br>') || 'Not defined'}</p>
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">2</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Underlying Goal</h2>
       </div>
       <p><strong>Business Goal:</strong> ${workshopData.underlyingGoal?.businessGoal?.replace(/\n/g, '<br>') || 'Not defined'}</p>
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">3</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Trigger Events</h2>
       </div>
       <ul style="padding-left: 20px; margin-top: 10px;">
-        ${workshopData.triggerEvents.map(event => `<li style="margin-bottom: 8px;">${event.description}</li>`).join('')}
+        ${(() => {
+          // Split trigger events into chunks of 10 items for better page breaks
+          const events = workshopData.triggerEvents;
+          if (events.length <= 10) {
+            return events.map(event => `<li style="margin-bottom: 8px;">${event.description}</li>`).join('');
+          }
+
+          let result = '';
+          for (let i = 0; i < events.length; i++) {
+            result += `<li style="margin-bottom: 8px;">${events[i].description}</li>`;
+
+            // Add a page break hint after every 10 items (except the last chunk)
+            if ((i + 1) % 10 === 0 && i < events.length - 1) {
+              result += `</ul><div style="page-break-after: auto;"></div><ul style="padding-left: 20px; margin-top: 10px;">`;
+            }
+          }
+          return result;
+        })()}
       </ul>
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">4</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Jobs to be Done</h2>
       </div>
       <ul style="padding-left: 20px; margin-top: 10px;">
-        ${workshopData.jobs.map(job => `
-          <li style="margin-bottom: 8px;">
-            ${job.description}
-            ${job.isOverarching ? '<span style="background-color: #fcf720; color: black; font-size: 12px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">Overarching</span>' : ''}
-            ${job.selected && !job.isOverarching ? '<span style="background-color: #e5e7eb; color: #4b5563; font-size: 12px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">Selected</span>' : ''}
-          </li>
-        `).join('')}
+        ${(() => {
+          // Split jobs into chunks of 8 items for better page breaks
+          const jobs = workshopData.jobs;
+          if (jobs.length <= 8) {
+            return jobs.map(job => `
+              <li style="margin-bottom: 8px;">
+                ${job.description}
+              </li>
+            `).join('');
+          }
+
+          let result = '';
+          for (let i = 0; i < jobs.length; i++) {
+            result += `
+              <li style="margin-bottom: 8px;">
+                ${jobs[i].description}
+              </li>
+            `;
+
+            // Add a page break hint after every 8 items (except the last chunk)
+            if ((i + 1) % 8 === 0 && i < jobs.length - 1) {
+              result += `</ul><div style="page-break-after: auto;"></div><ul style="padding-left: 20px; margin-top: 10px;">`;
+            }
+          }
+          return result;
+        })()}
       </ul>
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">5</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Target Buyers</h2>
       </div>
       <ul style="padding-left: 20px; margin-top: 10px;">
-        ${workshopData.targetBuyers.map(buyer => `
-          <li style="margin-bottom: 8px;">
-            ${buyer.description}
-            ${buyer.selected ? '<span style="background-color: #e5e7eb; color: #4b5563; font-size: 12px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">Selected</span>' : ''}
-          </li>
-        `).join('')}
+        ${(() => {
+          // Split buyers into chunks of 8 items for better page breaks
+          const buyers = workshopData.targetBuyers;
+          if (buyers.length <= 8) {
+            return buyers.map(buyer => `
+              <li style="margin-bottom: 8px;">
+                ${buyer.description}
+              </li>
+            `).join('');
+          }
+
+          let result = '';
+          for (let i = 0; i < buyers.length; i++) {
+            result += `
+              <li style="margin-bottom: 8px;">
+                ${buyers[i].description}
+              </li>
+            `;
+
+            // Add a page break hint after every 8 items (except the last chunk)
+            if ((i + 1) % 8 === 0 && i < buyers.length - 1) {
+              result += `</ul><div style="page-break-after: auto;"></div><ul style="padding-left: 20px; margin-top: 10px;">`;
+            }
+          }
+          return result;
+        })()}
       </ul>
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">6</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid; page-break-before: always;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Pain Points</h2>
       </div>
-      <ul style="padding-left: 20px; margin-top: 10px;">
-        ${workshopData.pains.map(pain => `
-          <li style="margin-bottom: 12px;">
-            <strong>${pain.description}</strong><br>
-            <div style="font-size: 12px; color: #4b5563; margin-top: 4px;">
-              <span style="background-color: #e5e7eb; padding: 2px 6px; border-radius: 10px; margin-right: 5px;">Type: ${pain.type}</span>
-              <span style="background-color: #e5e7eb; padding: 2px 6px; border-radius: 10px; margin-right: 5px;">Buyer: ${pain.buyerSegment || 'All segments'}</span>
-              ${pain.isFire ? '<span style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 10px;">FIRE Pain</span>' : ''}
+      ${workshopData.painstormingResults ? `
+        <div style="margin-bottom: 15px;">
+          ${workshopData.painstormingResults.buyerSegment1 ? `
+            <div style="margin-bottom: 15px;">
+              <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">${workshopData.painstormingResults.buyerSegment1}:</h3>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.buyer1Pains.replace(/\n/g, '<br>')}</p>
             </div>
-          </li>
-        `).join('')}
-      </ul>
+          ` : ''}
+
+          ${workshopData.painstormingResults.buyerSegment2 ? `
+            <div style="margin-bottom: 15px;">
+              <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">${workshopData.painstormingResults.buyerSegment2}:</h3>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.buyer2Pains.replace(/\n/g, '<br>')}</p>
+            </div>
+          ` : ''}
+
+          ${workshopData.painstormingResults.buyerSegment3 ? `
+            <div style="margin-bottom: 15px;">
+              <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">${workshopData.painstormingResults.buyerSegment3}:</h3>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.buyer3Pains.replace(/\n/g, '<br>')}</p>
+            </div>
+          ` : ''}
+
+          ${workshopData.painstormingResults.overlappingPains ? `
+            <div style="margin-bottom: 15px;">
+              <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Overlapping Pains:</h3>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.overlappingPains.replace(/\n/g, '<br>')}</p>
+            </div>
+          ` : ''}
+
+          ${workshopData.painstormingResults.ahaMoments ? `
+            <div style="margin-bottom: 15px;">
+              <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">'Aha!' Moments & Reflections:</h3>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.ahaMoments.replace(/\n/g, '<br>')}</p>
+            </div>
+          ` : ''}
+        </div>
+      ` : `
+        <ul style="padding-left: 20px; margin-top: 10px;">
+          ${workshopData.pains && workshopData.pains.length > 0 ?
+            workshopData.pains.map(pain => `
+              <li style="margin-bottom: 12px;">
+                <strong>${pain.description}</strong><br>
+                <div style="font-size: 12px; color: #4b5563; margin-top: 4px;">
+                  <span style="background-color: #e5e7eb; padding: 2px 6px; border-radius: 10px; margin-right: 5px;">Type: ${pain.type}</span>
+                  <span style="background-color: #e5e7eb; padding: 2px 6px; border-radius: 10px; margin-right: 5px;">Buyer: ${pain.buyerSegment || 'All segments'}</span>
+                  ${pain.isFire ? '<span style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 10px;">FIRE Pain</span>' : ''}
+                </div>
+              </li>
+            `).join('') :
+            '<li>No pain points defined yet</li>'
+          }
+        </ul>
+      `}
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">7</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Problem Focus</h2>
-      </div>
-
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Target Moment:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.problemUp?.targetMoment?.replace(/\n/g, '<br>') || 'Not defined'}</p>
-      </div>
-
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Selected Pains:</h3>
-        <ul style="padding-left: 20px; margin: 0;">
-          ${(workshopData.problemUp?.selectedPains || []).map(id => {
-            const pain = workshopData.pains.find(p => p.id === id);
-            return pain ? `<li style="margin-bottom: 8px;">${pain.description}</li>` : '';
-          }).join('')}
-        </ul>
-      </div>
-
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Selected Buyers:</h3>
-        <ul style="padding-left: 20px; margin: 0;">
-          ${(workshopData.problemUp?.selectedBuyers || []).map(id => {
-            const buyer = workshopData.targetBuyers.find(b => b.id === id);
-            return buyer ? `<li style="margin-bottom: 8px;">${buyer.description}</li>` : '';
-          }).join('')}
-        </ul>
       </div>
 
       <div style="margin-bottom: 15px;">
         <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Target Problems:</h3>
         <ul style="padding-left: 20px; margin: 0;">
-          ${(workshopData.targetProblems || []).filter(problem => problem.selected).map(problem =>
-            `<li style="margin-bottom: 8px;">${problem.description}</li>`
-          ).join('')}
+          ${(() => {
+            // Get selected problems
+            const problems = (workshopData.targetProblems || []).filter(problem => problem.selected);
+
+            if (problems.length <= 6) {
+              return problems.map(problem => {
+                // Check if this problem is a FIRE problem (contains 🔥 emoji)
+                const isFire = problem.description.includes('🔥');
+                // Remove the fire emoji from the description if present
+                const cleanDescription = isFire ? problem.description.replace('🔥', '') : problem.description;
+
+                return `
+                  <li style="margin-bottom: 12px;">
+                    ${cleanDescription}
+                    ${isFire ? '<div style="margin-top: 4px;"><span style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 12px;">FIRE Problem</span></div>' : ''}
+                  </li>
+                `;
+              }).join('');
+            }
+
+            let result = '';
+            for (let i = 0; i < problems.length; i++) {
+              const problem = problems[i];
+              const isFire = problem.description.includes('🔥');
+              const cleanDescription = isFire ? problem.description.replace('🔥', '') : problem.description;
+
+              result += `
+                <li style="margin-bottom: 12px;">
+                  ${cleanDescription}
+                  ${isFire ? '<div style="margin-top: 4px;"><span style="background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 12px;">FIRE Problem</span></div>' : ''}
+                </li>
+              `;
+
+              // Add a page break hint after every 6 items (except the last chunk)
+              if ((i + 1) % 6 === 0 && i < problems.length - 1) {
+                result += `</ul><div style="page-break-after: auto;"></div><ul style="padding-left: 20px; margin: 0;">`;
+              }
+            }
+            return result;
+          })()}
         </ul>
       </div>
-
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Notes:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.problemUp?.notes?.replace(/\n/g, '<br>') || 'None'}</p>
-      </div>
-
-      ${workshopData.painstormingResults?.ahaMoments ? `
-        <div style="margin-bottom: 15px;">
-          <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">'Aha!' Moments & Reflections:</h3>
-          <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.painstormingResults.ahaMoments.replace(/\n/g, '<br>')}</p>
-        </div>
-      ` : ''}
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">8</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid; page-break-before: always;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Target Market Profile</h2>
       </div>
 
@@ -167,41 +259,55 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
       <div style="margin-bottom: 15px;">
         <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Common Traits:</h3>
         <ul style="padding-left: 20px; margin: 0;">
-          ${(workshopData.targetMarketProfile?.commonTraits || []).map(trait =>
-            `<li style="margin-bottom: 8px;">${trait}</li>`
-          ).join('')}
+          ${(() => {
+            const traits = workshopData.targetMarketProfile?.commonTraits || [];
+            if (traits.length <= 8) {
+              return traits.map(trait => `<li style="margin-bottom: 8px;">${trait}</li>`).join('');
+            }
+
+            let result = '';
+            for (let i = 0; i < traits.length; i++) {
+              result += `<li style="margin-bottom: 8px;">${traits[i]}</li>`;
+
+              // Add a page break hint after every 8 items (except the last chunk)
+              if ((i + 1) % 8 === 0 && i < traits.length - 1) {
+                result += `</ul><div style="page-break-after: auto;"></div><ul style="padding-left: 20px; margin: 0;">`;
+              }
+            }
+            return result;
+          })()}
         </ul>
       </div>
 
       <div style="margin-bottom: 15px;">
         <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Common Triggers:</h3>
         <ul style="padding-left: 20px; margin: 0;">
-          ${(workshopData.targetMarketProfile?.commonTriggers || []).map(trigger =>
-            `<li style="margin-bottom: 8px;">${trigger}</li>`
-          ).join('')}
+          ${(() => {
+            const triggers = workshopData.targetMarketProfile?.commonTriggers || [];
+            if (triggers.length <= 8) {
+              return triggers.map(trigger => `<li style="margin-bottom: 8px;">${trigger}</li>`).join('');
+            }
+
+            let result = '';
+            for (let i = 0; i < triggers.length; i++) {
+              result += `<li style="margin-bottom: 8px;">${triggers[i]}</li>`;
+
+              // Add a page break hint after every 8 items (except the last chunk)
+              if ((i + 1) % 8 === 0 && i < triggers.length - 1) {
+                result += `</ul><div style="page-break-after: auto;"></div><ul style="padding-left: 20px; margin: 0;">`;
+              }
+            }
+            return result;
+          })()}
         </ul>
       </div>
 
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Core Transformation:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.targetMarketProfile?.coreTransformation || 'Not defined'}</p>
-      </div>
+
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">9</div>
-        <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Refined Offer</h2>
-      </div>
-
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid; page-break-before: always;">
       <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Name:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.refinedIdea?.name || workshopData.offer?.name || 'Not defined'}</p>
-      </div>
-
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Format:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.refinedIdea?.format || workshopData.offer?.format || 'Not defined'}</p>
+        <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Refined Big Idea</h2>
       </div>
 
       <div style="margin-bottom: 15px;">
@@ -212,16 +318,33 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
       </div>
     </div>
 
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">10</div>
+    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb; page-break-inside: avoid; page-break-before: always;">
+      <div style="margin-bottom: 15px;">
         <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Next Steps</h2>
       </div>
 
       <div style="margin-bottom: 15px;">
         <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Pre-Sell Plan:</h3>
         ${workshopData.nextSteps?.preSellPlanItems && workshopData.nextSteps.preSellPlanItems.length > 0
-          ? `<ul style="padding-left: 20px; margin: 0;">${workshopData.nextSteps.preSellPlanItems.map(item => `<li style="margin-bottom: 8px;">${item}</li>`).join('')}</ul>`
+          ? `<ul style="padding-left: 20px; margin: 0;">
+              ${(() => {
+                const items = workshopData.nextSteps.preSellPlanItems;
+                if (items.length <= 8) {
+                  return items.map(item => `<li style="margin-bottom: 8px;">${item}</li>`).join('');
+                }
+
+                let result = '';
+                for (let i = 0; i < items.length; i++) {
+                  result += `<li style="margin-bottom: 8px;">${items[i]}</li>`;
+
+                  // Add a page break hint after every 8 items (except the last chunk)
+                  if ((i + 1) % 8 === 0 && i < items.length - 1) {
+                    result += `</ul><div style="page-break-after: auto;"></div><ul style="padding-left: 20px; margin: 0;">`;
+                  }
+                }
+                return result;
+              })()}
+            </ul>`
           : `<p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.nextSteps?.preSellPlan || 'Not defined'}</p>`
         }
       </div>
@@ -229,33 +352,27 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
       <div style="margin-bottom: 15px;">
         <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Workshop Reflections:</h3>
         ${workshopData.nextSteps?.workshopReflectionItems && workshopData.nextSteps.workshopReflectionItems.length > 0
-          ? `<ul style="padding-left: 20px; margin: 0;">${workshopData.nextSteps.workshopReflectionItems.map(item => `<li style="margin-bottom: 8px;">${item}</li>`).join('')}</ul>`
+          ? `<ul style="padding-left: 20px; margin: 0;">
+              ${(() => {
+                const items = workshopData.nextSteps.workshopReflectionItems;
+                if (items.length <= 8) {
+                  return items.map(item => `<li style="margin-bottom: 8px;">${item}</li>`).join('');
+                }
+
+                let result = '';
+                for (let i = 0; i < items.length; i++) {
+                  result += `<li style="margin-bottom: 8px;">${items[i]}</li>`;
+
+                  // Add a page break hint after every 8 items (except the last chunk)
+                  if ((i + 1) % 8 === 0 && i < items.length - 1) {
+                    result += `</ul><div style="page-break-after: auto;"></div><ul style="padding-left: 20px; margin: 0;">`;
+                  }
+                }
+                return result;
+              })()}
+            </ul>`
           : `<p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.nextSteps?.workshopReflections || 'Not defined'}</p>`
         }
-      </div>
-    </div>
-
-    <div style="margin-bottom: 30px; background-color: #f9fafb; border-radius: 8px; padding: 20px; border: 1px solid #e5e7eb;">
-      <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <div style="background-color: #fcf720; color: black; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-        </div>
-        <h2 style="color: #1e293b; font-size: 20px; margin: 0; font-weight: 600;">Reflections & Action Plan</h2>
-      </div>
-
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Key Insights & Learnings:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.reflections?.keyInsights?.replace(/\n/g, '<br>') || 'None'}</p>
-      </div>
-
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Actionable Next Steps:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.reflections?.nextSteps?.replace(/\n/g, '<br>') || 'None'}</p>
-      </div>
-
-      <div style="margin-bottom: 15px;">
-        <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Personal Reflection:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.reflections?.personalReflection?.replace(/\n/g, '<br>') || 'None'}</p>
       </div>
     </div>
 
@@ -309,7 +426,8 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
       let currentHeight = 297;
       while (currentHeight < imgHeight) {
         pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, -(currentHeight), imgWidth, imgHeight);
+        // Add a 10mm margin at the top of each page to prevent content from being cut off
+        pdf.addImage(imgData, 'PNG', 0, -(currentHeight - 10), imgWidth, imgHeight);
         currentHeight += 297;
       }
     }

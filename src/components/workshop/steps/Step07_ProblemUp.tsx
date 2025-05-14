@@ -200,7 +200,7 @@ export const Step07_ProblemUp: React.FC = () => {
         <AccordionGroup>
           {/* Step 1: Analyze problem lists */}
           <AccordionItem
-            title="Step 1) Analyze your problem lists to find profitable problems"
+            title="Step 1) Create a shortlist of potential problems to solve"
             defaultExpanded={isStep1Expanded}
             onToggle={toggleStep1}
           >
@@ -517,11 +517,13 @@ export const Step07_ProblemUp: React.FC = () => {
                             alignItems: 'center',
                             gap: '4px',
                             fontSize: '13px',
-                            padding: '4px 8px'
+                            padding: '4px 8px',
+                            backgroundColor: '#fcf720',
+                            color: 'black'
                           }}
                         >
                           <Plus size={14} />
-                          Add All
+                          Add All to Shortlist
                         </Button>
                       </div>
                       <div style={{ display: 'grid', gap: '8px' }}>
@@ -551,11 +553,13 @@ export const Step07_ProblemUp: React.FC = () => {
                                 alignItems: 'center',
                                 gap: '4px',
                                 fontSize: '13px',
-                                padding: '4px 8px'
+                                padding: '4px 8px',
+                                backgroundColor: '#fcf720',
+                                color: 'black'
                               }}
                             >
                               <Plus size={14} />
-                              Add this Problem to Review
+                              Add to Shortlist
                             </Button>
                           </div>
                         ))}
@@ -589,11 +593,13 @@ export const Step07_ProblemUp: React.FC = () => {
                               gap: '4px',
                               fontSize: '13px',
                               padding: '4px 8px',
-                              marginTop: '8px'
+                              marginTop: '8px',
+                              backgroundColor: '#fcf720',
+                              color: 'black'
                             }}
                           >
                             <Plus size={14} />
-                            Add All
+                            Add All to Shortlist
                           </Button>
                         </div>
                       )}
@@ -605,7 +611,7 @@ export const Step07_ProblemUp: React.FC = () => {
 
             <div style={{ marginBottom: '20px' }}>
               <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px', color: '#1e293b' }}>
-                Add Your Own Problem:
+                Add Problem to Shortlist:
               </h4>
               <textarea
                 value={newProblem}
@@ -626,16 +632,16 @@ export const Step07_ProblemUp: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
-              <Button onClick={handleAddProblem} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Button onClick={handleAddProblem} style={{ display: 'flex', alignItems: 'center', gap: '6px', backgroundColor: '#fcf720', color: 'black' }}>
                 <Plus size={16} />
-                Add this Problem to Review
+                Add to Shortlist
               </Button>
             </div>
 
             {targetProblems.length > 0 && (
               <div style={{ marginBottom: '20px' }}>
                 <h4 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px', color: '#1e293b' }}>
-                  Your Problem List:
+                  Your Problem Shortlist:
                 </h4>
                 <div style={{ display: 'grid', gap: '8px' }}>
                   {targetProblems.map(problem => (
@@ -694,7 +700,7 @@ export const Step07_ProblemUp: React.FC = () => {
 
           {/* Step 2: Choose specific problems */}
           <AccordionItem
-            title="Step 2) Which 1-5 specific problems are you interested in solving?"
+            title="Step 2) Select 1-5 problems from your shortlist to focus on"
             defaultExpanded={isStep2Expanded}
             onToggle={toggleStep2}
           >
@@ -771,7 +777,7 @@ export const Step07_ProblemUp: React.FC = () => {
                 fontSize: '14px',
                 marginBottom: '20px'
               }}>
-                No problems selected yet. Select problems from your list above.
+                No problems selected yet. Select problems from your shortlist in Step 1 by clicking the checkbox next to each problem.
               </div>
             )}
           </AccordionItem>
