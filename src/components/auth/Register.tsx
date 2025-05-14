@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useWorkshopStore } from '../../store/workshopStore';
 import { Button } from '../ui/Button';
@@ -15,11 +15,9 @@ export const Register: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { signUp } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const { initializeSession } = useWorkshopStore();
 
-  // Get the return URL from location state or default to dashboard
-  const from = (location.state as any)?.from?.pathname || '/dashboard';
+  // We don't need the return URL anymore as we always navigate to Step 1
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,13 +66,13 @@ export const Register: React.FC = () => {
           await initializeSession();
           const currentSessionId = useWorkshopStore.getState().sessionId;
 
-          if (currentSessionId && from === '/step/1') {
-            // If we're coming from the intro page and going to step 1, navigate there
+          if (currentSessionId) {
+            // Always navigate directly to step 1 after registration
             setTimeout(() => {
               navigate(`/step/1?session=${currentSessionId}`);
             }, 500);
           } else {
-            // Otherwise, go to the dashboard
+            console.error('No session ID available after initialization');
             setTimeout(() => {
               navigate('/dashboard');
             }, 500);

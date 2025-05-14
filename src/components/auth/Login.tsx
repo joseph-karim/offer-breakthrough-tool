@@ -28,30 +28,31 @@ export const Login: React.FC = () => {
       const { error } = await signIn(email, password);
       if (error) throw error;
 
-      // If we're going to step 1, create a new session first
-      if (from === '/step/1') {
-        try {
-          // Create a new session
-          await initializeSession();
-          const currentSessionId = useWorkshopStore.getState().sessionId;
+      // Always create a new session and navigate to step 1 after login
+      try {
+        // Create a new session
+        await initializeSession();
+        const currentSessionId = useWorkshopStore.getState().sessionId;
 
-          if (currentSessionId) {
-            // Navigate to step 1 with the session ID
-            setTimeout(() => {
-              navigate(`/step/1?session=${currentSessionId}`, { replace: true });
-            }, 500);
-            return;
-          }
-        } catch (error) {
-          console.error('Error initializing session after login:', error);
-          // Continue with normal navigation if session creation fails
+        if (currentSessionId) {
+          // Navigate to step 1 with the session ID
+          setTimeout(() => {
+            navigate(`/step/1?session=${currentSessionId}`, { replace: true });
+          }, 500);
+        } else {
+          console.error('No session ID available after initialization');
+          // Fall back to normal navigation if session creation fails
+          setTimeout(() => {
+            navigate(from, { replace: true });
+          }, 500);
         }
+      } catch (error) {
+        console.error('Error initializing session after login:', error);
+        // Fall back to normal navigation if session creation fails
+        setTimeout(() => {
+          navigate(from, { replace: true });
+        }, 500);
       }
-
-      // For other destinations, just navigate normally
-      setTimeout(() => {
-        navigate(from, { replace: true });
-      }, 500);
     } catch (err: any) {
       setError(err.message || 'Failed to sign in');
       setLoading(false);
