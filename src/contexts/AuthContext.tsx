@@ -68,11 +68,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    return { data: data.session, error };
+    // Check if we're in local development
+    const isLocalDevelopment = window.location.hostname === 'localhost';
+
+    try {
+      console.log('Signing up with email:', email);
+
+      // For production, include the redirect URL
+      const options = isLocalDevelopment
+        ? undefined
+        : { emailRedirectTo: `${window.location.origin}/auth/callback` };
+
+      // Sign up the user
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options
+      });
+
+      if (error) {
+        console.error('Signup error:', error);
+        return { data: null, error };
+      }
+
+      return { data: data.session, error: null };
+    } catch (err) {
+      console.error('Unexpected error during signup:', err);
+      return { data: null, error: err as Error };
+    }
   };
 
   const signOut = async () => {

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/Button';
-import { Input } from '../shared/Input';
+import { AlertCircle, CheckCircle } from 'lucide-react';
+import * as styles from '../../styles/stepStyles';
 
 export const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -33,9 +34,27 @@ export const Register: React.FC = () => {
     setLoading(true);
 
     try {
+      console.log('Attempting to sign up with email:', email);
       const { error, data } = await signUp(email, password);
 
-      if (error) throw error;
+      console.log('Sign up response:', { error, data });
+
+      if (error) {
+        console.error('Sign up error:', error);
+        throw error;
+      }
+
+      // For local development, we'll show a success message and redirect to login
+      if (window.location.origin.includes('localhost')) {
+        setSuccessMessage('Registration successful! You can now sign in with your credentials.');
+        setLoading(false);
+
+        // Automatically redirect to login after a delay
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
+        return;
+      }
 
       if (data) {
         // If auto-confirm is enabled, redirect to dashboard after a short delay
@@ -48,122 +67,195 @@ export const Register: React.FC = () => {
         setLoading(false);
       }
     } catch (err: any) {
+      console.error('Registration error:', err);
       setError(err.message || 'Failed to create account');
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-900">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
-          Create a new account
-        </h2>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      backgroundColor: '#1E1E1E',
+      padding: '20px'
+    }}>
+      {/* Logo at the top */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: '30px',
+        padding: '15px 0',
+      }}>
+        <img
+          src="/assets/Buyer Breakthrough Logo.png"
+          alt="Buyer Breakthrough Logo"
+          style={{
+            maxWidth: '200px',
+            height: 'auto',
+          }}
+        />
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {error && (
-            <div className="mb-4 rounded-md bg-red-50 p-4">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">Error</h3>
-                  <div className="mt-2 text-sm text-red-700">
-                    <p>{error}</p>
-                  </div>
-                </div>
-              </div>
+      <div style={{
+        width: '100%',
+        maxWidth: '450px',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '20px',
+        padding: '30px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      }}>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#333333',
+          marginBottom: '20px',
+          textAlign: 'center'
+        }}>
+          Create a new account
+        </h2>
+
+        {error && (
+          <div style={{
+            backgroundColor: '#FEE2E2',
+            color: '#B91C1C',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px'
+          }}>
+            <AlertCircle size={20} />
+            <div>
+              <p style={{ fontWeight: '500', marginBottom: '4px' }}>Error</p>
+              <p>{error}</p>
             </div>
-          )}
-
-          {successMessage && (
-            <div className="mb-4 rounded-md bg-green-50 p-4">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-green-800">Success</h3>
-                  <div className="mt-2 text-sm text-green-700">
-                    <p>{successMessage}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {!successMessage && (
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-white">
-                  Email address
-                </label>
-                <div className="mt-1">
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full appearance-none rounded-md border border-gray-700 bg-gray-700 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500 text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-white">
-                  Password
-                </label>
-                <div className="mt-1">
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full appearance-none rounded-md border border-gray-700 bg-gray-700 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500 text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-white">
-                  Confirm Password
-                </label>
-                <div className="mt-1">
-                  <Input
-                    id="confirm-password"
-                    name="confirm-password"
-                    type="password"
-                    autoComplete="new-password"
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="block w-full appearance-none rounded-md border border-gray-700 bg-gray-700 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500 text-white"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  fullWidth
-                  isLoading={loading}
-                  disabled={loading}
-                >
-                  Sign up
-                </Button>
-              </div>
-            </form>
-          )}
-
-          <div className="mt-6 text-center">
-            <Link to="/login" className="font-medium text-purple-400 hover:text-purple-300">
-              Already have an account? Sign in
-            </Link>
           </div>
+        )}
+
+        {successMessage && (
+          <div style={{
+            backgroundColor: '#DCFCE7',
+            color: '#166534',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px'
+          }}>
+            <CheckCircle size={20} />
+            <div>
+              <p style={{ fontWeight: '500', marginBottom: '4px' }}>Success</p>
+              <p>{successMessage}</p>
+            </div>
+          </div>
+        )}
+
+        {!successMessage && (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div>
+              <label htmlFor="email" style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333333',
+                display: 'block',
+                marginBottom: '8px'
+              }}>
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={styles.inputStyle}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333333',
+                display: 'block',
+                marginBottom: '8px'
+              }}>
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={styles.inputStyle}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="confirm-password" style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#333333',
+                display: 'block',
+                marginBottom: '8px'
+              }}>
+                Confirm Password
+              </label>
+              <input
+                id="confirm-password"
+                name="confirm-password"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                style={styles.inputStyle}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              variant="yellow"
+              fullWidth
+              isLoading={loading}
+              disabled={loading}
+              style={{
+                marginTop: '10px',
+                borderRadius: '15px',
+                padding: '12px 20px',
+                fontSize: '16px',
+                fontWeight: 'bold'
+              }}
+            >
+              Sign up
+            </Button>
+          </form>
+        )}
+
+        <div style={{
+          marginTop: '30px',
+          textAlign: 'center'
+        }}>
+          <Link to="/login" style={{
+            color: '#333333',
+            fontWeight: '500',
+            fontSize: '16px',
+            textDecoration: 'none'
+          }}>
+            Already have an account? Sign in
+          </Link>
         </div>
       </div>
     </div>

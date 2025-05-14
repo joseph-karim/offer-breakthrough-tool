@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui/Button';
-import { Input } from '../shared/Input';
+import { AlertCircle } from 'lucide-react';
+import * as styles from '../../styles/stepStyles';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -36,102 +37,168 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-900">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
-          Sign in to your account
-        </h2>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      backgroundColor: '#1E1E1E',
+      padding: '20px'
+    }}>
+      {/* Logo at the top */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: '30px',
+        padding: '15px 0',
+      }}>
+        <img
+          src="/assets/Buyer Breakthrough Logo.png"
+          alt="Buyer Breakthrough Logo"
+          style={{
+            maxWidth: '200px',
+            height: 'auto',
+          }}
+        />
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {error && (
-            <div className="mb-4 rounded-md bg-red-50 p-4">
-              <div className="flex">
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">Error</h3>
-                  <div className="mt-2 text-sm text-red-700">
-                    <p>{error}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+      <div style={{
+        width: '100%',
+        maxWidth: '450px',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '20px',
+        padding: '30px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      }}>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: 'bold',
+          color: '#333333',
+          marginBottom: '20px',
+          textAlign: 'center'
+        }}>
+          Sign in to your account
+        </h2>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+        {error && (
+          <div style={{
+            backgroundColor: '#FEE2E2',
+            color: '#B91C1C',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px'
+          }}>
+            <AlertCircle size={20} />
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-white">
-                Email address
-              </label>
-              <div className="mt-1">
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-700 bg-gray-700 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500 text-white"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-white">
-                Password
-              </label>
-              <div className="mt-1">
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-gray-700 bg-gray-700 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-purple-500 focus:outline-none focus:ring-purple-500 text-white"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <Link to="/forgot-password" className="font-medium text-purple-400 hover:text-purple-300">
-                  Forgot your password?
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <Button
-                type="submit"
-                variant="primary"
-                fullWidth
-                isLoading={loading}
-                disabled={loading}
-              >
-                Sign in
-              </Button>
-            </div>
-          </form>
-
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-600" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="bg-gray-800 px-2 text-gray-400">Or</span>
-              </div>
-            </div>
-
-            <div className="mt-6 text-center">
-              <Link to="/register" className="font-medium text-purple-400 hover:text-purple-300">
-                Create a new account
-              </Link>
+              <p style={{ fontWeight: '500', marginBottom: '4px' }}>Error</p>
+              <p>{error}</p>
             </div>
           </div>
+        )}
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div>
+            <label htmlFor="email" style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#333333',
+              display: 'block',
+              marginBottom: '8px'
+            }}>
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.inputStyle}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#333333',
+              display: 'block',
+              marginBottom: '8px'
+            }}>
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.inputStyle}
+            />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Link to="/forgot-password" style={{
+              color: '#333333',
+              fontSize: '14px',
+              textDecoration: 'underline'
+            }}>
+              Forgot your password?
+            </Link>
+          </div>
+
+          <Button
+            type="submit"
+            variant="yellow"
+            fullWidth
+            isLoading={loading}
+            disabled={loading}
+            style={{
+              marginTop: '10px',
+              borderRadius: '15px',
+              padding: '12px 20px',
+              fontSize: '16px',
+              fontWeight: 'bold'
+            }}
+          >
+            Sign in
+          </Button>
+        </form>
+
+        <div style={{
+          marginTop: '30px',
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <div style={{ flex: 1, height: '1px', backgroundColor: '#E5E7EB' }} />
+            <span style={{ color: '#6B7280', fontSize: '14px' }}>Or</span>
+            <div style={{ flex: 1, height: '1px', backgroundColor: '#E5E7EB' }} />
+          </div>
+
+          <Link to="/register" style={{
+            color: '#333333',
+            fontWeight: '500',
+            fontSize: '16px',
+            textDecoration: 'none'
+          }}>
+            Create a new account
+          </Link>
         </div>
       </div>
     </div>

@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../services/supabase';
 import { Button } from '../ui/Button';
-import { PlusIcon, Trash2Icon, PencilIcon } from 'lucide-react';
+import { PlusIcon, Trash2Icon, PencilIcon, AlertCircle } from 'lucide-react';
+import * as styles from '../../styles/stepStyles';
 import { WorkshopSession } from '../../types/workshop';
 
 export const Dashboard: React.FC = () => {
@@ -23,7 +24,7 @@ export const Dashboard: React.FC = () => {
 
   const fetchSessions = async () => {
     if (!user) return;
-    
+
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -31,9 +32,9 @@ export const Dashboard: React.FC = () => {
         .select('*')
         .eq('user_id', user.id)
         .order('updated_at', { ascending: false });
-      
+
       if (error) throw error;
-      
+
       setSessions(data || []);
     } catch (err: any) {
       console.error('Error fetching sessions:', err);
@@ -45,11 +46,11 @@ export const Dashboard: React.FC = () => {
 
   const createNewSession = async () => {
     if (!user) return;
-    
+
     try {
       const sessionId = `session_${Date.now()}`;
       const name = newSessionName.trim() || 'Untitled Workshop';
-      
+
       const { error } = await supabase
         .from('workshop_sessions')
         .insert({
@@ -67,14 +68,14 @@ export const Dashboard: React.FC = () => {
             stepChats: {}
           }
         });
-      
+
       if (error) throw error;
-      
+
       // Refresh sessions list
       await fetchSessions();
       setIsCreatingNew(false);
       setNewSessionName('');
-      
+
       // Navigate to the new session
       navigate(`/intro?session=${sessionId}`);
     } catch (err: any) {
@@ -85,16 +86,16 @@ export const Dashboard: React.FC = () => {
 
   const updateSessionName = async (sessionId: string) => {
     if (!user) return;
-    
+
     try {
       const { error } = await supabase
         .from('workshop_sessions')
         .update({ name: editSessionName })
         .eq('session_id', sessionId)
         .eq('user_id', user.id);
-      
+
       if (error) throw error;
-      
+
       // Refresh sessions list
       await fetchSessions();
       setEditingSession(null);
@@ -107,16 +108,16 @@ export const Dashboard: React.FC = () => {
 
   const deleteSession = async (sessionId: string) => {
     if (!user || !confirm('Are you sure you want to delete this workshop session? This action cannot be undone.')) return;
-    
+
     try {
       const { error } = await supabase
         .from('workshop_sessions')
         .delete()
         .eq('session_id', sessionId)
         .eq('user_id', user.id);
-      
+
       if (error) throw error;
-      
+
       // Refresh sessions list
       await fetchSessions();
     } catch (err: any) {
@@ -131,157 +132,403 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-white">My Workshops</h1>
-          <Button 
-            variant="primary" 
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#1E1E1E',
+      padding: '40px 20px'
+    }}>
+      {/* Logo at the top */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '15px 0',
+        maxWidth: '300px',
+        margin: '0 auto 30px auto',
+      }}>
+        <img
+          src="/assets/Buyer Breakthrough Logo.png"
+          alt="Buyer Breakthrough Logo"
+          style={{
+            maxWidth: '200px',
+            height: 'auto',
+          }}
+        />
+      </div>
+
+      <div style={{
+        maxWidth: '900px',
+        margin: '0 auto',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '20px',
+        padding: '30px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '30px'
+        }}>
+          <h1 style={{
+            fontSize: '28px',
+            fontWeight: 'bold',
+            color: '#333333',
+            margin: 0
+          }}>
+            My Workshops
+          </h1>
+          <Button
+            variant="yellow"
             onClick={() => setIsCreatingNew(true)}
             leftIcon={<PlusIcon size={16} />}
             disabled={isCreatingNew}
+            style={{
+              borderRadius: '15px',
+              padding: '10px 20px',
+              fontSize: '16px',
+              fontWeight: 'bold'
+            }}
           >
             New Workshop
           </Button>
         </div>
 
         {error && (
-          <div className="mb-6 rounded-md bg-red-50 p-4">
-            <div className="flex">
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">Error</h3>
-                <div className="mt-2 text-sm text-red-700">
-                  <p>{error}</p>
-                </div>
-              </div>
+          <div style={{
+            backgroundColor: '#FEE2E2',
+            color: '#B91C1C',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px'
+          }}>
+            <AlertCircle size={20} />
+            <div>
+              <p style={{ fontWeight: '500', marginBottom: '4px' }}>Error</p>
+              <p>{error}</p>
             </div>
           </div>
         )}
 
         {isCreatingNew && (
-          <div className="mb-6 p-4 bg-gray-800 rounded-lg">
-            <h2 className="text-lg font-medium text-white mb-3">Create New Workshop</h2>
-            <div className="flex gap-3">
+          <div style={{
+            marginBottom: '24px',
+            padding: '20px',
+            backgroundColor: '#F9FAFB',
+            borderRadius: '15px',
+            border: '1px solid #E5E7EB'
+          }}>
+            <h2 style={{
+              fontSize: '18px',
+              fontWeight: '600',
+              color: '#333333',
+              marginBottom: '15px'
+            }}>
+              Create New Workshop
+            </h2>
+            <div style={{
+              display: 'flex',
+              gap: '12px'
+            }}>
               <input
                 type="text"
                 value={newSessionName}
                 onChange={(e) => setNewSessionName(e.target.value)}
                 placeholder="Workshop Name"
-                className="flex-1 rounded-md border border-gray-700 bg-gray-700 px-3 py-2 text-white placeholder-gray-400"
+                style={{
+                  ...styles.inputStyle,
+                  flex: 1
+                }}
               />
-              <Button variant="primary" onClick={createNewSession}>Create</Button>
-              <Button variant="outline" onClick={() => setIsCreatingNew(false)}>Cancel</Button>
+              <Button
+                variant="yellow"
+                onClick={createNewSession}
+                style={{
+                  borderRadius: '15px',
+                  padding: '10px 20px',
+                  fontSize: '16px',
+                  fontWeight: 'bold'
+                }}
+              >
+                Create
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => setIsCreatingNew(false)}
+                style={{
+                  borderRadius: '15px',
+                  padding: '10px 20px',
+                  fontSize: '16px',
+                  fontWeight: 'bold'
+                }}
+              >
+                Cancel
+              </Button>
             </div>
           </div>
         )}
 
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-            <p className="mt-2 text-white">Loading your workshops...</p>
+          <div style={{
+            textAlign: 'center',
+            padding: '40px 0'
+          }}>
+            <div style={{
+              display: 'inline-block',
+              width: '30px',
+              height: '30px',
+              border: '3px solid #F3F4F6',
+              borderTopColor: '#FFD700',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+            <p style={{
+              marginTop: '12px',
+              color: '#4B5563',
+              fontSize: '16px'
+            }}>
+              Loading your workshops...
+            </p>
+            <style>
+              {`
+                @keyframes spin {
+                  to { transform: rotate(360deg); }
+                }
+              `}
+            </style>
           </div>
         ) : sessions.length === 0 ? (
-          <div className="text-center py-12 bg-gray-800 rounded-lg">
-            <p className="text-white mb-4">You don't have any workshop sessions yet.</p>
-            <Button 
-              variant="primary" 
+          <div style={{
+            textAlign: 'center',
+            padding: '40px 0',
+            backgroundColor: '#F9FAFB',
+            borderRadius: '15px',
+            border: '1px solid #E5E7EB'
+          }}>
+            <p style={{
+              color: '#4B5563',
+              marginBottom: '20px',
+              fontSize: '16px'
+            }}>
+              You don't have any workshop sessions yet.
+            </p>
+            <Button
+              variant="yellow"
               onClick={() => setIsCreatingNew(true)}
               leftIcon={<PlusIcon size={16} />}
+              style={{
+                borderRadius: '15px',
+                padding: '12px 24px',
+                fontSize: '16px',
+                fontWeight: 'bold'
+              }}
             >
               Create Your First Workshop
             </Button>
           </div>
         ) : (
-          <div className="bg-gray-800 rounded-lg overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-700">
-              <thead className="bg-gray-700">
+          <div style={{
+            borderRadius: '15px',
+            overflow: 'hidden',
+            border: '1px solid #E5E7EB'
+          }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse'
+            }}>
+              <thead style={{
+                backgroundColor: '#F9FAFB',
+                borderBottom: '1px solid #E5E7EB'
+              }}>
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th style={{
+                    padding: '12px 16px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#4B5563'
+                  }}>
                     Workshop Name
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th style={{
+                    padding: '12px 16px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#4B5563'
+                  }}>
                     Last Updated
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th style={{
+                    padding: '12px 16px',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#4B5563'
+                  }}>
                     Progress
                   </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  <th style={{
+                    padding: '12px 16px',
+                    textAlign: 'right',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#4B5563'
+                  }}>
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-gray-800 divide-y divide-gray-700">
-                {sessions.map((session) => (
-                  <tr key={session.session_id} className="hover:bg-gray-750">
-                    <td className="px-6 py-4 whitespace-nowrap">
+              <tbody>
+                {sessions.map((session, index) => (
+                  <tr
+                    key={session.session_id}
+                    style={{
+                      borderBottom: index < sessions.length - 1 ? '1px solid #E5E7EB' : 'none',
+                      backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F9FAFB'
+                    }}
+                  >
+                    <td style={{
+                      padding: '16px',
+                      whiteSpace: 'nowrap'
+                    }}>
                       {editingSession === session.session_id ? (
-                        <div className="flex gap-2">
+                        <div style={{
+                          display: 'flex',
+                          gap: '8px',
+                          alignItems: 'center'
+                        }}>
                           <input
                             type="text"
                             value={editSessionName}
                             onChange={(e) => setEditSessionName(e.target.value)}
-                            className="rounded-md border border-gray-700 bg-gray-700 px-2 py-1 text-white placeholder-gray-400 text-sm"
+                            style={{
+                              ...styles.inputStyle,
+                              padding: '8px 12px',
+                              fontSize: '14px'
+                            }}
                           />
-                          <Button 
-                            variant="primary" 
-                            size="xs" 
+                          <Button
+                            variant="yellow"
+                            size="xs"
                             onClick={() => updateSessionName(session.session_id)}
+                            style={{
+                              borderRadius: '8px',
+                              padding: '6px 12px',
+                              fontSize: '14px'
+                            }}
                           >
                             Save
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            size="xs" 
+                          <Button
+                            variant="secondary"
+                            size="xs"
                             onClick={() => setEditingSession(null)}
+                            style={{
+                              borderRadius: '8px',
+                              padding: '6px 12px',
+                              fontSize: '14px'
+                            }}
                           >
                             Cancel
                           </Button>
                         </div>
                       ) : (
-                        <div className="text-white font-medium">{session.name}</div>
+                        <div style={{
+                          fontWeight: '500',
+                          color: '#333333',
+                          fontSize: '16px'
+                        }}>
+                          {session.name}
+                        </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-300">
-                        {new Date(session.updated_at).toLocaleDateString()} at {new Date(session.updated_at).toLocaleTimeString()}
-                      </div>
+                    <td style={{
+                      padding: '16px',
+                      whiteSpace: 'nowrap',
+                      color: '#6B7280',
+                      fontSize: '14px'
+                    }}>
+                      {new Date(session.updated_at).toLocaleDateString()} at {new Date(session.updated_at).toLocaleTimeString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-300">
+                    <td style={{
+                      padding: '16px',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      <div style={{
+                        color: '#6B7280',
+                        fontSize: '14px',
+                        marginBottom: '6px'
+                      }}>
                         Step {session.current_step} of 10
                       </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
-                        <div 
-                          className="bg-purple-500 h-2 rounded-full" 
-                          style={{ width: `${Math.min(100, (session.current_step / 10) * 100)}%` }}
+                      <div style={{
+                        width: '100%',
+                        backgroundColor: '#E5E7EB',
+                        borderRadius: '9999px',
+                        height: '8px'
+                      }}>
+                        <div
+                          style={{
+                            backgroundColor: '#FFD700',
+                            height: '8px',
+                            borderRadius: '9999px',
+                            width: `${Math.min(100, (session.current_step / 10) * 100)}%`
+                          }}
                         ></div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end gap-2">
-                        <Button 
-                          variant="outline" 
+                    <td style={{
+                      padding: '16px',
+                      whiteSpace: 'nowrap',
+                      textAlign: 'right'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        gap: '8px'
+                      }}>
+                        <Button
+                          variant="secondary"
                           size="xs"
                           onClick={() => {
                             setEditingSession(session.session_id);
                             setEditSessionName(session.name);
                           }}
                           leftIcon={<PencilIcon size={14} />}
+                          style={{
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontSize: '14px'
+                          }}
                         >
                           Rename
                         </Button>
-                        <Button 
-                          variant="primary" 
+                        <Button
+                          variant="yellow"
                           size="xs"
                           onClick={() => continueSession(session.session_id, session.current_step)}
+                          style={{
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontSize: '14px'
+                          }}
                         >
                           Continue
                         </Button>
-                        <Button 
-                          variant="destructive" 
+                        <Button
+                          variant="destructive"
                           size="xs"
                           onClick={() => deleteSession(session.session_id)}
                           leftIcon={<Trash2Icon size={14} />}
+                          style={{
+                            borderRadius: '8px',
+                            padding: '6px 12px',
+                            fontSize: '14px'
+                          }}
                         >
                           Delete
                         </Button>

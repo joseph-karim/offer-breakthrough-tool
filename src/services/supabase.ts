@@ -1,11 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 import type { WorkshopData, WorkshopSession } from '../types/workshop';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// For local development, use hardcoded values
+const isLocalDevelopment = window.location.hostname === 'localhost';
+
+// Get values from environment variables or use hardcoded values for local development
+const supabaseUrl = isLocalDevelopment
+  ? 'https://qequpzsgbzsysyllnrmx.supabase.co'
+  : import.meta.env.VITE_SUPABASE_URL;
+
+const supabaseAnonKey = isLocalDevelopment
+  ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlcXVwenNnYnpzeXN5bGxucm14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI5MzA0MjIsImV4cCI6MjA1ODUwNjQyMn0.joz0QS25pcuoKoHsF6NpXiIhcF-OLXeq8FJiVkQRxiA'
+  : import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+console.log('Is local development:', isLocalDevelopment);
+console.log('Supabase URL:', supabaseUrl);
+console.log('Supabase Anon Key (first 10 chars):', supabaseAnonKey?.substring(0, 10));
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+  console.error('Missing Supabase configuration');
+  throw new Error('Missing Supabase configuration');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
