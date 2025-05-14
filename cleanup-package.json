@@ -1,0 +1,14 @@
+{
+  "name": "workshop-cleanup",
+  "version": "1.0.0",
+  "description": "Script to clean up duplicate workshop sessions",
+  "main": "cleanup-duplicate-sessions.js",
+  "type": "module",
+  "scripts": {
+    "cleanup": "node cleanup-duplicate-sessions.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.7",
+    "dotenv": "^16.4.5"
+  }
+}
