@@ -5,6 +5,7 @@ import { ExternalLink, Download, Plus, X } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import * as styles from '../../../styles/stepStyles';
 import { SaveIndicator } from '../../ui/SaveIndicator';
+import { InfoBox } from '../../ui/InfoBox';
 import { exportWorkshopToPdf } from '../../../utils/pdfExporter';
 
 // Separate selectors to prevent unnecessary re-renders
@@ -219,9 +220,9 @@ export const Step10_PlanNextSteps: React.FC = () => {
           </div>
 
           {/* Info box */}
-          <div style={styles.yellowInfoBoxStyle} data-sb-field-path="infoBox">
-            💡 Pre-selling your offer is the best way to validate market demand
-          </div>
+          <InfoBox data-sb-field-path="infoBox">
+            Pre-selling your offer is the best way to validate market demand
+          </InfoBox>
 
 
 
