@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useWorkshopStore } from '../../../store/workshopStore';
 import type { WorkshopStore } from '../../../store/workshopStore';
 import type { TargetBuyer } from '../../../types/workshop';
-import { Plus, X, Star, Check } from 'lucide-react';
+import { Plus, X, Check } from 'lucide-react';
 import { Button } from '../../ui/Button';
 import { AccordionGroup, AccordionItem } from '../../ui/Accordion';
 import { ChatWithSparkyButton } from '../chat/ChatWithSparkyButton';
@@ -20,7 +20,6 @@ export const Step05_TargetBuyers: React.FC = () => {
   // Use local state for the buyers
   const [buyers, setBuyers] = useState<TargetBuyer[]>(targetBuyers || []);
   const [newBuyer, setNewBuyer] = useState('');
-  const [potentialBuyers, setPotentialBuyers] = useState<string[]>([]);
   const [shortlistedBuyers, setShortlistedBuyers] = useState<string[]>([]);
   const [topThreeBuyers, setTopThreeBuyers] = useState<string[]>([]);
 
@@ -42,10 +41,6 @@ export const Step05_TargetBuyers: React.FC = () => {
 
     const topThree = targetBuyers?.filter(b => b.isTopThree).map(b => b.description) || [];
     setTopThreeBuyers(topThree);
-
-    // Extract all potential buyers
-    const allBuyerDescriptions = targetBuyers?.map(b => b.description) || [];
-    setPotentialBuyers(allBuyerDescriptions);
   }, [targetBuyers]);
 
 
@@ -62,7 +57,10 @@ export const Step05_TargetBuyers: React.FC = () => {
         longTermValue: 0,
         solutionFit: 0,
         accessibility: 0,
-        shortlisted: true
+        shortlisted: true,
+        // Set a flag to indicate this buyer was added in Step 2
+        // This will prevent it from showing in Step 1
+        selected: true
       };
 
       const updatedBuyers = [...buyers, buyer];
@@ -89,9 +87,6 @@ export const Step05_TargetBuyers: React.FC = () => {
       if (buyerToDelete.isTopThree) {
         setTopThreeBuyers(prev => prev.filter(desc => desc !== buyerToDelete.description));
       }
-
-      // Remove from potential buyers list
-      setPotentialBuyers(prev => prev.filter(desc => desc !== buyerToDelete.description));
     }
 
     updateWorkshopData({ targetBuyers: updatedBuyers });
@@ -124,28 +119,7 @@ export const Step05_TargetBuyers: React.FC = () => {
     updateWorkshopData({ targetBuyers: updatedBuyers });
   }, [buyers, updateWorkshopData]);
 
-  const toggleShortlistBuyer = useCallback((description: string) => {
-    const buyer = buyers.find(b => b.description === description);
 
-    if (buyer) {
-      const isCurrentlyShortlisted = buyer.shortlisted;
-
-      // Update shortlisted status
-      const updatedBuyers = buyers.map(b =>
-        b.id === buyer.id ? { ...b, shortlisted: !isCurrentlyShortlisted } : b
-      );
-
-      setBuyers(updatedBuyers);
-      updateWorkshopData({ targetBuyers: updatedBuyers });
-
-      // Update shortlisted list
-      if (isCurrentlyShortlisted) {
-        setShortlistedBuyers(prev => prev.filter(desc => desc !== description));
-      } else {
-        setShortlistedBuyers(prev => [...prev, description]);
-      }
-    }
-  }, [buyers, updateWorkshopData]);
 
   // Toggle accordion sections
   const toggleStep1 = useCallback(() => {
@@ -234,74 +208,18 @@ export const Step05_TargetBuyers: React.FC = () => {
                 />
               </div>
 
-              {/* List of potential buyers */}
-              {potentialBuyers.length > 0 ? (
-                <div style={{ display: 'grid', gap: '8px' }}>
-                  {potentialBuyers.map((description, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: '10px 16px',
-                        backgroundColor: '#f9fafb',
-                        borderRadius: '8px',
-                        border: '1px solid #e5e7eb',
-                      }}
-                    >
-                      <span style={{ fontSize: '14px', color: '#374151' }}>{description}</span>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button
-                          onClick={() => toggleShortlistBuyer(description)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: shortlistedBuyers.includes(description) ? '#FFDD00' : '#6b7280',
-                          }}
-                          title={shortlistedBuyers.includes(description) ? "Remove from shortlist" : "Add to shortlist"}
-                        >
-                          <Star size={16} fill={shortlistedBuyers.includes(description) ? '#FFDD00' : 'none'} />
-                        </button>
-
-                        {/* Find the buyer object with this description and delete it */}
-                        {(() => {
-                          const buyer = buyers.find(b => b.description === description);
-                          return buyer ? (
-                            <button
-                              onClick={() => handleDeleteBuyer(buyer.id)}
-                              style={{
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                color: '#6b7280',
-                                display: 'flex',
-                                alignItems: 'center',
-                              }}
-                              title="Remove buyer"
-                            >
-                              <X size={16} />
-                            </button>
-                          ) : null;
-                        })()}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <ExampleBox
-                  examples={[
-                    "Burnt out marketing consultants with 3+ years experience",
-                    "E-commerce store owners with 50-200 products and $500K+ annual revenue",
-                    "SaaS founders who recently raised seed funding",
-                    "Freelance copywriters who want to stop trading time for money",
-                    "Marketing agencies with 5-15 employees struggling with client retention"
-                  ]}
-                  title="EXAMPLES"
-                  initiallyVisible={true}
-                />
-              )}
+              {/* Examples of potential buyers */}
+              <ExampleBox
+                examples={[
+                  "Burnt out marketing consultants with 3+ years experience",
+                  "E-commerce store owners with 50-200 products and $500K+ annual revenue",
+                  "SaaS founders who recently raised seed funding",
+                  "Freelance copywriters who want to stop trading time for money",
+                  "Marketing agencies with 5-15 employees struggling with client retention"
+                ]}
+                title="EXAMPLES"
+                initiallyVisible={true}
+              />
             </div>
           </AccordionItem>
 
