@@ -387,7 +387,6 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
 
         Initial Big Idea:
         ${workshopData.bigIdea ? `${workshopData.bigIdea.description}` : ''}
-        ${workshopData.bigIdea ? `Target Customers: ${workshopData.bigIdea.targetCustomers}` : ''}
 
         Underlying Goal:
         ${workshopData.underlyingGoal ? `Business Goal: ${workshopData.underlyingGoal.businessGoal}` : ''}
@@ -399,7 +398,7 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
 
         Jobs to be Done:
         ${workshopData.jobs
-          .map(job => `- ${job.description}`)
+          .map(job => `- ${job.description}${job.isOverarching ? ' (Overarching)' : ''}${job.selected ? ' (Selected)' : ''}`)
           .join('\n')}
 
         Target Buyers:
@@ -414,20 +413,35 @@ function getStepContext(step: number, workshopData: WorkshopData): string {
           return pain ? `- ${pain.description}` : `- Unknown pain (ID: ${id})`;
         }).join('\n') || 'None selected'}
 
+        Target Problems:
+        ${(workshopData.targetProblems || []).filter(problem => problem.selected).map(problem =>
+          `- ${problem.description}`
+        ).join('\n') || 'None selected'}
+
         Target Moment:
         ${workshopData.problemUp ? workshopData.problemUp.targetMoment : ''}
 
         Target Market Profile:
         ${workshopData.targetMarketProfile ? `Name: ${workshopData.targetMarketProfile.name}` : ''}
+        ${workshopData.targetMarketProfile?.commonTraits && workshopData.targetMarketProfile.commonTraits.length > 0 ?
+          `Common Traits:\n${workshopData.targetMarketProfile.commonTraits.map(trait => `- ${trait}`).join('\n')}` : ''}
+        ${workshopData.targetMarketProfile?.commonTriggers && workshopData.targetMarketProfile.commonTriggers.length > 0 ?
+          `Common Triggers:\n${workshopData.targetMarketProfile.commonTriggers.map(trigger => `- ${trigger}`).join('\n')}` : ''}
         ${workshopData.targetMarketProfile ? `Core Transformation: ${workshopData.targetMarketProfile.coreTransformation}` : ''}
 
-        Refined Idea:
-        ${workshopData.refinedIdea ? `${workshopData.refinedIdea.description}` : ''}
-        ${workshopData.refinedIdea ? `Target Customers: ${workshopData.refinedIdea.targetCustomers}` : ''}
+        Refined Offer:
+        ${workshopData.refinedIdea ? `Name: ${workshopData.refinedIdea.name || workshopData.offer?.name || ''}` : ''}
+        ${workshopData.refinedIdea ? `Format: ${workshopData.refinedIdea.format || workshopData.offer?.format || ''}` : ''}
+        ${workshopData.refinedIdea ? `Description: ${workshopData.refinedIdea.description}` : ''}
+
+        Next Steps:
+        ${workshopData.nextSteps?.preSellPlan ? `Pre-Sell Plan: ${workshopData.nextSteps.preSellPlan}` : ''}
+        ${workshopData.nextSteps?.workshopReflections ? `Workshop Reflections: ${workshopData.nextSteps.workshopReflections}` : ''}
 
         Reflections:
         ${workshopData.reflections ? `Key Insights: ${workshopData.reflections.keyInsights}` : ''}
         ${workshopData.reflections ? `Next Steps: ${workshopData.reflections.nextSteps}` : ''}
+        ${workshopData.reflections ? `Personal Reflection: ${workshopData.reflections.personalReflection || ''}` : ''}
       `;
       break;
 

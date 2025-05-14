@@ -63,14 +63,28 @@ This application is built using:
    yarn install
    ```
 
-3. **Run the development server:**
+3. **Set up environment variables:**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env.local
+
+   # Edit .env.local and add your actual values
+   # IMPORTANT: Never commit .env.local to version control
+   ```
+
+   Required environment variables:
+   - `VITE_SUPABASE_URL`: Your Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+   - `VITE_OPENAI_API_KEY`: Your OpenAI API key (for development only)
+
+4. **Run the development server:**
    ```bash
    npm run dev
    # or
    yarn dev
    ```
 
-4. Open your browser to `http://localhost:5173` (or the port specified in the output).
+5. Open your browser to `http://localhost:5173` (or the port specified in the output).
 
 ## Features
 
@@ -94,3 +108,20 @@ This application is built using:
 - Add collaborative features
 - Enhance accessibility
 - Add comprehensive testing suite
+
+## Security Best Practices
+
+### Environment Variables
+- Never commit sensitive information like API keys or tokens to the repository
+- Always use environment variables for sensitive information
+- Use `.env.local` for local development (this file is git-ignored)
+- Set environment variables in your deployment platform (Netlify) for production
+
+### Authentication
+- User authentication is handled through Supabase
+- JWT tokens are managed securely and never exposed in client-side code
+- Row-Level Security (RLS) policies are implemented in Supabase for data protection
+
+### API Keys
+- OpenAI API keys should only be used server-side in Netlify Functions
+- Supabase anon key has limited permissions through RLS policies

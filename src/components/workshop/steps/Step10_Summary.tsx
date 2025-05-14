@@ -305,6 +305,73 @@ export const Step10_Summary: React.FC = () => {
                       {workshopData.problemUp?.targetMoment || 'Not defined'}
                     </p>
                   </div>
+
+                  {/* Target Market Profile */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Target Market Profile:
+                    </h5>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#4b5563',
+                      margin: '0'
+                    }}>
+                      {workshopData.targetMarketProfile?.name || 'Not defined'}
+                    </p>
+
+                    {workshopData.targetMarketProfile?.commonTraits && workshopData.targetMarketProfile.commonTraits.length > 0 && (
+                      <div style={{ marginTop: '8px' }}>
+                        <h6 style={{
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          color: '#4b5563',
+                          margin: '0 0 4px 0'
+                        }}>
+                          Common Traits:
+                        </h6>
+                        <ul style={{
+                          listStyle: 'disc',
+                          paddingLeft: '24px',
+                          color: '#4b5563',
+                          fontSize: '13px',
+                          margin: '0'
+                        }}>
+                          {workshopData.targetMarketProfile.commonTraits.map((trait, index) => (
+                            <li key={index}>{trait}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {workshopData.targetMarketProfile?.commonTriggers && workshopData.targetMarketProfile.commonTriggers.length > 0 && (
+                      <div style={{ marginTop: '8px' }}>
+                        <h6 style={{
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          color: '#4b5563',
+                          margin: '0 0 4px 0'
+                        }}>
+                          Common Triggers:
+                        </h6>
+                        <ul style={{
+                          listStyle: 'disc',
+                          paddingLeft: '24px',
+                          color: '#4b5563',
+                          fontSize: '13px',
+                          margin: '0'
+                        }}>
+                          {workshopData.targetMarketProfile.commonTriggers.map((trigger, index) => (
+                            <li key={index}>{trigger}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -408,6 +475,42 @@ export const Step10_Summary: React.FC = () => {
                         margin: '0'
                       }}>
                         No supporting jobs selected
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Target Problems */}
+                  <div>
+                    <h5 style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#4b5563',
+                      margin: '0 0 4px 0'
+                    }}>
+                      Target Problems:
+                    </h5>
+                    {workshopData.targetProblems && workshopData.targetProblems.filter(problem => problem.selected).length > 0 ? (
+                      <ul style={{
+                        listStyle: 'disc',
+                        paddingLeft: '24px',
+                        color: '#4b5563',
+                        fontSize: '14px',
+                        margin: '0'
+                      }}>
+                        {workshopData.targetProblems
+                          .filter(problem => problem.selected)
+                          .map((problem, index) => (
+                            <li key={index}>{problem.description}</li>
+                          ))}
+                      </ul>
+                    ) : (
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        fontStyle: 'italic',
+                        margin: '0'
+                      }}>
+                        No target problems selected
                       </p>
                     )}
                   </div>
