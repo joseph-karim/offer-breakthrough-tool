@@ -1,6 +1,6 @@
 /**
  * OpenAIService - Wrapper for OpenAI API
- * 
+ *
  * This is a simplified wrapper for the OpenAI API.
  * In a production app, you would want to:
  * 1. Move API calls to a backend server
@@ -29,7 +29,7 @@ export class OpenAIService {
           'Authorization': `Bearer ${this.apiKey}`
         },
         body: JSON.stringify({
-          model: 'gpt-4-turbo',
+          model: 'gpt-4.1-2025-04-14',
           messages: [
             {
               role: 'system',
@@ -77,7 +77,7 @@ export class OpenAIService {
           'Authorization': `Bearer ${this.apiKey}`
         },
         body: JSON.stringify({
-          model: 'gpt-4-turbo',
+          model: 'gpt-4.1-2025-04-14',
           messages: [
             {
               role: 'system',
@@ -100,11 +100,11 @@ export class OpenAIService {
 
       const data = await response.json();
       const jsonString = data.choices[0]?.message?.content || '{}';
-      
+
       try {
         // If it's already an object, return it
         if (typeof jsonString === 'object') return jsonString;
-        
+
         // Otherwise parse the string
         return JSON.parse(jsonString);
       } catch (error) {
@@ -117,4 +117,4 @@ export class OpenAIService {
       throw error;
     }
   }
-} 
+}

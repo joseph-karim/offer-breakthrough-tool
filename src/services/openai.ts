@@ -16,7 +16,7 @@ export class OpenAIService {
 
   constructor(config: OpenAIConfig) {
     this.config = {
-      model: 'gpt-4-turbo-preview',
+      model: 'gpt-4.1-2025-04-14',
       temperature: 0.7,
       maxTokens: 2000,
       ...config
