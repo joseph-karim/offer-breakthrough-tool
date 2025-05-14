@@ -5,11 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000 --strictPort=false",
-    "build": "npm install --force && tsc -b && vite build",
+    "build": "tsc -b && vite build",
+    "build:full": "npm install --force && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "netlify-dev": "netlify dev",
-    "stackbit": "vite --port 8000 --strictPort=false"
+    "stackbit": "vite --port 8000 --strictPort=false",
+    "analyze": "vite build --mode analyze"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.8",
@@ -54,6 +56,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "prettier": "^3.5.3",
+    "rollup-plugin-visualizer": "^5.14.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
