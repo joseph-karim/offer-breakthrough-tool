@@ -1,8 +1,8 @@
 // Netlify function to proxy OpenAI API calls
 // Using native https module instead of node-fetch for maximum compatibility
-const https = require('https');
+import https from 'https';
 
-exports.handler = async function(event, context) {
+export const handler = async function(event, context) {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
@@ -50,10 +50,9 @@ exports.handler = async function(event, context) {
     }
 
     // Get the OpenAI API key from environment variables
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY || (typeof Netlify !== 'undefined' ? Netlify.env.get("OPENAI_API_KEY") : null);
 
     // Log environment variables (excluding sensitive values)
-    console.log('Environment variables available:', Object.keys(process.env));
     console.log('OPENAI_API_KEY exists:', !!apiKey);
 
     if (!apiKey) {
