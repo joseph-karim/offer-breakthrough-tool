@@ -143,35 +143,35 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
           ${workshopData.painstormingResults.buyerSegment1 ? `
             <div style="margin-bottom: 15px;">
               <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">${workshopData.painstormingResults.buyerSegment1}:</h3>
-              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.buyer1Pains.replace(/\n/g, '<br>')}</p>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap; color: #333333;">${workshopData.painstormingResults.buyer1Pains.replace(/\n/g, '<br>')}</p>
             </div>
           ` : ''}
 
           ${workshopData.painstormingResults.buyerSegment2 ? `
             <div style="margin-bottom: 15px;">
               <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">${workshopData.painstormingResults.buyerSegment2}:</h3>
-              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.buyer2Pains.replace(/\n/g, '<br>')}</p>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap; color: #333333;">${workshopData.painstormingResults.buyer2Pains.replace(/\n/g, '<br>')}</p>
             </div>
           ` : ''}
 
           ${workshopData.painstormingResults.buyerSegment3 ? `
             <div style="margin-bottom: 15px;">
               <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">${workshopData.painstormingResults.buyerSegment3}:</h3>
-              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.buyer3Pains.replace(/\n/g, '<br>')}</p>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap; color: #333333;">${workshopData.painstormingResults.buyer3Pains.replace(/\n/g, '<br>')}</p>
             </div>
           ` : ''}
 
           ${workshopData.painstormingResults.overlappingPains ? `
             <div style="margin-bottom: 15px;">
               <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Overlapping Pains:</h3>
-              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.overlappingPains.replace(/\n/g, '<br>')}</p>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap; color: #333333;">${workshopData.painstormingResults.overlappingPains.replace(/\n/g, '<br>')}</p>
             </div>
           ` : ''}
 
           ${workshopData.painstormingResults.ahaMoments ? `
             <div style="margin-bottom: 15px;">
               <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">'Aha!' Moments & Reflections:</h3>
-              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap;">${workshopData.painstormingResults.ahaMoments.replace(/\n/g, '<br>')}</p>
+              <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap; color: #333333;">${workshopData.painstormingResults.ahaMoments.replace(/\n/g, '<br>')}</p>
             </div>
           ` : ''}
         </div>
@@ -253,7 +253,7 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
 
       <div style="margin-bottom: 15px;">
         <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Market Name:</h3>
-        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.targetMarketProfile?.name || 'Not defined'}</p>
+        <p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; color: #333333;">${workshopData.targetMarketProfile?.name || 'Not defined'}</p>
       </div>
 
       <div style="margin-bottom: 15px;">
@@ -312,7 +312,7 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
 
       <div style="margin-bottom: 15px;">
         <h3 style="color: #4b5563; font-size: 16px; margin: 0 0 8px 0; font-weight: 600;">Description:</h3>
-        <div style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap; line-height: 1.5;">
+        <div style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; white-space: pre-wrap; line-height: 1.5; color: #333333;">
           ${workshopData.refinedIdea?.description?.replace(/\n/g, '<br>') || workshopData.offer?.description || 'Not defined'}
         </div>
       </div>
@@ -345,7 +345,7 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
                 return result;
               })()}
             </ul>`
-          : `<p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.nextSteps?.preSellPlan || 'Not defined'}</p>`
+          : `<p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; color: #333333;">${workshopData.nextSteps?.preSellPlan || 'Not defined'}</p>`
         }
       </div>
 
@@ -371,7 +371,7 @@ export const exportWorkshopToPdf = async (workshopData: WorkshopData): Promise<v
                 return result;
               })()}
             </ul>`
-          : `<p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb;">${workshopData.nextSteps?.workshopReflections || 'Not defined'}</p>`
+          : `<p style="margin: 0; padding: 10px; background-color: white; border-radius: 6px; border: 1px solid #e5e7eb; color: #333333;">${workshopData.nextSteps?.workshopReflections || 'Not defined'}</p>`
         }
       </div>
     </div>
