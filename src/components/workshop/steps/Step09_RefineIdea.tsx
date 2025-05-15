@@ -332,7 +332,7 @@ export const Step09_RefineIdea: React.FC = () => {
             onToggle={toggleStep2}
           >
             <p style={{ fontSize: '15px', color: '#475569', marginBottom: '16px' }}>
-              Ask yourself:
+              <strong>Ask yourself:</strong>
             </p>
 
             <ul style={{

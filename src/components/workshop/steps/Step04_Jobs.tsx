@@ -136,8 +136,8 @@ export const Step04_Jobs: React.FC = () => {
       <div style={styles.stepDescriptionStyle} data-sb-field-path="description">
         <p>People don't buy products or services because of who they are. They buy things because they have a specific job they're trying to get done. Let's explore the 'job' your customer is trying to get done as it relates to your solution.</p>
         <p>A job statement describes the progress the customer seeks to make and the specific context. It's not about describing what your product does—it's about what your customer wants to get done.</p>
-        <p>Format: "Help me [verb] + [object of verb] + [added context]"</p>
-        <p>Example: "Help me generate [verb] predictable revenue [object of verb] from my email list without constantly creating new content [added context]"</p>
+        <p>Format: "Help me <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[verb]</span> + <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[object of verb]</span> + <span style={{ color: '#fcf720', backgroundColor: '#333333', padding: '0 4px' }}>[added context]</span>"</p>
+        <p>Example: "Help me generate <span style={{ color: '#333333', backgroundColor: '#f2f2f2', padding: '0 4px' }}>[verb]</span> predictable revenue <span style={{ color: '#333333', backgroundColor: '#f2f2f2', padding: '0 4px' }}>[object of verb]</span> from my email list without constantly creating new content <span style={{ color: '#333333', backgroundColor: '#f2f2f2', padding: '0 4px' }}>[added context]</span>"</p>
       </div>
 
       {/* Main content area */}

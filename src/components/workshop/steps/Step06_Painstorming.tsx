@@ -806,11 +806,11 @@ export const Step06_Painstorming: React.FC = () => {
               marginBottom: '16px'
             }}>
               <p style={{ fontWeight: 600, margin: '0 0 8px 0' }}>Ask yourself:</p>
-              <ul style={{ margin: '0', paddingLeft: '24px' }}>
-                <li>What patterns do you see in the problems?</li>
-                <li>Which problems feel most resonant or 'ouchy' based on your experience?</li>
-                <li>Are there any problems listed that particularly excite you to solve?</li>
-                <li>Are there problems here you might already be solving for clients without explicitly realizing it?</li>
+              <ul style={{ margin: '0', paddingLeft: '24px', listStyleType: 'disc' }}>
+                <li style={{ display: 'list-item', marginBottom: '4px' }}>What patterns do you see in the problems?</li>
+                <li style={{ display: 'list-item', marginBottom: '4px' }}>Which problems feel most resonant or 'ouchy' based on your experience?</li>
+                <li style={{ display: 'list-item', marginBottom: '4px' }}>Are there any problems listed that particularly excite you to solve?</li>
+                <li style={{ display: 'list-item', marginBottom: '4px' }}>Are there problems here you might already be solving for clients without explicitly realizing it?</li>
               </ul>
             </div>
 

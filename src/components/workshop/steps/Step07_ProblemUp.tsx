@@ -207,14 +207,14 @@ export const Step07_ProblemUp: React.FC = () => {
             <p style={{ marginBottom: '16px', fontSize: '15px', color: '#4b5563' }}>
               <strong>Ask yourself:</strong>
             </p>
-            <ul style={{ paddingLeft: '20px', marginBottom: '20px', fontSize: '15px', color: '#4b5563' }}>
-              <li style={{ marginBottom: '8px' }}>What problems do buyers know they have?</li>
-              <li style={{ marginBottom: '8px' }}>Which problems align with your skills and interests?</li>
-              <li style={{ marginBottom: '8px' }}>What existing resources or assets can you leverage?</li>
-              <li style={{ marginBottom: '8px' }}>What problems have you solved already, either for your own business or for your clients?</li>
-              <li style={{ marginBottom: '8px' }}>Which problems are poorly solved by existing solutions?</li>
-              <li style={{ marginBottom: '8px' }}>Which problems align with your broader business strategy?</li>
-              <li style={{ marginBottom: '8px' }}>Which problems, if solved well, can create a profitable domino effect in your business?</li>
+            <ul style={{ paddingLeft: '20px', marginBottom: '20px', fontSize: '15px', color: '#4b5563', listStyleType: 'disc' }}>
+              <li style={{ marginBottom: '8px', display: 'list-item' }}>What problems do buyers know they have?</li>
+              <li style={{ marginBottom: '8px', display: 'list-item' }}>Which problems align with your skills and interests?</li>
+              <li style={{ marginBottom: '8px', display: 'list-item' }}>What existing resources or assets can you leverage?</li>
+              <li style={{ marginBottom: '8px', display: 'list-item' }}>What problems have you solved already, either for your own business or for your clients?</li>
+              <li style={{ marginBottom: '8px', display: 'list-item' }}>Which problems are poorly solved by existing solutions?</li>
+              <li style={{ marginBottom: '8px', display: 'list-item' }}>Which problems align with your broader business strategy?</li>
+              <li style={{ marginBottom: '8px', display: 'list-item' }}>Which problems, if solved well, can create a profitable domino effect in your business?</li>
             </ul>
 
             {/* Painstorming Results in Tabs */}

@@ -343,7 +343,7 @@ export const Step08_TargetMarket: React.FC = () => {
               COMMON TRAITS
             </label>
             <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-              List the most defining shared characteristics (demographic, firmographic, psychographic)
+              List the most defining shared characteristics of this audience. Only consider traits that might inform product design (ie. demographic, firmographic, etc.)
             </p>
 
 
@@ -431,7 +431,7 @@ export const Step08_TargetMarket: React.FC = () => {
               COMMON TRIGGERS
             </label>
             <p style={{ fontSize: '14px', color: '#475569', margin: '0 0 8px 0' }}>
-              List the specific triggers most relevant to this group experiencing the target moment/pain.
+              List specific triggers this audience shares. Think specifically about triggers that might inform product design.
             </p>
 
 
